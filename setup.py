@@ -30,7 +30,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="rli_template",  # Required
+    name="oemofB3",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -66,7 +66,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/rl-institut/rli_template",  # Optional
+    url="https://github.com/rl-institut/oemof-B3",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
     author="Reiner Lemoine Institut",  # Optional
@@ -104,7 +104,7 @@ setup(
     keywords="",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={"": "src"},  # Optional
+    package_dir={"": "oemof_B3"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -114,7 +114,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(where="src"),  # Required
+    packages=find_packages(where="oemof_B3"),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
@@ -173,7 +173,7 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/rl-institut/rli_template/issues",
-        "Source": "https://github.com/rl-institut/rli_template",
+        "Bug Reports": "https://github.com/rl-institut/oemof-B3/issues",
+        "Source": "https://github.com/rl-institut/oemof-B3",
     },
 )
