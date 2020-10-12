@@ -1,0 +1,13 @@
+attribute,type,unit,default,suffix,description
+region,str,n/a,n/a,,Country code
+name,str,n/a,,-heat-storage,Name
+type,str,n/a,storage,,Type
+carrier,str,n/a,heat,,Energy carrier
+tech,str,n/a,storage,,Technology
+bus,str,n/a,,-heat,The bus this component is connected to
+capacity,float,MW,n/a,,Installed capacity
+storage_capacity,float,MWh,n/a,,Installed storage capacity
+efficiency,float,unitless,n/a,,Efficiency of charging/discharging
+marginal_cost,float,Eur/MWh,n/a,,Marginal cost of charging/discharging
+input_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's input flow
+output_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's output flow

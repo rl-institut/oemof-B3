@@ -1,0 +1,9 @@
+attribute,type,unit,default,suffix,description
+region,str,n/a,n/a,,Country code
+name,str,n/a,,-heat-demand,Name
+type,str,n/a,load,,Type
+carrier,str,n/a,heat,,Energy carrier
+tech,str,n/a,demand,,Technology
+bus,str,n/a,,-heat,The bus this component is connected to
+amount,float,GWh/a,n/a,,Total load over one year
+profile,str,n/a,n/a,-heat-demand-profile,Name of the profile
