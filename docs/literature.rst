@@ -5,4 +5,5 @@ Literature
 ~~~~~~~~~~
 
 .. bibliography:: bibliography.bib
-   :style: plain
+   :all:
+   :style: unsrt
