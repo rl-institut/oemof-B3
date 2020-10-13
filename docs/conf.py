@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'rli_template'
+project = 'oemof-B3'
 copyright = '2020, Reiner Lemoine Institut'
 author = 'Reiner Lemoine Institut'
 
