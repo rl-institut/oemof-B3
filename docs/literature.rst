@@ -3,3 +3,6 @@
 ~~~~~~~~~~
 Literature
 ~~~~~~~~~~
+
+.. bibliography:: bibliography.bib
+   :style: plain
