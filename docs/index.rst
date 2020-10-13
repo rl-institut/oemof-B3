@@ -3,18 +3,26 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to rli_template's documentation!
-========================================
+Welcome to oemof-B3's documentation!
+====================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Getting started
 
+   overview
+   getting_started
 
+.. toctree::
+   :maxdepth: 1
+   :caption: User's guide
 
-Indices and tables
-==================
+   model_pipeline
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+
+   whats_new
+   api
+   literature

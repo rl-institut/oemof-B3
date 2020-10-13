@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'rli_template'
+project = 'oemof-B3'
 copyright = '2020, Reiner Lemoine Institut'
 author = 'Reiner Lemoine Institut'
 
@@ -30,7 +30,12 @@ master_doc = 'index'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.napoleon',
+    'sphinxcontrib.bibtex',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
