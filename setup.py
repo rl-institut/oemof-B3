@@ -104,7 +104,7 @@ setup(
     keywords="",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={"": "oemof_B3"},  # Optional
+    package_dir={"": "oemofB3"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -114,7 +114,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(where="oemof_B3"),  # Required
+    packages=find_packages(where="oemofB3"),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you
