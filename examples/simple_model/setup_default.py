@@ -5,14 +5,13 @@ from oemofB3.preprocessing import create_default_elements
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed = os.path.join(here, 'preprocessed')
+preprocessed_elements = os.path.join(here, 'preprocessed', 'elements')
 
-if not os.path.exists(preprocessed):
-    os.mkdir(preprocessed)
-
+if not os.path.exists(preprocessed_elements):
+    os.mkdir(preprocessed_elements)
 
 create_default_elements(
-    os.path.join(preprocessed, 'elements'),
+    preprocessed_elements,
     select_components=[
         'electricity-shortage',
         'electricity-curtailment',
