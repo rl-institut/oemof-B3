@@ -1,6 +1,6 @@
 import os
 
-from oemofB3.preprocessing import create_default_data
+from oemofB3.model_structure import create_default_data
 
 
 here = os.path.abspath(os.path.dirname(__file__))
