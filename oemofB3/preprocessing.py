@@ -24,6 +24,7 @@ def create_default_data(
         select_components=None,
         elements_subdir='elements',
         sequences_subdir='sequences',
+        dummy_sequences=False,
 ):
     r"""
     Prepares oemoef.tabluar input CSV files:
@@ -85,7 +86,8 @@ def create_default_data(
 
         create_component_sequences(
             component_attrs_file,
-            os.path.join(destination, sequences_subdir)
+            os.path.join(destination, sequences_subdir),
+            dummy_sequences,
         )
 
 
@@ -178,7 +180,10 @@ def create_component_element(component_attrs_file):
     return component_df
 
 
-def create_component_sequences(component_attrs_file, destination):
+def create_component_sequences(
+        component_attrs_file, destination,
+        dummy_sequences=False, dummy_value=0,
+    ):
     r"""
 
     Parameters
@@ -188,6 +193,12 @@ def create_component_sequences(component_attrs_file, destination):
 
     destination : path
         Path where sequences are saved.
+
+    dummy_sequences : bool
+        If True, create a short timeindex and dummy values.
+
+    dummy_value : numeric
+        Dummy value for sequences.
 
     Returns
     -------
@@ -215,14 +226,26 @@ def create_component_sequences(component_attrs_file, destination):
 
         profile_filename = remove_suffix(profile_name, '-profile') + '_profile.csv'
 
-        profile_columns = ['timeindex']
+        profile_columns = []
 
         profile_columns.extend(['-'.join([region, profile_name]) for region in regions_list])
 
-        profile_df = pd.DataFrame(columns=profile_columns)
+        if dummy_sequences:
+            datetimeindex = pd.date_range(start='2020-10-20', periods=3, freq='H')
+
+            profile_df = pd.DataFrame(dummy_value, index=datetimeindex, columns=profile_columns)
+
+            dummy_msg = 'dummy'
+
+        else:
+            profile_df = pd.DataFrame(columns=profile_columns)
+
+            dummy_msg = 'empty'
+
+        profile_df.index.name = 'timeindex'
 
         profile_destination = os.path.join(destination, profile_filename)
 
-        profile_df.to_csv(profile_destination, index=False)
+        profile_df.to_csv(profile_destination)
 
-        print(f"Saved empty profile to {profile_destination}")
+        print(f"Saved {dummy_msg} profile to {profile_destination}")

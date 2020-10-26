@@ -23,6 +23,6 @@ create_default_data(
         'wind-onshore',
         'solar-pv',
         'ch4-extchp',
-    ]
-
+    ],
+    dummy_sequences=True,
 )
