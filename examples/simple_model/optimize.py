@@ -6,7 +6,7 @@ from oemof.solph import EnergySystem, Model
 # DONT REMOVE THIS LINE!
 # pylint: disable=unused-import
 from oemof.tabular import datapackage  # noqa
-from oemoflex.facades import TYPEMAP
+from oemof.tabular.facades import TYPEMAP
 
 
 here = os.path.abspath(os.path.dirname(__file__))
