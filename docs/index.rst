@@ -18,6 +18,8 @@ Welcome to oemof-B3's documentation!
    :caption: User's guide
 
    model_pipeline
+   model_structure
+   postprocessing
 
 .. toctree::
    :maxdepth: 1
