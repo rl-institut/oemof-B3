@@ -16,12 +16,14 @@ link_list = list(
 )
 
 
-def create_default_elements(
-        dir,
+def create_default_data(
+        destination,
         busses_file=os.path.join(module_path, 'model_structure', 'busses.csv'),
         components_file=os.path.join(module_path, 'model_structure', 'components.csv'),
         component_attrs_dir=os.path.join(module_path, 'model_structure', 'component_attrs'),
         select_components=None,
+        elements_subdir='elements',
+        sequences_subdir='sequences',
 ):
     r"""
     Prepares oemoef.tabluar input CSV files:
@@ -30,7 +32,7 @@ def create_default_elements(
 
     Parameters
     ----------
-    dir : str (dir path)
+    destination : str (dir path)
         target directory where to put the prepared CSVs
 
     components_file : str (file path)
@@ -46,6 +48,14 @@ def create_default_elements(
     -------
     None
     """
+    for subdir in [elements_subdir, sequences_subdir]:
+
+        subdir_full_path = os.path.join(destination, subdir)
+
+        if not os.path.exists(subdir_full_path):
+
+            os.makedirs(subdir_full_path)
+
     components_file = os.path.join(module_path, components_file)
 
     # TODO Better put this as another field into the components.csv as well?
@@ -63,7 +73,7 @@ def create_default_elements(
 
     bus_df = create_bus_element(busses_file)
 
-    bus_df.to_csv(os.path.join(dir, 'bus.csv'))
+    bus_df.to_csv(os.path.join(destination, elements_subdir, 'bus.csv'))
 
     for component in components:
         component_attrs_file = os.path.join(component_attrs_dir, component + '.csv')
@@ -71,7 +81,12 @@ def create_default_elements(
         df = create_component_element(component_attrs_file)
 
         # Write to target directory
-        df.to_csv(os.path.join(dir, component + '.csv'))
+        df.to_csv(os.path.join(destination, elements_subdir, component + '.csv'))
+
+        create_component_sequences(
+            component_attrs_file,
+            os.path.join(destination, sequences_subdir)
+        )
 
 
 def create_bus_element(busses_file):
@@ -161,3 +176,53 @@ def create_component_element(component_attrs_file):
     component_df = pd.DataFrame(comp_data).set_index('region')
 
     return component_df
+
+
+def create_component_sequences(component_attrs_file, destination):
+    r"""
+
+    Parameters
+    ----------
+    component_attrs_file : path
+        Path to file describing the components' attributes
+
+    destination : path
+        Path where sequences are saved.
+
+    Returns
+    -------
+    None
+    """
+    try:
+        component_attrs = pd.read_csv(component_attrs_file, index_col=0)
+
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"There is no file {component_attrs_file}") from e
+
+    suffices = component_attrs.loc[component_attrs['suffix'].notna(), 'suffix'].to_dict()
+
+    def remove_prefix(string, prefix):
+        if string.startswith(prefix):
+            return string[len(prefix):]
+
+    def remove_suffix(string, suffix):
+        if string.endswith(suffix):
+            return string[:-len(suffix)]
+
+    profile_names = {k: remove_prefix(v, '-') for k, v in suffices.items() if 'profile' in v}
+
+    for profile_name in profile_names.values():
+
+        profile_filename = remove_suffix(profile_name, '-profile') + '_profile.csv'
+
+        profile_columns = ['timeindex']
+
+        profile_columns.extend(['-'.join([region, profile_name]) for region in regions_list])
+
+        profile_df = pd.DataFrame(columns=profile_columns)
+
+        profile_destination = os.path.join(destination, profile_filename)
+
+        profile_df.to_csv(profile_destination, index=False)
+
+        print(f"Saved empty profile to {profile_destination}")

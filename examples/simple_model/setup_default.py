@@ -1,16 +1,16 @@
 import os
 
-from oemofB3.preprocessing import create_default_elements
+from oemofB3.preprocessing import create_default_data
 
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed_elements = os.path.join(here, 'preprocessed', 'elements')
+preprocessed_elements = os.path.join(here, 'preprocessed', 'simple_model', 'data')
 
 if not os.path.exists(preprocessed_elements):
-    os.mkdir(preprocessed_elements)
+    os.makedirs(preprocessed_elements)
 
-create_default_elements(
+create_default_data(
     preprocessed_elements,
     select_components=[
         'electricity-shortage',
