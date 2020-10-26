@@ -11,7 +11,9 @@ from oemof.tabular.facades import TYPEMAP
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed = os.path.join(here, 'preprocessed')
+name = 'simple_model'
+
+preprocessed = os.path.join(here, 'preprocessed', name)
 
 optimized = os.path.join(here, 'optimized')
 
