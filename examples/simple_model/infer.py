@@ -11,7 +11,7 @@ name = 'simple_model'
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed = os.path.join(here, 'preprocessed')
+preprocessed = os.path.join(here, 'preprocessed', name)
 
 if not os.path.exists(preprocessed):
     os.mkdir(preprocessed)
