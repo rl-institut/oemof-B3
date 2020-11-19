@@ -1,0 +1,16 @@
+attribute,type,unit,default,suffix,description
+region,str,n/a,n/a,,Country code
+name,str,n/a,,-hydro-reservoir,Name
+type,str,n/a,reservoir,,Type
+carrier,str,n/a,hydro,,Energy carrier
+tech,str,n/a,reservoir,,Technology
+bus,str,n/a,,-electricity,The bus this component is connected to
+capacity_turbine,float,MW,n/a,,Installed turbine capacity
+capacity_pump,float,MW,n/a,,Installed pump capacity
+storage_capacity,float,MWh,n/a,,Installed storage capacity
+initial_storage_level,float,MWh,n/a,,Initial reservoir filling level
+efficiency_turbine,float,unitless,n/a,,Turbine efficiency (discharging)
+efficiency_pump,float,unitless,n/a,,Pump efficiency (charging)
+marginal_cost,float,Eur/MWh,n/a,,Marginal cost of charging/discharging
+profile,str,,,-hydro-reservoir_profile,Name of the inflow profile of inflow into the storage
+output_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's output flow

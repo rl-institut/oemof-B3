@@ -1,0 +1,12 @@
+attribute,type,unit,default,suffix,description
+region,str,n/a,n/a,,Country code
+name,str,n/a,,-electricity-heatpump,Name
+type,str,n/a,conversion,,Type
+carrier,str,n/a,electricity,,Energy carrier
+tech,str,n/a,heatpump,,Technology
+from_bus,str,n/a,,-electricity,The bus this component is connected to
+to_bus,str,n/a,,-heat,The bus this component is connected to
+capacity,float,MW,n/a,,Installed capacity
+efficiency,str,,,-cop-profile,Coefficient of performance
+marginal_cost,float,Eur/MWh,n/a,,Marginal cost
+output_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's output flow
