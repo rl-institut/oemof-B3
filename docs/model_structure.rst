@@ -51,8 +51,14 @@ Available components
 ====================
 
 The components that are available in oemoflex are defined in the file
-:file:`oemofB3/model_structure/components.csv`
+:file:`oemofB3/model_structure/components.csv`. The attributes of the available components are
+defined in :file:`oemofB3/model_structure/components_attrs`. Here is an overview over all
+components.
 
 .. csv-table::
    :header-rows: 1
    :file: ../oemofB3/model_structure/components.csv
+
+If you want to add a component, create a new file describing the component's attributes in
+:file:`oemofB3/model_structure/components_attrs` and add an entry for the component to the file
+:file:`oemofB3/model_structure/components.csv`.
