@@ -21,3 +21,6 @@ heat-storage,heat,storage,storage,Large scale sensible heat storage
 heat-excess,heat,excess,excess,Heat excess
 hydro-reservoir,hydro,reservoir,reservoir,Hydro reservoir
 electricity-bev,electricity,bev,bev,Battery electric vehicle
+oil-st,oil,conversion,st,Oil power plant capacities (steam turbine)
+other-st,other,conversion,st,Other power plant capacities (steam turbine)
+biomass-st,biomass,conversion,st,Biomass power plant capacities (steam turbine)
