@@ -4,8 +4,10 @@ BE,BE-heat,bus,False
 BE,BE-ch4,bus,True
 BE,BE-oil,bus,True
 BE,BE-other,bus,True
+BE,BE-biomass,bus,True
 BB,BB-electricity,bus,True
 BB,BB-heat,bus,False
 BB,BB-ch4,bus,True
 BB,BB-oil,bus,True
 BB,BB-other,bus,True
+BB,BB-biomass,bus,True

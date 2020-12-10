@@ -48,17 +48,17 @@
                     },
                     {
                         "name": "capacity",
-                        "type": "string",
+                        "type": "integer",
                         "format": "default"
                     },
                     {
                         "name": "capacity_cost",
-                        "type": "string",
+                        "type": "integer",
                         "format": "default"
                     },
                     {
                         "name": "loss",
-                        "type": "string",
+                        "type": "integer",
                         "format": "default"
                     }
                 ],
