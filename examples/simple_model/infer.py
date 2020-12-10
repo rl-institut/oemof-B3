@@ -22,24 +22,23 @@ building.infer_metadata(
     foreign_keys={
         'bus': [
             'wind-onshore',
-            'wind-offshore',
             'solar-pv',
             'electricity-shortage',
             'electricity-curtailment',
             'electricity-demand',
-            'heat-demand',
-            'heat-excess',
-            'heat-shortage',
+            'electricity-liion_battery',
         ],
         'profile': [
             'wind-onshore',
-            'wind-offshore',
             'solar-pv',
             'electricity-demand',
-            'heat-demand',
         ],
-        'chp': [
-            'ch4-extchp',
+        'from_to_bus': [
+            'ch4-gt',
+            'oil-st',
+            'biomass-st',
+            'other-st',
+            'electricity-transmission',
         ],
     },
     path=preprocessed
