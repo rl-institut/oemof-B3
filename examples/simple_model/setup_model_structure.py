@@ -23,7 +23,6 @@ create_default_data(
         'oil-st',
         'other-st',
         'electricity-liion_battery',
-        # 'electricity-h2_cavern',
         'biomass-st',
     ],
     dummy_sequences=True,
