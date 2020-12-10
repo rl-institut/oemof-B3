@@ -1,0 +1,3 @@
+region,name,type,carrier,tech,bus,capacity,capacity_cost,marginal_cost,profile,output_parameters
+BE,BE-solar-pv,volatile,solar,pv,BE-electricity,400000,57.52,0,BE-solar-pv-profile,{}
+BB,BB-solar-pv,volatile,solar,pv,BB-electricity,8800000,57.52,0,BB-solar-pv-profile,{}
