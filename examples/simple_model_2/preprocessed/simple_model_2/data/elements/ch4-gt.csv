@@ -1,0 +1,3 @@
+region,name,type,carrier,tech,from_bus,to_bus,capacity,capacity_cost,efficiency,carrier_cost,marginal_cost,expandable,output_parameters
+BE,BE-ch4-gt,conversion,ch4,gt,BE-ch4,BE-electricity,2088000,71,0.619,0.021,0.0045,False,{}
+BB,BB-ch4-gt,conversion,ch4,gt,BB-ch4,BB-electricity,955000,71,0.619,0.021,0.0045,False,{}
