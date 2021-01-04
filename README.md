@@ -8,7 +8,9 @@ An energy system optimization model for Brandenburg/Berlin.
 
 ## Docs
 
-To build the docs simply go to the `docs` folder
+Read the docs [here](https://oemof-b3.readthedocs.io/).
+
+To build the docs locally, simply go to the `docs` folder
 
     cd docs
 
