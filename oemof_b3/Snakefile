@@ -1,0 +1,7 @@
+rule setup_model_structure:
+    input:
+        "scenarios/{scenario}.yml"
+    output:
+        "results/{scenario}/preprocessed"
+    script:
+        "module/setup_model_structure.py scenarios/{scenario} results/{scenario}/preprocessed"
