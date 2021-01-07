@@ -74,7 +74,7 @@
       <rect x="471.6672" width="86.8064" height="34.5056" y="414.1128" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="480.1251" xml:space="preserve" y="436.8036" clip-path="url(#clipPath2)" stroke="none">Elektrolyse</text>
+      <text x="478.4537" xml:space="preserve" y="436.8036" clip-path="url(#clipPath2)" stroke="none">Elektrolysis</text>
     </g>
     <g fill="rgb(51,102,255)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(51,102,255)">
       <rect x="463.4672" y="232.144" clip-path="url(#clipPath2)" width="594" rx="4" ry="4" height="7.6752" stroke="none"/>
@@ -104,33 +104,32 @@
       <rect x="633.064" width="86.8064" height="34.5056" y="280.7928" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="661.4589" xml:space="preserve" y="303.4836" clip-path="url(#clipPath2)" stroke="none">KWK</text>
+      <text x="647.1411" xml:space="preserve" y="303.4836" clip-path="url(#clipPath2)" stroke="none">CH4 CHP</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
-      <rect x="532.4672" width="86.8064" height="34.5056" y="280.7928" clip-path="url(#clipPath2)" stroke="none"/>
+      <rect x="525.6672" width="100.4064" height="34.5056" y="280.7928" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="564.0443" xml:space="preserve" y="303.4836" clip-path="url(#clipPath2)" stroke="none">PtH</text>
+      <text x="530.3465" xml:space="preserve" y="303.4836" clip-path="url(#clipPath2)" stroke="none">Power-to-heat</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="780.4672" width="116.8064" height="34.5056" y="160.4384" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="789.0296" xml:space="preserve" y="183.1292" clip-path="url(#clipPath2)" stroke="none">Li-Ion-Batterien</text>
+      <text x="789.3509" xml:space="preserve" y="183.1292" clip-path="url(#clipPath2)" stroke="none">Li-Ion-Batteries</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="729.6608" width="94.8064" height="34.5056" y="280.7928" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="752.0787" xml:space="preserve" y="294.2516" clip-path="url(#clipPath2)" stroke="none">Wärme-</text>
-      <text x="749.98" xml:space="preserve" y="312.7155" clip-path="url(#clipPath2)" stroke="none">speicher</text>
+      <text x="762.2164" xml:space="preserve" y="294.2516" clip-path="url(#clipPath2)" stroke="none">Heat</text>
+      <text x="752.3521" xml:space="preserve" y="312.7155" clip-path="url(#clipPath2)" stroke="none">Storage</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="671.2576" width="100.4064" height="34.5056" y="407.1128" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="683.4427" xml:space="preserve" y="420.5717" clip-path="url(#clipPath2)" stroke="none">Spitzenlast-</text>
-      <text x="701.1" xml:space="preserve" y="439.0355" clip-path="url(#clipPath2)" stroke="none">kessel</text>
+      <text x="702.9867" xml:space="preserve" y="429.8036" clip-path="url(#clipPath2)" stroke="none">Boiler</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="478.664" width="86.8064" height="34.5056" y="160.4384" clip-path="url(#clipPath2)" stroke="none"/>
@@ -148,7 +147,7 @@
       <rect x="470.9739" width="116.8064" height="34.5056" y="570.096" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="480.025" xml:space="preserve" y="592.7868" clip-path="url(#clipPath2)" stroke="none">Methanisierung</text>
+      <text x="484.1984" xml:space="preserve" y="592.7868" clip-path="url(#clipPath2)" stroke="none">Methanisation</text>
     </g>
     <g fill="gray" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="gray">
       <rect x="463.4672" y="534.44" clip-path="url(#clipPath2)" width="594" rx="4" ry="4" height="7.6752" stroke="none"/>
@@ -166,43 +165,43 @@
       <rect x="785.664" width="144.8064" height="34.5056" y="407.1128" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="791.345" xml:space="preserve" y="429.8036" clip-path="url(#clipPath2)" stroke="none">Rückverstromung H2</text>
+      <text x="810.6019" xml:space="preserve" y="429.8036" clip-path="url(#clipPath2)" stroke="none">H2-Powerplant</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="912.564" width="137.8064" height="34.5056" y="695.6656" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="923.8881" xml:space="preserve" y="718.3564" clip-path="url(#clipPath2)" stroke="none">Abnahme Gasnetz</text>
+      <text x="925.0366" xml:space="preserve" y="718.3564" clip-path="url(#clipPath2)" stroke="none">CH4 consumption</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="944.4704" width="105.8064" height="34.5056" y="407.1128" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="954.6182" xml:space="preserve" y="429.8036" clip-path="url(#clipPath2)" stroke="none">Wärmebedarf</text>
+      <text x="955.377" xml:space="preserve" y="429.8036" clip-path="url(#clipPath2)" stroke="none">Heat demand</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
-      <rect x="939.1608" width="105.8064" height="34.5056" y="280.7928" clip-path="url(#clipPath2)" stroke="none"/>
+      <rect x="927.4108" width="129.3064" height="34.5056" y="280.7928" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="952.3404" xml:space="preserve" y="303.4836" clip-path="url(#clipPath2)" stroke="none">Strombedarf</text>
+      <text x="933.5279" xml:space="preserve" y="303.4836" clip-path="url(#clipPath2)" stroke="none">Electricity demand</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="838.664" width="144.8064" height="34.5056" y="570.096" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="839.765" xml:space="preserve" y="592.7868" clip-path="url(#clipPath2)" stroke="none">Rückverstromung CH4</text>
+      <text x="859.9925" xml:space="preserve" y="592.7868" clip-path="url(#clipPath2)" stroke="none">CH4 Powerplant</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="677.464" width="86.8064" height="34.5056" y="160.4384" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="684.4658" xml:space="preserve" y="183.1292" clip-path="url(#clipPath2)" stroke="none">Laufwasser</text>
+      <text x="707.9746" xml:space="preserve" y="183.1292" clip-path="url(#clipPath2)" stroke="none">RoR</text>
     </g>
     <g fill="rgb(255,204,204)" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-391,-102)" stroke="rgb(255,204,204)">
       <rect x="913.4704" width="86.8064" height="34.5056" y="160.4384" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-391,-102)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="925.7974" xml:space="preserve" y="183.1292" clip-path="url(#clipPath2)" stroke="none">Biomasse</text>
+      <text x="929.5811" xml:space="preserve" y="183.1292" clip-path="url(#clipPath2)" stroke="none">Biomass</text>
     </g>
   </g>
 </svg>
