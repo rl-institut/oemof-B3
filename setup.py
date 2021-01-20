@@ -16,7 +16,8 @@ setup(
     packages=['oemofB3'],
     install_requires=[
         'pandas',
-        'oemof',
+        'pyomo<5.6.9',
+        'pyutilib<6.0.0',
         'oemof.tabular',
     ],
 )
