@@ -1,6 +1,6 @@
 carrier,balanced,description
 electricity,true,Electricity bus
-heat,false,Heat bus
-ch4,true,CH4 bus
-oil,true,Oil bus
-other,true,Other bus
+heat,true,Heat bus
+ch4,false,CH4 bus
+oil,false,Oil bus
+other,false,Other bus
