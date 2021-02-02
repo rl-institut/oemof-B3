@@ -10,9 +10,9 @@ if __name__ == '__main__':
 
     destination = sys.argv[2]
 
-    scenario_config = load_yaml(scenario)
+    scenario_specs = load_yaml(scenario)
 
-    select_components = scenario_config['select_components']
+    select_components = scenario_specs['components']
 
     create_default_data(
         destination=destination,

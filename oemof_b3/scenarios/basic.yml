@@ -1,2 +1,5 @@
-select_components:
+scenario: basic
+
+
+components:
   - electricity-shortage
