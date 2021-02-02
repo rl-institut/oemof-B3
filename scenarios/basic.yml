@@ -1,5 +1,33 @@
 scenario: basic
 
+regions:
+  - BB
+  - B
+
+links:
+  - BB-B
+
+busses:
+  - biomass
+  - ch4
+  - co2
+  - electricity
+  - h2
+  - heat
 
 components:
+  - biomass-st
+  - ch4-boiler
+  - ch4-ccgt
+  - ch4-ocgt
+  - ch4-sink
+  - electricity-boiler
+  - electricity-demand
+  - electricity-liion_batteries
   - electricity-shortage
+  - h2-ocgt
+  - heat-demand
+  - heat-storage
+  - hydro-ror
+  - solar-pv
+  - wind-onshore
