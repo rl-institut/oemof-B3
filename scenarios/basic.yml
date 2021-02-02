@@ -1,0 +1,5 @@
+scenario: basic
+
+
+components:
+  - electricity-shortage
