@@ -16,6 +16,15 @@ rule infer:
         "python scripts/infer.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed"
 
 
+rule prepare_example:
+    input:
+        directory("examples/{scenario}")
+    output:
+        directory("results/{scenario}/preprocessed")
+    shell:
+        "cp -r examples/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/preprocessed"
+
+
 rule optimize:
     input:
         directory("results/{scenario}/preprocessed/")
