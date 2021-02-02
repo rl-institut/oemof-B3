@@ -8,19 +8,19 @@ module_path = os.path.dirname(os.path.abspath(__file__))
 datetimeindex = pd.date_range(start='2019-01-01', freq='H', periods=8760)
 
 regions_list = list(
-    pd.read_csv(os.path.join(module_path, 'model_structure', 'regions.csv'), squeeze=True)
+    pd.read_csv(os.path.join(module_path, 'regions.csv'), squeeze=True)
 )
 
 link_list = list(
-    pd.read_csv(os.path.join(module_path, 'model_structure', 'links.csv'), squeeze=True)
+    pd.read_csv(os.path.join(module_path, 'links.csv'), squeeze=True)
 )
 
 
 def create_default_data(
         destination,
-        busses_file=os.path.join(module_path, 'model_structure', 'busses.csv'),
-        components_file=os.path.join(module_path, 'model_structure', 'components.csv'),
-        component_attrs_dir=os.path.join(module_path, 'model_structure', 'component_attrs'),
+        busses_file=os.path.join(module_path, 'busses.csv'),
+        components_file=os.path.join(module_path, 'components.csv'),
+        component_attrs_dir=os.path.join(module_path, 'component_attrs'),
         select_components=None,
         elements_subdir='elements',
         sequences_subdir='sequences',

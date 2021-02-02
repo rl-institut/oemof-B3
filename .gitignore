@@ -1,0 +1,7 @@
+.idea/
+.snakemake/
+*.egg-info/
+__pycache__/
+raw/
+results/
+docs/_build

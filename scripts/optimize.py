@@ -1,10 +1,11 @@
 import logging
 import os
+import sys
 
 from oemof.solph import EnergySystem, Model
 
 # DONT REMOVE THIS LINE!
-# pylint: disable=unused-import
+# pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
 
@@ -13,9 +14,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 name = 'simple_model'
 
-preprocessed = os.path.join(here, 'preprocessed', name)
+preprocessed = sys.argv[1]
 
-optimized = os.path.join(here, 'optimized')
+optimized = sys.argv[2]
 
 if not os.path.exists(optimized):
     os.mkdir(optimized)
@@ -34,6 +35,6 @@ m.solve(solver='cbc')
 # get the results from the the solved model(still oemof.solph)
 es.results = m.results()
 
-# now we use the write results method to write the results in oemof-tabular
+# now we use the write results method to write the results in oemoftabular
 # format
 es.dump(optimized)

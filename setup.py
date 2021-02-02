@@ -9,11 +9,11 @@ def read(fname):
 
 
 setup(
-    name='oemofB3',
+    name='oemof-B3',
     version='0.0.0',
     description='',
     long_description=read('README.md'),
-    packages=['oemofB3'],
+    packages=['oemof_b3'],
     install_requires=[
         'pandas',
         'oemof',
