@@ -24,3 +24,10 @@ rule optimize:
     shell:
         "python scripts/optimize.py results/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/optimized"
 
+
+rule clean:
+    shell:
+        """
+        rm -r ./results/*
+        echo "Removed all results."
+        """
