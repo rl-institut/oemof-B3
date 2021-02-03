@@ -34,6 +34,20 @@ rule optimize:
         "python scripts/optimize.py results/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/optimized"
 
 
+rule scenario_report:
+    input:
+        "report/report.md"
+        rules.scenario_plot.outputs
+    output:
+         "report.{suffix}"
+    wildcard_constraints:
+        suffix = "{(html)|(pdf)}"
+    shell:
+        """
+        pandoc -t report.md -o results/scenario_reports/{wildcards.scenario}
+        """
+
+
 rule clean:
     shell:
         """
