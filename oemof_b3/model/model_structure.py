@@ -2,18 +2,17 @@ import os
 
 import pandas as pd
 
+from oemof_b3.tools.helpers import load_yaml
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 
 datetimeindex = pd.date_range(start='2019-01-01', freq='H', periods=8760)
 
-regions_list = list(
-    pd.read_csv(os.path.join(module_path, 'regions.csv'), squeeze=True)
-)
+topology = load_yaml(os.path.join(module_path, 'topology.yml'))
 
-link_list = list(
-    pd.read_csv(os.path.join(module_path, 'links.csv'), squeeze=True)
-)
+regions_list = topology['regions']
+
+link_list = topology['links']
 
 
 def create_default_data(
