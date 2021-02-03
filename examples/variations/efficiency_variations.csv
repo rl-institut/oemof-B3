@@ -1,3 +1,5 @@
-variation,bpchp-efficiency
+element,electricity-transmission
+variable,loss
+variation,
 0,0.6
 1,0.7
