@@ -1,21 +1,15 @@
 scenario: basic
 
-regions:
+select_regions:
   - BB
   - B
+  - C
 
-links:
+select_links:
   - BB-B
+  - BB-C
 
-busses:
-  - biomass
-  - ch4
-  - co2
-  - electricity
-  - h2
-  - heat
-
-components:
+select_components:
   - biomass-st
   - ch4-boiler
   - ch4-ccgt
