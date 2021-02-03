@@ -9,19 +9,25 @@ select_links:
   - BB-B
   - BB-C
 
+select_busses:
+  - ch4
+  - electricity
+  - heat
+
+
 select_components:
-  - biomass-st
+#  - biomass-st
   - ch4-boiler
-  - ch4-ccgt
-  - ch4-ocgt
-  - ch4-sink
-  - electricity-boiler
+#  - ch4-ccgt
+#  - ch4-ocgt
+#  - ch4-sink
+#  - electricity-boiler
   - electricity-demand
-  - electricity-liion_batteries
+#  - electricity-liion_batteries
   - electricity-shortage
-  - h2-ocgt
+#  - h2-ocgt
   - heat-demand
   - heat-storage
-  - hydro-ror
+#  - hydro-ror
   - solar-pv
   - wind-onshore
