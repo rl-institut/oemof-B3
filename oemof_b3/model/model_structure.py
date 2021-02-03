@@ -80,7 +80,7 @@ def create_default_data(
     for component in components:
         component_attrs_file = os.path.join(component_attrs_dir, component + '.csv')
 
-        df = create_component_element(component_attrs_file, select_regions)
+        df = create_component_element(component_attrs_file, select_regions, select_links)
 
         # Write to target directory
         df.to_csv(os.path.join(destination, elements_subdir, component + '.csv'))
@@ -130,7 +130,7 @@ def create_bus_element(busses_file, select_regions):
     return bus_df
 
 
-def create_component_element(component_attrs_file, select_regions):
+def create_component_element(component_attrs_file, select_regions, select_links):
     r"""
     Loads file for component attribute specs and returns a pd.DataFrame with the right regions,
     links, names, references to profiles and default values.
@@ -162,10 +162,10 @@ def create_component_element(component_attrs_file, select_regions):
     # Create dict for component data
     if defaults['type'] == 'link':
         # TODO: Check the diverging conventions of '-' and '_' and think about unifying.
-        comp_data['region'] = [link.replace('-', '_') for link in link_list]
-        comp_data['name'] = link_list
-        comp_data['from_bus'] = [link.split('-')[0] + suffices['from_bus'] for link in link_list]
-        comp_data['to_bus'] = [link.split('-')[1] + suffices['to_bus'] for link in link_list]
+        comp_data['region'] = [link.replace('-', '_') for link in select_links]
+        comp_data['name'] = select_links
+        comp_data['from_bus'] = [link.split('-')[0] + suffices['from_bus'] for link in select_links]
+        comp_data['to_bus'] = [link.split('-')[1] + suffices['to_bus'] for link in select_links]
 
     else:
         comp_data['region'] = select_regions
