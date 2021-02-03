@@ -1,20 +1,22 @@
-import os
+import sys
 
+from datapackage import DataPackage
 import pandas as pd
 
 from oemofB3.variations import VariationGen
 
 
-here = os.path.abspath(os.path.dirname(__file__))
+dp_path = sys.argv[1]
 
-preprocessed_elements = os.path.join(here, 'preprocessed', 'basic_datapackage', 'data')
-
-basis_dp_path = preprocessed_elements
-
-destination = '.'
+destination = sys.argv[2]
 
 variations = pd.read_csv('efficiency_variations.csv')
 
-vg = VariationGen(basis_dp_path)
+# load datapackage
+dp = DataPackage(dp_path)
 
+# setup variation generator
+vg = VariationGen(dp)
+
+# create variations
 vg.create_variations(variations, destination)
