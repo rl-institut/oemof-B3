@@ -21,6 +21,7 @@ def create_default_data(
         components_file=os.path.join(module_path, 'components.csv'),
         component_attrs_dir=os.path.join(module_path, 'component_attrs'),
         select_components=None,
+        select_busses=None,
         select_regions=regions_list,
         select_links=link_list,
         elements_subdir='elements',
@@ -73,7 +74,7 @@ def create_default_data(
 
         components = [c for c in components if c in select_components]
 
-    bus_df = create_bus_element(busses_file, select_regions)
+    bus_df = create_bus_element(busses_file, select_busses, select_regions)
 
     bus_df.to_csv(os.path.join(destination, elements_subdir, 'bus.csv'))
 
@@ -93,7 +94,7 @@ def create_default_data(
         )
 
 
-def create_bus_element(busses_file, select_regions):
+def create_bus_element(busses_file, select_busses, select_regions):
     r"""
 
     Parameters
@@ -107,6 +108,9 @@ def create_bus_element(busses_file, select_regions):
         Bus element DataFrame
     """
     busses = pd.read_csv(busses_file, index_col='carrier')
+
+    if select_busses:
+        busses = busses.loc[select_busses]
 
     regions = []
     carriers = []
