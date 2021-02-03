@@ -21,6 +21,8 @@ def create_default_data(
         components_file=os.path.join(module_path, 'components.csv'),
         component_attrs_dir=os.path.join(module_path, 'component_attrs'),
         select_components=None,
+        select_regions=regions_list,
+        select_links=link_list,
         elements_subdir='elements',
         sequences_subdir='sequences',
         dummy_sequences=False,
@@ -71,26 +73,27 @@ def create_default_data(
 
         components = [c for c in components if c in select_components]
 
-    bus_df = create_bus_element(busses_file)
+    bus_df = create_bus_element(busses_file, select_regions)
 
     bus_df.to_csv(os.path.join(destination, elements_subdir, 'bus.csv'))
 
     for component in components:
         component_attrs_file = os.path.join(component_attrs_dir, component + '.csv')
 
-        df = create_component_element(component_attrs_file)
+        df = create_component_element(component_attrs_file, select_regions)
 
         # Write to target directory
         df.to_csv(os.path.join(destination, elements_subdir, component + '.csv'))
 
         create_component_sequences(
             component_attrs_file,
+            select_regions,
             os.path.join(destination, sequences_subdir),
             dummy_sequences,
         )
 
 
-def create_bus_element(busses_file):
+def create_bus_element(busses_file, select_regions):
     r"""
 
     Parameters
@@ -109,7 +112,7 @@ def create_bus_element(busses_file):
     carriers = []
     balanced = []
 
-    for region in regions_list:
+    for region in select_regions:
         for carrier, row in busses.iterrows():
             regions.append(region)
             carriers.append(region + '-' + carrier)
@@ -127,7 +130,7 @@ def create_bus_element(busses_file):
     return bus_df
 
 
-def create_component_element(component_attrs_file):
+def create_component_element(component_attrs_file, select_regions):
     r"""
     Loads file for component attribute specs and returns a pd.DataFrame with the right regions,
     links, names, references to profiles and default values.
@@ -165,11 +168,11 @@ def create_component_element(component_attrs_file):
         comp_data['to_bus'] = [link.split('-')[1] + suffices['to_bus'] for link in link_list]
 
     else:
-        comp_data['region'] = regions_list
-        comp_data['name'] = [region + suffices['name'] for region in regions_list]
+        comp_data['region'] = select_regions
+        comp_data['name'] = [region + suffices['name'] for region in select_regions]
 
         for key, value in suffices.items():
-            comp_data[key] = [region + value for region in regions_list]
+            comp_data[key] = [region + value for region in select_regions]
 
     for key, value in defaults.items():
         comp_data[key] = value
@@ -180,7 +183,7 @@ def create_component_element(component_attrs_file):
 
 
 def create_component_sequences(
-        component_attrs_file, destination,
+        component_attrs_file, select_regions, destination,
         dummy_sequences=False, dummy_value=0,
     ):
     r"""
@@ -227,7 +230,7 @@ def create_component_sequences(
 
         profile_columns = []
 
-        profile_columns.extend(['-'.join([region, profile_name]) for region in regions_list])
+        profile_columns.extend(['-'.join([region, profile_name]) for region in select_regions])
 
         if dummy_sequences:
             datetimeindex = pd.date_range(start='2020-10-20', periods=3, freq='H')
