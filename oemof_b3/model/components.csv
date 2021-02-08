@@ -12,6 +12,7 @@ electricity-liion_battery,electricity,storage,liion-battery,Li-ion battery stora
 electricity-pth,electricity,conversion,pth,Resistive heater (Power-to-Heat)
 electricity-shortage,electricity,source,shortage,Shortage backup to keep model solvable
 electricity-transmission,electricity,link,transmission,Electrical transmission between regions
+h2-gt,h2,gt,Open cycle gas turbine gas turbine capacities (natural gas driven)
 heat-demand,heat,load,demand,Heat demand
 heat-excess,heat,excess,excess,Heat excess
 heat-shortage,heat,source,shortage,Shortage backup to keep model solvable
