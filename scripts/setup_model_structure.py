@@ -12,9 +12,14 @@ if __name__ == '__main__':
 
     scenario_specs = load_yaml(scenario)
 
-    select_components = scenario_specs['components']
+    keys = ['busses', 'select_components', 'select_regions', 'select_links']
+
+    extra_kwargs = {}
+    for key in keys:
+        if key in scenario_specs:
+            extra_kwargs[key] = scenario_specs[key]
 
     create_default_data(
         destination=destination,
-        select_components=select_components,
+        **extra_kwargs
     )
