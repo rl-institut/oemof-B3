@@ -4,7 +4,7 @@ rule setup_model_structure:
     output:
         directory("results/{scenario}/preprocessed/data")
     shell:
-        "python scripts/setup_model_structure.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed"
+        "python scripts/setup_model_structure.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed/data"
 
 
 rule infer:
