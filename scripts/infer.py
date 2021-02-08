@@ -11,7 +11,7 @@ if __name__ == '__main__':
     destination = sys.argv[2]
 
     infer(
-        scenario_specs['components'],
+        scenario_specs['select_components'],
         scenario_specs['scenario'],
         destination
     )
