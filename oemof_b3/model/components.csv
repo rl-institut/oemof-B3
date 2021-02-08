@@ -1,9 +1,10 @@
 name,carrier,type,tech,description
+biomass-gt,biomass,conversion,gt,Open cycle gas turbine (biomass driven)
 ch4-boiler,ch4,conversion,boiler,Peak load boiler
 ch4-bpchp,ch4,backpressure,bpchp,Backpressure turbine CHP
 ch4-excess,ch4,excess,excess,Excess of ch4
 ch4-extchp,ch4,extraction,extchp,Extraction turbine CHP
-ch4-gt,ch4,conversion,gt,Open cycle gas turbine gas turbine capacities (natural gas driven)
+ch4-gt,ch4,conversion,gt,Open cycle gas turbine gas turbine (natural gas driven)
 electricity-bev,electricity,bev,bev,Battery electric vehicle
 electricity-curtailment,electricity,excess,curtailment,Curtailment of non-dispatchable electricity
 electricity-demand,electricity,load,demand,Electricity demand
@@ -13,7 +14,7 @@ electricity-liion_battery,electricity,storage,liion-battery,Li-ion battery stora
 electricity-pth,electricity,conversion,pth,Resistive heater (Power-to-Heat)
 electricity-shortage,electricity,source,shortage,Shortage backup to keep model solvable
 electricity-transmission,electricity,link,transmission,Electrical transmission between regions
-h2-gt,h2,gt,Open cycle gas turbine gas turbine capacities (natural gas driven)
+h2-gt,h2,gt,Open cycle gas turbine gas turbine (hydrogen driven)
 heat-demand,heat,load,demand,Heat demand
 heat-excess,heat,excess,excess,Heat excess
 heat-shortage,heat,source,shortage,Shortage backup to keep model solvable
