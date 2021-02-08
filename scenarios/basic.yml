@@ -16,18 +16,18 @@ select_busses:
 
 
 select_components:
-#  - biomass-st
+  - biomass-gt
   - ch4-boiler
-#  - ch4-ccgt
-#  - ch4-ocgt
-#  - ch4-sink
-#  - electricity-boiler
+  - ch4-excess
+  - ch4-extchp
+  - ch4-gt
   - electricity-demand
-#  - electricity-liion_batteries
+  - electricity-liion_battery
+  - electricity-pth
   - electricity-shortage
-#  - h2-ocgt
+  - h2-gt
   - heat-demand
   - heat-storage
-#  - hydro-ror
+  - hydro-ror
   - solar-pv
   - wind-onshore
