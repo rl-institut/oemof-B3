@@ -1,6 +1,7 @@
 name,carrier,type,tech,description
 ch4-boiler,ch4,conversion,boiler,Peak load boiler
 ch4-bpchp,ch4,backpressure,bpchp,Backpressure turbine CHP
+ch4-excess,ch4,excess,excess,Excess of ch4
 ch4-extchp,ch4,extraction,extchp,Extraction turbine CHP
 ch4-gt,ch4,conversion,gt,Open cycle gas turbine gas turbine capacities (natural gas driven)
 electricity-bev,electricity,bev,bev,Battery electric vehicle
