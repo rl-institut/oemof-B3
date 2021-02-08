@@ -3,11 +3,9 @@ scenario: basic
 select_regions:
   - BB
   - B
-  - C
 
 select_links:
   - BB-B
-  - BB-C
 
 select_busses:
   - ch4
