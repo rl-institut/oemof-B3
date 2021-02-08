@@ -1,23 +1,23 @@
 name,carrier,type,tech,description
+ch4-boiler,ch4,conversion,boiler,Peak load boiler
+ch4-bpchp,ch4,backpressure,bpchp,Backpressure turbine CHP
+ch4-extchp,ch4,extraction,extchp,Extraction turbine CHP
+ch4-gt,ch4,conversion,gt,Open cycle gas turbine gas turbine capacities (natural gas driven)
+electricity-bev,electricity,bev,bev,Battery electric vehicle
+electricity-curtailment,electricity,excess,curtailment,Curtailment of non-dispatchable electricity
 electricity-demand,electricity,load,demand,Electricity demand
-heat-shortage,heat,source,shortage,Shortage backup to keep model solvable
+electricity-h2_cavern,electricity,storage,cavern,Large scale H2 storage
+electricity-heatpump,electricity,conversion,heatpump,Airsource compression heatpump
+electricity-liion_battery,electricity,storage,liion-battery,Li-ion battery storage
+electricity-pth,electricity,conversion,pth,Resistive heater (Power-to-Heat)
 electricity-shortage,electricity,source,shortage,Shortage backup to keep model solvable
 electricity-transmission,electricity,link,transmission,Electrical transmission between regions
+heat-demand,heat,load,demand,Heat demand
+heat-excess,heat,excess,excess,Heat excess
+heat-shortage,heat,source,shortage,Shortage backup to keep model solvable
+heat-storage,heat,storage,storage,Large scale sensible heat storage
+hydro-reservoir,hydro,reservoir,reservoir,Hydro reservoir
 solar-pv,solar,volatile,pv,Solar pv capacities
+uranium-nuclear-st,uranium,conversion,nuclear-st,Nuclear power plant capacities (steam turbine)
 wind-offshore,wind,volatile,offshore,Offshore wind capacities
 wind-onshore,wind,volatile,onshore,Onshore wind capacities
-electricity-curtailment,electricity,excess,curtailment,Curtailment of non-dispatchable electricity
-ch4-gt,ch4,conversion,gt,Open cycle gas turbine gas turbine capacities (natural gas driven)
-uranium-nuclear-st,uranium,conversion,nuclear-st,Nuclear power plant capacities (steam turbine)
-ch4-bpchp,ch4,backpressure,bpchp,Backpressure turbine CHP
-ch4-boiler,ch4,conversion,boiler,Peak load boiler
-ch4-extchp,ch4,extraction,extchp,Extraction turbine CHP
-electricity-pth,electricity,conversion,pth,Resistive heater (Power-to-Heat)
-heat-demand,heat,load,demand,Heat demand
-electricity-h2_cavern,electricity,storage,cavern,Large scale H2 storage
-electricity-liion_battery,electricity,storage,liion-battery,Li-ion battery storage
-electricity-heatpump,electricity,conversion,heatpump,Airsource compression heatpump
-heat-storage,heat,storage,storage,Large scale sensible heat storage
-heat-excess,heat,excess,excess,Heat excess
-hydro-reservoir,hydro,reservoir,reservoir,Hydro reservoir
-electricity-bev,electricity,bev,bev,Battery electric vehicle
