@@ -1,3 +1,7 @@
+import os
+
+import pandas as pd
+
 from frictionless import steps, transform
 
 
@@ -45,3 +49,39 @@ class VariationGen:
         return _dp
 
 
+class DataDict:
+    def __init__(self, dict):
+        self.dict = dict
+
+    @classmethod
+    def from_csv_dir(cls, dir):
+
+        file_dict = cls.get_file_dict(dir, '.csv')
+
+        data_dict = cls.load_csv(cls, file_dict)
+
+        return cls(data_dict)
+
+    @staticmethod
+    def get_file_dict(dir, file_ext):
+
+        file_dict = {}
+        for root, dirs, files in os.walk(dir):
+            print(dirs)
+            for file in files:
+                if file.endswith(file_ext):
+                    name = file.strip(file_ext)
+                    file_dict[name] = os.path.join(root, file)
+
+        return file_dict
+
+    def load_csv(self, file_dict):
+        data_dict = {}
+        for name, path in file_dict.items():
+            data_dict[name] = self.read_data(path)
+
+        return data_dict
+
+    @staticmethod
+    def read_data(path):
+        return pd.read_csv(path)
