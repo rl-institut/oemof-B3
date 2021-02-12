@@ -50,38 +50,60 @@ class VariationGen:
 
 
 class DataDict:
-    def __init__(self, dict):
-        self.dict = dict
+    def __init__(self, data_dict, file_dict):
+        self.data_dict = data_dict
+
+        self.file_dict = file_dict
 
     @classmethod
     def from_csv_dir(cls, dir):
 
         file_dict = cls.get_file_dict(dir, '.csv')
 
-        data_dict = cls.load_csv(cls, file_dict)
+        data_dict = cls.load_csv(cls, dir, file_dict)
 
-        return cls(data_dict)
+        return cls(data_dict, file_dict)
 
     @staticmethod
     def get_file_dict(dir, file_ext):
 
         file_dict = {}
         for root, dirs, files in os.walk(dir):
-            print(dirs)
+
+            rel_path = os.path.relpath(root, dir)
+
             for file in files:
                 if file.endswith(file_ext):
                     name = file.strip(file_ext)
-                    file_dict[name] = os.path.join(root, file)
+                    file_dict[name] = os.path.join(rel_path, file)
 
         return file_dict
 
-    def load_csv(self, file_dict):
+    def load_csv(self, root, file_dict):
         data_dict = {}
+
         for name, path in file_dict.items():
-            data_dict[name] = self.read_data(path)
+            full_path = os.path.join(root, path)
+            data_dict[name] = self.read_data(full_path)
 
         return data_dict
+
+    def save_csv(self, destination):
+
+        for name, data in self.data_dict.items():
+            path = self.file_dict[name]
+            full_path = os.path.join(destination, path)
+            self.write_data(data, full_path)
 
     @staticmethod
     def read_data(path):
         return pd.read_csv(path)
+
+    @staticmethod
+    def write_data(data, path):
+        root = os.path.split(path)[0]
+
+        if not os.path.exists(root):
+            os.makedirs(root)
+
+        data.to_csv(path)
