@@ -49,9 +49,10 @@ class VariationGen:
         return _dp
 
 
-class DataDict:
+class DataFramePackage:
     r"""
-    Provides a representation of frictionless datapackages in pandas format.
+    Provides a representation of frictionless datapackages as a collection
+    of pandas.DataFrames.
     """
     def __init__(self, basepath, data, rel_paths):
 
@@ -64,7 +65,7 @@ class DataDict:
     @classmethod
     def from_csv_dir(cls, dir):
         r"""
-        Initialize a DataDict from a csv directory
+        Initialize a DataFramePackage from a csv directory
         """
         rel_paths = cls._get_rel_paths(dir, '.csv')
 
@@ -75,7 +76,7 @@ class DataDict:
     @classmethod
     def from_metadata(cls, json_file_path):
         r"""
-        Initialize a DataDict from the metadata string,
+        Initialize a DataFramePackage from the metadata string,
         usually named datapackage.json
         """
         dp = Package(json_file_path)
@@ -90,7 +91,7 @@ class DataDict:
 
     def to_csv_dir(self, destination):
         r"""
-        Save the DataDict to csv files.
+        Save the DataFramePackage to csv files.
         """
         for name, data in self.data.items():
             path = self.rel_paths[name]
@@ -117,7 +118,7 @@ class DataDict:
 
     def _load_csv(self, basepath, rel_paths):
         r"""
-        Load a DataDict from csv files.
+        Load a DataFramePackage from csv files.
         """
         data = {}
 
