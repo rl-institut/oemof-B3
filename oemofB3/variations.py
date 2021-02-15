@@ -1,50 +1,35 @@
+import copy
 import os
 
 import pandas as pd
+from frictionless import Package
 
-from frictionless import steps, transform, Package
 
+class VariationGenerator:
 
-class VariationGen:
+    def __init__(self, datapackage):
 
-    def __init__(self, dp):
-
-        self.datapackage = dp
+        self.base_datapackage = datapackage
 
     def create_variations(self, variations, destination):
 
-        for id, row in variations.iterrows():
+        for id, changes in variations.iterrows():
 
-            _dp = self.datapackage.to_copy()
+            dp = self.create_var(self.base_datapackage, changes)
 
-            _dp = self.set_values(_dp, row)
-            print('saving')
-            _dp.to_json('~/Desktop/pack.json')
+            variation_dir = os.path.join(destination, str(id))
 
-    @staticmethod
-    def set_values(_dp, row):
-        from pprint import pprint
-        # evtl https: // github.com / frictionlessdata / datapackage - pipelines - pandas - driver
-        element, variable = row.index.item()
+            dp.to_csv_dir(variation_dir)
 
-        value = row.item()
+    def create_var(self, dp, changes):
 
-        print(element)
-        print(variable)
-        print(value)
+        _dp = copy.deepcopy(dp)
 
-        e = _dp.get_resource(element)
-        print(e.name)
-        dd = e.read_data()
+        changes = changes.to_dict()
 
-        # https://frictionlessdata.io/tooling/python/transforming-data/#set-cells
-        e = transform(
-            e,
-            steps=[
-                steps.cell_set(field_name=variable, value=100),
-            ]
-        )
-        dd = e.read_data()
+        for (resource, var_name), var_value in changes.items():
+
+            _dp.data[resource].loc[:, var_name] = var_value
 
         return _dp
 
@@ -130,7 +115,7 @@ class DataFramePackage:
 
     @staticmethod
     def _read_resource(path):
-        return pd.read_csv(path)
+        return pd.read_csv(path, index_col=0)
 
     @staticmethod
     def _write_resource(data, path):
