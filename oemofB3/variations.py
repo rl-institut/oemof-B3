@@ -88,6 +88,15 @@ class DataDict:
 
         return cls(dir, data, rel_paths)
 
+    def to_csv_dir(self, destination):
+        r"""
+        Save the DataDict to csv files.
+        """
+        for name, data in self.data.items():
+            path = self.rel_paths[name]
+            full_path = os.path.join(destination, path)
+            self._write_resource(data, full_path)
+
     @staticmethod
     def _get_rel_paths(dir, file_ext):
         r"""
@@ -117,15 +126,6 @@ class DataDict:
             data[name] = self._read_resource(full_path)
 
         return data
-
-    def to_csv_dir(self, destination):
-        r"""
-        Save the DataDict to csv files.
-        """
-        for name, data in self.data.items():
-            path = self.rel_paths[name]
-            full_path = os.path.join(destination, path)
-            self._write_resource(data, full_path)
 
     @staticmethod
     def _read_resource(path):
