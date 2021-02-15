@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from frictionless import steps, transform
+from frictionless import steps, transform, Package
 
 
 class VariationGen:
@@ -65,6 +65,19 @@ class DataDict:
     def from_csv_dir(cls, dir):
 
         rel_paths = cls.get_rel_paths(dir, '.csv')
+
+        data = cls.load_csv(cls, dir, rel_paths)
+
+        return cls(dir, data, rel_paths)
+
+    @classmethod
+    def from_metadata(cls, json_file_path):
+
+        dp = Package(json_file_path)
+
+        dir = os.path.split(json_file_path)[0]
+
+        rel_paths = {r['name']: r['path'] for r in dp.resources}
 
         data = cls.load_csv(cls, dir, rel_paths)
 
