@@ -1,7 +1,7 @@
 import sys
 
-from oemof_b3.model.inferring import infer
-from oemof_b3.tools.helpers import load_yaml
+from oemoflex.model.inferring import infer
+from oemoflex.tools.helpers import load_yaml
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 import sys
 
-from oemof_b3.model.model_structure import create_default_data
-from oemof_b3.tools.helpers import load_yaml
+from oemoflex.model.model_structure import create_default_data
+from oemoflex.tools.helpers import load_yaml
 
 
 if __name__ == '__main__':
