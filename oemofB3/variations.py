@@ -50,7 +50,13 @@ class VariationGen:
 
 
 class DataDict:
-    def __init__(self, data_dict, file_dict):
+    r"""
+    Provides a representation of frictionless datapackages in pandas format.
+    """
+    def __init__(self, basepath, data_dict, file_dict):
+
+        self.basepath = basepath
+
         self.data_dict = data_dict
 
         self.file_dict = file_dict
@@ -62,7 +68,7 @@ class DataDict:
 
         data_dict = cls.load_csv(cls, dir, file_dict)
 
-        return cls(data_dict, file_dict)
+        return cls(dir, data_dict, file_dict)
 
     @staticmethod
     def get_file_dict(dir, file_ext):
@@ -79,11 +85,11 @@ class DataDict:
 
         return file_dict
 
-    def load_csv(self, root, file_dict):
+    def load_csv(self, basepath, file_dict):
         data_dict = {}
 
         for name, path in file_dict.items():
-            full_path = os.path.join(root, path)
+            full_path = os.path.join(basepath, path)
             data_dict[name] = self.read_data(full_path)
 
         return data_dict
