@@ -53,27 +53,27 @@ class DataDict:
     r"""
     Provides a representation of frictionless datapackages in pandas format.
     """
-    def __init__(self, basepath, data_dict, file_dict):
+    def __init__(self, basepath, data, rel_paths):
 
         self.basepath = basepath
 
-        self.data_dict = data_dict
+        self.rel_paths = rel_paths
 
-        self.file_dict = file_dict
+        self.data = data
 
     @classmethod
     def from_csv_dir(cls, dir):
 
-        file_dict = cls.get_file_dict(dir, '.csv')
+        rel_paths = cls.get_rel_paths(dir, '.csv')
 
-        data_dict = cls.load_csv(cls, dir, file_dict)
+        data = cls.load_csv(cls, dir, rel_paths)
 
-        return cls(dir, data_dict, file_dict)
+        return cls(dir, data, rel_paths)
 
     @staticmethod
-    def get_file_dict(dir, file_ext):
+    def get_rel_paths(dir, file_ext):
 
-        file_dict = {}
+        rel_paths = {}
         for root, dirs, files in os.walk(dir):
 
             rel_path = os.path.relpath(root, dir)
@@ -81,32 +81,32 @@ class DataDict:
             for file in files:
                 if file.endswith(file_ext):
                     name = file.strip(file_ext)
-                    file_dict[name] = os.path.join(rel_path, file)
+                    rel_paths[name] = os.path.join(rel_path, file)
 
-        return file_dict
+        return rel_paths
 
-    def load_csv(self, basepath, file_dict):
-        data_dict = {}
+    def load_csv(self, basepath, rel_paths):
+        data = {}
 
-        for name, path in file_dict.items():
+        for name, path in rel_paths.items():
             full_path = os.path.join(basepath, path)
-            data_dict[name] = self.read_data(full_path)
+            data[name] = self.read_resource(full_path)
 
-        return data_dict
+        return data
 
     def save_csv(self, destination):
 
-        for name, data in self.data_dict.items():
-            path = self.file_dict[name]
+        for name, data in self.data.items():
+            path = self.rel_paths[name]
             full_path = os.path.join(destination, path)
-            self.write_data(data, full_path)
+            self.write_resource(data, full_path)
 
     @staticmethod
-    def read_data(path):
+    def read_resource(path):
         return pd.read_csv(path)
 
     @staticmethod
-    def write_data(data, path):
+    def write_resource(data, path):
         root = os.path.split(path)[0]
 
         if not os.path.exists(root):
