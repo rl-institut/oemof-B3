@@ -7,6 +7,7 @@ tech,str,n/a,offshore,,Technology
 bus,str,n/a,,-electricity,The bus this component is connected to
 capacity,float,MW,n/a,,Installed capacity
 capacity_cost,float,Eur/MW,n/a,,Annualized costs of capacity expansion
+expandable,boolean,n/a,,,Capacity can be expanded
 marginal_cost,float,Eur/MWh,0,,Marginal cost
 profile,str,,,-wind-offshore-profile,Name of the profile
 output_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's output flow

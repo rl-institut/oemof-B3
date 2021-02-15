@@ -1,0 +1,15 @@
+attribute,type,unit,default,suffix,description
+region,str,n/a,n/a,,Country code
+name,str,n/a,,-biomass-gt,Name
+type,str,n/a,conversion,,Type
+carrier,str,n/a,biomass,,Energy carrier
+tech,str,n/a,gt,,Technology
+from_bus,str,n/a,,-biomass,The input bus this component is connected to
+to_bus,str,n/a,,-electricity,The output bus this component is connected to
+capacity,float,MW,n/a,,Installed capacity
+capacity_cost,float,Eur/MW,n/a,,Annualized costs of capacity expansion
+efficiency,float,unitless,n/a,,Efficiency of the conversion biomass to electricity
+carrier_cost,float,Eur/MWh,n/a,,Cost per unit of used fuel
+marginal_cost,float,Eur/MWh,n/a,,Marginal cost
+expandable,boolean,n/a,,,Capacity can be expanded
+output_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's output flow

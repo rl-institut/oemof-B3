@@ -1,0 +1,31 @@
+scenario: basic
+
+select_regions:
+  - BB
+  - B
+
+select_links:
+  - BB-B
+
+select_busses:
+  - ch4
+  - electricity
+  - heat
+
+
+select_components:
+  - biomass-gt
+  - ch4-boiler
+  - ch4-excess
+  - ch4-extchp
+  - ch4-gt
+  - electricity-demand
+  - electricity-liion_battery
+  - electricity-pth
+  - electricity-shortage
+  - h2-gt
+  - heat-demand
+  - heat-storage
+  - hydro-ror
+  - solar-pv
+  - wind-onshore

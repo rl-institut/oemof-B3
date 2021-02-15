@@ -2,26 +2,28 @@ import os
 
 import pandas as pd
 
+from oemof_b3.tools.helpers import load_yaml
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 
 datetimeindex = pd.date_range(start='2019-01-01', freq='H', periods=8760)
 
-regions_list = list(
-    pd.read_csv(os.path.join(module_path, 'model_structure', 'regions.csv'), squeeze=True)
-)
+topology = load_yaml(os.path.join(module_path, 'topology.yml'))
 
-link_list = list(
-    pd.read_csv(os.path.join(module_path, 'model_structure', 'links.csv'), squeeze=True)
-)
+regions_list = topology['regions']
+
+link_list = topology['links']
 
 
 def create_default_data(
         destination,
-        busses_file=os.path.join(module_path, 'model_structure', 'busses.csv'),
-        components_file=os.path.join(module_path, 'model_structure', 'components.csv'),
-        component_attrs_dir=os.path.join(module_path, 'model_structure', 'component_attrs'),
+        busses_file=os.path.join(module_path, 'busses.csv'),
+        components_file=os.path.join(module_path, 'components.csv'),
+        component_attrs_dir=os.path.join(module_path, 'component_attrs'),
         select_components=None,
+        select_busses=None,
+        select_regions=regions_list,
+        select_links=link_list,
         elements_subdir='elements',
         sequences_subdir='sequences',
         dummy_sequences=False,
@@ -72,26 +74,27 @@ def create_default_data(
 
         components = [c for c in components if c in select_components]
 
-    bus_df = create_bus_element(busses_file)
+    bus_df = create_bus_element(busses_file, select_busses, select_regions)
 
     bus_df.to_csv(os.path.join(destination, elements_subdir, 'bus.csv'))
 
     for component in components:
         component_attrs_file = os.path.join(component_attrs_dir, component + '.csv')
 
-        df = create_component_element(component_attrs_file)
+        df = create_component_element(component_attrs_file, select_regions, select_links)
 
         # Write to target directory
         df.to_csv(os.path.join(destination, elements_subdir, component + '.csv'))
 
         create_component_sequences(
             component_attrs_file,
+            select_regions,
             os.path.join(destination, sequences_subdir),
             dummy_sequences,
         )
 
 
-def create_bus_element(busses_file):
+def create_bus_element(busses_file, select_busses, select_regions):
     r"""
 
     Parameters
@@ -106,11 +109,14 @@ def create_bus_element(busses_file):
     """
     busses = pd.read_csv(busses_file, index_col='carrier')
 
+    if select_busses:
+        busses = busses.loc[select_busses]
+
     regions = []
     carriers = []
     balanced = []
 
-    for region in regions_list:
+    for region in select_regions:
         for carrier, row in busses.iterrows():
             regions.append(region)
             carriers.append(region + '-' + carrier)
@@ -128,7 +134,7 @@ def create_bus_element(busses_file):
     return bus_df
 
 
-def create_component_element(component_attrs_file):
+def create_component_element(component_attrs_file, select_regions, select_links):
     r"""
     Loads file for component attribute specs and returns a pd.DataFrame with the right regions,
     links, names, references to profiles and default values.
@@ -160,17 +166,17 @@ def create_component_element(component_attrs_file):
     # Create dict for component data
     if defaults['type'] == 'link':
         # TODO: Check the diverging conventions of '-' and '_' and think about unifying.
-        comp_data['region'] = [link.replace('-', '_') for link in link_list]
-        comp_data['name'] = link_list
-        comp_data['from_bus'] = [link.split('-')[0] + suffices['from_bus'] for link in link_list]
-        comp_data['to_bus'] = [link.split('-')[1] + suffices['to_bus'] for link in link_list]
+        comp_data['region'] = [link.replace('-', '_') for link in select_links]
+        comp_data['name'] = select_links
+        comp_data['from_bus'] = [link.split('-')[0] + suffices['from_bus'] for link in select_links]
+        comp_data['to_bus'] = [link.split('-')[1] + suffices['to_bus'] for link in select_links]
 
     else:
-        comp_data['region'] = regions_list
-        comp_data['name'] = [region + suffices['name'] for region in regions_list]
+        comp_data['region'] = select_regions
+        comp_data['name'] = [region + suffices['name'] for region in select_regions]
 
         for key, value in suffices.items():
-            comp_data[key] = [region + value for region in regions_list]
+            comp_data[key] = [region + value for region in select_regions]
 
     for key, value in defaults.items():
         comp_data[key] = value
@@ -181,7 +187,7 @@ def create_component_element(component_attrs_file):
 
 
 def create_component_sequences(
-        component_attrs_file, destination,
+        component_attrs_file, select_regions, destination,
         dummy_sequences=False, dummy_value=0,
     ):
     r"""
@@ -228,7 +234,7 @@ def create_component_sequences(
 
         profile_columns = []
 
-        profile_columns.extend(['-'.join([region, profile_name]) for region in regions_list])
+        profile_columns.extend(['-'.join([region, profile_name]) for region in select_regions])
 
         if dummy_sequences:
             datetimeindex = pd.date_range(start='2020-10-20', periods=3, freq='H')

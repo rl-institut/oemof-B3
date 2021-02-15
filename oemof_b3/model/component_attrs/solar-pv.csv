@@ -1,0 +1,13 @@
+attribute,type,unit,default,suffix,description
+region,str,n/a,n/a,,Country code
+name,str,n/a,,-solar-pv,Name
+type,str,n/a,volatile,,Type
+carrier,str,n/a,solar,,Energy carrier
+tech,str,n/a,pv,,Technology
+bus,str,n/a,,-electricity,The bus this component is connected to
+capacity,float,MW,n/a,,Installed capacity
+capacity_cost,float,Eur/MW,n/a,,Annualized costs of capacity expansion
+expandable,boolean,n/a,,,Capacity can be expanded
+marginal_cost,float,Eur/MWh,0,,Marginal cost
+profile,str,,,-solar-pv-profile,Name of the profile
+output_parameters,dict,n/a,{},,Optional parameters passed to oemof-solph's output flow
