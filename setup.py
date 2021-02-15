@@ -15,8 +15,6 @@ setup(
     long_description=read('README.md'),
     packages=['oemof_b3'],
     install_requires=[
-        'pandas',
-        'oemof',
-        'oemof.tabular',
+        'oemoflex @ git+https://git@github.com/rl-institut/oemoflex@dev#egg=oemoflex',
     ],
 )
