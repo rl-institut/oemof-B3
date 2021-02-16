@@ -20,7 +20,6 @@ Welcome to oemof-B3's documentation!
    model_pipeline
    model_structure
    preprocessing
-   # postprocessing
 
 .. toctree::
    :maxdepth: 1
