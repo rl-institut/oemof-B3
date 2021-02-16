@@ -1,4 +1,4 @@
-... _prepare_heat_demand_label:
+.. _prepare_heat_demand_label:
 
 prepare_heat_demand
 ============================
