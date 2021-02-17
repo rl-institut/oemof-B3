@@ -4,7 +4,7 @@ rule setup_model_structure:
     output:
         directory("results/{scenario}/preprocessed/data")
     shell:
-        "python scripts/setup_model_structure.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed/data"
+        "python scripts/setup_model_structure.py {input} {output}"
 
 
 rule infer:
@@ -13,16 +13,16 @@ rule infer:
     output:
         "results/{scenario}/preprocessed/datapackage.json"
     shell:
-        "python scripts/infer.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed"
+        "python scripts/infer.py {input} {output}"
 
 
 rule prepare_example:
     input:
-        directory("examples/{scenario}")
+        directory("examples/{scenario}/preprocessed")
     output:
         directory("results/{scenario}/preprocessed")
     shell:
-        "cp -r examples/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/preprocessed"
+        "cp -r {input} {output}"
 
 
 rule optimize:
@@ -31,7 +31,7 @@ rule optimize:
     output:
         directory("results/{scenario}/optimized/")
     shell:
-        "python scripts/optimize.py results/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/optimized"
+        "python scripts/optimize.py {input} {output}"
 
 
 rule clean:
