@@ -19,11 +19,5 @@ setup(
         "oemof",
         "oemof.tabular",
     ],
-    extras_require={
-        "dev": [
-            "pytest",
-            "black==20.8b1",
-            "coverage",
-        ]
-    },
+    extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
 )
