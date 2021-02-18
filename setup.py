@@ -17,7 +17,7 @@ setup(
     install_requires=[
         'pandas',
         'oemof',
-        # 'oemof.tabular',
+        'oemof.tabular',
     ],
     extras_require={
         "dev": [
