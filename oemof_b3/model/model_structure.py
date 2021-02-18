@@ -6,27 +6,27 @@ from oemof_b3.tools.helpers import load_yaml
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 
-datetimeindex = pd.date_range(start='2019-01-01', freq='H', periods=8760)
+datetimeindex = pd.date_range(start="2019-01-01", freq="H", periods=8760)
 
-topology = load_yaml(os.path.join(module_path, 'topology.yml'))
+topology = load_yaml(os.path.join(module_path, "topology.yml"))
 
-regions_list = topology['regions']
+regions_list = topology["regions"]
 
-link_list = topology['links']
+link_list = topology["links"]
 
 
 def create_default_data(
-        destination,
-        busses_file=os.path.join(module_path, 'busses.csv'),
-        components_file=os.path.join(module_path, 'components.csv'),
-        component_attrs_dir=os.path.join(module_path, 'component_attrs'),
-        select_components=None,
-        select_busses=None,
-        select_regions=regions_list,
-        select_links=link_list,
-        elements_subdir='elements',
-        sequences_subdir='sequences',
-        dummy_sequences=False,
+    destination,
+    busses_file=os.path.join(module_path, "busses.csv"),
+    components_file=os.path.join(module_path, "components.csv"),
+    component_attrs_dir=os.path.join(module_path, "component_attrs"),
+    select_components=None,
+    select_busses=None,
+    select_regions=regions_list,
+    select_links=link_list,
+    elements_subdir="elements",
+    sequences_subdir="sequences",
+    dummy_sequences=False,
 ):
     r"""
     Prepares oemoef.tabluar input CSV files:
@@ -69,22 +69,25 @@ def create_default_data(
     if select_components is not None:
         undefined_components = set(select_components).difference(set(components))
 
-        assert not undefined_components,\
-            f"Selected components {undefined_components} are not in components."
+        assert (
+            not undefined_components
+        ), f"Selected components {undefined_components} are not in components."
 
         components = [c for c in components if c in select_components]
 
     bus_df = create_bus_element(busses_file, select_busses, select_regions)
 
-    bus_df.to_csv(os.path.join(destination, elements_subdir, 'bus.csv'))
+    bus_df.to_csv(os.path.join(destination, elements_subdir, "bus.csv"))
 
     for component in components:
-        component_attrs_file = os.path.join(component_attrs_dir, component + '.csv')
+        component_attrs_file = os.path.join(component_attrs_dir, component + ".csv")
 
-        df = create_component_element(component_attrs_file, select_regions, select_links)
+        df = create_component_element(
+            component_attrs_file, select_regions, select_links
+        )
 
         # Write to target directory
-        df.to_csv(os.path.join(destination, elements_subdir, component + '.csv'))
+        df.to_csv(os.path.join(destination, elements_subdir, component + ".csv"))
 
         create_component_sequences(
             component_attrs_file,
@@ -107,7 +110,7 @@ def create_bus_element(busses_file, select_busses, select_regions):
     bus_df : pd.DataFrame
         Bus element DataFrame
     """
-    busses = pd.read_csv(busses_file, index_col='carrier')
+    busses = pd.read_csv(busses_file, index_col="carrier")
 
     if select_busses:
         busses = busses.loc[select_busses]
@@ -119,17 +122,14 @@ def create_bus_element(busses_file, select_busses, select_regions):
     for region in select_regions:
         for carrier, row in busses.iterrows():
             regions.append(region)
-            carriers.append(region + '-' + carrier)
-            balanced.append(row['balanced'])
+            carriers.append(region + "-" + carrier)
+            balanced.append(row["balanced"])
 
-    bus_df = pd.DataFrame({
-        'region': regions,
-        'name': carriers,
-        'type': 'bus',
-        'balanced': balanced
-    })
+    bus_df = pd.DataFrame(
+        {"region": regions, "name": carriers, "type": "bus", "balanced": balanced}
+    )
 
-    bus_df = bus_df.set_index('region')
+    bus_df = bus_df.set_index("region")
 
     return bus_df
 
@@ -157,23 +157,31 @@ def create_component_element(component_attrs_file, select_regions, select_links)
         raise FileNotFoundError(f"There is no file {component_attrs_file}") from e
 
     # Collect default values and suffices for the component
-    defaults = component_attrs.loc[component_attrs['default'].notna(), 'default'].to_dict()
+    defaults = component_attrs.loc[
+        component_attrs["default"].notna(), "default"
+    ].to_dict()
 
-    suffices = component_attrs.loc[component_attrs['suffix'].notna(), 'suffix'].to_dict()
+    suffices = component_attrs.loc[
+        component_attrs["suffix"].notna(), "suffix"
+    ].to_dict()
 
     comp_data = {key: None for key in component_attrs.index}
 
     # Create dict for component data
-    if defaults['type'] == 'link':
+    if defaults["type"] == "link":
         # TODO: Check the diverging conventions of '-' and '_' and think about unifying.
-        comp_data['region'] = [link.replace('-', '_') for link in select_links]
-        comp_data['name'] = select_links
-        comp_data['from_bus'] = [link.split('-')[0] + suffices['from_bus'] for link in select_links]
-        comp_data['to_bus'] = [link.split('-')[1] + suffices['to_bus'] for link in select_links]
+        comp_data["region"] = [link.replace("-", "_") for link in select_links]
+        comp_data["name"] = select_links
+        comp_data["from_bus"] = [
+            link.split("-")[0] + suffices["from_bus"] for link in select_links
+        ]
+        comp_data["to_bus"] = [
+            link.split("-")[1] + suffices["to_bus"] for link in select_links
+        ]
 
     else:
-        comp_data['region'] = select_regions
-        comp_data['name'] = [region + suffices['name'] for region in select_regions]
+        comp_data["region"] = select_regions
+        comp_data["name"] = [region + suffices["name"] for region in select_regions]
 
         for key, value in suffices.items():
             comp_data[key] = [region + value for region in select_regions]
@@ -181,15 +189,18 @@ def create_component_element(component_attrs_file, select_regions, select_links)
     for key, value in defaults.items():
         comp_data[key] = value
 
-    component_df = pd.DataFrame(comp_data).set_index('region')
+    component_df = pd.DataFrame(comp_data).set_index("region")
 
     return component_df
 
 
 def create_component_sequences(
-        component_attrs_file, select_regions, destination,
-        dummy_sequences=False, dummy_value=0,
-    ):
+    component_attrs_file,
+    select_regions,
+    destination,
+    dummy_sequences=False,
+    dummy_value=0,
+):
     r"""
 
     Parameters
@@ -216,39 +227,47 @@ def create_component_sequences(
     except FileNotFoundError as e:
         raise FileNotFoundError(f"There is no file {component_attrs_file}") from e
 
-    suffices = component_attrs.loc[component_attrs['suffix'].notna(), 'suffix'].to_dict()
+    suffices = component_attrs.loc[
+        component_attrs["suffix"].notna(), "suffix"
+    ].to_dict()
 
     def remove_prefix(string, prefix):
         if string.startswith(prefix):
-            return string[len(prefix):]
+            return string[len(prefix) :]
 
     def remove_suffix(string, suffix):
         if string.endswith(suffix):
-            return string[:-len(suffix)]
+            return string[: -len(suffix)]
 
-    profile_names = {k: remove_prefix(v, '-') for k, v in suffices.items() if 'profile' in v}
+    profile_names = {
+        k: remove_prefix(v, "-") for k, v in suffices.items() if "profile" in v
+    }
 
     for profile_name in profile_names.values():
 
-        profile_filename = remove_suffix(profile_name, '-profile') + '_profile.csv'
+        profile_filename = remove_suffix(profile_name, "-profile") + "_profile.csv"
 
         profile_columns = []
 
-        profile_columns.extend(['-'.join([region, profile_name]) for region in select_regions])
+        profile_columns.extend(
+            ["-".join([region, profile_name]) for region in select_regions]
+        )
 
         if dummy_sequences:
-            datetimeindex = pd.date_range(start='2020-10-20', periods=3, freq='H')
+            datetimeindex = pd.date_range(start="2020-10-20", periods=3, freq="H")
 
-            profile_df = pd.DataFrame(dummy_value, index=datetimeindex, columns=profile_columns)
+            profile_df = pd.DataFrame(
+                dummy_value, index=datetimeindex, columns=profile_columns
+            )
 
-            dummy_msg = 'dummy'
+            dummy_msg = "dummy"
 
         else:
             profile_df = pd.DataFrame(columns=profile_columns)
 
-            dummy_msg = 'empty'
+            dummy_msg = "empty"
 
-        profile_df.index.name = 'timeindex'
+        profile_df.index.name = "timeindex"
 
         profile_destination = os.path.join(destination, profile_filename)
 
