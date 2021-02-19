@@ -29,6 +29,9 @@ es = EnergySystem.from_datapackage(
 # create model from energy system (this is just oemof.solph)
 m = Model(es)
 
+# tell the model to get the dual variables when solving
+m.receive_duals()
+
 # select solver 'gurobi', 'cplex', 'glpk' etc
 m.solve(solver='cbc')
 
