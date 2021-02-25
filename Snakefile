@@ -24,7 +24,14 @@ rule prepare_example:
     shell:
         "cp -r examples/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/preprocessed"
 
-
+rule prepare_conv_pp:
+    input:
+        "raw/conventional_power_plants_DE.csv"
+    output:
+        "results/prepared_conv_pp.csv"
+    shell:
+        "python scripts/prepare_conv_pp.py raw/conventional_power_plants_DE.csv results/prepared_conv_pp.csv"
+		
 rule optimize:
     input:
         directory("results/{scenario}/preprocessed/")
