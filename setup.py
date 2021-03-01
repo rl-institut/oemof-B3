@@ -9,14 +9,15 @@ def read(fname):
 
 
 setup(
-    name='oemof-B3',
-    version='0.0.0',
-    description='',
-    long_description=read('README.md'),
-    packages=['oemof_b3'],
+    name="oemof-B3",
+    version="0.0.0",
+    description="",
+    long_description=read("README.md"),
+    packages=["oemof_b3"],
     install_requires=[
-        'pandas',
-        'oemof',
-        'oemof.tabular',
+        "pandas",
+        "oemof",
+        "oemof.tabular",
     ],
+    extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
 )
