@@ -4,7 +4,7 @@ from oemof_b3.model.model_structure import create_default_data
 from oemof_b3.tools.helpers import load_yaml
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     scenario = sys.argv[1]
 
@@ -12,9 +12,11 @@ if __name__ == '__main__':
 
     scenario_specs = load_yaml(scenario)
 
-    select_components = scenario_specs['components']
+    keys = ["busses", "select_components", "select_regions", "select_links"]
 
-    create_default_data(
-        destination=destination,
-        select_components=select_components,
-    )
+    extra_kwargs = {}
+    for key in keys:
+        if key in scenario_specs:
+            extra_kwargs[key] = scenario_specs[key]
+
+    create_default_data(destination=destination, **extra_kwargs)
