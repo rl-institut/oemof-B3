@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     destination = sys.argv[2]
 
-    datetimeindex = pd.date_range(start='2019-01-01', freq='H', periods=8760),
+    datetimeindex = (pd.date_range(start="2019-01-01", freq="H", periods=8760),)
 
     scenario_specs = load_yaml(scenario)
 
@@ -22,7 +22,5 @@ if __name__ == "__main__":
             extra_kwargs[key] = scenario_specs[key]
 
     create_default_data(
-        destination=destination,
-        datetimeindex=datetimeindex,
-        **extra_kwargs
+        destination=destination, datetimeindex=datetimeindex, **extra_kwargs
     )
