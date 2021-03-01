@@ -1,4 +1,3 @@
-import logging
 import os
 
 from oemof.solph import EnergySystem, Model
@@ -11,25 +10,26 @@ from oemof.tabular.facades import TYPEMAP
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-name = 'simple_model'
+name = "simple_model"
 
-preprocessed = os.path.join(here, 'preprocessed', name)
+preprocessed = os.path.join(here, "preprocessed", name)
 
-optimized = os.path.join(here, 'optimized')
+optimized = os.path.join(here, "optimized")
 
 if not os.path.exists(optimized):
     os.mkdir(optimized)
 
 es = EnergySystem.from_datapackage(
     os.path.join(preprocessed, "datapackage.json"),
-    attributemap={}, typemap=TYPEMAP,
+    attributemap={},
+    typemap=TYPEMAP,
 )
 
 # create model from energy system (this is just oemof.solph)
 m = Model(es)
 
 # select solver 'gurobi', 'cplex', 'glpk' etc
-m.solve(solver='cbc')
+m.solve(solver="cbc")
 
 # get the results from the the solved model(still oemof.solph)
 es.results = m.results()

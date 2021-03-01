@@ -7,11 +7,11 @@ import os
 from oemof.tabular.datapackage import building
 
 
-name = 'simple_model'
+name = "simple_model"
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed = os.path.join(here, 'preprocessed', name)
+preprocessed = os.path.join(here, "preprocessed", name)
 
 if not os.path.exists(preprocessed):
     os.mkdir(preprocessed)
@@ -20,26 +20,26 @@ if not os.path.exists(preprocessed):
 building.infer_metadata(
     package_name=name,
     foreign_keys={
-        'bus': [
-            'wind-onshore',
-            'solar-pv',
-            'electricity-shortage',
-            'electricity-curtailment',
-            'electricity-demand',
-            'electricity-liion_battery',
+        "bus": [
+            "wind-onshore",
+            "solar-pv",
+            "electricity-shortage",
+            "electricity-curtailment",
+            "electricity-demand",
+            "electricity-liion_battery",
         ],
-        'profile': [
-            'wind-onshore',
-            'solar-pv',
-            'electricity-demand',
+        "profile": [
+            "wind-onshore",
+            "solar-pv",
+            "electricity-demand",
         ],
-        'from_to_bus': [
-            'ch4-gt',
-            'oil-st',
-            'biomass-st',
-            'other-st',
-            'electricity-transmission',
+        "from_to_bus": [
+            "ch4-gt",
+            "oil-st",
+            "biomass-st",
+            "other-st",
+            "electricity-transmission",
         ],
     },
-    path=preprocessed
+    path=preprocessed,
 )

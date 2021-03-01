@@ -15,10 +15,10 @@ setup(
     long_description=read("README.md"),
     packages=["oemof_b3"],
     install_requires=[
-        'pandas',
-        'pyomo<5.6.9',
-        'pyutilib<6.0.0',
-        'oemof.tabular @ git+https://git@github.com/oemof/oemof-tabular@dev#egg=oemof.tabular',
+        "pandas",
+        "pyomo<5.6.9",
+        "pyutilib<6.0.0",
+        "oemof.tabular @ git+https://git@github.com/oemof/oemof-tabular@dev#egg=oemof.tabular",
     ],
     extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
 )
