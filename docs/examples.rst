@@ -1,4 +1,10 @@
-How It Works
+.. _examples_label:
+
+~~~~~~~~~~~~~~~
+Examples
+~~~~~~~~~~~~~~~
+
+Example 1
 =====
 The model consists of two nodes, one for Brandenburg and one for Berlin.
 
