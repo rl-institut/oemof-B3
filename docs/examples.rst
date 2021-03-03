@@ -1,8 +1,3 @@
-Overview
-========
-The Open Energy Modelling Framework B3 (oemof-B3) is a simple model to map the electricity network in the area of Berlin-Brandenburg (Germany).
-It serves as a basis for further development.
-
 How It Works
 =====
 The model consists of two nodes, one for Brandenburg and one for Berlin.
