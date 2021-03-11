@@ -24,5 +24,7 @@ out_path = sys.argv[2]
 
 if __name__ == "__main__":
     opsd = pd.read_csv(in_path)
-    b3 = opsd[opsd.state.isin(["Brandenburg", "Berlin"])]
+    b3 = opsd[opsd.state.isin(['Brandenburg', 'Berlin'])]
+    b3 = b3.copy()
+    b3.reset_index(inplace=True, drop=True)
     b3.to_csv(out_path, index=False)
