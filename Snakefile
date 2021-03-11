@@ -30,7 +30,7 @@ rule prepare_conv_pp:
     output:
         "results/prepared_conv_pp.csv"
     shell:
-        "python scripts/prepare_conv_pp.py raw/conventional_power_plants_DE.csv results/prepared_conv_pp.csv"
+        "python scripts/prepare_conv_pp.py {input} {output}"
 		
 rule optimize:
     input:
