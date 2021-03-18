@@ -56,5 +56,4 @@ if __name__ == "__main__":
 
     # aggregate
 
-    b3.to_excel(out_path, index=False)
-    #b3.to_csv(out_path, index=False)
+    b3.to_csv(out_path, index=False)
