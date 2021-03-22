@@ -26,11 +26,11 @@ rule prepare_example:
 
 rule prepare_conv_pp:
     input:
-        "raw/conventional_power_plants_DE.csv"
+        opsd = "raw/conventional_power_plants_DE.csv", gpkg = "raw/boundaries_germany_nuts3.gpkg"
     output:
         "results/prepared_conv_pp.csv"
     shell:
-        "python scripts/prepare_conv_pp.py {input} {output}"
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {output}"
 		
 rule optimize:
     input:
