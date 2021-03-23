@@ -4,18 +4,18 @@ from shapely.geometry import Point
 
 
 def load_regions_file(file_path):
-    """
-    loads a geopackage containing all regions of Germany
+    r"""
+    Loads a geopackage containing all regions of Germany.
 
-    Input
+    Parameters
     ---------------
-    'file_path': string
-        with path to geopackage containing geoinformation for all regions in Germany
+    'file_path' : string
+        Path to geopackage containing geoinformation for all regions in Germany
 
-    Outputs
-    --------------
-    geopandas.GeoDataFrame
-        with geoinformation of all regions in Germany
+    Returns
+    ----------
+    regions_file : geopandas.GeoDataFrame
+        Geoinformation of all regions in Germany
     """
     de = gpd.read_file(file_path)
 
