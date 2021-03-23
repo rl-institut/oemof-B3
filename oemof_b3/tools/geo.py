@@ -17,9 +17,9 @@ def load_regions_file(file_path):
     regions_file : geopandas.GeoDataFrame
         Geoinformation of all regions in Germany
     """
-    de = gpd.read_file(file_path)
+    regions_file = gpd.read_file(file_path)
 
-    return de
+    return regions_file
 
 
 def filter_regions_file(de, regions):
