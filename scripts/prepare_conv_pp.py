@@ -42,7 +42,36 @@ if __name__ == "__main__":
     b3 = b3.copy()
     b3.reset_index(inplace=True, drop=True)
 
-    b3_regions = geo.load_regions_file(in_path2)
+    de = geo.load_regions_file(in_path2)
+    b3_regions = [
+        'Berlin',
+        'Barnim',
+        'Brandenburg an der Havel',
+        'Cottbus',
+        'Dahme-Spreewald',
+        'Elbe-Elster',
+        'Frankfurt (Oder)',
+        'Havelland',
+        'Barnim',
+        'Brandenburg',
+        'Cottbus',
+        'Dahme-Spreewald',
+        'Elbe-Elster',
+        'Frankfurt (Oder)',
+        'Havelland',
+        'Märkisch-Oderland',
+        'Oberhavel',
+        'Oberspreewald-Lausitz',
+        'Oder-Spree',
+        'Ostprignitz-Ruppin',
+        'Potsdam',
+        'Potsdam-Mittelmark',
+        'Prignitz',
+        'Spree-Neiße',
+        'Teltow-Fläming',
+        'Uckermark',
+    ]
+    b3_regions = geo.filter_regions_file(de, b3_regions)
     b3 = geo.add_region_to_register(b3, b3_regions)
 
     # clean up table columns
@@ -53,10 +82,11 @@ if __name__ == "__main__":
                                              'chp', 'chp_capacity_uba', 'efficiency_estimate' ,'name']), inplace=True)
     b3.rename(columns={'name': 'region', 'capacity_net_bnetza': 'capacity_net_el'}, inplace=True)
 
-    # group and aggregate data by region, energy source, technology and chp capability
+    # group data by region, energy source, technology and chp capability and aggregate capacity and efficiency
     b3_aggS = b3.groupby(['region','energy_source', 'technology', 'chp']).agg({'capacity_net_el': 'sum',
                                                                           'efficiency_estimate': 'mean'})
     b3_agg = pd.DataFrame(b3_aggS)
     b3_agg.reset_index(level=['region', 'energy_source', 'technology', 'chp'], inplace=True)
 
+    # export prepared conventional power plant data
     b3_agg.to_csv(out_path, index=False)

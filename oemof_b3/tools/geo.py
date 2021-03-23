@@ -5,48 +5,42 @@ from shapely.geometry import Point
 
 def load_regions_file(file_path):
     """
-    loads a geopackage containing all regions of Germany and filters for geodata of Berlin and
-    all regions in Brandenburg
+    loads a geopackage containing all regions of Germany
+
+    Input
+    ---------------
+    'file_path': string
+        with path to geopackage containing geoinformation for all regions in Germany
 
     Outputs
     --------------
     geopandas.GeoDataFrame
-        with geoinformation of Berlin and all regions in Brandenburg
+        with geoinformation of all regions in Germany
     """
-    file_path = r"C:\Users\meinm\Documents\Git\oemof-B3\raw\boundaries_germany_nuts3.gpkg"
     de = gpd.read_file(file_path)
 
-    b3_regions = [
-        'Berlin',
-        'Barnim',
-        'Brandenburg an der Havel',
-        'Cottbus',
-        'Dahme-Spreewald',
-        'Elbe-Elster',
-        'Frankfurt (Oder)',
-        'Havelland',
-        'Barnim',
-        'Brandenburg',
-        'Cottbus',
-        'Dahme-Spreewald',
-        'Elbe-Elster',
-        'Frankfurt (Oder)',
-        'Havelland',
-        'Märkisch-Oderland',
-        'Oberhavel',
-        'Oberspreewald-Lausitz',
-        'Oder-Spree',
-        'Ostprignitz-Ruppin',
-        'Potsdam',
-        'Potsdam-Mittelmark',
-        'Prignitz',
-        'Spree-Neiße',
-        'Teltow-Fläming',
-        'Uckermark',
-    ]
-    b3_regions = de.loc[de['name'].isin(b3_regions)]
+    return de
 
-    return b3_regions
+
+def filter_regions_file(de, regions):
+    """
+    filters the data of a geopackage according to regions
+
+    Input
+    ---------------
+    'de': geopandas.GeoDataFrame
+        geoinformations of all regions in Germany
+    'regions': list
+        with the names of the regions by which the GeoDataFrame shall be filtered
+
+    Outputs
+    --------------
+    geopandas.GeoDataFrame
+        with geoinformation of desired regions in Germany
+    """
+    de_regions = de.loc[de['name'].isin(regions)]
+
+    return de_regions
 
 
 def add_region_to_register(register, regions):
