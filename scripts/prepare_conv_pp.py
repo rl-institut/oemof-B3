@@ -98,7 +98,8 @@ if __name__ == "__main__":
         inplace=True,
     )
 
-    # group data by region, energy source, technology and chp capability and aggregate capacity and efficiency
+    # group data by region, energy source, technology and chp capability and
+    # aggregate capacity and efficiency
     b3_aggS = b3.groupby(["region", "energy_source", "technology", "chp"]).agg(
         {"capacity_net_el": "sum", "efficiency_estimate": "mean"}
     )
