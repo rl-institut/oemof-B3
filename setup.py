@@ -14,5 +14,5 @@ setup(
     description="",
     long_description=read("README.md"),
     packages=["oemof_b3"],
-    install_requires=["pandas", "oemof", "oemof.tabular"],
+    install_requires=["pandas", "oemof", "oemof.tabular", "rtree"],
 )
