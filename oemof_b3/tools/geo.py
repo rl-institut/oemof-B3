@@ -38,7 +38,7 @@ def filter_regions_file(de, regions):
     geopandas.GeoDataFrame
         with geoinformation of desired regions in Germany
     """
-    de_regions = de.loc[de['name'].isin(regions)]
+    de_regions = de.loc[de["name"].isin(regions)]
 
     return de_regions
 
@@ -61,10 +61,10 @@ def add_region_to_register(register, regions):
     """
     # transform the lat/lon coordinates into a shapely point coordinates and
     # add column named "coordinates"
-    register['coordinates'] = list(zip(register.lon, register.lat))
-    register['coordinates'] = register['coordinates'].apply(Point)
-    register_gdf = gpd.GeoDataFrame(register, geometry='coordinates', crs=4326)
-    new_register_gdf = gpd.sjoin(register_gdf, regions, op='within')
+    register["coordinates"] = list(zip(register.lon, register.lat))
+    register["coordinates"] = register["coordinates"].apply(Point)
+    register_gdf = gpd.GeoDataFrame(register, geometry="coordinates", crs=4326)
+    new_register_gdf = gpd.sjoin(register_gdf, regions, op="within")
     new_register = pd.DataFrame(new_register_gdf)
 
     return new_register

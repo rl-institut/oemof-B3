@@ -25,6 +25,7 @@ Only operating power plants are considered.
 import sys
 import pandas as pd
 from os.path import dirname, abspath
+
 d = dirname(dirname(abspath(__file__)))
 
 sys.path.append(d)
@@ -32,61 +33,79 @@ sys.path.append(d)
 import oemof_b3.tools.geo as geo
 
 
-in_path1 = sys.argv[1] # path to OPSD data
-in_path2 = sys.argv[2] # path to geopackage of german regions
+in_path1 = sys.argv[1]  # path to OPSD data
+in_path2 = sys.argv[2]  # path to geopackage of german regions
 out_path = sys.argv[3]
 
 if __name__ == "__main__":
     opsd = pd.read_csv(in_path1)
-    b3 = opsd[opsd.state.isin(['Brandenburg', 'Berlin'])]
+    b3 = opsd[opsd.state.isin(["Brandenburg", "Berlin"])]
     b3 = b3.copy()
     b3.reset_index(inplace=True, drop=True)
 
     de = geo.load_regions_file(in_path2)
     b3_regions = [
-        'Berlin',
-        'Barnim',
-        'Brandenburg an der Havel',
-        'Cottbus',
-        'Dahme-Spreewald',
-        'Elbe-Elster',
-        'Frankfurt (Oder)',
-        'Havelland',
-        'Barnim',
-        'Brandenburg',
-        'Cottbus',
-        'Dahme-Spreewald',
-        'Elbe-Elster',
-        'Frankfurt (Oder)',
-        'Havelland',
-        'Märkisch-Oderland',
-        'Oberhavel',
-        'Oberspreewald-Lausitz',
-        'Oder-Spree',
-        'Ostprignitz-Ruppin',
-        'Potsdam',
-        'Potsdam-Mittelmark',
-        'Prignitz',
-        'Spree-Neiße',
-        'Teltow-Fläming',
-        'Uckermark',
+        "Berlin",
+        "Barnim",
+        "Brandenburg an der Havel",
+        "Cottbus",
+        "Dahme-Spreewald",
+        "Elbe-Elster",
+        "Frankfurt (Oder)",
+        "Havelland",
+        "Barnim",
+        "Brandenburg",
+        "Cottbus",
+        "Dahme-Spreewald",
+        "Elbe-Elster",
+        "Frankfurt (Oder)",
+        "Havelland",
+        "Märkisch-Oderland",
+        "Oberhavel",
+        "Oberspreewald-Lausitz",
+        "Oder-Spree",
+        "Ostprignitz-Ruppin",
+        "Potsdam",
+        "Potsdam-Mittelmark",
+        "Prignitz",
+        "Spree-Neiße",
+        "Teltow-Fläming",
+        "Uckermark",
     ]
     b3_regions = geo.filter_regions_file(de, b3_regions)
     b3 = geo.add_region_to_register(b3, b3_regions)
 
     # clean up table columns
-    b3.drop(b3.loc[b3['status'] == 'shutdown'].index, inplace=True)
-    b3.drop(b3.loc[b3['status'] == 'shutdown_temporary'].index, inplace=True)
-    b3.drop(b3.loc[b3['status'] == 'reserve'].index, inplace=True)
-    b3.drop(columns = b3.columns.difference(['capacity_net_bnetza', 'energy_source', 'technology',
-                                             'chp', 'chp_capacity_uba', 'efficiency_estimate' ,'name']), inplace=True)
-    b3.rename(columns={'name': 'region', 'capacity_net_bnetza': 'capacity_net_el'}, inplace=True)
+    b3.drop(b3.loc[b3["status"] == "shutdown"].index, inplace=True)
+    b3.drop(b3.loc[b3["status"] == "shutdown_temporary"].index, inplace=True)
+    b3.drop(b3.loc[b3["status"] == "reserve"].index, inplace=True)
+    b3.drop(
+        columns=b3.columns.difference(
+            [
+                "capacity_net_bnetza",
+                "energy_source",
+                "technology",
+                "chp",
+                "chp_capacity_uba",
+                "efficiency_estimate",
+                "name",
+            ]
+        ),
+        inplace=True,
+    )
+    b3.rename(
+        columns={"name": "region", "capacity_net_bnetza": "capacity_net_el"},
+        inplace=True,
+    )
 
     # group data by region, energy source, technology and chp capability and aggregate capacity and efficiency
-    b3_aggS = b3.groupby(['region','energy_source', 'technology', 'chp']).agg({'capacity_net_el': 'sum',
-                                                                          'efficiency_estimate': 'mean'})
+    b3_aggS = b3.groupby(["region", "energy_source", "technology", "chp"]).agg(
+        {"capacity_net_el": "sum", "efficiency_estimate": "mean"}
+    )
     b3_agg = pd.DataFrame(b3_aggS)
-    b3_agg.reset_index(level=['region', 'energy_source', 'technology', 'chp'], inplace=True)
+    b3_agg.reset_index(
+        level=["region", "energy_source", "technology", "chp"], inplace=True
+    )
 
     # export prepared conventional power plant data
     b3_agg.to_csv(out_path, index=False)
