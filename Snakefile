@@ -26,7 +26,8 @@ rule prepare_example:
 
 rule prepare_conv_pp:
     input:
-        opsd = "raw/conventional_power_plants_DE.csv", gpkg = "raw/boundaries_germany_nuts3.gpkg"
+        opsd="raw/conventional_power_plants_DE.csv",
+	    gpkg="raw/boundaries_germany_nuts3.gpkg"
     output:
         "results/prepared_conv_pp.csv"
     shell:
