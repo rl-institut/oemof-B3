@@ -38,12 +38,12 @@ in_path2 = sys.argv[2]  # path to geopackage of german regions
 out_path = sys.argv[3]
 
 if __name__ == "__main__":
-    opsd = pd.read_csv(in_path1)
-    b3 = opsd[opsd.state.isin(["Brandenburg", "Berlin"])]
+    pp_opsd_de = pd.read_csv(in_path1)
+    pp_opsd_b3 = opsd[opsd.state.isin(["Brandenburg", "Berlin"])]
     b3 = b3.copy()
     b3.reset_index(inplace=True, drop=True)
 
-    de = geo.load_regions_file(in_path2)
+    regions_nuts3_de = geo.load_regions_file(in_path2)
     b3_regions = [
         "Berlin",
         "Barnim",
