@@ -14,6 +14,6 @@ setup(
     description="",
     long_description=read("README.md"),
     packages=["oemof_b3"],
-    install_requires=["pandas", "oemof", "oemof.tabular", "rtree"],
+    install_requires=["pandas", "oemof", "oemof.tabular", "rtree", "pyyaml"],
     extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
 )

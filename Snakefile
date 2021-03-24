@@ -28,11 +28,12 @@ rule prepare_conv_pp:
     input:
         opsd="raw/conventional_power_plants_DE.csv",
 	    gpkg="raw/boundaries_germany_nuts3.gpkg",
+	    b3_regions="raw/b3_regions.yaml",
 	    script="scripts/prepare_conv_pp.py"
     output:
         "results/prepared_conv_pp.csv"
     shell:
-        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {output}"
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 		
 rule optimize:
     input:

@@ -23,20 +23,20 @@ def load_regions_file(file_path):
 
 
 def filter_regions_file(de, regions):
-    """
-    filters the data of a geopackage according to regions
+    r"""
+    Filters the data of a geopackage according to regions.
 
-    Input
+    Parameters
     ---------------
     'de': geopandas.GeoDataFrame
-        geoinformations of all regions in Germany
+        Geoinformations of all regions in Germany
     'regions': list
-        with the names of the regions by which the GeoDataFrame shall be filtered
+        List with the names of the regions by which the GeoDataFrame shall be filtered
 
-    Outputs
+    Returns
     --------------
     geopandas.GeoDataFrame
-        with geoinformation of desired regions in Germany
+        Geoinformation of desired regions in Germany
     """
     de_regions = de.loc[de["name"].isin(regions)]
 
@@ -44,20 +44,20 @@ def filter_regions_file(de, regions):
 
 
 def add_region_to_register(register, regions):
-    """
-    adds the region to a power plant
+    r"""
+    Adds the region to a power plant.
 
-    Input
+    Parameters
     ---------------
     'register': pandas.DataFrame
-        with columns lat, lon
+        DataFrame with columns lat, lon
     'region': geopandas.GeoDataFrame
-        with rows for the specific regions
+        GeoDataFrame with rows for the specific regions
 
-    Outputs
+    Returns
     --------------
     pandas.DataFrame
-        with new column 'name' containing the region name
+        DataFrame with new column 'name' containing the region name
     """
     # transform the lat/lon coordinates into a shapely point coordinates and
     # add column named "coordinates"
