@@ -6,7 +6,6 @@ rule setup_model_structure:
     shell:
         "python scripts/setup_model_structure.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed/data"
 
-
 rule infer:
     input:
         "scenarios/{scenario}.yml"
@@ -14,7 +13,6 @@ rule infer:
         "results/{scenario}/preprocessed/datapackage.json"
     shell:
         "python scripts/infer.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed"
-
 
 rule prepare_example:
     input:
@@ -34,7 +32,7 @@ rule prepare_conv_pp:
         "results/prepared_conv_pp.csv"
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
-		
+
 rule optimize:
     input:
         directory("results/{scenario}/preprocessed/")
@@ -42,7 +40,6 @@ rule optimize:
         directory("results/{scenario}/optimized/")
     shell:
         "python scripts/optimize.py results/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/optimized"
-
 
 rule clean:
     shell:
