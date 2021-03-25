@@ -86,6 +86,10 @@ if __name__ == "__main__":
         {"capacity_net_el": "sum", "efficiency_estimate": "mean"}
     )
     b3_agg = pd.DataFrame(b3_agg_Series)
+
+    # Estimate efficiency for energy source 'Other fuels'
+    b3_agg.loc[('Oder-Spree', 'Other fuels', 'Steam turbine', 'yes'), 'efficiency_estimate'] = b3_agg.loc[b3_agg.index.get_level_values('energy_source') == 'Waste', 'efficiency_estimate'].mean()
+
     b3_agg.reset_index(
         level=["region", "energy_source", "technology", "chp"], inplace=True
     )
