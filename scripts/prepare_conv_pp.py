@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     regions_nuts3_de = geo.load_regions_file(in_path2)
 
-    b3_regions_yaml = open(in_path3, 'r')
+    b3_regions_yaml = open(in_path3, "r")
     b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
     for key, value in b3_regions_content.items():
         b3_regions_list = value
@@ -59,9 +59,15 @@ if __name__ == "__main__":
     pp_opsd_b3 = geo.add_region_to_register(pp_opsd_b3, b3_regions_geo)
 
     # clean up table columns
-    pp_opsd_b3.drop(pp_opsd_b3.loc[pp_opsd_b3["status"] == "shutdown"].index, inplace=True)
-    pp_opsd_b3.drop(pp_opsd_b3.loc[pp_opsd_b3["status"] == "shutdown_temporary"].index, inplace=True)
-    pp_opsd_b3.drop(pp_opsd_b3.loc[pp_opsd_b3["status"] == "reserve"].index, inplace=True)
+    pp_opsd_b3.drop(
+        pp_opsd_b3.loc[pp_opsd_b3["status"] == "shutdown"].index, inplace=True
+    )
+    pp_opsd_b3.drop(
+        pp_opsd_b3.loc[pp_opsd_b3["status"] == "shutdown_temporary"].index, inplace=True
+    )
+    pp_opsd_b3.drop(
+        pp_opsd_b3.loc[pp_opsd_b3["status"] == "reserve"].index, inplace=True
+    )
     pp_opsd_b3.drop(
         columns=pp_opsd_b3.columns.difference(
             [
@@ -83,13 +89,17 @@ if __name__ == "__main__":
 
     # group data by region, energy source, technology and chp capability and
     # aggregate capacity and efficiency
-    b3_agg_Series = pp_opsd_b3.groupby(["region", "energy_source", "technology", "chp"]).agg(
-        {"capacity_net_el": "sum", "efficiency_estimate": "mean"}
-    )
+    b3_agg_Series = pp_opsd_b3.groupby(
+        ["region", "energy_source", "technology", "chp"]
+    ).agg({"capacity_net_el": "sum", "efficiency_estimate": "mean"})
     b3_agg = pd.DataFrame(b3_agg_Series)
 
     # Estimate efficiency for energy source 'Other fuels'
-    b3_agg.loc[('Oder-Spree', 'Other fuels', 'Steam turbine', 'yes'), 'efficiency_estimate'] = b3_agg.loc[b3_agg.index.get_level_values('energy_source') == 'Waste', 'efficiency_estimate'].mean()
+    b3_agg.loc[
+        ("Oder-Spree", "Other fuels", "Steam turbine", "yes"), "efficiency_estimate"
+    ] = b3_agg.loc[
+        b3_agg.index.get_level_values("energy_source") == "Waste", "efficiency_estimate"
+    ].mean()
 
     b3_agg.reset_index(
         level=["region", "energy_source", "technology", "chp"], inplace=True
