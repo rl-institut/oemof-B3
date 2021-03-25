@@ -26,16 +26,11 @@ saved as a csv file.
 Only operating power plants are considered.
 """
 import sys
+
 import pandas as pd
 import yaml
-from os.path import dirname, abspath
-
-d = dirname(dirname(abspath(__file__)))
-
-sys.path.append(d)
 
 import oemof_b3.tools.geo as geo
-
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
