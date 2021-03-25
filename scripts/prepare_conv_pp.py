@@ -1,14 +1,4 @@
-import sys
-import pandas as pd
-import yaml
-from os.path import dirname, abspath
-
-d = dirname(dirname(abspath(__file__)))
-
-sys.path.append(d)
-
-import oemof_b3.tools.geo as geo
-
+# coding: utf-8
 r"""
 Inputs
 -------
@@ -35,13 +25,24 @@ in Berlin and Brandenburg. The retrieved data is stored in a new dataframe, aggr
 saved as a csv file.
 Only operating power plants are considered.
 """
+import sys
+import pandas as pd
+import yaml
+from os.path import dirname, abspath
 
-in_path1 = sys.argv[1]  # path to OPSD data
-in_path2 = sys.argv[2]  # path to geopackage of german regions
-in_path3 = sys.argv[3]  # path to b3_regions.yaml
-out_path = sys.argv[4]
+d = dirname(dirname(abspath(__file__)))
+
+sys.path.append(d)
+
+import oemof_b3.tools.geo as geo
+
 
 if __name__ == "__main__":
+    in_path1 = sys.argv[1]  # path to OPSD data
+    in_path2 = sys.argv[2]  # path to geopackage of german regions
+    in_path3 = sys.argv[3]  # path to b3_regions.yaml
+    out_path = sys.argv[4]
+
     pp_opsd_de = pd.read_csv(in_path1)
     pp_opsd_b3 = pp_opsd_de[pp_opsd_de.state.isin(["Brandenburg", "Berlin"])]
     pp_opsd_b3 = pp_opsd_b3.copy()
