@@ -25,9 +25,9 @@ rule prepare_example:
 rule prepare_conv_pp:
     input:
         opsd="raw/conventional_power_plants_DE.csv",
-	    gpkg="raw/boundaries_germany_nuts3.gpkg",
-	    b3_regions="raw/b3_regions.yaml",
-	    script="scripts/prepare_conv_pp.py"
+        gpkg="raw/boundaries_germany_nuts3.gpkg",
+        b3_regions="raw/b3_regions.yaml",
+        script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/conv_pp.csv"
     shell:
