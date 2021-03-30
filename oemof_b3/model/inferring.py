@@ -25,7 +25,5 @@ def infer(select_components, package_name, path):
             foreign_keys[key] = selected_lst
 
     building.infer_metadata(
-        package_name=package_name,
-        foreign_keys=foreign_keys,
-        path=path,
+        package_name=package_name, foreign_keys=foreign_keys, path=path
     )

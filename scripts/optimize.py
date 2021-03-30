@@ -21,9 +21,7 @@ if not os.path.exists(optimized):
     os.mkdir(optimized)
 
 es = EnergySystem.from_datapackage(
-    os.path.join(preprocessed, "datapackage.json"),
-    attributemap={},
-    typemap=TYPEMAP,
+    os.path.join(preprocessed, "datapackage.json"), attributemap={}, typemap=TYPEMAP
 )
 
 # create model from energy system (this is just oemof.solph)
