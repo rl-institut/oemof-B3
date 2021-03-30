@@ -29,7 +29,7 @@ rule prepare_conv_pp:
 	    b3_regions="raw/b3_regions.yaml",
 	    script="scripts/prepare_conv_pp.py"
     output:
-        "results/prepared_conv_pp.csv"
+        "results/_resources/conv_pp.csv"
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
