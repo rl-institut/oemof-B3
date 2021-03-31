@@ -27,11 +27,11 @@ rule prepare_example:
 
 rule optimize:
     input:
-        directory("results/{scenario}/preprocessed/")
+        "results/{scenario}/preprocessed/{scenario}"
     output:
         directory("results/{scenario}/optimized/")
     shell:
-        "python scripts/optimize.py results/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/optimized"
+        "python scripts/optimize.py {input} results/{wildcards.scenario}/optimized"
 
 
 rule clean:
