@@ -2,7 +2,7 @@ rule setup_model_structure:
     input:
         "scenarios/{scenario}.yml"
     output:
-        directory("results/{scenario}/preprocessed/data")
+        directory("results/{scenario}/preprocessed")
     shell:
         "python scripts/setup_model_structure.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed/data"
 
@@ -18,11 +18,13 @@ rule infer:
 
 rule prepare_example:
     input:
-        directory("examples/{scenario}")
+        "examples/{example}"
     output:
-        directory("results/{scenario}/preprocessed")
+        directory("results/{example}/preprocessed")
+    wildcard_constraints:
+        example="((simple_model)|(simple_model_2)|(simple_model_3))"
     shell:
-        "cp -r examples/{wildcards.scenario}/preprocessed results/{wildcards.scenario}/preprocessed"
+        "cp -r examples/{wildcards.example}/preprocessed results/{wildcards.example}/preprocessed"
 
 
 rule optimize:
