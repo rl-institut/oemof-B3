@@ -2,29 +2,29 @@ rule setup_model_structure:
     input:
         "scenarios/{scenario}.yml"
     output:
-        directory("results/{scenario}/preprocessed")
+        directory("results/{scenario}/preprocessed/{scenario}/data")
     shell:
-        "python scripts/setup_model_structure.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed/data"
+        "python scripts/setup_model_structure.py {input} {output}"
 
 
 rule infer:
     input:
         "scenarios/{scenario}.yml"
     output:
-        "results/{scenario}/preprocessed/datapackage.json"
+        "results/{scenario}/preprocessed/{scenario}/datapackage.json"
     shell:
-        "python scripts/infer.py scenarios/{wildcards.scenario}.yml results/{wildcards.scenario}/preprocessed"
+        "python scripts/infer.py {input} {output}"
 
 
 rule prepare_example:
     input:
-        "examples/{example}"
+        "examples/{example}/preprocessed"
     output:
         directory("results/{example}/preprocessed")
     wildcard_constraints:
         example="((simple_model)|(simple_model_2)|(simple_model_3))"
     shell:
-        "cp -r examples/{wildcards.example}/preprocessed results/{wildcards.example}/preprocessed"
+        "cp -r {input} {output}"
 
 
 rule optimize:
@@ -33,7 +33,7 @@ rule optimize:
     output:
         directory("results/{scenario}/optimized/")
     shell:
-        "python scripts/optimize.py {input} results/{wildcards.scenario}/optimized"
+        "python scripts/optimize.py {input} {output}"
 
 
 rule clean:

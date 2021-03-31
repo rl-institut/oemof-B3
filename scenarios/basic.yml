@@ -14,7 +14,7 @@ select_busses:
 
 
 select_components:
-  - biomass-gt
+  - biomass-st
   - ch4-boiler
   - ch4-excess
   - ch4-extchp
