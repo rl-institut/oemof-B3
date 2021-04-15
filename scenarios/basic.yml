@@ -1,19 +1,18 @@
-scenario: basic
+name: basic
 
-select_regions:
+regions:
   - BB
   - B
 
-select_links:
+links:
   - BB-B
 
-select_busses:
+busses:
   - ch4
   - electricity
   - heat
 
-
-select_components:
+components:
   - biomass-gt
   - ch4-boiler
   - ch4-excess

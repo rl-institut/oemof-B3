@@ -1,20 +1,10 @@
-rule setup_model_structure:
+rule build_datapackage:
     input:
         "scenarios/{scenario}.yml"
     output:
-        directory("results/{scenario}/preprocessed/data")
-    shell:
-        "python scripts/setup_model_structure.py {input} {output}"
-
-rule infer:
-    input:
-        "scenarios/{scenario}.yml"
-    output:
-        # Actually, the target is datapackage.json, but setting the general directory
-        # as output allows optimization to pick up the outputs of this rule.
         directory("results/{scenario}/preprocessed")
     shell:
-        "python scripts/infer.py {input} {output}"
+        "python scripts/build_datapackage.py {input} {output}"
 
 rule prepare_example:
     input:
