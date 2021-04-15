@@ -20,7 +20,7 @@ rule infer:
 
 rule prepare_example:
     input:
-        "examples/{scenario}/preprocessed"
+        "examples/{scenario}/preprocessed/{scenario}"
     output:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
