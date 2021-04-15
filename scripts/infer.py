@@ -1,3 +1,4 @@
+import os
 import sys
 
 from oemoflex.model.inferring import infer
@@ -9,5 +10,8 @@ if __name__ == "__main__":
     scenario_specs = load_yaml(sys.argv[1])
 
     destination = sys.argv[2]
+
+    if not os.path.exists(destination):
+        os.makedirs(destination)
 
     infer(scenario_specs["select_components"], scenario_specs["scenario"], destination)
