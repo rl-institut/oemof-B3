@@ -6,7 +6,6 @@ rule setup_model_structure:
     shell:
         "python scripts/setup_model_structure.py {input} {output}"
 
-
 rule infer:
     input:
         "scenarios/{scenario}.yml"
@@ -16,7 +15,6 @@ rule infer:
         directory("results/{scenario}/preprocessed")
     shell:
         "python scripts/infer.py {input} {output}"
-
 
 rule prepare_example:
     input:
@@ -29,6 +27,16 @@ rule prepare_example:
     shell:
         "cp -r {input} {output}"
 
+rule prepare_conv_pp:
+    input:
+        opsd="raw/conventional_power_plants_DE.csv",
+        gpkg="raw/boundaries_germany_nuts3.gpkg",
+        b3_regions="raw/b3_regions.yaml",
+        script="scripts/prepare_conv_pp.py"
+    output:
+        "results/_resources/conv_pp.csv"
+    shell:
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
 rule optimize:
     input:
@@ -37,7 +45,6 @@ rule optimize:
         directory("results/{scenario}/optimized/")
     shell:
         "python scripts/optimize.py {input} {output}"
-
 
 rule clean:
     shell:
