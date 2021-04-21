@@ -13,7 +13,7 @@ rule prepare_example:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
-        scenario="simple_model*"
+        scenario="(simple_model|simple_model_2|simple_model_3)"
     shell:
         "cp -r {input} {output}"
 
