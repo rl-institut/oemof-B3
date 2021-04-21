@@ -10,21 +10,35 @@ Model pipeline
     :backlinks: top
 
 
-Setup the model structure
-=========================
+Separation of processing steps
+==============================
 
-For more details, refer to :ref:`model_structure_label`.
 
-Parametrize
-===========
+Workflow management with Snakemake
+==================================
 
-Infer metadata
+
+Preprocessing
+=============
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   preprocessing/*
+
+
+Optimization
+============
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+
+Postprocessing
 ==============
 
-Optimize
-========
-
-Postprocess
-===========
-
-Consider :ref:`postprocessing_label` for an overview of the key results of postprocessing.
+.. toctree::
+   :maxdepth: 1
+   :glob:
