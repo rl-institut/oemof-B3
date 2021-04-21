@@ -10,34 +10,33 @@ from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
 
 
-here = os.path.abspath(os.path.dirname(__file__))
+if __name__ == "__main__":
+    preprocessed = sys.argv[1]
 
-name = "simple_model"
+    optimized = sys.argv[2]
 
-preprocessed = sys.argv[1]
+    filename_metadata = "datapackage.json"
 
-optimized = sys.argv[2]
+    solver = "cbc"
 
-if not os.path.exists(optimized):
-    os.mkdir(optimized)
+    if not os.path.exists(optimized):
+        os.mkdir(optimized)
 
-es = EnergySystem.from_datapackage(
-    os.path.join(preprocessed, "datapackage.json"),
-    attributemap={},
-    typemap=TYPEMAP,
-)
+    es = EnergySystem.from_datapackage(
+        os.path.join(preprocessed, filename_metadata), attributemap={}, typemap=TYPEMAP
+    )
 
-# create model from energy system (this is just oemof.solph)
-m = Model(es)
+    # create model from energy system (this is just oemof.solph)
+    m = Model(es)
 
-# select solver 'gurobi', 'cplex', 'glpk' etc
-m.solve(solver="cbc")
+    # select solver 'gurobi', 'cplex', 'glpk' etc
+    m.solve(solver=solver)
 
-# get the results from the the solved model(still oemof.solph)
-es.meta_results = processing.meta_results(m)
-es.results = processing.results(m)
-es.params = processing.parameter_as_dict(es)
+    # get the results from the the solved model(still oemof.solph)
+    es.meta_results = processing.meta_results(m)
+    es.results = processing.results(m)
+    es.params = processing.parameter_as_dict(es)
 
-# now we use the write results method to write the results in oemoftabular
-# format
-es.dump(optimized)
+    # now we use the write results method to write the results in oemoftabular
+    # format
+    es.dump(optimized)
