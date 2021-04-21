@@ -36,6 +36,14 @@ rule optimize:
     shell:
         "python scripts/optimize.py {input} {output}"
 
+rule postprocess:
+    input:
+        "results/{scenario}/optimized"
+    output:
+        directory("results/{scenario}/postprocessed/")
+    shell:
+        "python scripts/postprocess.py {input} {output}"
+
 rule clean:
     shell:
         """
