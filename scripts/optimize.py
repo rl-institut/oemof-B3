@@ -2,6 +2,7 @@ import os
 import sys
 
 from oemof.solph import EnergySystem, Model
+from oemof.outputlib import processing
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -32,7 +33,9 @@ if __name__ == "__main__":
     m.solve(solver=solver)
 
     # get the results from the the solved model(still oemof.solph)
-    es.results = m.results()
+    es.meta_results = processing.meta_results(m)
+    es.results = processing.results(m)
+    es.params = processing.parameter_as_dict(es)
 
     # now we use the write results method to write the results in oemoftabular
     # format

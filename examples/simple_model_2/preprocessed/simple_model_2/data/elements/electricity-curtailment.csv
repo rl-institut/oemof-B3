@@ -1,0 +1,3 @@
+region,name,type,carrier,tech,bus,capacity,marginal_cost,output_parameters
+BE,BE-electricity-curtailment,excess,electricity,curtailment,BE-electricity,0,0,{}
+BB,BB-electricity-curtailment,excess,electricity,curtailment,BB-electricity,0,0,{}
