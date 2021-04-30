@@ -17,7 +17,7 @@ rule prepare_example:
         # necessary to distinguish from those scenarios that are not pre-fabricated
         scenario="|".join(examples)
     shell:
-        "cp -r {input} {output}"
+        "python snake_copy.py {input} {output}"
 
 rule prepare_conv_pp:
     input:
