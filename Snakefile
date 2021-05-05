@@ -54,6 +54,14 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {output}"
 
+rule plot_dispatch:
+    input:
+        "results/{scenario}/postprocessed/sequences/bus/BB-electricity.csv"
+    output:
+        directory("results/{scenario}/plots/")
+    shell:
+        "python scripts/plotting.py {input} {output}"
+
 rule clean:
     shell:
         """
