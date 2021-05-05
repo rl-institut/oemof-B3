@@ -70,11 +70,11 @@ When running snakemake with outputfiles in subfolders on Windows with
     
      snakemake -j<NUMBER_OF_CPU_CORES>
 
-a MissingRuleException is raised. The process is unable to specify the output files in subfolders. 
-This bug has been descibed `here <https://github.com/snakemake/snakemake/issues/46>`_.
-The current workaround described in pypsa-eur 
-(`here <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_) 
-is to run snakemake with the flag `--keep-target-files` to the command.
+a ``MissingRuleException`` is raised. The process is unable to specify the output files in subfolders. 
+This bug is an `open issue <https://github.com/snakemake/snakemake/issues/46>`_ at `snakemake <https://snakemake.readthedocs.io/>`_.
+The `current workaround <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_
+described in `pypsa-eur <https://pypsa-eur.readthedocs.io/en/latest/index.html>`_
+is to run snakemake with the flag ``--keep-target-files`` to the command.
 
     ::
     
