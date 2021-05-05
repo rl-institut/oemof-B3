@@ -12,6 +12,7 @@ Welcome to oemof-B3's documentation!
 
    overview
    getting_started
+   examples
 
 .. toctree::
    :maxdepth: 1
