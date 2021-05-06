@@ -54,11 +54,15 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {output}"
 
+rule plot_all_examples:
+    input:
+        expand("results/{scenario}/plotted/", scenario=examples)
+
 rule plot_dispatch:
     input:
-        "results/{scenario}/postprocessed/sequences/bus/BB-electricity.csv"
+        "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plots/")
+        directory("results/{scenario}/plotted/")
     shell:
         "python scripts/plotting.py {input} {output}"
 
