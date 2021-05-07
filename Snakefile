@@ -4,9 +4,24 @@ examples = [
     'simple_model_3'
 ]
 
+# Target rules
+
 rule run_all_examples:
     input:
         expand("results/{scenario}/postprocessed", scenario=examples)
+
+rule plot_all_examples:
+    input:
+        expand("results/{scenario}/plotted/", scenario=examples)
+
+rule clean:
+    shell:
+        """
+        rm -r ./results/*
+        echo "Removed all results."
+        """
+
+# Rules for intermediate steps
 
 rule prepare_example:
     input:
@@ -17,7 +32,7 @@ rule prepare_example:
         # necessary to distinguish from those scenarios that are not pre-fabricated
         scenario="|".join(examples)
     shell:
-        "cp -r {input} {output}"
+        "python snake_copy.py {input} {output}"
 
 rule prepare_conv_pp:
     input:
@@ -54,9 +69,10 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {output}"
 
-rule clean:
+rule plot_dispatch:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/")
     shell:
-        """
-        rm -r ./results/*
-        echo "Removed all results."
-        """
+        "python scripts/plotting.py {input} {output}"
