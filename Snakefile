@@ -4,9 +4,24 @@ examples = [
     'simple_model_3'
 ]
 
+# Target rules
+
 rule run_all_examples:
     input:
         expand("results/{scenario}/postprocessed", scenario=examples)
+
+rule plot_all_examples:
+    input:
+        expand("results/{scenario}/plotted/", scenario=examples)
+
+rule clean:
+    shell:
+        """
+        rm -r ./results/*
+        echo "Removed all results."
+        """
+
+# Rules for intermediate steps
 
 rule prepare_example:
     input:
@@ -54,10 +69,6 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {output}"
 
-rule plot_all_examples:
-    input:
-        expand("results/{scenario}/plotted/", scenario=examples)
-
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
@@ -65,10 +76,3 @@ rule plot_dispatch:
         directory("results/{scenario}/plotted/")
     shell:
         "python scripts/plotting.py {input} {output}"
-
-rule clean:
-    shell:
-        """
-        rm -r ./results/*
-        echo "Removed all results."
-        """
