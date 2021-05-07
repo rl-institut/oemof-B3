@@ -27,10 +27,23 @@ if __name__ == "__main__":
             start_date = '2019-12-01 00:00:00'
             end_date = '2019-12-13 23:00:00'
             plots.plot_dispatch(ax=ax, df=data, start_date=start_date, end_date=end_date,
-                                bus_name=electricity_bus_name, demand_name='BB-electricity-demand')
+                                bus_name=electricity_bus_name)
 
-            plt.legend(loc='best')
-            plt.tight_layout()
+            plt.grid()
+            plt.title(electricity_bus_name + " Dispatch", pad=20, fontdict={'size':22})
+            plt.xlabel("Date", loc='right', fontdict={'size':17})
+            plt.ylabel("Power", loc='top', fontdict={'size':17})
+            plt.xticks(fontsize=14)
+            plt.yticks(fontsize=14)
+ 
+            # Shrink current axis's height by 10% on the bottom
+            box = ax.get_position()
+            ax.set_position([box.x0, box.y0 + box.height * 0.15,
+                             box.width, box.height * 0.85])
+            # Put a legend below current axis
+            ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1),
+                      fancybox=True, ncol=5, fontsize=14)
 
+            fig.tight_layout()
             file_name = electricity_bus_name + ".pdf"
-            plt.savefig(os.path.join(plotted, file_name))
+            plt.savefig(os.path.join(plotted, file_name), bbox_inches='tight')
