@@ -13,9 +13,12 @@ Model pipeline
 Separation of processing steps
 ==============================
 
-The modelling of energy systems often entails multiple heterogeneous steps. They range from
-simply multiple steps of data processing to the usage of different languages like R or Python 
-or long processing time for individual steps. 
+The modeling of energy systems in most cases entails multiple distinct steps with different
+processing times (e.g. computations, aggregation, filtering in preprocessing, optimization,
+establishing derived results, plots and reports in postprocessing).
+
+Separating these steps allows to work on a certain part of the model pipeline without having to
+re-run all steps that are not affected by it. This can save a lot of time.
 
 Apart from the complex workflow in energy system modelling itself, open-source software should aim for 
 long lasting impact. To achieve this sustainable impact with software dealing with data analysis,
@@ -35,7 +38,7 @@ In the oemof-B3 model, the tool snakemake is used.
 Workflow management with Snakemake
 ==================================
 
-- installation of snakemake?
+Visit the `snakemake docs <>_` to learn more about snakemake and how to install it.
 
 
 How can snakemake help at workflow management?
@@ -71,7 +74,8 @@ When running snakemake with outputfiles in subfolders on Windows with
      snakemake -j<NUMBER_OF_CPU_CORES>
 
 a ``MissingRuleException`` is raised. The process is unable to specify the output files in subfolders. 
-This bug is an `open issue <https://github.com/snakemake/snakemake/issues/46>`_ at `snakemake <https://snakemake.readthedocs.io/>`_.
+This bug is an `open issue <https://github.com/snakemake/snakemake/issues/46>`_
+at `snakemake <https://snakemake.readthedocs.io/>`_.
 The `current workaround <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_
 described in `pypsa-eur <https://pypsa-eur.readthedocs.io/en/latest/index.html>`_
 is to run snakemake with the flag ``--keep-target-files`` to the command.
