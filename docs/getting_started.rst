@@ -23,7 +23,7 @@ Clone oemof-B3 from github:
     git clone git@github.com:rl-institut/oemof-B3.git
 
 
-Now you can install it your local version of oemoflex using pip:
+Now you can install your local version of oemof-B3 using pip:
 
 ::
 
@@ -32,39 +32,30 @@ Now you can install it your local version of oemoflex using pip:
 
 Requirements
 ------------
-1. To use `oemof-solph`, the core of oemof-B3, a LP/MILP solver must be installed.
-   To use the CBC solver install the `coinor-cbc` package:
-
-   ::
-
-    apt-get install coinor-cbc
+1. To use `oemof-solph`, which does the energy system optimization in oemof-B3,
+   a LP/MILP solver must be installed.
+   To use the CBC solver install the `coinor-cbc` package. For further details, read the
+   `installation instructions on
+   oemof.solph <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_.
 
 2. oemof-B3 needs `oemof-tabular` for data preprocessing.
-   Please install the dev version from github rather than installing from PyPi/pip.
+   If you install oemof-b3 locally, the current dev version of oemof.tabular will automatically
+   be installed.
 
-   ::
-
-    git clone https://github.com/oemof/oemof-tabular.git
-    cd oemof-tabular/
-    git checkout dev
-    pip install -e ./
-
-
-.. for the moment, as a todo:
-
-(for further installing issues and their solution, see https://github.com/rl-institut/oemof-B3/issues)
+If you have installation problems, consider opening an
+`issue <https://github.com/rl-institut/oemof-B3/issues>`_.
 
 
 Required data
 -------------
 
-**Not** provided with the github repository:
+Raw input_data is currently **not** provided with the github repository but will be published at a
+later stage:
 
-* Raw input data, see :ref:`input data format`.
-* Output template data, see :ref:`postprocessing`.
+.. todo: Link to the section that explains raw data.
 
 Contributing to oemof-B3
 ========================
 
-You can write issues to announce bugs or errors or to propose
-enhancements.
+You can write `issues <https://github.com/rl-institut/oemof-B3/issues>`_ to announce bugs or
+to propose enhancements.
