@@ -75,4 +75,4 @@ rule plot_dispatch:
     output:
         directory("results/{scenario}/plotted/")
     shell:
-        "python scripts/plotting.py {input} {output}"
+        "python scripts/plot_dispatch.py {input} {output}"
