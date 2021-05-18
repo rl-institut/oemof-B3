@@ -31,8 +31,9 @@ rule prepare_example:
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
         scenario="|".join(examples)
-    shell:
-        "python snake_copy.py {input} {output}"
+    run:
+        import shutil
+        shutil.copytree(src=input[0], dst=output[0])
 
 rule prepare_conv_pp:
     input:
