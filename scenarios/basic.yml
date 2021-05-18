@@ -10,20 +10,28 @@ links:
 busses:
   - ch4
   - electricity
+  - h2
   - heat
 
 components:
   - biomass-gt
   - ch4-boiler
+  - ch4-bpchp
+  - ch4-demand
   - ch4-excess
   - ch4-extchp
   - ch4-gt
   - electricity-demand
+  - electricity-electrolyzer
+  - electricity-excess
   - electricity-liion_battery
   - electricity-pth
   - electricity-shortage
   - h2-gt
+  - h2-methanisation
   - heat-demand
+  - heat-excess
+  - heat-shortage
   - heat-storage
   - hydro-ror
   - solar-pv
