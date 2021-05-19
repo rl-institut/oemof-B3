@@ -5,3 +5,5 @@ __pycache__/
 raw/
 results/
 docs/_build
+dist
+build
