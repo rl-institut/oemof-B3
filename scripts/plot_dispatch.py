@@ -22,6 +22,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
+import matplotlib.dates as mdates
 
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
@@ -70,6 +71,9 @@ if __name__ == "__main__":
             plt.ylabel("Power", loc="top", fontdict={"size": 17})
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
+            # format x-axis representing the dates
+            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+            plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator())
 
             # Shrink current axis's height by 10% on the bottom
             box = ax.get_position()
