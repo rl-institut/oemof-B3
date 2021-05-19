@@ -1,3 +1,22 @@
+r"""
+Inputs
+-------
+postprocessed : str
+    path to directory which contains the input data which can be plotted
+plotted : str
+    path where a new directory is created and the plots are saved
+
+Outputs
+---------
+.pdf
+    dispatch plot in pdf-format.
+
+Description
+-------------
+The script creates dispatch plots based on plot_dispatch function in oemoflex.
+The plots are saved as pdf-files in a new directory called plotted.
+Timeframes and the carrier for the plot can be chosen.
+"""
 import sys
 import os
 import pandas as pd
