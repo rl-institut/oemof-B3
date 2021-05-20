@@ -37,7 +37,7 @@ rule optimize:
 rule scenario_report:
     input:
         "report/report.md"
-        rules.scenario_plot.outputs
+        #rules.scenario_plot.outputs
     output:
          "report.{suffix}"
     wildcard_constraints:
@@ -47,6 +47,16 @@ rule scenario_report:
         pandoc -t report.md -o results/scenario_reports/{wildcards.scenario}
         """
 
+rule report:
+    input:
+        "report/report.md"
+    output:
+        "report.pdf"
+    shell:
+        """
+        cd report
+        pandoc report.md -o report.pdf
+        """
 
 rule clean:
     shell:
