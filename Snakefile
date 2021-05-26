@@ -50,12 +50,18 @@ rule scenario_report:
 rule report:
     input:
         "report/report.md"
+    params:
+        # TODO: Make this an input once the plot rule is defined
+        "results/{scenario}/plotted"
     output:
-        "report.pdf"
+        directory("results/{scenario}/report")
     shell:
         """
-        cd report
+        mkdir {output}
+        cp {input} {output}/report.md
+        cd {output}
         pandoc report.md -o report.pdf
+        rm report.md
         """
 
 rule clean:
