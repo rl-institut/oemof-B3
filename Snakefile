@@ -52,17 +52,17 @@ rule report:
         "report/report.md"
     params:
         # TODO: Make this an input once the plot rule is defined
-        "results/{scenario}/plotted"
+        "results/simple_model/plotted"
     output:
-        directory("results/{scenario}/report")
-    shell:
-        """
-        mkdir {output}
-        cp {input} {output}/report.md
-        cd {output}
-        pandoc report.md -o report.pdf
-        rm report.md
-        """
+        directory("results/simple_model/report")
+    run:
+        import os
+        import shutil
+        os.makedirs(output[0])
+        shutil.copy(src=input[0], dst=output[0])
+        os.chdir(output[0])
+        shell("pandoc --resource-path=../plotted report.md -o report.pdf")
+        os.remove("report.md")
 
 rule clean:
     shell:
