@@ -52,7 +52,7 @@ rule postprocess:
     output:
         directory("results/{scenario}/postprocessed/")
     shell:
-        "python scripts/postprocess.py {input} {output}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
 
 rule clean:
     shell:
