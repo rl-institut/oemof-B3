@@ -60,9 +60,8 @@ rule report:
         import shutil
         os.makedirs(output[0])
         shutil.copy(src=input[0], dst=output[0])
-        os.chdir(output[0])
-        shell("pandoc --resource-path=../plotted report.md -o report.pdf")
-        os.remove("report.md")
+        shell("pandoc --resource-path=../plotted {output}/report.md -o {output}/report.pdf")
+        os.remove(os.path.join(output[0], "report.md"))
 
 rule clean:
     shell:
