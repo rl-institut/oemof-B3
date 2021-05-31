@@ -1,11 +1,11 @@
 .. _examples_label:
 
-~~~~~~~~~~~~~~~
+~~~~~~~~
 Examples
-~~~~~~~~~~~~~~~
+~~~~~~~~
 
 Example 1
-=====
+=========
 The model consists of two nodes, one for Brandenburg and one for Berlin.
 
 Modelled components are 
@@ -26,9 +26,3 @@ Three scenarios have been built based on the grid development plan:
 - simple_model: corresponds to scenario A 2035 of the grid development plan
 - simple_model_2: corresponds to scenario B 2035 of the grid development plan
 - simple_model_3: corresponds to scenario B 2040 of the grid development plan
-
-
-Installation
-====
-
-pip install -r requirements.txt
