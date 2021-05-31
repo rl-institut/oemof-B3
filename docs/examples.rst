@@ -13,9 +13,11 @@ Modelled components are
 - renewable energies (wind, photovoltaic, biomass)
 - conventional power plants (gas, oil, others)
 
-Data for capacities of wind, photovoltaic and biomass as well as electricity demand have been taken from
-the grid development plan (`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/paragraphs-files/NEP_2035_V2021_1_Entwurf_Teil1.pdf>`_, p. 41 ff.).
-Data for efficiency and costs (specific annuity, fuel costs) are based on different sources as well as own assumptions and can be adjusted.
+Data for capacities of wind, photovoltaic and biomass as well as electricity demand have been taken
+from the grid development plan
+(`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/paragraphs-files/NEP_2035_V2021_1_Entwurf_Teil1.pdf>`_, p. 41 ff.).
+Data for efficiency and costs (specific annuity, fuel costs) are based on different sources as well
+as own assumptions and can be adjusted.
 
 
 All electricity generating components can be expanded. 
