@@ -4,9 +4,10 @@
 Examples
 ~~~~~~~~
 
-Example 1
-=========
-The model consists of two nodes, one for Brandenburg and one for Berlin.
+To give a quick intro into oemof-B3's capabilities, we provides 3 simplified toy scenarios.
+
+The energy system of Brandenburg/Berlin is represented by two nodes, one for Brandenburg and one for
+Berlin. The heat sector is not modeled.
 
 Modelled components are 
 
