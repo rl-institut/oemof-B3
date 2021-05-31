@@ -10,9 +10,9 @@ from oemof.tabular.facades import TYPEMAP
 
 # select scenario
 scenario_names = [
-    'simple_model',
-    'simple_model_1',
-    'simple_model_2',
+    "simple_model",
+    "simple_model_1",
+    "simple_model_2",
 ]
 
 try:
@@ -21,8 +21,10 @@ try:
 except IndexError:
     raise IndexError("Please pass scenario name.")
 
-assert scenario_name in scenario_names, f"Scenario '{scenario_name}' not found. Please select one" \
-                                        f" of the defined scenarios ({scenario_names})."
+assert scenario_name in scenario_names, (
+    f"Scenario '{scenario_name}' not found. Please select one"
+    f" of the defined scenarios ({scenario_names})."
+)
 
 # define directories
 here = os.path.abspath(os.path.dirname(__file__))

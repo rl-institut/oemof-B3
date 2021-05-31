@@ -7,9 +7,9 @@ from oemoflex.model.datapackage import EnergyDataPackage
 
 # select scenario
 scenario_names = [
-    'simple_model',
-    'simple_model_1',
-    'simple_model_2',
+    "simple_model",
+    "simple_model_1",
+    "simple_model_2",
 ]
 
 try:
@@ -18,8 +18,10 @@ try:
 except IndexError:
     raise IndexError("Please pass scenario name.")
 
-assert scenario_name in scenario_names, f"Scenario '{scenario_name}' not found. Please select one" \
-                                        f" of the defined scenarios ({scenario_names})."
+assert scenario_name in scenario_names, (
+    f"Scenario '{scenario_name}' not found. Please select one"
+    f" of the defined scenarios ({scenario_names})."
+)
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,9 +35,9 @@ edp = EnergyDataPackage.setup_default(
     name=scenario_name,
     basepath=preprocessed,
     datetimeindex=pd.date_range("1/1/2016", periods=24 * 10, freq="H"),
-    regions=['BB', 'BE'],
-    links=['BB-BE'],
-    busses=['electricity', 'ch4'],
+    regions=["BB", "BE"],
+    links=["BB-BE"],
+    busses=["electricity", "ch4"],
     components=[
         "electricity-shortage",
         "electricity-curtailment",
