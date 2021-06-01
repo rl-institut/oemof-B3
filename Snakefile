@@ -36,6 +36,14 @@ rule optimize:
     shell:
         "python scripts/optimize.py {input} {output}"
 
+rule join_scenario_results:
+    input:
+        "scenario_groups/{scenario_list}.yml"
+    output:
+        "results/joined_scenarios/{scenario_list}/scalars.csv"
+    shell:
+        "python scripts/join_scenarios.py {input} {output}"
+
 rule clean:
     shell:
         """
