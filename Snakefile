@@ -28,6 +28,19 @@ rule prepare_conv_pp:
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
+rule calculate_pv_potential:
+    input:
+        type="pv",
+        agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
+        road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
+#         assumptions="raw/b3_regions.yaml",
+        script="scripts/prepare_re_potential.py"
+    output:
+        "results/_resources/power_potential_pv_kreise.csv"
+    shell:
+        "python scripts/prepare_re_potential.py {input.type} {input.agriculture} {input.road_railway} {output}"
+#         "python scripts/prepare_re_potential.py  {input.type} {input.agriculture} {input.road_railway} {input.assumptions} {output}"
+
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
