@@ -1,9 +1,0 @@
-attribute,type,unit,default,suffix,description
-region,str,n/a,n/a,,Country code
-name,str,n/a,,-electricity-demand,Name
-type,str,n/a,load,,Type
-carrier,str,n/a,electricity,,Energy carrier
-tech,str,n/a,demand,,Technology
-bus,str,n/a,,-electricity,The bus this component is connected to
-amount,float,GWh/a,n/a,,Total load over one year
-profile,str,n/a,n/a,-electricity-demand-profile,Name of the profile

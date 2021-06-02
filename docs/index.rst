@@ -12,6 +12,7 @@ Welcome to oemof-B3's documentation!
 
    overview
    getting_started
+   examples
 
 .. toctree::
    :maxdepth: 1
@@ -19,7 +20,7 @@ Welcome to oemof-B3's documentation!
 
    model_pipeline
    model_structure
-   # postprocessing
+   preprocessing
 
 .. toctree::
    :maxdepth: 1
