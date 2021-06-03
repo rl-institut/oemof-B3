@@ -1,17 +1,41 @@
 # coding: utf-8
 r"""
 Inputs
-------- # todo adpt input description
-in_path1 : str
-    path of input file with raw opsd data as .csv
+-------
+type : str
+    Type of area potential to be calculated: "pv" or "wind"
+filename_agriculture : str
+    Path incl. file name to area potential agriculture pv csv
+filename_road_railway : str
+    Path incl. file name to area potential roads and railway pv csv
+filename_wind : str
+    Path incl. file name to area potential wind csv
+filename_assumptions : str
+    Path incl. file name to assumptions csv
 
 Outputs
 ---------
-# todo
+output_file : str
+    Path incl. file name to output: power potential wind/pv of "Landkreise"
 
 Description
 -------------
-# todo
+Calculates the area and power potential of photovoltaics or wind energy depending on
+`type`. The area of single areas are retrieved from csv files and processed. The
+resulting area and power potential is saved in `output_file`
+
+Saves the following data for "Landkreise":
+    - power potential in column 'power_potential'
+    - area potential before processing in column 'area'
+    - area potential after processing and reducing by degree of agreement in column 'area_agreed'
+    - percentage of overleaps between the areas in columns 'overleap_pv_agriculture_percent',
+      'overleap_pv_road_railway_percent', only for pv: 'overleap_wind_percent'
+    - only for wind: amount of wind turbines per area in column 'amount_of_wind_turbines'
+
+Additonally saves the following data in "../results/RE_potential":
+    - joined PV area potential of single areas in column 'area_raw' in "area_potential_single_areas_pv_raw.csv"
+    - area potential of single areas after processing in column 'area_agreed' in f"area_potential_single_areas_{type}.csv" for `type`
+    -
 
 """
 import os
@@ -310,7 +334,13 @@ def calculate_power_potential(
     r"""
     Calculates PV power potential for each area and Landkreis and saves results to csv.
 
-    Saves power potential of "Landkreise" in column 'power_potential' in `output_file`.
+    Saves the following data for "Landkreise" in `output_file`.
+    - power potential in column 'power_potential'
+    - area potential before processing in column 'area'
+    - area potential after processing and reducing by degree of agreement in column 'area_agreed'
+    - percentage of overleaps between the areas in columns 'overleap_pv_agriculture_percent',
+      'overleap_pv_road_railway_percent', only for pv: 'overleap_wind_percent'
+    - only for wind: amount of wind turbines per area in column 'amount_of_wind_turbines'
 
     Parameters
     ----------
