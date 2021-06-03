@@ -382,27 +382,23 @@ def calculate_power_potential(
 
 
 if __name__ == "__main__":
-    # type = sys.argv[1] # pv or wind
-    # if type == "pv":
-    #     filename_agriculture = sys.argv[2]  # path incl. file name to area potential agriculture pv csv
-    #     filename_road_railway = sys.argv[3]  # path incl. file name to area roads and railway pv csv
-    #     # filename_assumptions = sys.argv[X]  # path incl. file name to assumptions csv
-    #     output_file = sys.argv[4]  # path incl. file name to output: power potential pv of Kreise
-    #     calculate_potential_pv(filename_agriculture=filename_agriculture, filename_road_railway=filename_road_railway, output_file=output_file)
-    # elif type== "wind":
-    #     pass # todo
-    # else:
-    #     raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
-
-    calculate_potential_pv(
-        filename_agriculture="../raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
-        filename_road_railway="../raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
-        out_dir_intermediate="../results/RE_potential",
-        output_file="../results/_resources/power_potential_pv_kreise.csv",
-    )
-
-    calculate_potential_wind(
-        filename_wind="../raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
-        out_dir_intermediate="../results/RE_potential",
-        output_file="../results/_resources/power_potential_wind_kreise.csv",
-    )
+    type = sys.argv[1]
+    output_file = sys.argv[4]
+    if type == "pv":
+        filename_agriculture = sys.argv[2][0]
+        filename_road_railway = sys.argv[2][1]
+        filename_assumptions = sys.argv[3]
+        calculate_potential_pv(
+            filename_agriculture=filename_agriculture,
+            filename_road_railway=filename_road_railway,
+            output_file=output_file,
+        )
+    elif type == "wind":
+        filename_wind = sys.argv[2][0]
+        filename_assumptions = sys.argv[3]
+        calculate_potential_wind(
+            filename_wind=filename_wind,
+            output_file=output_file,
+        )
+    else:
+        raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
