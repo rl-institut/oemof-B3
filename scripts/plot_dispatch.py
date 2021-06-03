@@ -92,3 +92,5 @@ if __name__ == "__main__":
             fig.tight_layout()
             file_name = bus_name + "_" + start_date[5:7] + ".pdf"
             plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
+            file_name = bus_name + "_" + start_date[5:7] + ".png"
+            plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
