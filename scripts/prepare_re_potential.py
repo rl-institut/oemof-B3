@@ -311,20 +311,6 @@ def calculate_area_potential(
     )
     areas.to_csv(filename_single_areas)
 
-    # # sum up area potential of "Landkreise"
-    # areas_kreise = areas.groupby("NUTS")[
-    #     "area_pv_raw",
-    #     "area",
-    #     "overleap_pv_agriculture_percent",
-    #     "overleap_pv_road_railway_percent",
-    #     "overleap_wind_percent",
-    #     "area_agreed",
-    # ].sum()
-
-    # # save area potential of NUTS3 (Landkreise)
-    # filename_kreise = os.path.join(out_dir_intermediate, f"area_potential_kreise_{type}.csv")
-    # areas_kreise.to_csv(filename_single_areas)
-
     return filename_single_areas
 
 
