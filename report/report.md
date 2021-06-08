@@ -1,6 +1,8 @@
-# Report
+## Main results
 
-## Plots
+## Scalar plots
+
+## Electricity dispatch
 
 \center
 ![Plot 1](BB-electricity_01.png)
