@@ -72,8 +72,8 @@ rule report:
         import shutil
         os.makedirs(output[0])
         shutil.copy(src=input[0], dst=output[0])
-        shell("pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted {output}/report.md -o {output}/report.pdf")
-        shell("pandoc --resource-path={output}/../plotted {output}/report.md --self-contained -s --include-in-header=report/report.css -o {output}/report.html")
+        shell("pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted --metadata title='Results for scenario {wildcards.scenario}' {output}/report.md -o {output}/report.pdf")
+        shell("pandoc --resource-path={output}/../plotted {output}/report.md --metadata title='Results for scenario {wildcards.scenario}' --self-contained -s --include-in-header=report/report.css -o {output}/report.html")
         os.remove(os.path.join(output[0], "report.md"))
 
 rule clean:
