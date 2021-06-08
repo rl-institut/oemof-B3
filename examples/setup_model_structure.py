@@ -8,9 +8,9 @@ from oemoflex.model.datapackage import EnergyDataPackage
 
 # select scenario
 scenario_names = [
-    "simple_model",
-    "simple_model_1",
-    "simple_model_2",
+    "base",
+    "more_renewables",
+    "more_renewables_less_fossil",
 ]
 
 try:
