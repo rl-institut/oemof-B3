@@ -1,7 +1,7 @@
 examples = [
-    'simple_model',
-    'simple_model_2',
-    'simple_model_3'
+    'base',
+    'more_renewables',
+    'more_renewables_less_fossil'
 ]
 
 rule run_all_examples:

@@ -1,3 +1,0 @@
-region,name,type,carrier,tech,from_bus,to_bus,capacity,capacity_cost,efficiency,carrier_cost,marginal_cost,expandable,output_parameters
-BE,BE-biomass-st,conversion,biomass,gt,BE-biomass,BE-electricity,0,213,0.38,0.041,0.0014,True,{}
-BB,BB-biomass-st,conversion,biomass,gt,BB-biomass,BB-electricity,300000,213,0.38,0.041,0.0014,True,{}

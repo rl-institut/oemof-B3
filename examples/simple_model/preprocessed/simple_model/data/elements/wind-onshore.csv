@@ -1,3 +1,0 @@
-region,name,type,carrier,tech,bus,capacity,capacity_cost,marginal_cost,profile,output_parameters
-BE,BE-wind-onshore,volatile,wind,onshore,BE-electricity,100000,110.18,0,BE-wind-onshore-profile,{}
-BB,BB-wind-onshore,volatile,wind,onshore,BB-electricity,11600000,110.18,0,BB-wind-onshore-profile,{}
