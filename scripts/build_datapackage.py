@@ -4,6 +4,8 @@ import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
 
+from oemof_b3.model import component_attrs_update, bus_attrs_update
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -17,6 +19,8 @@ if __name__ == "__main__":
     edp = EnergyDataPackage.setup_default(
         basepath=destination,
         datetimeindex=pd.date_range("1/1/2016", periods=24 * 10, freq="H"),
+        bus_attrs_update=bus_attrs_update,
+        component_attrs_update=component_attrs_update,
         **scenario_specs,
     )
 
