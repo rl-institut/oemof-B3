@@ -22,8 +22,9 @@ Data for efficiency and costs (specific annuity, fuel costs) are based on differ
 as own assumptions and can be adjusted.
 
 
-All electricity generating components can be expanded. 
-Additionally, it can be invested into grid expansion and battery storage.
+The electricity generating components and the grid cannot be expanded. Both are fixed.
+But it can be invested into battery storage to expand it.
+
 
 Three scenarios have been built based on the grid development plan:
 
