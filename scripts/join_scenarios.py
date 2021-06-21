@@ -1,3 +1,21 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+list_scenarios : path
+    Path to yaml-file containing a list of scenarios.
+destination : path
+    Path of output file to store joined scalar results.
+
+Outputs
+---------
+.csv-file
+    File containing the joined scalar results of the scenarios.
+
+Description
+-------------
+This script joins scalar results of a set of scenarios.
+"""
 import os
 import sys
 
