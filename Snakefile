@@ -9,14 +9,14 @@ examples = [
 rule run_all_examples:
     input:
         expand("results/{scenario}/postprocessed", scenario=examples)
-        
-rule report_all_examples:
-    input:
-        expand("results/{scenario}/report/", scenario=examples)
 
 rule plot_all_examples:
     input:
         expand("results/{scenario}/plotted/", scenario=examples)
+
+rule report_all_examples:
+    input:
+        expand("results/{scenario}/report/", scenario=examples)
 
 rule clean:
     shell:
