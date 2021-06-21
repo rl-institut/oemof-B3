@@ -4,13 +4,28 @@ examples = [
     'more_renewables_less_fossil'
 ]
 
+# Target rules
+
 rule run_all_examples:
     input:
         expand("results/{scenario}/postprocessed", scenario=examples)
-        
+
+rule plot_all_examples:
+    input:
+        expand("results/{scenario}/plotted/", scenario=examples)
+
 rule report_all_examples:
     input:
         expand("results/{scenario}/report/", scenario=examples)
+
+rule clean:
+    shell:
+        """
+        rm -r ./results/*
+        echo "Removed all results."
+        """
+
+# Rules for intermediate steps
 
 rule prepare_example:
     input:
@@ -20,8 +35,9 @@ rule prepare_example:
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
         scenario="|".join(examples)
-    shell:
-        "cp -r {input} {output}"
+    run:
+        import shutil
+        shutil.copytree(src=input[0], dst=output[0])
 
 rule prepare_conv_pp:
     input:
@@ -58,6 +74,14 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
 
+rule plot_dispatch:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/")
+    shell:
+        "python scripts/plot_dispatch.py {input} {output}"
+
 rule report:
     input:
         "report/report.md"
@@ -74,10 +98,3 @@ rule report:
         shell("pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted --metadata title='Results for scenario {wildcards.scenario}' {output}/report.md -o {output}/report.pdf")
         shell("pandoc --resource-path={output}/../plotted {output}/report.md --metadata title='Results for scenario {wildcards.scenario}' --self-contained -s --include-in-header=report/report.css -o {output}/report.html")
         os.remove(os.path.join(output[0], "report.md"))
-
-rule clean:
-    shell:
-        """
-        rm -r ./results/*
-        echo "Removed all results."
-        """
