@@ -41,7 +41,7 @@ if __name__ == "__main__":
             os.path.join("results", scenario, "postprocessed", "scalars.csv")
         )
 
-        assert "scenario" in scalars.columns,\
+        assert "scenario" in scalars.index.names,\
             f"Scalar results of scenario '{scenario}' need a scenario column before joining."
 
         joined_scalars.append(scalars)
