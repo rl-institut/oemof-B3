@@ -1,7 +1,7 @@
 examples = [
-    'simple_model',
-    'simple_model_2',
-    'simple_model_3'
+    'base',
+    'more_renewables',
+    'more_renewables_less_fossil'
 ]
 
 # Target rules
@@ -9,6 +9,10 @@ examples = [
 rule run_all_examples:
     input:
         expand("results/{scenario}/postprocessed", scenario=examples)
+        
+rule report_all_examples:
+    input:
+        expand("results/{scenario}/report/", scenario=examples)
 
 rule plot_all_examples:
     input:
@@ -68,7 +72,24 @@ rule postprocess:
     output:
         directory("results/{scenario}/postprocessed/")
     shell:
-        "python scripts/postprocess.py {input} {output}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
+
+rule report:
+    input:
+        "report/report.md"
+    params:
+        # TODO: Make this an input once the plot rule is defined
+        "results/{scenario}/plotted"
+    output:
+        directory("results/{scenario}/report/")
+    run:
+        import os
+        import shutil
+        os.makedirs(output[0])
+        shutil.copy(src=input[0], dst=output[0])
+        shell("pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted --metadata title='Results for scenario {wildcards.scenario}' {output}/report.md -o {output}/report.pdf")
+        shell("pandoc --resource-path={output}/../plotted {output}/report.md --metadata title='Results for scenario {wildcards.scenario}' --self-contained -s --include-in-header=report/report.css -o {output}/report.html")
+        os.remove(os.path.join(output[0], "report.md"))
 
 rule plot_dispatch:
     input:

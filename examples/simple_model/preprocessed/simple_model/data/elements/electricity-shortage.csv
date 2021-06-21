@@ -1,3 +1,0 @@
-region,name,type,carrier,tech,bus,capacity,marginal_cost,output_parameters
-BE,BE-electricity-shortage,shortage,electricity,shortage,BE-electricity,0,0,{}
-BB,BB-electricity-shortage,shortage,electricity,shortage,BB-electricity,0,0,{}
