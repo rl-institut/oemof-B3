@@ -1,6 +1,6 @@
 {
     "profile": "tabular-data-package",
-    "name": "simple_model_3",
+    "name": "more_renewables_less_fossil",
     "resources": [
         {
             "path": "data/elements/electricity-transmission.csv",
@@ -47,12 +47,12 @@
                         "format": "default"
                     },
                     {
-                        "name": "capacity",
+                        "name": "from_to_capacity",
                         "type": "integer",
                         "format": "default"
                     },
                     {
-                        "name": "capacity_cost",
+                        "name": "to_from_capacity",
                         "type": "integer",
                         "format": "default"
                     },
