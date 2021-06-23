@@ -95,7 +95,6 @@ if __name__ == "__main__":
             file_name = bus_name + "_" + start_date[5:7] + ".png"
             plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
 
-
     bus_path = "results/base/postprocessed/sequences/bus/BB-electricity.csv"
     data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
@@ -106,7 +105,7 @@ if __name__ == "__main__":
     )
 
     fig_plotly.write_html(
-        file=os.path.join(plotted, 'dispatch_interactive.html'),
+        file=os.path.join(plotted, "dispatch_interactive.html"),
         # include_plotlyjs=False,
         # full_html=False
     )
