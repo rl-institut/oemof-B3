@@ -1,2 +1,2 @@
 region,name,type,carrier,tech,from_bus,to_bus,capacity,capacity_cost,loss
-BE_BB,BE-BB-electricity-transmission,link,electricity,transmission,BE-electricity,BB-electricity,0,0,0
+BE_BB,BE-BB-electricity-transmission,link,electricity,transmission,BE-electricity,BB-electricity,3000000,0,0
