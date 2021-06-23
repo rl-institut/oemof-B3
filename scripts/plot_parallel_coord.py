@@ -5,23 +5,35 @@ import pandas as pd
 import plotly.express as px
 
 
-def prepare_parallel_coord_data(scalars, var_value):
-    idx = pd.IndexSlice
+def prepare_parallel_coord_data(scalars):
 
-    scalars_in = scalars.copy()
-
-    # select var_value
-    values = scalars_in.loc[idx[:, :, var_value], :]
+    _scalars = scalars.copy()
 
     # drop other columns (region, type, carrier, tech)
-    values = values.loc[:, "var_value"]
+    _scalars = _scalars.set_index(['scenario', 'carrier', 'tech', 'var_name'])
+
+    _scalars = _scalars.loc[:, "var_value"]
 
     # reshape
-    values = values.unstack([1, 2])
-    values.reset_index(inplace=True)
-    values.columns = values.columns.droplevel(1)
+    _scalars = _scalars.unstack(['carrier', 'tech', 'var_name'])
 
-    return values
+    _scalars.reset_index(inplace=True)
+
+    # flatten columns
+    _scalars.columns = _scalars.columns.map(lambda x: '-'.join(x))
+
+    return _scalars
+
+
+def aggregate_regions(scalars):
+
+    _scalars = scalars.copy()
+
+    _scalars = _scalars.groupby(['scenario', 'carrier', 'tech', 'var_name']).sum()
+
+    _scalars.reset_index(inplace=True)
+
+    return _scalars
 
 
 if __name__ == "__main__":
@@ -33,20 +45,23 @@ if __name__ == "__main__":
     if not os.path.exists(plotted_joined):
         os.makedirs(plotted_joined)
 
-    scalars = pd.read_csv(joined, index_col=[0, 1, 2])
+    scalars = pd.read_csv(joined)
 
-    var_value = "capacity"
+    # aggregate regions
+    scalars = aggregate_regions(scalars)
 
-    capacity = prepare_parallel_coord_data(scalars, var_value)
+    # select var_name
+    var_name = "capacity"
 
-    # Hack to get numeric indices for the colors
-    capacity["scenario"] = capacity.index
+    selected_scalars = scalars.loc[scalars['var_name'] == var_name]
 
+    par_coord_scalars = prepare_parallel_coord_data(selected_scalars)
+
+    print(par_coord_scalars)
     fig = px.parallel_coordinates(
-        capacity,
-        color="scenario",
+        par_coord_scalars,
+        color=par_coord_scalars.index,
         color_continuous_scale=px.colors.diverging.Tealrose,
-        color_continuous_midpoint=2,
     )
 
     fig.write_html(
