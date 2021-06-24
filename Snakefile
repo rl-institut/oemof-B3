@@ -84,10 +84,8 @@ rule plot_dispatch:
 
 rule report:
     input:
-        "report/report.md"
-    params:
-        # TODO: Make this an input once the plot rule is defined
-        "results/{scenario}/plotted"
+        template="report/report.md",
+        plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
     run:
