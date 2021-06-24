@@ -53,7 +53,7 @@ if __name__ == "__main__":
         data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
         # interactive plotly dispatch plot
-        fig_plotly = plots.plot_dispatch_plotly2(
+        fig_plotly = plots.plot_dispatch_plotly(
             df=data.copy(),
             bus_name=bus_name,
         )
