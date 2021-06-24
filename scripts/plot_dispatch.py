@@ -55,7 +55,7 @@ if __name__ == "__main__":
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly2(
             df=data.copy(),
-            bus_name="BB-electricity",
+            bus_name=bus_name,
         )
 
         file_name = bus_name + "_dispatch_interactive" + ".html"
