@@ -1,16 +1,31 @@
 examples = [
-    'simple_model',
-    'simple_model_2',
-    'simple_model_3'
+    'base',
+    'more_renewables',
+    'more_renewables_less_fossil'
 ]
 
-rule build_datapackage:
+# Target rules
+
+rule run_all_examples:
     input:
-        "scenarios/{scenario}.yml"
-    output:
-        directory("results/{scenario}/preprocessed")
+        expand("results/{scenario}/postprocessed", scenario=examples)
+
+rule plot_all_examples:
+    input:
+        expand("results/{scenario}/plotted/", scenario=examples)
+
+rule report_all_examples:
+    input:
+        expand("results/{scenario}/report/", scenario=examples)
+
+rule clean:
     shell:
-        "python scripts/build_datapackage.py {input} {output}"
+        """
+        rm -r ./results/*
+        echo "Removed all results."
+        """
+
+# Rules for intermediate steps
 
 rule prepare_example:
     input:
@@ -19,9 +34,10 @@ rule prepare_example:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
-        scenario="simple_model*"
-    shell:
-        "cp -r {input} {output}"
+        scenario="|".join(examples)
+    run:
+        import shutil
+        shutil.copytree(src=input[0], dst=output[0])
 
 rule prepare_conv_pp:
     input:
@@ -34,6 +50,14 @@ rule prepare_conv_pp:
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
+rule build_datapackage:
+    input:
+        "scenarios/{scenario}.yml"
+    output:
+        directory("results/{scenario}/preprocessed")
+    shell:
+        "python scripts/build_datapackage.py {input} {output}"
+
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
@@ -42,29 +66,26 @@ rule optimize:
     shell:
         "python scripts/optimize.py {input} {output}"
 
-rule scenario_report_old:
+rule postprocess:
     input:
-        "report/report.md"
-        #rules.scenario_plot.outputs
+        "results/{scenario}/optimized"
     output:
-         "report.{suffix}"
-    wildcard_constraints:
-        suffix = "{(html)|(pdf)}"
+        directory("results/{scenario}/postprocessed/")
     shell:
-        """
-        pandoc -t report.md -o results/scenario_reports/{wildcards.scenario}
-        """
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
 
-rule report_all_examples:
+rule plot_dispatch:
     input:
-        expand("results/{scenario}/report/", scenario=examples)
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/")
+    shell:
+        "python scripts/plot_dispatch.py {input} {output}"
 
 rule report:
     input:
-        "report/report.md"
-    params:
-        # TODO: Make this an input once the plot rule is defined
-        "results/{scenario}/plotted"
+        template="report/report.md",
+        plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
     run:
@@ -75,10 +96,3 @@ rule report:
         shell('pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted --metadata title="Results for scenario {wildcards.scenario}" {output}/report.md -o {output}/report.pdf')
         shell('pandoc --resource-path={output}/../plotted {output}/report.md --metadata title="Results for scenario {wildcards.scenario}" --self-contained -s --include-in-header=report/report.css -o {output}/report.html')
         os.remove(os.path.join(output[0], "report.md"))
-
-rule clean:
-    shell:
-        """
-        rm -r ./results/*
-        echo "Removed all results."
-        """
