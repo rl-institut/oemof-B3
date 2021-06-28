@@ -101,7 +101,7 @@ rule join_scenario_results:
     input:
         "scenario_groups/{scenario_list}.yml"
     output:
-        "results/joined_scenarios/{scenario_list}/scalars.csv"
+        "results/joined_scenarios/{scenario_list}/postprocessed/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
