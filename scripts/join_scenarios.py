@@ -40,10 +40,7 @@ if __name__ == "__main__":
         scalars = load_scalars(
             os.path.join("results", scenario, "postprocessed", "scalars.csv")
         )
-
-        assert "scenario" in scalars.index.names,\
-            f"Scalar results of scenario '{scenario}' need a scenario column before joining."
-
+        scalars["scenario"] = scenario
         joined_scalars.append(scalars)
 
     joined_scalars = pd.concat(joined_scalars)
