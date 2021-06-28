@@ -1,0 +1,29 @@
+oil-st:
+  carrier: biomass
+  tech: st
+  type: conversion
+  foreign_keys:
+    from_bus: oil
+    to_bus: electricity
+  defaults:
+    output_parameters: "{}"
+
+biomass-st:
+  carrier: biomass
+  tech: st
+  type: conversion
+  foreign_keys:
+    from_bus: biomass
+    to_bus: electricity
+  defaults:
+    output_parameters: "{}"
+
+other-st:
+  carrier: other
+  tech: st
+  type: conversion
+  foreign_keys:
+    from_bus: other
+    to_bus: electricity
+  defaults:
+    output_parameters: "{}"
