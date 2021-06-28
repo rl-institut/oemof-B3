@@ -57,7 +57,6 @@ if __name__ == "__main__":
 
     par_coord_scalars = prepare_parallel_coord_data(selected_scalars)
 
-    print(par_coord_scalars)
     fig = px.parallel_coordinates(
         par_coord_scalars,
         color=par_coord_scalars.index,
