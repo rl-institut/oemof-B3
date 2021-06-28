@@ -10,17 +10,17 @@ def prepare_parallel_coord_data(scalars):
     _scalars = scalars.copy()
 
     # drop other columns (region, type, carrier, tech)
-    _scalars = _scalars.set_index(['scenario', 'carrier', 'tech', 'var_name'])
+    _scalars = _scalars.set_index(["scenario", "carrier", "tech", "var_name"])
 
     _scalars = _scalars.loc[:, "var_value"]
 
     # reshape
-    _scalars = _scalars.unstack(['carrier', 'tech', 'var_name'])
+    _scalars = _scalars.unstack(["carrier", "tech", "var_name"])
 
     _scalars.reset_index(inplace=True)
 
     # flatten columns
-    _scalars.columns = _scalars.columns.map(lambda x: '-'.join(x))
+    _scalars.columns = _scalars.columns.map(lambda x: "-".join(x))
 
     return _scalars
 
@@ -29,7 +29,7 @@ def aggregate_regions(scalars):
 
     _scalars = scalars.copy()
 
-    _scalars = _scalars.groupby(['scenario', 'carrier', 'tech', 'var_name']).sum()
+    _scalars = _scalars.groupby(["scenario", "carrier", "tech", "var_name"]).sum()
 
     _scalars.reset_index(inplace=True)
 
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # select var_name
     var_name = "capacity"
 
-    selected_scalars = scalars.loc[scalars['var_name'] == var_name]
+    selected_scalars = scalars.loc[scalars["var_name"] == var_name]
 
     par_coord_scalars = prepare_parallel_coord_data(selected_scalars)
 
