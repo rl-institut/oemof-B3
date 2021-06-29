@@ -4,22 +4,24 @@
 Examples
 ~~~~~~~~
 
-To give a quick intro into oemof-B3's capabilities, we provides 3 simplified toy scenarios.
+To give a quick intro into oemof-B3's capabilities, we provide 3 simplified toy scenarios.
 
 The energy system of Brandenburg/Berlin is represented by two nodes, one for Brandenburg and one for
 Berlin. The heat sector is not modeled.
 
 Modelled components are 
 
-- renewable energies (wind, photovoltaic, biomass)
-- conventional power plants (gas, oil, others)
+- renewable energies (wind, photovoltaic, biomass),
+- conventional power plants (gas, oil, others),
+- li-ion batteries,
+- transmission grid connection between BB and BE.
 
 Data for capacities of wind, photovoltaic and biomass as well as electricity demand have been taken
 from the grid development plan
 (`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/paragraphs-files/NEP_2035_V2021_1_Entwurf_Teil1.pdf>`_, p. 41 ff.). 
 :cite:`NEP2021_Entwurf_1`
-Data for efficiency and costs (specific annuity, fuel costs) are based on different sources as well
-as own assumptions and can be adjusted.
+Data for efficiencies and costs (specific annuity, fuel costs) are based on different sources as well
+as own assumptions.
 
 
 The electricity generating components and the grid cannot be expanded. Both are fixed.
