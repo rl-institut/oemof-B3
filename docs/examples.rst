@@ -4,7 +4,8 @@
 Examples
 ~~~~~~~~
 
-To give a quick intro into oemof-B3's capabilities, we provide 3 simplified toy scenarios.
+To give a quick intro into oemof-B3's capabilities, we provide 3 simple
+`example scenarios <https://github.com/rl-institut/oemof-B3/tree/dev/examples>`_.
 
 The energy system of Brandenburg/Berlin is represented by two nodes, one for Brandenburg and one for
 Berlin. The heat sector is not modeled.
