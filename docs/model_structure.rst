@@ -1,8 +1,8 @@
 .. _model_structure_label:
 
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 Model structure
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 .. contents:: `Contents`
     :depth: 1
