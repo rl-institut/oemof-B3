@@ -1,7 +1,11 @@
 .idea/
 .snakemake/
-*.egg-info/
 __pycache__/
 raw/
 results/
 docs/_build
+# Packages
+*.egg
+*.egg-info
+dist
+build
