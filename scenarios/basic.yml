@@ -1,3 +1,8 @@
+# This scenario config file contains information for several steps in the model pipeline, i.e.
+# build_datapackage, parametrize, optimize and potentially also postprocess or plot.
+
+# build_datapackage
+
 name: basic
 
 regions:
@@ -35,3 +40,14 @@ components:
   - hydro-ror
   - solar-pv
   - wind-onshore
+
+# parametrize
+
+# paths to input data files
+
+# optimize
+
+# solver: "cbc"
+# debug: "False"
+# receive_duals: "False"
+# dump params: "True"
