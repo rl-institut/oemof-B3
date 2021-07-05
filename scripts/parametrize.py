@@ -17,6 +17,17 @@ def update_with_checks(old, new):
         raise Warning("Update would overwrite existing data.")
 
 
+def parametrize_scalars(edp, scalars):
+
+    edp.stack_components()
+
+    update_with_checks(edp.data["component"], scalars)
+
+    edp.unstack_components()
+
+    return edp
+
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -27,16 +38,11 @@ if __name__ == "__main__":
     # setup default structure
     edp = EnergyDataPackage.from_csv_dir(edp_path)
 
-    # Stack
-    edp.stack_components()
-
     path_scalars = scenario_specs["path_scalars"]
 
     scalars = pd.read_csv(path_scalars, index_col=[0, 1])["var_value"]
 
-    update_with_checks(edp.data["component"], scalars)
-
-    edp.unstack_components()
+    edp = parametrize_scalars(edp, scalars)
 
     # save to csv
     edp.to_csv_dir(edp_path)
