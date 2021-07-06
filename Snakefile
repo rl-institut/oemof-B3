@@ -61,7 +61,8 @@ rule report_all_examples:
 
 rule report:
     input:
-        "report/report.md"
+        "report/report.md",
+        "report/report_interactive.md"
     params:
         # TODO: Make this an input once the plot rule is defined
         "results/{scenario}/plotted"
@@ -72,9 +73,12 @@ rule report:
         import shutil
         os.makedirs(output[0])
         shutil.copy(src=input[0], dst=output[0])
+        shutil.copy(src=input[1], dst=output[0])
         shell("pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted --metadata title='Results for scenario {wildcards.scenario}' {output}/report.md -o {output}/report.pdf")
         shell("pandoc --resource-path={output}/../plotted {output}/report.md --metadata title='Results for scenario {wildcards.scenario}' --self-contained -s --include-in-header=report/report.css -o {output}/report.html")
+        shell("pandoc --resource-path={output}/../plotted {output}/report_interactive.md --metadata title='Results for scenario {wildcards.scenario}' --self-contained -s --include-in-header=report/report.css -o {output}/report_interactive.html")
         os.remove(os.path.join(output[0], "report.md"))
+        os.remove(os.path.join(output[0], "report_interactive.md"))
 
 rule clean:
     shell:
