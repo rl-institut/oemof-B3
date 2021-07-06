@@ -50,7 +50,9 @@ if __name__ == "__main__":
         bus_name = os.path.splitext(bus_file)[0]
         bus_path = os.path.join(bus_directory, bus_file)
 
-        data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
+        ax, data = pd.read_csv(
+            bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0]
+        )
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
