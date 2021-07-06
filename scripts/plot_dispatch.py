@@ -61,7 +61,7 @@ if __name__ == "__main__":
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
             file=os.path.join(plotted, file_name),
-            # include_plotlyjs=False,
+            include_plotlyjs=False,
             # full_html=False
         )
 
