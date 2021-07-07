@@ -50,7 +50,7 @@ if __name__ == "__main__":
         bus_name = os.path.splitext(bus_file)[0]
         bus_path = os.path.join(bus_directory, bus_file)
 
-        ax, data = pd.read_csv(
+        data = pd.read_csv(
             bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0]
         )
 
@@ -58,6 +58,8 @@ if __name__ == "__main__":
         fig_plotly = plots.plot_dispatch_plotly(
             df=data.copy(),
             bus_name=bus_name,
+            unit="W",
+            conv_number=1000
         )
 
         file_name = bus_name + "_dispatch_interactive" + ".html"
@@ -71,7 +73,7 @@ if __name__ == "__main__":
         # plot one winter and one summer month
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
-            data = plots.eng_format(ax, data, "W", 1000)
+            ax, data = plots.eng_format(ax, data, "W", 1000)
 
             plots.plot_dispatch(
                 ax=ax,
