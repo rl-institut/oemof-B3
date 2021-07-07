@@ -50,23 +50,18 @@ if __name__ == "__main__":
         bus_name = os.path.splitext(bus_file)[0]
         bus_path = os.path.join(bus_directory, bus_file)
 
-        data = pd.read_csv(
-            bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0]
-        )
+        data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
-            df=data.copy(),
-            bus_name=bus_name,
-            unit="W",
-            conv_number=1000
+            df=data.copy(), bus_name=bus_name, unit="W", conv_number=1000
         )
 
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
             file=os.path.join(plotted, file_name),
             include_plotlyjs="cdn",
-            full_html=False
+            full_html=False,
         )
 
         # normal dispatch plot
