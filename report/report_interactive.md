@@ -1,8 +1,3 @@
----
-header-includes: 
-    <script src="https://cdn.plot.ly/plotly-2.0.0.min.js"></script>
----
-
 ## Main results
 
 ## Scalar plots
