@@ -69,7 +69,7 @@ if __name__ == "__main__":
         # plot one winter and one summer month
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
-            data = plots.eng_format(ax, data, "W", 1000)
+            ax, data = plots.eng_format(ax, data, "W", 1000)
 
             plots.plot_dispatch(
                 ax=ax,
