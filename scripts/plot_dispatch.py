@@ -62,8 +62,9 @@ if __name__ == "__main__":
             file=os.path.join(plotted, file_name),
             # The following parameters are set according to
             # https://plotly.github.io/plotly.py-docs/generated/plotly.io.write_html.html
-            # The files are much smaller now because a script tag containing the plotly.js source code (~3MB)
-            # is not included in the output anymore. It is refered to plotlyjs via a link in div of the plot.
+            # The files are much smaller now because a script tag containing the plotly.js source
+            # code (~3MB) is not included in the output anymore. It is refered to plotlyjs via a
+            # link in div of the plot.
             include_plotlyjs="cdn",
             full_html=False,
         )
