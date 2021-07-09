@@ -35,10 +35,14 @@ if __name__ == "__main__":
     plotted = sys.argv[2]
 
     # create the directory plotted where all plots are saved
-    if not os.exists(plotted):
+    if not os.path.exists(plotted):
         os.makedirs(plotted)
 
-    df = pd.read_csv(postprocessed, index_col=0, header=[0, 1, 2], parse_dates=True)
+    # TODO: Do this with all electricity timeseries using a function that can be used \
+    # for plot_dispatch as well.
+    path_ts = os.path.join(postprocessed, "sequences", "bus", "BE-electricity.csv")
+
+    df = pd.read_csv(path_ts, index_col=0, header=[0, 1, 2], parse_dates=True)
 
     # sort
     df = df.apply(sorted, 0)
