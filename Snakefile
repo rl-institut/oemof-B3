@@ -78,9 +78,17 @@ rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/")
+        directory("results/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
+
+rule plot_load_duration:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/load_duration")
+    shell:
+        "python scripts/plot_load_duration.py {input} {output}"
 
 rule report:
     input:
