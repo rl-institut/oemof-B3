@@ -57,6 +57,8 @@ if __name__ == "__main__":
             df=data.copy(), bus_name=bus_name, unit="W", conv_number=1000
         )
 
+        fig_plotly.update_layout(title=bus_name + " dispatch")
+
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
             file=os.path.join(plotted, file_name),
@@ -84,7 +86,7 @@ if __name__ == "__main__":
             )
 
             plt.grid()
-            plt.title(bus_name + " Dispatch", pad=20, fontdict={"size": 22})
+            plt.title(bus_name + " dispatch", pad=20, fontdict={"size": 22})
             plt.xlabel("Date", loc="right", fontdict={"size": 17})
             plt.ylabel("Power", loc="top", fontdict={"size": 17})
             plt.xticks(fontsize=14)
