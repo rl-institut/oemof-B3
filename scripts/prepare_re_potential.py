@@ -297,7 +297,7 @@ def calculate_area_potential(
     areas = area_data.loc[area_data["area"] >= minimum_area]
 
     # resize areas by degree of agreement (Einigungsgrad)
-    if degree_of_agreement == None:
+    if degree_of_agreement is None:
         degree_of_agreement = 1
     areas["area_agreed"] = areas["area"] * degree_of_agreement
 
@@ -375,7 +375,7 @@ def calculate_power_potential(
     # capacity pv
     if type == "wind":
         # calculate amount of wind turbines per area
-        if nominal_power == None:
+        if nominal_power is None:
             raise ValueError(
                 f"`nominal_power` is None, but needs to be set for type {type}."
             )
