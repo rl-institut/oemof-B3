@@ -40,7 +40,7 @@ Additonally saves the following data in "../results/RE_potential":
 """
 import os
 import sys
-
+import numpy as np
 import pandas as pd
 
 # global variables
@@ -330,15 +330,22 @@ def calculate_power_potential(
 
     # calculate power potential with required specific area per wind turbine / per installed capacity pv
     if type == "wind":
-        # calculate amount of wind turbines per area, rounded down
+        # calculate amount of wind turbines per area
         if nominal_power == None:
             raise ValueError(
                 f"`nominal_power` is None, but needs to be set for type {type}."
             )
-        # calculate power potential
-        potentials["amount_of_wind_turbines"] = (
+        # calculate amount of wind turbines per area
+        potentials["amount_of_wind_turbines_float"] = (
             potentials["area_agreed"] / required_specific_area
         )
+        # round amount of wind turbines to integer:
+        # round to lower integer except if value < 1, then amount of wind turbines is 1 as
+        # a single wind turbine needs less space (no distancing to other wind turbines).
+        potentials["amount_of_wind_turbines"] = potentials["amount_of_wind_turbines_float"].apply(np.floor)
+        indices = potentials.loc[potentials["amount_of_wind_turbines_float"] < 1].index
+        potentials.loc[indices, "amount_of_wind_turbines"] = potentials.loc[indices, "amount_of_wind_turbines_float"].apply(np.ceil)
+        # calculate power potential per area
         potentials["power_potential"] = (
             potentials["amount_of_wind_turbines"] * nominal_power
         )
