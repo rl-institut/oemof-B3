@@ -196,11 +196,18 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
         os.mkdir(out_dir_intermediate)
 
     # read parameters for calculatons like minimum required area and degree of agreement from 'xyz.csv' todo
-    minimum_area, degree_of_agreement, required_specific_area, nominal_power = (
+    (
+        minimum_area,
+        degree_of_agreement,
+        required_specific_area,
+        nominal_power,
+        reduction_by_wind_overleap,
+    ) = (
         485,
-        0.1,
-        20e4,  # required_specific_area 20ha = 20*e⁴ m²
+        0.5,
+        20e4,  # required_specific_area 20ha = 20*e⁴ m² per turbine
         4.2,  # nominal power in MW
+        0.1,
     )
 
     # calculate area potential
@@ -210,6 +217,7 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
         minimum_area=minimum_area,
         degree_of_agreement=degree_of_agreement,
         out_dir_intermediate=out_dir_intermediate,
+        reduction_by_wind_overleap=reduction_by_wind_overleap,
     )
 
     # calcualte power potential
@@ -223,7 +231,12 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
 
 
 def calculate_area_potential(
-    area_data, type, minimum_area, out_dir_intermediate, degree_of_agreement=None
+    area_data,
+    type,
+    minimum_area,
+    out_dir_intermediate,
+    degree_of_agreement=None,
+    reduction_by_wind_overleap=None,
 ):
     r"""
     Calculates area potential for wind or pv for single areas and "Landkreise" and saves results to csvs.
@@ -231,7 +244,7 @@ def calculate_area_potential(
     Potential areas in `area_data` are processed in the following way:
     - areas smaller than `minimum_area` are excluded
     - areas are reduced by `degree_of_agreement`
-    - if `type` is "pv", area is further reduced by 10 % in case there is overleapping with wind potential area in sum.
+    - if `type` is "pv", area is further reduced by a certain percentage (`reduction_by_wind_overleap`) in case there is overleapping with wind potential area in sum.
 
     The following data is saved in `out_dir_intermediate`:
     - Area potential of single areas in column 'area_agreed' in f"area_potential_single_areas_{type}.csv"
@@ -252,6 +265,10 @@ def calculate_area_potential(
         ratio between the area potential that is assumed to be agreed on between
         different parties and the calculated available area potential.
         If None, `degree_of_agreement` is set to 1
+        Default: None.
+    reduction_by_wind_overleap: float or None
+        Reduction of area if `type` is "pv" in case there is overleapping with wind
+        potential area in sum.
         Default: None.
 
     Returns
@@ -277,7 +294,9 @@ def calculate_area_potential(
         ):
             # otherwise: reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra column
             areas["area_agreed_before_reduction_by_overleap"] = areas["area_agreed"]
-            areas["area_agreed"] = areas["area_agreed"] * 0.9
+            areas["area_agreed"] = areas["area_agreed"] * (
+                1 - reduction_by_wind_overleap
+            )
     elif type == "wind":
         pass
     else:
