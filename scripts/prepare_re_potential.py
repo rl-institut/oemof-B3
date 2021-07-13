@@ -322,7 +322,7 @@ def calculate_area_potential(
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
 
     # save area potential of single areas in m² (needed for further calculations of wind potential)
-    add_on = str(degree_of_agreement).replace('.', '_')
+    add_on = str(degree_of_agreement).replace(".", "_")
     filename_single_areas = os.path.join(
         out_dir_intermediate,
         f"area_potential_single_areas_{type}_agreement_{add_on}.csv",
