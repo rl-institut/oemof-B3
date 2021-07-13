@@ -247,7 +247,8 @@ def calculate_area_potential(
     - if `type` is "pv", area is further reduced by a certain percentage (`reduction_by_wind_overleap`) in case there is overleapping with wind potential area in sum.
 
     The following data is saved in `out_dir_intermediate`:
-    - Area potential of single areas in column 'area_agreed' in f"area_potential_single_areas_{type}.csv"
+    - Area potential of single areas for `degree_of_agreement` in column 'area_agreed' in
+      f"area_potential_single_areas_{type}_agreement_{str(degree_of_agreement).replace('.', '_')}.csv"
 
     Parameters
     ----------
@@ -304,7 +305,8 @@ def calculate_area_potential(
 
     # save area potential of single areas in m² (needed for further calculations of wind potential)
     filename_single_areas = os.path.join(
-        out_dir_intermediate, f"area_potential_single_areas_{type}.csv"
+        out_dir_intermediate,
+        f"area_potential_single_areas_{type}_agreement_{str(degree_of_agreement).replace('.', '_')}.csv",
     )
     areas.to_csv(filename_single_areas)
 
