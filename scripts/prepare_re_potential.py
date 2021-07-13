@@ -45,28 +45,29 @@ import pandas as pd
 
 # global variables
 DROP_COLS = [
-        "ADE",
-        "GF",
-        "BSG",
-        "ARS",
-        "AGS",
-        "SDV_ARS",
-        "IBZ",
-        "BEM",
-        "NBD",
-        "SN_L",
-        "SN_R",
-        "SN_K",
-        "SN_V1",
-        "SN_G",
-        "FK_S3",
-        "ARS_0",
-        "AGS_0",
-        "DEBKG_ID",
-        "RS",
-        "SDV_RS",
-        "RS_0",
-    ]
+    "ADE",
+    "GF",
+    "BSG",
+    "ARS",
+    "AGS",
+    "SDV_ARS",
+    "IBZ",
+    "BEM",
+    "NBD",
+    "SN_L",
+    "SN_R",
+    "SN_K",
+    "SN_V1",
+    "SN_G",
+    "FK_S3",
+    "ARS_0",
+    "AGS_0",
+    "DEBKG_ID",
+    "RS",
+    "SDV_RS",
+    "RS_0",
+]
+
 
 def calculate_potential_pv(
     filename_agriculture, filename_road_railway, output_file, out_dir_intermediate=None
@@ -198,9 +199,9 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
     minimum_area, degree_of_agreement, required_specific_area, nominal_power = (
         485,
         0.1,
-        20e4,
-        4.2,
-    )  # required_specific_area 20ha = 20*e⁴ m²
+        20e4,  # required_specific_area 20ha = 20*e⁴ m²
+        4.2,  # nominal power in MW
+    )
 
     # calculate area potential
     filename_single_areas = calculate_area_potential(
@@ -344,9 +345,13 @@ def calculate_power_potential(
         # round amount of wind turbines to integer:
         # round to lower integer except if value < 1, then amount of wind turbines is 1 as
         # a single wind turbine needs less space (no distancing to other wind turbines).
-        potentials["amount_of_wind_turbines"] = potentials["amount_of_wind_turbines_float"].apply(np.floor)
+        potentials["amount_of_wind_turbines"] = potentials[
+            "amount_of_wind_turbines_float"
+        ].apply(np.floor)
         indices = potentials.loc[potentials["amount_of_wind_turbines_float"] < 1].index
-        potentials.loc[indices, "amount_of_wind_turbines"] = potentials.loc[indices, "amount_of_wind_turbines_float"].apply(np.ceil)
+        potentials.loc[indices, "amount_of_wind_turbines"] = potentials.loc[
+            indices, "amount_of_wind_turbines_float"
+        ].apply(np.ceil)
         # calculate power potential per area
         potentials["power_potential"] = (
             potentials["amount_of_wind_turbines"] * nominal_power
