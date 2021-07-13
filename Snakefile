@@ -63,23 +63,23 @@ rule prepare_pv_potential:
         type="pv",
         filenames=["raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
                    "raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv"],
-        assumptions="xxxx.csv", # todo
+        regional_assumptions="regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
         "results/_resources/power_potential_pv_kreise.csv"
     shell:
-        "python scripts/prepare_re_potential.py  {input.type} {input.filenames} {input.assumptions} {output}"
+        "python scripts/prepare_re_potential.py  {input.type} {input.filenames} {input.regional_assumptions} {output}"
 
 rule prepare_wind_potential:
     input:
         type="wind",
         filenames=["raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv"],
-        assumptions="xxxx.csv", # todo
+        regional_assumptions="regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
         "results/_resources/power_potential_wind_kreise.csv"
     shell:
-        "python scripts/prepare_re_potential.py  {input.type} {input.filenames} {input.assumptions} {output}"
+        "python scripts/prepare_re_potential.py  {input.type} {input.filenames} {input.regional_assumptions} {output}"
 
 rule optimize:
     input:
