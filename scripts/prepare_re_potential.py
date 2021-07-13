@@ -33,9 +33,10 @@ Saves the following data for "Landkreise":
     - only for wind: amount of wind turbines per area in column 'amount_of_wind_turbines'
 
 Additonally saves the following data in "../results/RE_potential":
-    - joined pv area potential of single areas in column 'area_raw' in "area_potential_single_areas_pv_raw.csv"
-    - area potential of single areas after processing in column 'area_agreed' in f"area_potential_single_areas_{type}.csv" for `type`
-    -
+    - joined pv area potential of single areas in column 'area_raw' in
+      "area_potential_single_areas_pv_raw.csv"
+    - area potential of single areas after processing in column 'area_agreed' in
+      f"area_potential_single_areas_{type}.csv" for `type`
 
 """
 import os
@@ -75,15 +76,21 @@ def calculate_potential_pv(
     r"""
     Calculates the area and power potential of photovoltaics.
 
-    - Merges area potential of agricultural areas (file `filename_agriculture`) and areas along roads and railways (file `filename_road_railway`)
+    - Merges area potential of agricultural areas (file `filename_agriculture`) and areas along
+      roads and railways (file `filename_road_railway`)
     - Overleaping areas are substracted from agricultural areas
-    - Calculates pv area potential for each area and Landkreis, methods see :py:func:`~.calculate_area_potential`
-    - Calculates pv power potential for each area and Landkreis, methods see :py:func:`~.calculate_power_potential`
+    - Calculates pv area potential for each area and Landkreis, methods see
+      :py:func:`~.calculate_area_potential`
+    - Calculates pv power potential for each area and Landkreis, methods see
+      :py:func:`~.calculate_power_potential`
 
     The following data is saved:
-    - "raw" pv area potential of single areas in column 'area_raw' in "area_potential_single_areas_pv_raw.csv" in `out_dir_intermediate`
-    - pv area potential of single areas after processing with :py:func:`~.calculate_area_potential` in column 'area_agreed' in "area_potential_single_areas_pv.csv" in `out_dir_intermediate`
-    - pv power [MW] and area [m²] potential of "Landkreise" in columns 'area_agreed' and 'power_potential' in `output_file`
+    - "raw" pv area potential of single areas in column 'area_raw' in
+      "area_potential_single_areas_pv_raw.csv" in `out_dir_intermediate`
+    - pv area potential of single areas after processing with :py:func:`~.calculate_area_potential`
+      in column 'area_agreed' in "area_potential_single_areas_pv.csv" in `out_dir_intermediate`
+    - pv power [MW] and area [m²] potential of "Landkreise" in columns 'area_agreed' and
+      'power_potential' in `output_file`
 
     Parameters
     ----------
@@ -133,7 +140,8 @@ def calculate_potential_pv(
     )
     areas_pv.to_csv(filename)
 
-    # read parameters for calculatons like minimum required area and degree of agreement from 'xyz.csv' todo
+    # read parameters for calculatons like minimum required area and degree of agreement from
+    # 'xyz.csv' todo
     minimum_area, degree_of_agreement, required_specific_area = (
         1e4,
         0.1,
@@ -163,12 +171,16 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
     r"""
     Calculates the area and power potential of wind energy.
 
-    - Calculates wind area potential for each area and Landkreis, methods see :py:func:`~.calculate_area_potential`
-    - Calculates wind power potential for each area and Landkreis, methods see :py:func:`~.calculate_power_potential`
+    - Calculates wind area potential for each area and Landkreis, methods see
+      :py:func:`~.calculate_area_potential`
+    - Calculates wind power potential for each area and Landkreis, methods see
+      :py:func:`~.calculate_power_potential`
 
     The following data is saved:
-    - wind area potential of single areas in column 'area_agreed' in "area_potential_single_areas_wind.csv" in `out_dir_intermediate`
-    - wind power [MW] and area [m²] potential of "Landkreise" in columns 'area_agreed' and 'power_potential' in `output_file`
+    - wind area potential of single areas in column 'area_agreed' in
+      "area_potential_single_areas_wind.csv" in `out_dir_intermediate`
+    - wind power [MW] and area [m²] potential of "Landkreise" in columns 'area_agreed' and
+      'power_potential' in `output_file`
 
     Parameters
     ----------
@@ -195,7 +207,8 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
     if not os.path.exists(out_dir_intermediate):
         os.mkdir(out_dir_intermediate)
 
-    # read parameters for calculatons like minimum required area and degree of agreement from 'xyz.csv' todo
+    # read parameters for calculatons like minimum required area and degree of agreement from
+    # 'xyz.csv' todo
     (
         minimum_area,
         degree_of_agreement,
@@ -239,16 +252,18 @@ def calculate_area_potential(
     reduction_by_wind_overleap=None,
 ):
     r"""
-    Calculates area potential for wind or pv for single areas and "Landkreise" and saves results to csvs.
+    Calculates area potential for wind or pv for single areas and "Landkreise" and saves results to
+    csvs.
 
     Potential areas in `area_data` are processed in the following way:
     - areas smaller than `minimum_area` are excluded
     - areas are reduced by `degree_of_agreement`
-    - if `type` is "pv", area is further reduced by a certain percentage (`reduction_by_wind_overleap`) in case there is overleapping with wind potential area in sum.
+    - if `type` is "pv", area is further reduced by a certain percentage
+      (`reduction_by_wind_overleap`) in case there is overleapping with wind potential area in sum.
 
     The following data is saved in `out_dir_intermediate`:
     - Area potential of single areas for `degree_of_agreement` in column 'area_agreed' in
-      f"area_potential_single_areas_{type}_agreement_{str(degree_of_agreement).replace('.', '_')}.csv"
+      f"area_potential_single_areas_{type}_agreement_{degree_of_agreement}.csv"
 
     Parameters
     ----------
@@ -286,14 +301,17 @@ def calculate_area_potential(
         degree_of_agreement = 1
     areas["area_agreed"] = areas["area"] * degree_of_agreement
 
-    # take pv area potential overleap with wind area potential into account; not necessary for wind as wind has priority
+    # take pv area potential overleap with wind area potential into account; not necessary for wind
+    # as wind has priority
     if type == "pv":
-        # by degree of agreement reduced area potential < area potential - overleap area with wind potential areas  --> no action necessary
+        # by degree of agreement reduced area potential < area potential - overleap area with wind
+        # potential areas  --> no action necessary
         if (
             areas["area_agreed"].sum()
             > areas["area"].sum() - areas["overleap_wind_area"].sum()
         ):
-            # otherwise: reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra column
+            # otherwise: reduce areas by a small percentage: adapt in "area_agreed" and save old
+            # value in extra column
             areas["area_agreed_before_reduction_by_overleap"] = areas["area_agreed"]
             areas["area_agreed"] = areas["area_agreed"] * (
                 1 - reduction_by_wind_overleap
@@ -304,9 +322,10 @@ def calculate_area_potential(
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
 
     # save area potential of single areas in m² (needed for further calculations of wind potential)
+    add_on = str(degree_of_agreement).replace('.', '_')
     filename_single_areas = os.path.join(
         out_dir_intermediate,
-        f"area_potential_single_areas_{type}_agreement_{str(degree_of_agreement).replace('.', '_')}.csv",
+        f"area_potential_single_areas_{type}_agreement_{add_on}.csv",
     )
     areas.to_csv(filename_single_areas)
 
@@ -325,10 +344,10 @@ def calculate_power_potential(
     - area potential after processing and reducing by degree of agreement in column 'area_agreed'
     - percentage of overleaps between the areas in columns 'overleap_pv_agriculture_percent',
       'overleap_pv_road_railway_percent', 'overleap_wind_percent'
-    - if `type` is "wind", amount of wind turbines per area in columns 'amount_of_wind_turbines_float'
-      and 'amount_of_wind_turbines', amount of wind turbines is rounded down to integers,
-      except if value < 1, then amount of wind turbines is 1 as a single wind turbine needs
-      less space (no distancing to other wind turbines)
+    - if `type` is "wind", amount of wind turbines per area in columns
+      amount_of_wind_turbines_float' and 'amount_of_wind_turbines', amount of wind turbines is
+      rounded down to integers, except if value < 1, then amount of wind turbines is 1 as a single
+      wind turbine needs less space (no distancing to other wind turbines)
 
     Parameters
     ----------
@@ -352,7 +371,8 @@ def calculate_power_potential(
     # read area potential
     potentials = pd.read_csv(input_file, header=0)
 
-    # calculate power potential with required specific area per wind turbine / per installed capacity pv
+    # calculate power potential with required specific area per wind turbine / per installed
+    # capacity pv
     if type == "wind":
         # calculate amount of wind turbines per area
         if nominal_power == None:
