@@ -43,6 +43,30 @@ import sys
 
 import pandas as pd
 
+# global variables
+DROP_COLS = [
+        "ADE",
+        "GF",
+        "BSG",
+        "ARS",
+        "AGS",
+        "SDV_ARS",
+        "IBZ",
+        "BEM",
+        "NBD",
+        "SN_L",
+        "SN_R",
+        "SN_K",
+        "SN_V1",
+        "SN_G",
+        "FK_S3",
+        "ARS_0",
+        "AGS_0",
+        "DEBKG_ID",
+        "RS",
+        "SDV_RS",
+        "RS_0",
+    ]
 
 def calculate_potential_pv(
     filename_agriculture, filename_road_railway, output_file, out_dir_intermediate=None
@@ -79,39 +103,16 @@ def calculate_potential_pv(
 
     """
     # read total ground-mounted pv area potential from csvs (agricultural + roads and railways)
-    drop_cols = [
-        "ADE",
-        "GF",
-        "BSG",
-        "ARS",
-        "AGS",
-        "SDV_ARS",
-        "IBZ",
-        "BEM",
-        "NBD",
-        "SN_L",
-        "SN_R",
-        "SN_K",
-        "SN_V1",
-        "SN_G",
-        "FK_S3",
-        "ARS_0",
-        "AGS_0",
-        "DEBKG_ID",
-        "RS",
-        "SDV_RS",
-        "RS_0",
-    ]
     areas_agriculture = (
         pd.read_csv(filename_agriculture, header=0)
         .set_index("fid")
-        .drop(drop_cols, axis=1)
+        .drop(DROP_COLS, axis=1)
         .rename(columns={"area": "area_pv_raw"})
     )
     areas_road_railway = (
         pd.read_csv(filename_road_railway, header=0)
         .set_index("fid")
-        .drop(drop_cols, axis=1)
+        .drop(DROP_COLS, axis=1)
         .rename(columns={"area": "area_pv_raw"})
     )
 
@@ -185,31 +186,8 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
 
     """
     # read area potential wind
-    drop_cols = [
-        "ADE",
-        "GF",
-        "BSG",
-        "ARS",
-        "AGS",
-        "SDV_ARS",
-        "IBZ",
-        "BEM",
-        "NBD",
-        "SN_L",
-        "SN_R",
-        "SN_K",
-        "SN_V1",
-        "SN_G",
-        "FK_S3",
-        "ARS_0",
-        "AGS_0",
-        "DEBKG_ID",
-        "RS",
-        "SDV_RS",
-        "RS_0",
-    ]
     areas = (
-        pd.read_csv(filename_wind, header=0).set_index("fid").drop(drop_cols, axis=1)
+        pd.read_csv(filename_wind, header=0).set_index("fid").drop(DROP_COLS, axis=1)
     )
 
     # create directory for intermediate results if not existent
