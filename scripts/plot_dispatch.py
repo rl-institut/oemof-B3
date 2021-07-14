@@ -80,9 +80,13 @@ if __name__ == "__main__":
 
             # filter timeseries
             df_time_filtered = plots.filter_timeseries(df, start_date, end_date)
-            df_demand_time_filtered = plots.filter_timeseries(df_demand, start_date, end_date)
+            df_demand_time_filtered = plots.filter_timeseries(
+                df_demand, start_date, end_date
+            )
             # plot time filtered data
-            plots.plot_dispatch(ax=ax, df=df_time_filtered, df_demand=df_demand_time_filtered, unit="W")
+            plots.plot_dispatch(
+                ax=ax, df=df_time_filtered, df_demand=df_demand_time_filtered, unit="W"
+            )
 
             plt.grid()
             plt.title(bus_name + " Dispatch", pad=20, fontdict={"size": 22})
