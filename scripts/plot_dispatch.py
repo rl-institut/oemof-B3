@@ -52,17 +52,15 @@ if __name__ == "__main__":
 
         data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
-        # interactive plotly dispatch plot
-        df = data.copy()
+        # prepare dispatch data
         # convert data to SI-unit
         conv_number = 1000
-        df = df * conv_number
-
-        # prepare dispatch data
+        data = data * conv_number
         df, df_demand = plots.prepare_dispatch_data(
-            df, bus_name=bus_name, demand_name="demand"
+            data, bus_name=bus_name, demand_name="demand"
         )
 
+        # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
             df=df,
             df_demand=df_demand,
@@ -79,17 +77,12 @@ if __name__ == "__main__":
         # plot one winter and one summer month
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
-            ax, data = plots.eng_format(ax, data, "W", 1000)
 
             # filter timeseries
-            df = data.copy()
-            df = plots.filter_timeseries(df, start_date, end_date)
-            # prepare dispatch data
-            df, df_demand = plots.prepare_dispatch_data(
-                df, bus_name=bus_name, demand_name="demand"
-            )
-
-            plots.plot_dispatch(ax=ax, df=df, df_demand=df_demand)
+            df_time_filtered = plots.filter_timeseries(df, start_date, end_date)
+            df_demand_time_filtered = plots.filter_timeseries(df_demand, start_date, end_date)
+            # plot time filtered data
+            plots.plot_dispatch(ax=ax, df=df_time_filtered, df_demand=df_demand_time_filtered, unit="W")
 
             plt.grid()
             plt.title(bus_name + " Dispatch", pad=20, fontdict={"size": 22})
