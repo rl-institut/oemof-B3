@@ -85,6 +85,7 @@ rule plot_dispatch:
 rule report:
     input:
         template="report/report.md",
+	template_interactive="report/report_interactive.md",
         plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
@@ -93,9 +94,36 @@ rule report:
         import shutil
         os.makedirs(output[0])
         shutil.copy(src=input[0], dst=output[0])
-        shell('pandoc -V geometry:a4paper,margin=2.5cm --resource-path={output}/../plotted --metadata title="Results for scenario {wildcards.scenario}" {output}/report.md -o {output}/report.pdf')
-        shell('pandoc --resource-path={output}/../plotted {output}/report.md --metadata title="Results for scenario {wildcards.scenario}" --self-contained -s --include-in-header=report/report.css -o {output}/report.html')
+        shutil.copy(src=input[1], dst=output[0])
+        # static pdf report
+        shell(
+        """
+        pandoc -V geometry:a4paper,margin=2.5cm \
+        --resource-path={output}/../plotted \
+        --metadata title="Results for scenario {wildcards.scenario}" \
+        {output}/report.md -o {output}/report.pdf
+        """
+        )
+        # static html report
+        shell(
+        """
+        pandoc --resource-path={output}/../plotted \
+        --metadata title="Results for scenario {wildcards.scenario}" \
+        --self-contained -s --include-in-header=report/report.css \
+        {output}/report.md -o {output}/report.html
+        """
+        )
+        # interactive html report
+        shell(
+        """
+        pandoc --resource-path={output}/../plotted \
+        --metadata title="Results for scenario {wildcards.scenario}" \
+        --self-contained -s --include-in-header=report/report.css \
+        {output}/report_interactive.md -o {output}/report_interactive.html
+        """
+        )
         os.remove(os.path.join(output[0], "report.md"))
+        os.remove(os.path.join(output[0], "report_interactive.md"))
 
 rule join_scenario_results:
     input:

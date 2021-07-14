@@ -10,11 +10,15 @@ Outputs
 ---------
 .pdf
     dispatch plot in pdf-format.
+.html
+    interactive plotly dispatch plot in html-format.
 
 Description
 -------------
-The script creates dispatch plots based on plot_dispatch function in oemoflex.
-The plots are saved as pdf-files in a new directory called plotted.
+The script creates dispatch plots based on plot_dispatch and plot_dispatch_plotly
+functions in oemoflex.
+The static plots are saved as pdf-files and the interactive plotly plots as html-files
+in a new directory called plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
 import sys
@@ -54,15 +58,21 @@ if __name__ == "__main__":
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
-            df=data.copy(),
-            bus_name=bus_name,
+            df=data.copy(), bus_name=bus_name, unit="W", conv_number=1000
         )
+
+        fig_plotly.update_layout(title=bus_name + " dispatch")
 
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
             file=os.path.join(plotted, file_name),
-            # include_plotlyjs=False,
-            # full_html=False
+            # The following parameters are set according to
+            # https://plotly.github.io/plotly.py-docs/generated/plotly.io.write_html.html
+            # The files are much smaller now because a script tag containing the plotly.js source
+            # code (~3MB) is not included in the output anymore. It is refered to plotlyjs via a
+            # link in div of the plot.
+            include_plotlyjs="cdn",
+            full_html=False,
         )
 
         # normal dispatch plot
@@ -80,7 +90,7 @@ if __name__ == "__main__":
             )
 
             plt.grid()
-            plt.title(bus_name + " Dispatch", pad=20, fontdict={"size": 22})
+            plt.title(bus_name + " dispatch", pad=20, fontdict={"size": 22})
             plt.xlabel("Date", loc="right", fontdict={"size": 17})
             plt.ylabel("Power", loc="top", fontdict={"size": 17})
             plt.xticks(fontsize=14)
