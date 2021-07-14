@@ -33,6 +33,10 @@ if __name__ == "__main__":
     # Load scalar data
     scalars = load_scalars(resources)
 
+    # TODO: filter
+
+    # TODO: pivot
+
     # plot
     fig, ax = plt.subplots()
 
