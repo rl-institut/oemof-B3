@@ -40,12 +40,7 @@ names_dict = {"BE-biomass-st":"Biomass","BB-biomass-st":"Biomass",
 
 unit_dict = {"capacity":"W"}
 
-# load colors dict which also determines the ordering
-colors_csv = pd.read_csv("colors.csv", header=[0], index_col=[0])
-colors_csv = colors_csv.T
-colors_odict = OrderedDict()
-for i in colors_csv.columns:
-    colors_odict[i] = colors_csv.loc["Color", i]
+from oemoflex.tools.plots import colors_odict
 
 # import data
 data_path = r"C:\Users\meinm\Documents\Git\oemof-B3\results\joined_scenarios\examples\scalars.csv"
