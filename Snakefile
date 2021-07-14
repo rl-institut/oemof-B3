@@ -82,6 +82,15 @@ rule plot_dispatch:
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
+rule plot_scalar_resources:
+    input:
+        data="results/_resources/{resource}.csv",
+        script="scripts/plot_scalar_resources.py"
+    output:
+        "results/_resources/plots/{resource}.png"
+    shell:
+        "python {input.script} {input.data} {output}"
+
 rule report:
     input:
         template="report/report.md",
