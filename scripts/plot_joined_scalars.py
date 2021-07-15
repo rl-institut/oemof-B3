@@ -27,28 +27,31 @@ k = "summed_variable_costs_in_ch4"
 
 var_name = q
 
-names_dict = {"BE-biomass-st":"Biomass","BB-biomass-st":"Biomass",
-              "BE-electricity-curtailment":"El. curtailment","BB-electricity-curtailment":"El. Curtailment",
+names_dict = {"BE-biomass-st":"Biomass ST","BB-biomass-st":"Biomass ST",
+              "BE-electricity-curtailment":"El. curtailment","BB-electricity-curtailment":"Curtailment",
               "BE-electricity-demand":"El demand","BB-electricity-demand":"El. Demand",
               "BE-electricity-liion-battery":"Liion Battery","BB-electricity-liion-battery":"Liion Battery",
-              "BE-electricity-shortage":"El. shortage","BB-electricity-shortage":"El. Shortage",
-              "BE-BB-electricity-transmission":"El. Transmission",
+              "BE-electricity-shortage":"El. shortage","BB-electricity-shortage":"Shortage",
+              "BE-BB-electricity-transmission":"Transmission",
               "BE-ch4-gt": "CH4", "BB-ch4-gt": "CH4",
               "BE-solar-pv":"PV","BB-solar-pv":"PV",
-              "BE-wind-onshore":"Wind on","BB-wind-onshore":"Wind on",
+              "BE-wind-onshore":"Wind on","BB-wind-onshore":"Wind",
               }
 
 unit_dict = {"capacity":"W"}
 
 from oemoflex.tools.plots import colors_odict
 
+from tabulate import tabulate
 # import data
 data_path = r"C:\Users\meinm\Documents\Git\oemof-B3\results\joined_scenarios\examples\scalars.csv"
 scalars = pd.read_csv(data_path)
 
 # select data with chosen var_name
 selected_scalar_data = scalars[scalars['var_name'] == var_name]
+selected_scalar_data = selected_scalar_data[selected_scalar_data["region"] == "BB"]
 
+print(tabulate(selected_scalar_data, headers='keys', tablefmt='psql'))
 
 def prepare_scalar_data(df, colors_odict, names_dict):
     # rename
@@ -134,9 +137,9 @@ def plot_scalars(df, colors, unit_dict, var_name):
 
 
 # prepare data
-print(selected_scalar_data)
+
 prepared_scalar_data, colors = prepare_scalar_data(df=selected_scalar_data, colors_odict=colors_odict, names_dict=names_dict)
-print(prepared_scalar_data)
+print(tabulate(prepared_scalar_data, headers='keys', tablefmt='psql'))
 # plot data
 plot_scalars(df = prepared_scalar_data, colors=colors, unit_dict=unit_dict, var_name=var_name)
 plt.show()
