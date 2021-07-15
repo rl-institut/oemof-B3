@@ -142,10 +142,11 @@ def calculate_potential_pv(
 
     # read parameters for calculatons like minimum required area and degree of agreement from
     # 'xyz.csv' todo
-    minimum_area, degree_of_agreement, required_specific_area = (
+    minimum_area, degree_of_agreement, required_specific_area, reduction_by_wind_overleap = (
         1e4,
         0.1,
         0.8e4,
+        0.1
     )  # minimum area pv 1ha = 10000 m², required specific area 0.8 ha per MW
 
     # calculate area potential
@@ -155,6 +156,7 @@ def calculate_potential_pv(
         minimum_area=minimum_area,
         degree_of_agreement=degree_of_agreement,
         out_dir_intermediate=out_dir_intermediate,
+        reduction_by_wind_overleap=reduction_by_wind_overleap,
     )
 
     # calcualte power potential
@@ -214,13 +216,11 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
         degree_of_agreement,
         required_specific_area,
         nominal_power,
-        reduction_by_wind_overleap,
     ) = (
         485,
         0.5,
         20e4,  # required_specific_area 20ha = 20*e⁴ m² per turbine
         4.2,  # nominal power in MW
-        0.1,
     )
 
     # calculate area potential
@@ -230,7 +230,6 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
         minimum_area=minimum_area,
         degree_of_agreement=degree_of_agreement,
         out_dir_intermediate=out_dir_intermediate,
-        reduction_by_wind_overleap=reduction_by_wind_overleap,
     )
 
     # calcualte power potential
