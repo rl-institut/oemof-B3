@@ -110,10 +110,12 @@ if __name__ == "__main__":
 
     scalar_template["id_scal"] = conv_scalars.index
     scalar_template["scenario"] = "Status quo"
+    scalar_template["name"] = "None"
     scalar_template["var_name"] = conv_scalars["variable"]
     scalar_template["carrier"] = conv_scalars["energy_source"]
     scalar_template["region"] = conv_scalars["region"]
     scalar_template["tech"] = conv_scalars["technology"]
+    scalar_template["type"] = "None"
     scalar_template["var_value"] = conv_scalars["value"]
     scalar_template[
         "reference"
@@ -122,7 +124,7 @@ if __name__ == "__main__":
         "comment"
     ] = "filename: conventional_power_plants_DE.csv, aggregated based on NUTS3 region"
 
-    unit_dict = {"chp": None, "capacity_net_el": "MW", "efficiency_estimate": None}
+    unit_dict = {"chp": "None", "capacity_net_el": "MW", "efficiency_estimate": "None"}
 
     def set_unit(df, unit_dict):
         for key, value in unit_dict.items():
