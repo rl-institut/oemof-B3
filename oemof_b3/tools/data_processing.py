@@ -2,17 +2,17 @@ import pandas as pd
 import numpy as np
 
 
-def check_consistency_timeindex(df, index, name):
+def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
     for all time steps
 
     Parameters
     ----------
+    df : DataFrame
+        Data frame for which the time index is checked
     index : string
         Index of values to be checked in the DataFrame
-    name : string
-        Descriptive name of the index
 
     Returns
     -------
@@ -20,6 +20,13 @@ def check_consistency_timeindex(df, index, name):
         Single value of the series of duplicates
 
     """
+    if index == "timeindex_start":
+        name = "start date"
+    elif index == "timeindex_stop":
+        name = "end date"
+    elif index == "timeindex_resolution":
+        name = "frequency"
+
     if np.all(df[index].array == df[index].array[0]):
         value = df[index].array[0]
         if value is None:
@@ -52,8 +59,8 @@ def stack_timeseries(df):
             "No frequency of your provided data could be detected."
             "Please provide a DataFrame with a specific frequency (eg. 'H' or 'T')."
         )
-    else:
-        _df_freq = pd.infer_freq(_df.index)
+
+    _df_freq = pd.infer_freq(_df.index)
     if _df.index.freqstr is None:
         raise Warning(
             f"The frequency of your data is not specified in the DataFrame, "
@@ -74,10 +81,11 @@ def stack_timeseries(df):
 
     df_stacked = pd.DataFrame(columns=df_stacked_cols)
 
+    timeindex_start = df.index.values[0]
+    timeindex_stop = df.index.values[-1]
+
     for column in df.columns:
         var_name = column
-        timeindex_start = df[column].index.values[0]
-        timeindex_stop = df[column].index.values[len(df[column]) - 1]
         timeindex_resolution = df[column].index.freqstr
         series = [pd.Series(df[column].values)]
 
@@ -100,9 +108,9 @@ def unstack_timeseries(df):
     _df = df.copy()
 
     # Assert that frequency match for all time steps
-    frequency = check_consistency_timeindex(_df, "timeindex_resolution", "frequency")
-    timeindex_start = check_consistency_timeindex(_df, "timeindex_start", "start date")
-    timeindex_stop = check_consistency_timeindex(_df, "timeindex_stop", "end date")
+    frequency = check_consistency_timeindex(_df, "timeindex_resolution")
+    timeindex_start = check_consistency_timeindex(_df, "timeindex_start")
+    timeindex_stop = check_consistency_timeindex(_df, "timeindex_stop")
 
     # Process values of series
     values_series = []
