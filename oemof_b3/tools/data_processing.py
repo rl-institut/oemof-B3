@@ -1,5 +1,41 @@
 import pandas as pd
 import numpy as np
+
+
+def check_consistency_timeindex(df, index, name):
+    """
+    This function assert that values of a column in a stacked DataFrame are same
+    for all time steps
+
+    Parameters
+    ----------
+    index : string
+        Index of values to be checked in the DataFrame
+    name : string
+        Descriptive name of the index
+
+    Returns
+    -------
+    value : string
+        Single value of the series of duplicates
+
+    """
+    if np.all(df[index].array == df[index].array[0]):
+        value = df[index].array[0]
+        if value is None:
+            raise TypeError(
+                f"Your provided data is missing a {name}."
+                f"Please make sure you pass the {name} with {index}."
+            )
+        else:
+            return value
+    else:
+        raise ValueError(
+            f"The {name} of your provided data doesn't match for all entries. "
+            f"Please make sure to pass the {name} with {index}."
+        )
+
+
 def stack_timeseries(df):
     _df = df.copy()
 
