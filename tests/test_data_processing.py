@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from oemof_b3.tools.data_processing import stack_timeseries, unstack_timeseries
 
@@ -34,7 +35,14 @@ def test_stack():
 def test_unstack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)
+    ts_column_wise_again = unstack_timeseries(ts_row_wise)
 
-    ts_row_wise_again = unstack_timeseries(ts_column_wise)
+    # Test will error out if the frames are not equal
+    pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise)
 
-    assert pd.testing.assert_frame_equal(ts_row_wise_again, ts_row_wise)
+    # In case the test does not error out it is None. Hence a passed test results
+    # to None
+    assert pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise) is None
+    with pytest.raises(AssertionError):
+        pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise_different)
+
