@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 def stack_timeseries(df):
     _df = df.copy()
 
@@ -62,7 +63,23 @@ def stack_timeseries(df):
 def unstack_timeseries(df):
     _df = df.copy()
 
-    # stack timeseries
-    df_unstacked = _df
+    # Assert that frequency match for all time steps
+    frequency = check_consistency_timeindex(_df, "timeindex_resolution", "frequency")
+    timeindex_start = check_consistency_timeindex(_df, "timeindex_start", "start date")
+    timeindex_stop = check_consistency_timeindex(_df, "timeindex_stop", "end date")
+
+    # Process values of series
+    values_series = []
+    for index, row in _df.iterrows():
+        values_series.append(row["series"].values)
+
+    values_array = np.array(values_series).transpose()
+
+    # Unstack timeseries
+    df_unstacked = pd.DataFrame(
+        values_array,
+        columns=list(_df["var_name"]),
+        index=pd.date_range(timeindex_start, timeindex_stop, freq=frequency),
+    )
 
     return df_unstacked
