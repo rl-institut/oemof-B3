@@ -9,8 +9,8 @@ def check_consistency_timeindex(df, index):
 
     Parameters
     ----------
-    df : DataFrame
-        Data frame for which the time index is checked
+    df : pandas.DataFrame
+        DataFrame for which the time index is checked
     index : string
         Index of values to be checked in the DataFrame
 
@@ -44,6 +44,20 @@ def check_consistency_timeindex(df, index):
 
 
 def stack_timeseries(df):
+    """
+    This function stacks a Dataframe in a form where one series resides in one row
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame to be stacked
+
+    Returns
+    -------
+    df_stacked : pandas.DataFrame
+        Stacked DataFrame
+
+    """
     _df = df.copy()
 
     # Assert that _df has a timeindex
@@ -105,6 +119,20 @@ def stack_timeseries(df):
 
 
 def unstack_timeseries(df):
+    """
+    This function unstacks a Dataframe so that there is a row for each value
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        DataFrame to be unstacked
+
+    Returns
+    -------
+    df_unstacked : pandas.DataFrame
+        Unstacked DataFrame
+
+    """
     _df = df.copy()
 
     # Assert that frequency match for all time steps
