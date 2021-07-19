@@ -22,7 +22,7 @@ def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)
 
-    assert ts_row_wise.columns == ts_row_wise_cols
+    assert list(ts_row_wise.columns) == ts_row_wise_cols
 
 
 def test_unstack():
