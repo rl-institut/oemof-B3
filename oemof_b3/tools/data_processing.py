@@ -49,8 +49,8 @@ def stack_timeseries(df):
     # Assert that frequency match for all time steps
     if pd.infer_freq(_df.index) is None:
         raise TypeError(
-            f"No frequency of your provided data could be detected."
-            f"Please provide a DataFrame with a specific frequency (eg. 'H' or 'T')."
+            "No frequency of your provided data could be detected."
+            "Please provide a DataFrame with a specific frequency (eg. 'H' or 'T')."
         )
     else:
         _df_freq = pd.infer_freq(_df.index)
