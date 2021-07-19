@@ -45,4 +45,3 @@ def test_unstack():
     assert pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise) is None
     with pytest.raises(AssertionError):
         pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise_different)
-
