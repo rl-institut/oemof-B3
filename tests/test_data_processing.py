@@ -17,6 +17,12 @@ ts_column_wise = pd.DataFrame(
     index=pd.date_range("2021-01-01", "2021-01-02", freq="H"),
 )
 
+ts_column_wise_different = pd.DataFrame(
+    np.random.randint(0, 5, size=(25, 3)),
+    columns=list("ABC"),
+    index=pd.date_range("2021-01-01", "2021-01-02", freq="H"),
+)
+
 
 def test_stack():
 
