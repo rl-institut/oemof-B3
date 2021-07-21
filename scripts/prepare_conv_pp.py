@@ -84,6 +84,8 @@ if __name__ == "__main__":
         columns={"name": "region", "capacity_net_bnetza": "capacity_net_el"},
         inplace=True,
     )
+    # treat Waste as Other fuels
+    pp_opsd_b3.replace({"Waste":"Other fuels"}, inplace=True)
 
     # group data by region, energy source, technology and chp capability and
     # aggregate capacity and efficiency
