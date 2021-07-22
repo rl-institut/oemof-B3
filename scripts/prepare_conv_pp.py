@@ -85,7 +85,7 @@ if __name__ == "__main__":
         inplace=True,
     )
     # treat Waste as Other fuels
-    pp_opsd_b3.replace({"Waste":"Other fuels"}, inplace=True)
+    pp_opsd_b3.replace({"Waste": "Other fuels"}, inplace=True)
 
     # group data by region, energy source, technology and chp capability and
     # aggregate capacity and efficiency
@@ -98,7 +98,8 @@ if __name__ == "__main__":
     b3_agg.loc[
         ("Oder-Spree", "Other fuels", "Steam turbine", "yes"), "efficiency_estimate"
     ] = b3_agg.loc[
-        b3_agg.index.get_level_values("energy_source") == "Other fuels", "efficiency_estimate"
+        b3_agg.index.get_level_values("energy_source") == "Other fuels",
+        "efficiency_estimate",
     ].mean()
 
     b3_agg.reset_index(
@@ -138,9 +139,14 @@ if __name__ == "__main__":
 
     set_unit(scalar_template, unit_dict)
 
-    carrier_dict = {"Biomass and biogas": "biomass", "Hard coal": "hard coal",
-                    "Natural gas": "ch4", "Oil": "oil", "Lignite": "lignite",
-                    "Other fuels": "other"}
+    carrier_dict = {
+        "Biomass and biogas": "biomass",
+        "Hard coal": "hard coal",
+        "Natural gas": "ch4",
+        "Oil": "oil",
+        "Lignite": "lignite",
+        "Other fuels": "other",
+    }
     scalar_template.replace(carrier_dict, inplace=True)
 
     # export prepared conventional power plant data
