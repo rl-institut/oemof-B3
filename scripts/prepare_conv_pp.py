@@ -98,12 +98,18 @@ if __name__ == "__main__":
     b3_agg.loc[
         ("Oder-Spree", "Other fuels", "Steam turbine", "yes"), "efficiency_estimate"
     ] = b3_agg.loc[
-        b3_agg.index.get_level_values("energy_source") == "Waste", "efficiency_estimate"
+        b3_agg.index.get_level_values("energy_source") == "Other fuels", "efficiency_estimate"
     ].mean()
 
     b3_agg.reset_index(
         level=["region", "energy_source", "technology", "chp"], inplace=True
     )
+
+    # rename technologies to oemoflex conventions
+    b3_agg.loc[b3_agg["chp"] == "yes", "technology"] = "bpchp"
+    b3_agg.loc[b3_agg["technology"] == "Steam turbine", "technology"] = "st"
+    b3_agg.loc[b3_agg["technology"] == "Gas turbine", "technology"] = "ocgt"
+    b3_agg.loc[b3_agg["technology"] == "Combined cycle", "technology"] = "ccgt"
 
     # change data format to _scalar_template
     conv_scalars = b3_agg.melt(id_vars=["region", "energy_source", "technology"])
@@ -131,6 +137,11 @@ if __name__ == "__main__":
             df.loc[df["var_name"] == key, "var_unit"] = value
 
     set_unit(scalar_template, unit_dict)
+
+    carrier_dict = {"Biomass and biogas": "biomass", "Hard coal": "hard coal",
+                    "Natural gas": "ch4", "Oil": "oil", "Lignite": "lignite",
+                    "Other fuels": "other"}
+    scalar_template.replace(carrier_dict, inplace=True)
 
     # export prepared conventional power plant data
     scalar_template.to_csv(out_path, index=False)
