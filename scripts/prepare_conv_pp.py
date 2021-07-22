@@ -48,8 +48,8 @@ if __name__ == "__main__":
 
     regions_nuts3_de = geo.load_regions_file(in_path2)
 
-    b3_regions_yaml = open(in_path3, "r", encoding="utf-8")
-    b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
+    with open(in_path3, "r", encoding="utf-8") as b3_regions_yaml:
+        b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
     for key, value in b3_regions_content.items():
         b3_regions_list = value
 
