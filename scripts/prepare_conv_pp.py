@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     regions_nuts3_de = geo.load_regions_file(in_path2)
 
-    b3_regions_yaml = open(in_path3, "r")
+    b3_regions_yaml = open(in_path3, "r", encoding="utf-8")
     b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
     for key, value in b3_regions_content.items():
         b3_regions_list = value
@@ -128,7 +128,6 @@ if __name__ == "__main__":
 
     def set_unit(df, unit_dict):
         for key, value in unit_dict.items():
-            print(key, value)
             df.loc[df["var_name"] == key, "var_unit"] = value
 
     set_unit(scalar_template, unit_dict)
