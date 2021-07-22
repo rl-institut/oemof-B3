@@ -112,6 +112,8 @@ if __name__ == "__main__":
     b3_agg.loc[b3_agg["technology"] == "Gas turbine", "technology"] = "ocgt"
     b3_agg.loc[b3_agg["technology"] == "Combined cycle", "technology"] = "ccgt"
 
+    b3_agg.drop(columns=["chp"], inplace=True)
+
     # change data format to _scalar_template
     conv_scalars = b3_agg.melt(id_vars=["region", "energy_source", "technology"])
 
@@ -131,7 +133,7 @@ if __name__ == "__main__":
         "comment"
     ] = "filename: conventional_power_plants_DE.csv, aggregated based on NUTS3 region"
 
-    unit_dict = {"chp": "None", "capacity_net_el": "MW", "efficiency_estimate": "None"}
+    unit_dict = {"capacity_net_el": "MW", "efficiency_estimate": "None"}
 
     def set_unit(df, unit_dict):
         for key, value in unit_dict.items():
