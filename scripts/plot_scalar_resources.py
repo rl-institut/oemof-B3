@@ -13,7 +13,9 @@ import sys
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
+import oemoflex.tools.plots as plots
+from oemoflex.tools.plots import colors_odict
 
 if __name__ == "__main__":
     resources = sys.argv[1]
@@ -33,33 +35,76 @@ if __name__ == "__main__":
     # Load scalar data
     scalars = load_scalars(resources)
 
-    def unstack_scalars(df):
-        _df = df.copy()
-        _df = _df.unstack("var_name")
+    # GENERAL
+    unit_dict = {"capacity_net_el": "W"}
+    carrier_dict = {
+        "biomass": "Biomass",
+        "ch4": "CH4",
+        "hard coal": "Hard coal",
+        "oil": "Oil",
+        "lignite": "Lignite",
+        "other": "Other",
+    }
 
-        return _df
+    # User input
+    var_name = "capacity_net_el"
+    ylabel = "Leistung [MW]"
 
-    scalars.set_index(["region", "carrier", "tech", "var_name"], inplace=True)
-    scalars = scalars["var_value"]
+    def prepare_conv_pp_scalars(var_name, carrier_dict=carrier_dict):
+        # select var_name to be plotted
+        selected_df = scalars[scalars["var_name"] == var_name].copy()
 
-    # There are duplicate entries for those capacities where we distinguish chp=yes/no
-    # TODO: Rethink this
-    scalars = scalars.loc[scalars.index.duplicated()]
+        # CONV_PP specific
+        selected_df.loc[(selected_df["region"] != "Berlin"), "region"] = "Brandenburg"
+        # capitalize carrier names
+        selected_df["carrier"].replace(carrier_dict, inplace=True)
+        # aggregate carriers in regions
+        selected_df_agg = selected_df.groupby(
+            ["scenario", "region", "carrier", "var_name"]
+        ).sum()
+        selected_df_agg.reset_index(inplace=True)
 
-    # unstack
-    scalars_prepared = unstack_scalars(scalars)
+        # apply pivot table
+        df_pivot = pd.pivot_table(
+            selected_df_agg,
+            index=["region"],
+            columns="carrier",
+            values="var_value",
+        )
 
-    # filter
-    scalars_prepared = scalars_prepared["capacity_net_el"]
+        # colors
+        color_keys = df_pivot.columns
 
-    # Set numeric datatype
-    scalars_prepared = scalars_prepared.astype(float)
+        return df_pivot, color_keys
 
-    # plot
-    fig, ax = plt.subplots()
+    def plot_scalar_resources(df, color_keys):
+        alpha = 0.3
+        fontsize = 14
+        plt.rcParams.update({"font.size": fontsize})
 
-    scalars_prepared.plot.bar(ax=ax)
+        fig, ax = plt.subplots(figsize=(12,6))
+        df.plot.bar(ax=ax,
+                    color=[colors_odict[key] for key in color_keys],
+                    width=0.8,
+                    zorder=2,
+                    stacked=False,
+                    ylabel=ylabel,
+                    rot=0
+                    )
 
-    plt.tight_layout()
+        for spine in ["top", "left", "right"]:
+            ax.spines[spine].set_visible(False)
+        ax.spines["bottom"].set_alpha(alpha)
+        ax.tick_params(axis="both", length=0, pad=7)
 
-    plt.savefig(target)
+        ax.grid(axis="y", zorder=1, color="black", alpha=alpha)
+        ax.set_xlabel(xlabel=None)
+
+        plt.legend(title=None)
+
+        plt.tight_layout()
+        plt.savefig(target, bbox_inches="tight")
+
+
+    df_pivot, color_keys = prepare_conv_pp_scalars(var_name=var_name)
+    plot_scalar_resources(df_pivot, color_keys)
