@@ -28,50 +28,65 @@ k = "summed_variable_costs_in_ch4"
 # User input
 var_name = q
 ylabel = "Test"
-regions = ["BB", "BE"] # BE_BB
+regions = ["BB", "BE"]  # BE_BB
 conv_number = None
 
-names_dict = {"BE-biomass-st":"Biomass ST","BB-biomass-st":"Biomass ST",
-              "BE-electricity-curtailment":"El. curtailment","BB-electricity-curtailment":"Curtailment",
-              "BE-electricity-demand":"El demand","BB-electricity-demand":"El. Demand",
-              "BE-electricity-liion-battery":"Liion Battery","BB-electricity-liion-battery":"Liion Battery",
-              "BE-electricity-shortage":"El. shortage","BB-electricity-shortage":"Shortage",
-              "BE-BB-electricity-transmission":"Transmission",
-              "BE-ch4-gt": "CH4", "BB-ch4-gt": "CH4",
-              "BE-solar-pv":"PV","BB-solar-pv":"PV",
-              "BE-wind-onshore":"Wind on","BB-wind-onshore":"Wind",
-              }
+names_dict = {
+    "BE-biomass-st": "Biomass ST",
+    "BB-biomass-st": "Biomass ST",
+    "BE-electricity-curtailment": "El. curtailment",
+    "BB-electricity-curtailment": "Curtailment",
+    "BE-electricity-demand": "El demand",
+    "BB-electricity-demand": "El. Demand",
+    "BE-electricity-liion-battery": "Liion Battery",
+    "BB-electricity-liion-battery": "Liion Battery",
+    "BE-electricity-shortage": "El. shortage",
+    "BB-electricity-shortage": "Shortage",
+    "BE-BB-electricity-transmission": "Transmission",
+    "BE-ch4-gt": "CH4",
+    "BB-ch4-gt": "CH4",
+    "BE-solar-pv": "PV",
+    "BB-solar-pv": "PV",
+    "BE-wind-onshore": "Wind on",
+    "BB-wind-onshore": "Wind",
+}
 
-unit_dict = {"capacity":"W"}
+unit_dict = {"capacity": "W"}
 
 from oemoflex.tools.plots import colors_odict
 
 from tabulate import tabulate
+
 # import data
 data_path = r"C:\Users\meinm\Documents\Git\oemof-B3\results\joined_scenarios\examples\scalars.csv"
 scalars = pd.read_csv(data_path)
 
 # select data with chosen var_name
-selected_scalar_data = scalars[scalars['var_name'] == var_name]
-selected_scalar_data = selected_scalar_data[selected_scalar_data["region"].isin(regions)]
+selected_scalar_data = scalars[scalars["var_name"] == var_name]
+selected_scalar_data = selected_scalar_data[
+    selected_scalar_data["region"].isin(regions)
+]
 
-print(tabulate(selected_scalar_data, headers='keys', tablefmt='psql'))
+print(tabulate(selected_scalar_data, headers="keys", tablefmt="psql"))
 
-def prepare_scalar_data(df, colors_odict, names_dict, conv_number = conv_number):
+
+def prepare_scalar_data(df, colors_odict, names_dict, conv_number=conv_number):
     # rename
     df = df.copy()
     df["name"] = df["name"].replace(names_dict)
     # pivot
-    df_pivot = pd.pivot_table(df, index=["scenario","region"], columns="name", values="var_value")
+    df_pivot = pd.pivot_table(
+        df, index=["scenario", "region"], columns="name", values="var_value"
+    )
 
     # cannot remove cells with replace 0 with nan and remove it because it can be 0 and should still be plotted, e.g. storage_capacity
-    #pv.replace({0:np.nan}, inplace=True)
-    #pv.dropna(axis = "index", how="all", inplace=True)
-    #pv.dropna(axis = "columns", how="all", inplace=True)
+    # pv.replace({0:np.nan}, inplace=True)
+    # pv.dropna(axis = "index", how="all", inplace=True)
+    # pv.dropna(axis = "columns", how="all", inplace=True)
 
     # define ordering and use concrete_order as keys for colors_odict in plot_scalars()
     order = list(colors_odict)
-    concrete_order=[]
+    concrete_order = []
     for i in order:
         if i not in df_pivot.columns:
             continue
@@ -84,9 +99,8 @@ def prepare_scalar_data(df, colors_odict, names_dict, conv_number = conv_number)
 
     return df_pivot, concrete_order
 
-def plot_scalars(
-    df, var_name, ylabel, color_keys, unit_dict=unit_dict, fontsize=14
-):
+
+def plot_scalars(df, var_name, ylabel, color_keys, unit_dict=unit_dict, fontsize=14):
     plt.rcParams.update({"font.size": fontsize})
     # Create figure with a subplot for each scenario with a relative width
     # proportionate to the number of regions
@@ -108,7 +122,9 @@ def plot_scalars(
         axes_list.append(axes)
 
     # Loop through array of axes to create grouped bar chart for each scenario
-    alpha = 0.3  # used for grid lines, bottom spine and separation lines between scenarios
+    alpha = (
+        0.3  # used for grid lines, bottom spine and separation lines between scenarios
+    )
     for scenario, ax in zip(scenarios, axes_list):
         # df.xs() Return cross-section from the Series/DataFrame. Here: return data of one scenario.
         df_scenario = df.xs(scenario)
@@ -165,8 +181,16 @@ def plot_scalars(
 
 # prepare data
 
-prepared_scalar_data, colors = prepare_scalar_data(df=selected_scalar_data, colors_odict=colors_odict, names_dict=names_dict)
-print(tabulate(prepared_scalar_data, headers='keys', tablefmt='psql'))
+prepared_scalar_data, colors = prepare_scalar_data(
+    df=selected_scalar_data, colors_odict=colors_odict, names_dict=names_dict
+)
+print(tabulate(prepared_scalar_data, headers="keys", tablefmt="psql"))
 # plot data
-plot_scalars(df = prepared_scalar_data, color_keys=colors, unit_dict=unit_dict, var_name=var_name, ylabel=ylabel)
+plot_scalars(
+    df=prepared_scalar_data,
+    color_keys=colors,
+    unit_dict=unit_dict,
+    var_name=var_name,
+    ylabel=ylabel,
+)
 plt.show()
