@@ -95,13 +95,13 @@ def stack_timeseries(df):
 
     df_stacked = pd.DataFrame(columns=df_stacked_cols)
 
-    timeindex_start = df.index.values[0]
-    timeindex_stop = df.index.values[-1]
+    timeindex_start = _df.index.values[0]
+    timeindex_stop = _df.index.values[-1]
 
     for column in df.columns:
         var_name = column
-        timeindex_resolution = df[column].index.freqstr
-        series = [pd.Series(df[column].values)]
+        timeindex_resolution = _df[column].index.freqstr
+        series = [pd.Series(_df[column].values)]
 
         column_data = [
             var_name,
