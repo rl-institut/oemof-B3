@@ -100,7 +100,7 @@ if __name__ == "__main__":
         ax.grid(axis="y", zorder=1, color="black", alpha=alpha)
         ax.set_xlabel(xlabel=None)
 
-        plt.legend(title=None)
+        plt.legend(title=None, frameon=True, framealpha=1)
 
         plt.tight_layout()
         plt.savefig(target, bbox_inches="tight")
