@@ -76,8 +76,8 @@ def stack_timeseries(df):
 
     _df_freq = pd.infer_freq(_df.index)
     if _df.index.freqstr is None:
-        raise Warning(
-            f"The frequency of your data is not specified in the DataFrame, "
+        print(
+            f"User info: The frequency of your data is not specified in the DataFrame, "
             f"but is of the following frequency alias: {_df_freq}. "
             f"The frequency of your DataFrame is therefore automatically set to the "
             f"frequency with this alias."
