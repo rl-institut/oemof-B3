@@ -115,6 +115,10 @@ def stack_timeseries(df):
         df_stacked_column = pd.DataFrame(data=dict_stacked_column)
         df_stacked = df_stacked.append(df_stacked_column, ignore_index=True)
 
+    # Save name of the index in the unstacked DataFrame as name of the index of "timeindex_start"
+    # column of stacked DataFrame, so that it can be extracted from it when unstacked again.
+    df_stacked["timeindex_start"].index.name = _df.index.name
+
     return df_stacked
 
 
@@ -153,5 +157,9 @@ def unstack_timeseries(df):
         columns=list(_df["var_name"]),
         index=pd.date_range(timeindex_start, timeindex_stop, freq=frequency),
     )
+
+    # Get and set index name from and to index name of "timeindex_start".
+    # If it existed in the origin DataFrame, which has been stacked, it will be set to that one.
+    df_unstacked.index.name = _df["timeindex_start"].index.name
 
     return df_unstacked
