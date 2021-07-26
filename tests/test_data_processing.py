@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os
 import pytest
 
 from oemof_b3.tools.data_processing import stack_timeseries, unstack_timeseries
@@ -45,3 +46,25 @@ def test_unstack():
     assert pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise) is None
     with pytest.raises(AssertionError):
         pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise_different)
+
+
+def test_stack_unstack_on_examples():
+    this_path = os.path.realpath(__file__)
+    data_path = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir, os.pardir)),
+        "examples",
+        "base",
+        "preprocessed",
+        "base",
+        "data",
+        "sequences",
+    )
+
+    for file in os.listdir(data_path):
+        file_path = os.path.join(data_path, file)
+        df = pd.read_csv(file_path, index_col=0)
+        df.index = pd.to_datetime(df.index)
+
+        df_stacked = stack_timeseries(df)
+        df_unstacked = unstack_timeseries(df_stacked)
+        assert pd.testing.assert_frame_equal(df, df_unstacked) is None
