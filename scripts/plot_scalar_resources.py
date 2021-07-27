@@ -13,10 +13,8 @@ import sys
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import oemoflex.tools.plots as plots
 from oemoflex.tools.plots import colors_odict
-import oemoflex.tools.helpers as helpers
 
 if __name__ == "__main__":
     resources = sys.argv[1]
