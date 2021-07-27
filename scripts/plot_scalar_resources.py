@@ -47,16 +47,18 @@ if __name__ == "__main__":
         "other": "Other",
     }
 
-    german_labels = {"Biomass":"Biomasse",
-                     "CH4":"Erdgas",
-                     "Hard coal":"Steinkohle",
-                     "Oil":"Öl",
-                     "Lignite":"Braunkohle",
-                     "Other":"Andere"}
+    german_labels = {
+        "Biomass": "Biomasse",
+        "CH4": "Erdgas",
+        "Hard coal": "Steinkohle",
+        "Oil": "Öl",
+        "Lignite": "Braunkohle",
+        "Other": "Andere",
+    }
 
     # User input
     var_name = "capacity_net_el"
-    conv_number = 1000*1000
+    conv_number = 1000 * 1000
 
     def prepare_conv_pp_scalars(var_name, conv_number, carrier_dict=carrier_dict):
         # select var_name to be plotted
@@ -98,17 +100,18 @@ if __name__ == "__main__":
         fontsize = 14
         plt.rcParams.update({"font.size": fontsize})
 
-        fig, ax = plt.subplots(figsize=(12,6))
+        fig, ax = plt.subplots(figsize=(12, 6))
         # apply EngFormatter if power is plotted
         if unit_dict[var_name] == "W":
             ax = plots.eng_format(ax, "W")
-        df.plot.bar(ax=ax,
-                    color=[color_dict[key] for key in color_keys],
-                    width=0.8,
-                    zorder=2,
-                    stacked=False,
-                    rot=0
-                    )
+        df.plot.bar(
+            ax=ax,
+            color=[color_dict[key] for key in color_keys],
+            width=0.8,
+            zorder=2,
+            stacked=False,
+            rot=0,
+        )
 
         for spine in ["top", "left", "right"]:
             ax.spines[spine].set_visible(False)
@@ -122,7 +125,6 @@ if __name__ == "__main__":
 
         plt.tight_layout()
         plt.savefig(target, bbox_inches="tight")
-
 
     df_pivot, german_color_keys, german_color_dict = prepare_conv_pp_scalars(
         var_name=var_name, conv_number=conv_number
