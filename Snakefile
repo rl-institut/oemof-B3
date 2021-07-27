@@ -4,6 +4,8 @@ examples = [
     'more_renewables_less_fossil'
 ]
 
+resources = ['conv_pp_scalar']
+
 # Target rules
 
 rule run_all_examples:
@@ -17,6 +19,10 @@ rule plot_all_examples:
 rule report_all_examples:
     input:
         expand("results/{scenario}/report/", scenario=examples)
+
+rule plot_all_resources:
+    input:
+        expand("results/_resources/plots/{resource}.png", resource=resources)
 
 rule clean:
     shell:
