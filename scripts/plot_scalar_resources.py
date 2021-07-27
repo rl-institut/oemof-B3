@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import oemoflex.tools.plots as plots
 from oemoflex.tools.plots import colors_odict
+import oemoflex.tools.helpers as helpers
 
 if __name__ == "__main__":
     resources = sys.argv[1]
@@ -46,11 +47,18 @@ if __name__ == "__main__":
         "other": "Other",
     }
 
+    german_labels = {"Biomass":"Biomasse",
+                     "CH4":"Erdgas",
+                     "Hard coal":"Steinkohle",
+                     "Oil":"Öl",
+                     "Lignite":"Braunkohle",
+                     "Other":"Andere"}
+
     # User input
     var_name = "capacity_net_el"
-    ylabel = "Leistung [MW]"
+    conv_number = 1000*1000
 
-    def prepare_conv_pp_scalars(var_name, carrier_dict=carrier_dict):
+    def prepare_conv_pp_scalars(var_name, conv_number, carrier_dict=carrier_dict):
         # select var_name to be plotted
         selected_df = scalars[scalars["var_name"] == var_name].copy()
 
@@ -74,21 +82,31 @@ if __name__ == "__main__":
 
         # colors
         color_keys = df_pivot.columns
+        german_color_dict = {}
+        for key in color_keys:
+            german_color_dict[german_labels[key]] = colors_odict[key]
+        df_pivot.rename(columns=german_labels, inplace=True)
+        german_color_keys = df_pivot.columns
+        # convert to SI unit:
+        if conv_number:
+            df_pivot *= conv_number
 
-        return df_pivot, color_keys
+        return df_pivot, german_color_keys, german_color_dict
 
-    def plot_scalar_resources(df, color_keys):
+    def plot_scalar_resources(df, color_keys, color_dict, unit_dict):
         alpha = 0.3
         fontsize = 14
         plt.rcParams.update({"font.size": fontsize})
 
         fig, ax = plt.subplots(figsize=(12,6))
+        # apply EngFormatter if power is plotted
+        if unit_dict[var_name] == "W":
+            ax = plots.eng_format(ax, "W")
         df.plot.bar(ax=ax,
-                    color=[colors_odict[key] for key in color_keys],
+                    color=[color_dict[key] for key in color_keys],
                     width=0.8,
                     zorder=2,
                     stacked=False,
-                    ylabel=ylabel,
                     rot=0
                     )
 
@@ -99,12 +117,14 @@ if __name__ == "__main__":
 
         ax.grid(axis="y", zorder=1, color="black", alpha=alpha)
         ax.set_xlabel(xlabel=None)
-
+        ax.legend(labels=german_labels)
         plt.legend(title=None, frameon=True, framealpha=1)
 
         plt.tight_layout()
         plt.savefig(target, bbox_inches="tight")
 
 
-    df_pivot, color_keys = prepare_conv_pp_scalars(var_name=var_name)
-    plot_scalar_resources(df_pivot, color_keys)
+    df_pivot, german_color_keys, german_color_dict = prepare_conv_pp_scalars(
+        var_name=var_name, conv_number=conv_number
+    )
+    plot_scalar_resources(df_pivot, german_color_keys, german_color_dict, unit_dict)
