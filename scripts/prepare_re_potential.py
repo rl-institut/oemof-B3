@@ -154,7 +154,6 @@ def calculate_potential_pv(
         area_data=areas_pv,
         type="pv",
         minimum_area=minimum_area,
-        degree_of_agreement=degree_of_agreement,
         out_dir_intermediate=out_dir_intermediate,
         reduction_by_wind_overleap=reduction_by_wind_overleap,
     )
@@ -164,8 +163,9 @@ def calculate_potential_pv(
         type="pv",
         input_file=filename_single_areas,
         required_specific_area=required_specific_area,
+        degree_of_agreement=degree_of_agreement,
         output_file=output_file,
-        nominal_power=None,
+        out_dir_intermediate=out_dir_intermediate,
     )
 
 
@@ -228,7 +228,6 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
         area_data=areas,
         type="wind",
         minimum_area=minimum_area,
-        degree_of_agreement=degree_of_agreement,
         out_dir_intermediate=out_dir_intermediate,
     )
 
@@ -238,7 +237,8 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
         input_file=filename_single_areas,
         required_specific_area=required_specific_area,
         output_file=output_file,
-        nominal_power=nominal_power,
+        degree_of_agreement=degree_of_agreement,
+        out_dir_intermediate=out_dir_intermediate,
     )
 
 
@@ -247,7 +247,6 @@ def calculate_area_potential(
     type,
     minimum_area,
     out_dir_intermediate,
-    degree_of_agreement=None,
     reduction_by_wind_overleap=None,
 ):
     r"""
@@ -295,36 +294,22 @@ def calculate_area_potential(
     # remove areas smaller minimum required area
     areas = area_data.loc[area_data["area"] >= minimum_area]
 
-    # resize areas by degree of agreement (Einigungsgrad)
-    if degree_of_agreement is None:
-        degree_of_agreement = 1
-    areas["area_agreed"] = areas["area"] * degree_of_agreement
-
     # take pv area potential overleap with wind area potential into account; not necessary for wind
     # as wind has priority
     if type == "pv":
-        # by degree of agreement reduced area potential < area potential - overleap area with wind
-        # potential areas  --> no action necessary
-        if (
-            areas["area_agreed"].sum()
-            > areas["area"].sum() - areas["overleap_wind_area"].sum()
-        ):
-            # otherwise: reduce areas by a small percentage: adapt in "area_agreed" and save old
-            # value in extra column
-            areas["area_agreed_before_reduction_by_overleap"] = areas["area_agreed"]
-            areas["area_agreed"] = areas["area_agreed"] * (
-                1 - reduction_by_wind_overleap
-            )
+        # reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra
+        # column
+        areas["area_before_reduction_by_overleap"] = areas["area"]
+        areas["area"] = areas["area"] * (1 - reduction_by_wind_overleap)
     elif type == "wind":
         pass
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
 
     # save area potential of single areas in m² (needed for further calculations of wind potential)
-    add_on = str(degree_of_agreement).replace(".", "_")
     filename_single_areas = os.path.join(
         out_dir_intermediate,
-        f"area_potential_single_areas_{type}_agreement_{add_on}.csv",
+        f"area_potential_single_areas_{type}.csv",
     )
     areas.to_csv(filename_single_areas)
 
@@ -332,7 +317,12 @@ def calculate_area_potential(
 
 
 def calculate_power_potential(
-    type, input_file, output_file, required_specific_area, nominal_power=None
+    type,
+    input_file,
+    output_file,
+    required_specific_area,
+    degree_of_agreement,
+    out_dir_intermediate=None,
 ):
     r"""
     Calculates wind or pv power potential for each area and Landkreis and saves results to csv.
@@ -370,59 +360,38 @@ def calculate_power_potential(
     # read area potential
     potentials = pd.read_csv(input_file, header=0)
 
-    # calculate power potential with required specific area per wind turbine / per installed
-    # capacity pv
+    # calculate power potential with required specific area
+    potentials["power_potential"] = potentials["area"] * required_specific_area
+    # resize power potentials by degree of agreement (Einigungsgrad)
+    if degree_of_agreement is None:
+        degree_of_agreement = 1
+    potentials["power_potential_agreed"] = (
+        potentials["power_potential"] * degree_of_agreement
+    )
+
     if type == "wind":
-        # calculate amount of wind turbines per area
-        if nominal_power is None:
-            raise ValueError(
-                f"`nominal_power` is None, but needs to be set for type {type}."
-            )
-        # calculate amount of wind turbines per area
-        potentials["amount_of_wind_turbines_float"] = (
-            potentials["area_agreed"] / required_specific_area
-        )
-        # round amount of wind turbines to integer:
-        # round to lower integer except if value < 1, then amount of wind turbines is 1 as
-        # a single wind turbine needs less space (no distancing to other wind turbines).
-        potentials["amount_of_wind_turbines"] = potentials[
-            "amount_of_wind_turbines_float"
-        ].apply(np.floor)
-        indices = potentials.loc[potentials["amount_of_wind_turbines_float"] < 1].index
-        potentials.loc[indices, "amount_of_wind_turbines"] = potentials.loc[
-            indices, "amount_of_wind_turbines_float"
-        ].apply(np.ceil)
-        # calculate power potential per area
-        potentials["power_potential"] = (
-            potentials["amount_of_wind_turbines"] * nominal_power
-        )
-        # sum up area and power potential of "Landkreise"
-        potentials_kreise = potentials.groupby("NUTS")[
+        keep_cols = [
             "area",
             "overleap_pv_agriculture_percent",
             "overleap_pv_road_railway_percent",
-            "area_agreed",
-            "amount_of_wind_turbines",
             "power_potential",
-        ].sum()
+            "power_potential_agreed",
+        ]
 
     elif type == "pv":
-        # calculate power potential
-        potentials["power_potential"] = (
-            potentials["area_agreed"] / required_specific_area
-        )
-
-        # sum up area and power potential of "Landkreise"
-        potentials_kreise = potentials.groupby("NUTS")[
+        keep_cols = [
             "area",
             "overleap_pv_agriculture_percent",
             "overleap_pv_road_railway_percent",
             "overleap_wind_percent",
-            "area_agreed",
             "power_potential",
-        ].sum()
+            "power_potential_agreed",
+        ]
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
+
+    # sum up area and power potential of "Landkreise"
+    potentials_kreise = potentials.groupby("NUTS")[keep_cols].sum()
 
     # save power potential in MW of NUTS3 (Landkreise) todo use SI units?
     potentials_kreise.to_csv(output_file)
