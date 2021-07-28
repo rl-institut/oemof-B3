@@ -44,7 +44,6 @@ Additonally saves the following data in "../results/RE_potential":
 """
 import os
 import sys
-import numpy as np
 import pandas as pd
 
 # global variables
