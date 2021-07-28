@@ -407,6 +407,7 @@ def calculate_power_potential(
     )
     potentials.to_csv(filename_single_areas)
 
+
 if __name__ == "__main__":
     type = sys.argv[1]
     output_file = sys.argv[4]
