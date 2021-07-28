@@ -429,3 +429,16 @@ if __name__ == "__main__":
         )
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
+
+    # calculate_potential_pv(
+    #     filename_agriculture="../raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
+    #     filename_road_railway="../raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
+    #     out_dir_intermediate="../results/RE_potential",
+    #     output_file="../results/_resources/power_potential_pv_kreise.csv",
+    # )
+    #
+    # calculate_potential_wind(
+    #     filename_wind="../raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
+    #     out_dir_intermediate="../results/RE_potential",
+    #     output_file="../results/_resources/power_potential_wind_kreise.csv",
+    # )
