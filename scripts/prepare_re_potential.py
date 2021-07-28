@@ -392,9 +392,23 @@ def calculate_power_potential(
     # sum up area and power potential of "Landkreise"
     potentials_kreise = potentials.groupby("NUTS")[keep_cols].sum()
 
+    # sum up area and power potential of Brandenburg
+    potential_bb = (
+        pd.DataFrame(potentials_kreise.sum(axis=0))
+        .transpose()
+        .rename({0: "Brandenburg"})
+    )
+    potentials_kreise = pd.concat([potentials_kreise, potential_bb], axis=0)
+
     # save power potential in MW of NUTS3 (Landkreise) todo use SI units?
     potentials_kreise.to_csv(output_file)
 
+    # additionally save power potential of single areas in MW
+    filename_single_areas = os.path.join(
+        out_dir_intermediate,
+        f"power_potential_single_areas_{type}.csv",
+    )
+    potentials.to_csv(filename_single_areas)
 
 if __name__ == "__main__":
     type = sys.argv[1]
