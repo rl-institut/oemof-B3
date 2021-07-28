@@ -26,17 +26,20 @@ resulting area and power potential is saved in `output_file`
 
 Saves the following data for "Landkreise":
     - power potential in column 'power_potential'
-    - area potential before processing in column 'area'
-    - area potential after processing and reducing by degree of agreement in column 'area_agreed'
-    - percentage of overleaps between the areas in columns 'overleap_pv_agriculture_percent',
+    - power potential after reducing by degree of agreement in column 'power_potential_agreed'
+    - area potential in column 'area'
+    - percentage of overleap between the areas in columns 'overleap_pv_agriculture_percent',
       'overleap_pv_road_railway_percent', only for pv: 'overleap_wind_percent'
-    - only for wind: amount of wind turbines per area in column 'amount_of_wind_turbines'
+    - all values for Brandenburg in row 'Brandenburg'
 
 Additonally saves the following data in "../results/RE_potential":
     - joined pv area potential of single areas in column 'area_raw' in
       "area_potential_single_areas_pv_raw.csv"
-    - area potential of single areas after processing in column 'area_agreed' in
+    - area potential of single areas in column 'area' in
       f"area_potential_single_areas_{type}.csv" for `type`
+    - power potential of single areas in column 'power_potential' and reduced power potential (by
+      degree of agreement) in column 'power_potential_agreed' in
+      f"power_potential_single_areas_{type}.csv" for `type`
 
 """
 import os
@@ -184,9 +187,9 @@ def calculate_potential_wind(filename_wind, output_file, out_dir_intermediate=No
       :py:func:`~.calculate_power_potential`
 
     The following data is saved:
-    - wind area potential of single areas in column 'area_agreed' in
+    - wind area potential of single areas in [m²] incolumn 'area' in
       "area_potential_single_areas_wind.csv" in `out_dir_intermediate`
-    - wind power [MW] and area [m²] potential of "Landkreise" in columns 'area_agreed' and
+    - wind power [MW] and area [m²] potential of "Landkreise" in columns 'area' and
       'power_potential' in `output_file`
 
     Parameters
@@ -249,36 +252,27 @@ def calculate_area_potential(
     reduction_by_wind_overleap=None,
 ):
     r"""
-    Calculates area potential for wind or pv for single areas and "Landkreise" and saves results to
-    csvs.
+    Calculates area potential for wind or pv for areas in `area_data` and saves results to csvs.
 
     Potential areas in `area_data` are processed in the following way:
     - areas smaller than `minimum_area` are excluded
-    - areas are reduced by `degree_of_agreement`
-    - if `type` is "pv", area is further reduced by a certain percentage
+    - if `type` is "pv", area is reduced by a certain percentage
       (`reduction_by_wind_overleap`) in case there is overleapping with wind potential area in sum.
 
     The following data is saved in `out_dir_intermediate`:
-    - Area potential of single areas for `degree_of_agreement` in column 'area_agreed' in
-      f"area_potential_single_areas_{type}_agreement_{degree_of_agreement}.csv"
+    - Area potential of single areas in column 'area' in
+      f"area_potential_single_areas_{type}.csv"
 
     Parameters
     ----------
     area_data: `pandas.DataFrame<frame>`
         Contains area potentials for energy carrier `type`.
     type: str
-        Type of area potential "pv" or "wind"
+        Type of area potential "pv" or "wind".
     minimum_area: float
-        Minimum required area for considering area as potential for installing plants of `type`
+        Minimum required area for considering area as potential for installing plants of `type`.
     out_dir_intermediate: str
-        Directory where intermediate outputs are saved
-        Default: None.
-    degree_of_agreement: float or None
-        The degree of agreement (ger: Einigungsgrad) is a factor and represents the
-        ratio between the area potential that is assumed to be agreed on between
-        different parties and the calculated available area potential.
-        If None, `degree_of_agreement` is set to 1
-        Default: None.
+        Directory where intermediate outputs are saved.
     reduction_by_wind_overleap: float or None
         Reduction of area if `type` is "pv" in case there is overleapping with wind
         potential area in sum.
@@ -328,14 +322,11 @@ def calculate_power_potential(
 
     Saves the following data for "Landkreise" in `output_file`.
     - power potential in column 'power_potential'
-    - area potential before processing in column 'area'
-    - area potential after processing and reducing by degree of agreement in column 'area_agreed'
-    - percentage of overleaps between the areas in columns 'overleap_pv_agriculture_percent',
+    - power potential after reducing by degree of agreement in column 'power_potential_agreed'
+    - area potential in column 'area'
+    - percentage of overleap between the areas in columns 'overleap_pv_agriculture_percent',
       'overleap_pv_road_railway_percent', 'overleap_wind_percent'
-    - if `type` is "wind", amount of wind turbines per area in columns
-      amount_of_wind_turbines_float' and 'amount_of_wind_turbines', amount of wind turbines is
-      rounded down to integers, except if value < 1, then amount of wind turbines is 1 as a single
-      wind turbine needs less space (no distancing to other wind turbines)
+    - all values for Brandenburg in row 'Brandenburg'
 
     Parameters
     ----------
@@ -347,9 +338,14 @@ def calculate_power_potential(
         File name including path to output of power potential of pv for "Landkreise"
     required_specific_area: float
         Specific area required per wind turbine or per installed capacity pv.
-    nominal_power: float
-        Nominal power of wind turbine type; not needed for pv.
+    degree_of_agreement: float or None
+        The degree of agreement (ger: Einigungsgrad) is a factor and represents the
+        ratio between the area potential that is assumed to be agreed on between
+        different parties and the calculated available area potential.
+        If None, `degree_of_agreement` is set to 1
         Default: None.
+    out_dir_intermediate: str
+        will be removed
 
     Returns
     -------
@@ -361,6 +357,7 @@ def calculate_power_potential(
 
     # calculate power potential with required specific area
     potentials["power_potential"] = potentials["area"] * required_specific_area
+
     # resize power potentials by degree of agreement (Einigungsgrad)
     if degree_of_agreement is None:
         degree_of_agreement = 1
