@@ -71,7 +71,8 @@ DROP_COLS = [
 
 
 def calculate_potential_pv(
-    filename_agriculture, filename_road_railway, output_file, secondary_output_dir):
+    filename_agriculture, filename_road_railway, output_file, secondary_output_dir
+):
     r"""
     Calculates the area and power potential of photovoltaics.
 
