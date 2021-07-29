@@ -60,26 +60,26 @@ rule build_datapackage:
 
 rule prepare_pv_potential:
     input:
-        type="pv",
-        filenames=["raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
-                   "raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv"],
-        regional_assumptions="regional.csv",
+        filename_agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
+        filename_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
+        regional_assumptions="raw/regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
-        "results/_resources/power_potential_pv_kreise.csv"
+        filename_kreise = "results/_resources/power_potential_pv_kreise.csv",
+        secondary_output_dir = directory("results/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py  {input.type} {input.filenames} {input.regional_assumptions} {output}"
+        "python scripts/prepare_re_potential.py {input.filenames} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule prepare_wind_potential:
     input:
-        type="wind",
-        filenames=["raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv"],
-        regional_assumptions="regional.csv",
+        filename_wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
+        regional_assumptions="raw/regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
-        "results/_resources/power_potential_wind_kreise.csv"
+        filename_kreise = "results/_resources/power_potential_wind_kreise.csv"
+        secondary_output_dir = directory("results/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py  {input.type} {input.filenames} {input.regional_assumptions} {output}"
+        "python scripts/prepare_re_potential.py  {input.filenames} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule optimize:
     input:
