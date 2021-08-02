@@ -105,3 +105,10 @@ rule join_scenario_results:
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
+rule plot_joined_scalars:
+    input:
+        "results/joined_scenarios/examples/scalars.csv"
+    output:
+        "results/joined_scenarios/plotted"
+    shell:
+        "python scripts/plot_joined_scalars {input} {output}"
