@@ -18,6 +18,14 @@ def get_optional_required_header(data_type):
 
     Returns
     -------
+    header : list
+        list of strings with all positions in the header
+
+    optional_header : list
+        list of strings with optional positions in the header
+
+    required_header : list
+        list of strings with required positions in the header
 
     """
     if data_type == "scalars":
@@ -386,7 +394,8 @@ def df_filtered(df, key, values):
     else:
         newline = "\n"
         raise KeyError(
-            f"The data you passed is neither a stacked time series nor does it contain scalars. {newline}"
+            f"The data you passed is neither a stacked time series nor does it contain scalars. "
+            f"{newline}"
             f"Please make sure your data contains the following columns {newline}"
             f"time series: {header_timeseries}{newline}"
             f"scalars: {header_scalars}{newline}"
@@ -478,7 +487,8 @@ def df_agg(df, key):
     else:
         newline = "\n"
         raise KeyError(
-            f"The data you passed is neither a stacked time series nor does it contain scalars. {newline}"
+            f"The data you passed is neither a stacked time series nor does it contain scalars. "
+            f"{newline}"
             f"Please make sure your data contains the following columns {newline}"
             f"time series: {header_timeseries}{newline}"
             f"scalars: {header_scalars}{newline}"
@@ -543,8 +553,8 @@ def df_agg(df, key):
                             # Extract energy carrier out of var_name string
                             energy_carrier = df["var_name"][index].split("_")[2]
                             if "carrier" not in key and "tech" not in key:
-                                # If the flow of the respective energy carrier does not exist as a key
-                                # in the result dictionary it will be added first
+                                # If the flow of the respective energy carrier does not exist as
+                                # a key in the result dictionary it will be added first
                                 if "flow_" + energy_carrier not in results_dict.keys():
                                     results_dict["flow_" + energy_carrier] = 0
                                 # If the flow goes "in" energy carrier it will be added to the
@@ -562,8 +572,8 @@ def df_agg(df, key):
                                         - df["var_value"][index]
                                     )
                             else:
-                                # If the flow of the respective energy carrier does not exist as a key
-                                # in the result dictionary it will be added first
+                                # If the flow of the respective energy carrier does not exist as
+                                # a key in the result dictionary it will be added first
                                 if (
                                     "flow_"
                                     + energy_carrier
@@ -659,11 +669,12 @@ def df_agg(df, key):
                                 results_dict["losses"] + df["var_value"][index]
                             )
                         else:
+                            newline = "\n"
                             # In case a so far unknown var_name occurs, a ValueError will be
                             # raised and the code will error out with exit code 1
                             var_name = df["var_name"][index]
                             raise ValueError(
-                                f"Unknown var_name: {var_name}. {new_row}"
+                                f"Unknown var_name: {var_name}. {newline}"
                                 f"This variable is not implemented in the aggregation. "
                                 f"Consider adding it to df_agg function."
                             )
