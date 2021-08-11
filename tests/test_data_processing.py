@@ -374,6 +374,128 @@ def test_df_filtered():
     )
 
 
+def test_df_agg():
+    """
+    This test checks whether
+    1. scalars and
+    2. time series
+    are aggregated by a key
+
+    """
+    # 1. Test
+    path_file_scalars = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars.csv",
+    )
+
+    # Read scalars
+    df = load_scalars(path_file_scalars)
+
+    # Aggregate by region
+    df_aggregated_by_region = df_agg(df, "region")
+
+    # Add expected results of aggregation
+    df_aggregated_expected = pd.DataFrame(
+        data={
+            "id_scal": [None] * 8,
+            "scenario": ["base"] * 8,
+            "name": ["Aggregated by region"] * 8,
+            "var_name": [
+                "capacity",
+                "flow_biomass",
+                "flow_electricity",
+                "costs",
+                "capacity",
+                "flow_biomass",
+                "flow_electricity",
+                "costs",
+            ],
+            "carrier": ["All"] * 8,
+            "region": ["BE", "BE", "BE", "BE", "BB", "BB", "BB", "BB"],
+            "tech": ["All"] * 8,
+            "type": ["All"] * 8,
+            "var_value": [
+                0,
+                0,
+                13470154039.4199,
+                0,
+                400000,
+                2692790078.846871,
+                25900023216.653,
+                108971828.939188,
+            ],
+            "var_unit": ["-"] * 8,
+            "reference": [None] * 8,
+            "comment": [None] * 8,
+        }
+    )
+
+    # Check if results of aggregation equal the expected ones
+    pd.testing.assert_frame_equal(df_aggregated_by_region, df_aggregated_expected)
+
+    # Aggregate by carrier
+    df_aggregated_by_carrier = df_agg(df, "carrier")
+
+    assert list(df_aggregated_by_carrier["var_value"].values) == [
+        400000,
+        2692790078.846871,
+        -1023260209.6668,
+        108971828.9391882,
+        40393437465.7397,
+    ]
+
+    # Aggregate by tech
+    df_aggregated_by_tech = df_agg(df, "tech")
+
+    expected_results_series_tech = [
+        400000.000,
+        2692790078.847,
+        -1023260209.667,
+        108971828.939,
+        6666117465.740,
+        33727320000.000,
+    ]
+
+    for index, item in enumerate(list(df_aggregated_by_tech["var_value"].values)):
+        assert round(item, 3) == expected_results_series_tech[index]
+
+    # 2. Test
+    path_file_timeseries = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_stacked.csv",
+    )
+
+    # Read stacked time series
+    df = load_timeseries(path_file_timeseries)
+
+    # Aggregate by region
+    df_aggregated_by_region = df_agg(df, "region")
+
+    # Add expected results of aggregation
+    df_aggregated_expected = pd.DataFrame(
+        data={
+            "id_ts": [None] * 2,
+            "region": ["BB", "BE_BB"],
+            "var_name": ["Aggregated by region"] * 2,
+            "timeindex_start": [df["timeindex_start"][0]] * 2,
+            "timeindex_stop": [df["timeindex_stop"][0]] * 2,
+            "timeindex_resolution": [df["timeindex_resolution"][0]] * 2,
+            "series": [
+                [3917414.00714099, 3865968.88012165, 3688842.50107082],
+                [137824.4, 125071.28, 81162.145],
+            ],
+            "var_unit": ["-"] * 2,
+            "source": [None] * 2,
+            "comment": [None] * 2,
+        }
+    )
+
+    # Check if results of aggregation equal the expected ones
+    pd.testing.assert_frame_equal(df_aggregated_by_region, df_aggregated_expected)
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)

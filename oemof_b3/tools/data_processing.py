@@ -422,6 +422,327 @@ def df_filtered(df, key, values):
     return df_filtered_by_value
 
 
+def df_agg(df, key):
+    """
+    This function aggregates columns of a DataFrame
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame
+    key : string
+        The column's name aggregated by
+
+    Returns
+    -------
+    df_agg : pd.DataFrame
+        DataFrame with aggregated columns
+    """
+
+    # Get header of scalars
+    scalars_header = get_optional_required_header("scalars")
+    header_scalars = scalars_header[0]
+    optional_header_scalars = scalars_header[1]
+    required_header_scalars = scalars_header[2]
+
+    # Get header of time series
+    timeseries_header = get_optional_required_header("timeseries")
+    header_timeseries = timeseries_header[0]
+    optional_header_timeseries = timeseries_header[1]
+    required_header_timeseries = timeseries_header[2]
+
+    # Save header of DataFrame to variable
+    df_header = list(df.columns)
+
+    df_header_required = df_header.copy()
+    for item in df_header:
+        if item in optional_header_scalars:
+            df_header_required.remove(item)
+        elif item in optional_header_timeseries:
+            df_header_required.remove(item)
+
+    scalars = False
+    time_series = False
+
+    if df_header_required == required_header_scalars:
+
+        # Aggregation options for scalars
+        scalars = True
+        agg_options = ["region", "carrier", "tech"]
+
+    elif df_header_required == required_header_timeseries:
+        time_series = True
+        # Aggregation options for time series
+        agg_options = ["region"]
+
+    else:
+        newline = "\n"
+        raise KeyError(
+            f"The data you passed is neither a stacked time series nor does it contain scalars. {newline}"
+            f"Please make sure your data contains the following columns {newline}"
+            f"time series: {header_timeseries}{newline}"
+            f"scalars: {header_scalars}{newline}"
+        )
+
+    # Ensure key is a valid aggregation option
+    if key not in agg_options:
+        raise KeyError(
+            f"{key} is not a option for a aggregation."
+            f"Please choose of one of these aggregation options: {agg_options}"
+        )
+
+    # Check if key is in header
+    if key not in df_header:
+        raise KeyError(
+            f"Your data is missing the column {key}."
+            f"Please provide a complete data set with the required column"
+        )
+
+    # Empty DataFrame, which will contain aggregated items
+    df_agg_by_key = pd.DataFrame(columns=list(df.columns))
+
+    # Get list of all items existing in the column passed with key
+    key_list = list(df[key])
+    key_list = list(dict.fromkeys(key_list))
+
+    # Begin aggregation of scalars
+    if scalars:
+        # Get list of all scenarios existing in column scenario
+        scenario_list = list(df["scenario"])
+        scenario_list = list(dict.fromkeys(scenario_list))
+
+        # Aggregation is done by scenario
+        for scenario in scenario_list:
+            # Aggregation is further done by key
+            for key_item in key_list:
+                # Add empty dictionary for results
+                results_dict = {}
+                # Iterate over each row of the scalars DataFrame
+                for index_row in df.iterrows():
+                    # Set index of iteration
+                    index = index_row[0]
+                    # Check if scenario and key of the row match the one of the iteration
+                    # over the scenario and all keys, which exist in the DataFrame
+                    if df["scenario"][index] == scenario and df[key][index] == key_item:
+                        # Aggregate with regard to the variable
+                        # Aggregation of capacity
+                        if "capacity" in df["var_name"][index]:
+                            # If capacity does not exist as a key in the result dictionary
+                            # it will be added first
+                            if "capacity" not in results_dict.keys():
+                                results_dict["capacity"] = 0
+                            # Add the value of the capacity to the results dictionary
+                            results_dict["capacity"] = (
+                                results_dict["capacity"] + df["var_value"][index]
+                            )
+                        # Aggregation of flows of energy carrier
+                        # The energy carrier has to be obtained from var_name because we want to
+                        # aggregate the end energy. E.g. wind and solar can be aggregated with
+                        # electricity as energy carrier
+                        elif "flow" in df["var_name"][index]:
+                            # Extract energy carrier out of var_name string
+                            energy_carrier = df["var_name"][index].split("_")[2]
+                            if "carrier" not in key and "tech" not in key:
+                                # If the flow of the respective energy carrier does not exist as a key
+                                # in the result dictionary it will be added first
+                                if "flow_" + energy_carrier not in results_dict.keys():
+                                    results_dict["flow_" + energy_carrier] = 0
+                                # If the flow goes "in" energy carrier it will be added to the
+                                # same flows
+                                if "in" in df["var_name"][index]:
+                                    results_dict["flow_" + energy_carrier] = (
+                                        results_dict["flow_" + energy_carrier]
+                                        + df["var_value"][index]
+                                    )
+                                # If the flow goes "out" energy carrier it will be subtracted from
+                                # the same flows
+                                elif "out" in df["var_name"][index]:
+                                    results_dict["flow_" + energy_carrier] = (
+                                        results_dict["flow_" + energy_carrier]
+                                        - df["var_value"][index]
+                                    )
+                            else:
+                                # If the flow of the respective energy carrier does not exist as a key
+                                # in the result dictionary it will be added first
+                                if (
+                                    "flow_"
+                                    + energy_carrier
+                                    + "_"
+                                    + df["carrier"][index]
+                                    not in results_dict.keys()
+                                ):
+                                    results_dict[
+                                        "flow_"
+                                        + energy_carrier
+                                        + "_"
+                                        + df["carrier"][index]
+                                    ] = 0
+                                # If the flow goes "in" energy carrier it will be added to the
+                                # same flows
+                                if "in" in df["var_name"][index]:
+                                    results_dict[
+                                        "flow_"
+                                        + energy_carrier
+                                        + "_"
+                                        + df["carrier"][index]
+                                    ] = (
+                                        results_dict[
+                                            "flow_"
+                                            + energy_carrier
+                                            + "_"
+                                            + df["carrier"][index]
+                                        ]
+                                        + df["var_value"][index]
+                                    )
+                                # If the flow goes "out" energy carrier it will be subtracted from
+                                # the same flows
+                                elif "out" in df["var_name"][index]:
+                                    results_dict[
+                                        "flow_"
+                                        + energy_carrier
+                                        + "_"
+                                        + df["carrier"][index]
+                                    ] = (
+                                        results_dict[
+                                            "flow_"
+                                            + energy_carrier
+                                            + "_"
+                                            + df["carrier"][index]
+                                        ]
+                                        - df["var_value"][index]
+                                    )
+                        # Aggregation of costs
+                        elif "costs" in df["var_name"][index]:
+                            # If costs does not exist as a key in the result dictionary it will
+                            # be added first
+                            if "costs" not in results_dict.keys():
+                                results_dict["costs"] = 0
+                            # If the costs go "in" energy carrier it will be added to the
+                            # same costs
+                            if "in" in df["var_name"][index]:
+                                results_dict["costs"] = (
+                                    results_dict["costs"] + df["var_value"][index]
+                                )
+                            # If the costs go "out" energy carrier it will be subtracted from
+                            # the same costs
+                            elif "out" in df["var_name"][index]:
+                                results_dict["costs"] = (
+                                    results_dict["costs"] - df["var_value"][index]
+                                )
+                        # Aggregation of invest
+                        elif "invest" in df["var_name"][index]:
+                            # If invest does not exist as a key in the result dictionary it will
+                            # be added first
+                            if "invest" not in results_dict.keys():
+                                results_dict["invest"] = 0
+                            # If invest goes "in" energy carrier it will be added to the
+                            # same invest
+                            if "in" in df["var_name"][index]:
+                                results_dict["invest"] = (
+                                    results_dict["invest"] + df["var_value"][index]
+                                )
+                            # If invest goes "out" energy carrier it will be subtracted from the
+                            # same invest
+                            elif "out" in df["var_name"][index]:
+                                results_dict["invest"] = (
+                                    results_dict["invest"] - df["var_value"][index]
+                                )
+                        # Aggregation of losses
+                        elif "losses" in df["var_name"][index]:
+                            # If losses does not exist as a key in the result dictionary it will
+                            # be added first
+                            if "losses" not in results_dict.keys():
+                                results_dict["losses"] = 0
+                            # Losses are gathered so far. In future they could be substracted from
+                            # the respective flow or capacity
+                            results_dict["losses"] = (
+                                results_dict["losses"] + df["var_value"][index]
+                            )
+                        else:
+                            # In case a so far unknown var_name occurs, a ValueError will be
+                            # raised and the code will error out with exit code 1
+                            var_name = df["var_name"][index]
+                            raise ValueError(
+                                f"Unknown var_name: {var_name}. {new_row}"
+                                f"This variable is not implemented in the aggregation. "
+                                f"Consider adding it to df_agg function."
+                            )
+
+                # Add the results of the dictionary per scenario and per key to new row, which is
+                # in the format of scalars DataFrame.
+                # Iterate over the results in the dictionary and add the key to the respective
+                # column: region, carrier or tech. The other two are set to "All"
+                for dict_key, dict_item in results_dict.items():
+                    if key == "region":
+                        region = key_item
+                        carrier = "All"
+                        tech = "All"
+                    elif key == "carrier":
+                        region = "All"
+                        carrier = key_item
+                        tech = "All"
+                    elif key == "tech":
+                        region = "All"
+                        carrier = "All"
+                        tech = key_item
+
+                    # Add new row, which will be appended to the aggregated DataFrame
+                    new_row = {
+                        "id_scal": None,
+                        "scenario": scenario,
+                        "name": "Aggregated by " + key,
+                        "var_name": dict_key,
+                        "carrier": carrier,
+                        "region": region,
+                        "tech": tech,
+                        "type": "All",
+                        "var_value": dict_item,
+                        "var_unit": "-",
+                        "reference": None,
+                        "comment": None,
+                    }
+                    # Append row to the aggregated DataFrame
+                    df_agg_by_key = df_agg_by_key.append(new_row, ignore_index=True)
+
+    # Begin aggregation of time series
+    if time_series:
+        # Aggregation is done by key
+        for key_item in key_list:
+            # Add empty dictionary for results
+            results_dict = {}
+            # Iterate over each row of the stacked time series DataFrame
+            for index_row in df.iterrows():
+                # Set index of iteration
+                index = index_row[0]
+                # Check if key of the row matches the one of the iteration
+                # over all keys, which exist in the DataFrame
+                if df[key][index] == key_item:
+                    # If series not in results dictionary, it will be added
+                    if "series" not in results_dict.keys():
+                        results_dict["series"] = [0] * len(df["series"][0])
+                    # Aggregate series by adding it to the results dictionary
+                    results_dict["series"] = np.add(
+                        results_dict["series"], df["series"][index]
+                    )
+            # Add new row, which will be appended to the aggregated DataFrame
+            new_row = {
+                "id_ts": None,
+                "region": key_item,
+                "var_name": "Aggregated by " + key,
+                "timeindex_start": df["timeindex_start"][0],
+                "timeindex_stop": df["timeindex_stop"][0],
+                "timeindex_resolution": df["timeindex_resolution"][0],
+                "series": results_dict["series"],
+                "var_unit": "-",
+                "source": None,
+                "comment": None,
+            }
+            # Append row to the aggregated DataFrame
+            df_agg_by_key = df_agg_by_key.append(new_row, ignore_index=True)
+
+    return df_agg_by_key
+
+
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
