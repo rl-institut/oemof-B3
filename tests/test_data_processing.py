@@ -541,7 +541,6 @@ def test_unstack():
 
 
 def test_stack_unstack_on_example_data():
-    this_path = os.path.realpath(__file__)
     file_path = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
