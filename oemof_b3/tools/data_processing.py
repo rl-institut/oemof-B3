@@ -333,6 +333,95 @@ def save_timeseries(df, path):
     print(f"User info: The time series has been saved to: {path}.")
 
 
+def df_filtered(df, key, values):
+    """
+    This function filters columns of a DataFrame which can be passed
+    as scalars and time series.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame
+    key : string
+        The column's name filtered by
+    values : list
+        List of a value or values to filter by
+
+    Returns
+    -------
+    df_agg : pd.DataFrame
+        DataFrame with aggregated columns
+    """
+
+    # Get header of scalars
+    scalars_header = get_optional_required_header("scalars")
+    header_scalars = scalars_header[0]
+    optional_header_scalars = scalars_header[1]
+    required_header_scalars = scalars_header[2]
+
+    # Get header of time series
+    timeseries_header = get_optional_required_header("timeseries")
+    header_timeseries = timeseries_header[0]
+    optional_header_timeseries = timeseries_header[1]
+    required_header_timeseries = timeseries_header[2]
+
+    # Save header of DataFrame to variable
+    df_header = list(df.columns)
+
+    df_header_required = df_header.copy()
+    for item in df_header:
+        if item in optional_header_scalars:
+            df_header_required.remove(item)
+        elif item in optional_header_timeseries:
+            df_header_required.remove(item)
+
+    if df_header_required == required_header_scalars:
+        # Filter options for scalars
+        filter_options = ["scenario", "region", "carrier", "tech", "type", "var_name"]
+
+    elif df_header_required == required_header_timeseries:
+        # Filter options for time series
+        filter_options = ["region", "var_name"]
+
+    else:
+        newline = "\n"
+        raise KeyError(
+            f"The data you passed is neither a stacked time series nor does it contain scalars. {newline}"
+            f"Please make sure your data contains the following columns {newline}"
+            f"time series: {header_timeseries}{newline}"
+            f"scalars: {header_scalars}{newline}"
+        )
+
+    # Ensure key is a valid filter option
+    if key not in filter_options:
+        raise KeyError(
+            f"{key} is not a option for a filter."
+            f"Please choose of one of these filter options: {filter_options}"
+        )
+
+    # Check if key is in header
+    if key not in df_header:
+        raise KeyError(
+            f"Your data is missing the column {key}."
+            f"Please provide a complete data set with the required column"
+        )
+
+    # Empty DataFrame, which will contain filtered items
+    df_filtered_by_value = pd.DataFrame(columns=list(df.columns))
+
+    for value in values:
+        if value not in list(df[key]):
+            print(f"User info: {value} not found as item in column {key}.")
+        else:
+            for index, row in df.iterrows():
+                if value == df[key][index]:
+                    df_filtered_by_value = df_filtered_by_value.append(
+                        row, ignore_index=True
+                    )
+
+    return df_filtered_by_value
+
+
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same

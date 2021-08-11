@@ -307,6 +307,73 @@ def test_save_timeseries():
     os.remove(path_file_stacked)
 
 
+def test_df_filtered():
+    """
+    This test checks whether
+    1. scalars and
+    2. time series
+    are filtered by a key and value
+
+    """
+    # 1. Test
+    path_file_scalars = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars.csv",
+    )
+
+    # Read scalars
+    df = load_scalars(path_file_scalars)
+
+    df_BE = df_filtered(df, "region", ["BE"])
+
+    assert df_BE["region"].values[0] == "BE"
+    assert len(df_BE["region"]) == 7
+
+    df_BE_BB = df_filtered(df, "region", ["BE_BB"])
+
+    assert df_BE_BB.empty
+
+    df_conversion = df_filtered(df, "type", ["conversion"])
+    assert len(df_conversion["type"]) == 10
+
+    with pytest.raises(KeyError):
+        df_filtered(df, "something", ["conversion"])
+
+    # 2. Test
+    path_file_timeseries = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_stacked.csv",
+    )
+
+    # Read stacked time series
+    df = load_timeseries(path_file_timeseries)
+
+    df_BE_BB = df_filtered(df, "region", ["BE_BB"])
+
+    assert (
+        df_BE_BB["region"].values[0] == "BE_BB"
+        and df_BE_BB["region"].values[1] == "BE_BB"
+    )
+    assert len(df_BE_BB["region"]) == 2
+
+    df_var_name = df_filtered(
+        df,
+        "var_name",
+        [
+            "flow from BB-biomass-st to BB-electricity",
+            "flow from BB-electricity-liion-battery to BB-electricity",
+        ],
+    )
+
+    assert (
+        df_var_name["var_name"].values[0] == "flow from BB-biomass-st to BB-electricity"
+        and df_var_name["var_name"].values[1]
+        == "flow from BB-electricity-liion-battery to BB-electricity"
+    )
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)
