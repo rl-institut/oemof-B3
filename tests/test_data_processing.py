@@ -247,7 +247,7 @@ def test_save_scalars():
     This test checks whether
     1. the path of the scalars stored in a csv file exists
     2. scalars remain unchanged after saving. For this purpose, they are read in again after
-    saving and compared with the scalars originally read.
+    saving and compared with the scalars originally read
 
     """
     path_file_scalars = os.path.join(
@@ -282,6 +282,13 @@ def test_save_scalars():
 
 
 def test_save_timeseries():
+    """
+    This test checks whether
+    1. the path of the time series stored in a csv file exists
+    2. time series remains unchanged after saving. For this purpose, it is read in again after
+    saving and compared with the time series originally read
+
+    """
 
     path_file_timeseries = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
@@ -497,6 +504,16 @@ def test_df_agg():
 
 
 def test_check_consistency():
+    """
+    This test checks whether
+    1. "timeindex_start",
+    2. "timeindex_stop" and
+    3. "timeindex_resolution"
+
+    are same in each row. For this purpose, a correctly formatted Dataframe and a modified
+    Dataframe containing a non-consistent entry are tested
+
+    """
     df_stacked = stack_timeseries(ts_column_wise)
 
     frequency = check_consistency_timeindex(df_stacked, "timeindex_resolution")
@@ -519,6 +536,11 @@ def test_check_consistency():
 
 
 def test_stack():
+    """
+    This test checks whether the stacked DataFrame "ts_row_wise"
+    contains the after stacking expected columns "ts_row_wise_cols"
+
+    """
 
     ts_row_wise = stack_timeseries(ts_column_wise)
 
@@ -526,6 +548,11 @@ def test_stack():
 
 
 def test_unstack():
+    """
+    This test checks if a dummy DataFrame remains unchanged through stacking
+    and unstacking
+
+    """
 
     ts_row_wise = stack_timeseries(ts_column_wise)
     ts_column_wise_again = unstack_timeseries(ts_row_wise)
@@ -541,6 +568,11 @@ def test_unstack():
 
 
 def test_stack_unstack_on_example_data():
+    """
+    This test checks if a DataFrame with a test sequence remains unchanged through stacking
+    and unstacking
+
+    """
     file_path = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
