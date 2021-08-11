@@ -281,6 +281,32 @@ def test_save_scalars():
     os.remove(path_file_saved)
 
 
+def test_save_timeseries():
+
+    path_file_timeseries = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_timeseries.csv",
+    )
+    df = load_timeseries(path_file_timeseries)
+
+    path_file_stacked = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_stacked_saved.csv",
+    )
+
+    save_timeseries(df, path_file_stacked)
+    assert os.path.exists(path_file_stacked) == 1
+
+    df_saved = load_timeseries(path_file_stacked)
+
+    pd.testing.assert_series_equal(df["series"], df_saved["series"])
+    pd.testing.assert_frame_equal(df, df_saved)
+
+    os.remove(path_file_stacked)
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)

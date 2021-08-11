@@ -313,6 +313,26 @@ def save_scalars(df, path):
     print(f"User info: The scalars have been saved to: {path}.")
 
 
+def save_timeseries(df, path):
+    """
+    This funtion saves a time series to a csv file
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with time series
+
+    path : str
+        Path to save the file
+
+    """
+    # Save time series to csv file
+    df.to_csv(path, index=False)
+
+    # Print user info
+    print(f"User info: The time series has been saved to: {path}.")
+
+
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
