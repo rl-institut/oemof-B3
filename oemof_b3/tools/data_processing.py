@@ -843,6 +843,7 @@ def stack_timeseries(df):
         var_name = column
         timeindex_resolution = _df[column].index.freqstr
         series = [pd.Series(_df[column].values)]
+        series = [list(_df[column].values)]
 
         column_data = [
             var_name,

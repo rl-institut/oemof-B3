@@ -496,6 +496,28 @@ def test_df_agg():
     pd.testing.assert_frame_equal(df_aggregated_by_region, df_aggregated_expected)
 
 
+def test_check_consistency():
+    df_stacked = stack_timeseries(ts_column_wise)
+
+    frequency = check_consistency_timeindex(df_stacked, "timeindex_resolution")
+    timeindex_start = check_consistency_timeindex(df_stacked, "timeindex_start")
+    timeindex_stop = check_consistency_timeindex(df_stacked, "timeindex_stop")
+
+    assert timeindex_start == pd.to_datetime("2021-01-01 00:00:00")
+    assert timeindex_stop == pd.to_datetime("2021-01-02 00:00:00")
+    assert frequency == "H"
+
+    df_stacked_modified = df_stacked.copy()
+    df_stacked_modified.at["timeindex_resolution", 1] = "M"
+    df_stacked_modified.at["timeindex_start", 1] = pd.to_datetime("2021-01-01 00:00:10")
+    df_stacked_modified.at["timeindex_stop", 1] = pd.to_datetime("2021-01-02 00:00:10")
+
+    with pytest.raises(ValueError):
+        check_consistency_timeindex(df_stacked_modified, "timeindex_resolution")
+        check_consistency_timeindex(df_stacked_modified, "timeindex_start")
+        check_consistency_timeindex(df_stacked_modified, "timeindex_stop")
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)
