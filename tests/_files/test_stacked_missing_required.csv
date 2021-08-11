@@ -1,0 +1,12 @@
+id_ts,region,var_name,timeindex_start,timeindex_stop,timeindex_resolution,var_unit,source,comment
+0,BB,flow from BB-biomass-st to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+1,BB,flow from BB-ch4-gt to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+2,BB,flow from BB-electricity to BB-electricity-curtailment,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+3,BB,flow from BB-electricity.1 to BB-electricity-demand,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+4,BB,flow from BB-electricity.2 to BB-electricity-liion-battery,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+5,BE_BB,flow from BB-electricity.3 to BE-BB-electricity-transmission,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+6,BB,flow from BB-electricity-liion-battery to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+7,BB,flow from BB-electricity-shortage to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+8,BB,flow from BB-solar-pv to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+9,BB,flow from BB-wind-onshore to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
+10,BE_BB,flow from BE-BB-electricity-transmission to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,,,
