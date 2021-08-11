@@ -242,6 +242,45 @@ def test_load_timeseries():
         load_timeseries(path_file_stacked_missing_required)
 
 
+def test_save_scalars():
+    """
+    This test checks whether
+    1. the path of the scalars stored in a csv file exists
+    2. scalars remain unchanged after saving. For this purpose, they are read in again after
+    saving and compared with the scalars originally read.
+
+    """
+    path_file_scalars = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars.csv",
+    )
+
+    path_file_saved = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars_saved.csv",
+    )
+
+    # Read scalars
+    df = load_scalars(path_file_scalars)
+
+    # Save read scalars
+    save_scalars(df, path_file_saved)
+
+    # Load the saved scalars
+    df_saved = load_scalars(path_file_saved)
+
+    # 1. Test
+    assert os.path.exists(path_file_saved) == 1
+
+    # 2. Test
+    pd.testing.assert_frame_equal(df, df_saved)
+
+    # Remove saved scalars which were saved for this test
+    os.remove(path_file_saved)
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)
