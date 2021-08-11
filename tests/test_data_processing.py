@@ -39,6 +39,92 @@ ts_column_wise_different = pd.DataFrame(
 )
 
 
+def test_get_optional_required_header():
+    """
+    This test checks whether header of
+    1. scalars and
+    2. time series
+    are returned correctly
+
+    In a third test it is checked whether a ValueError
+    is raised if an invalid string is passed with
+    data_type
+
+    """
+    # 1. Test
+    scalars_header_expected = [
+        "id_scal",
+        "scenario",
+        "name",
+        "var_name",
+        "carrier",
+        "region",
+        "tech",
+        "type",
+        "var_value",
+        "var_unit",
+        "reference",
+        "comment",
+    ]
+    scalars_header_optional_expected = ["id_scal", "var_unit", "reference", "comment"]
+
+    scalars_header_required_expected = [
+        "scenario",
+        "name",
+        "var_name",
+        "carrier",
+        "region",
+        "tech",
+        "type",
+        "var_value",
+    ]
+
+    scalars_header_results = get_optional_required_header("scalars")
+
+    assert scalars_header_results[0] == scalars_header_expected
+    assert scalars_header_results[1] == scalars_header_optional_expected
+    assert scalars_header_results[2] == scalars_header_required_expected
+
+    # 2. Test
+    timeseries_header_expected = [
+        "id_ts",
+        "region",
+        "var_name",
+        "timeindex_start",
+        "timeindex_stop",
+        "timeindex_resolution",
+        "series",
+        "var_unit",
+        "source",
+        "comment",
+    ]
+    timeseries_header_optional_expected = [
+        "id_ts",
+        # "region",
+        "var_unit",
+        "source",
+        "comment",
+    ]
+    timeseries_header_required_expected = [
+        "region",
+        "var_name",
+        "timeindex_start",
+        "timeindex_stop",
+        "timeindex_resolution",
+        "series",
+    ]
+
+    timeseries_header_results = get_optional_required_header("timeseries")
+
+    assert timeseries_header_results[0] == timeseries_header_expected
+    assert timeseries_header_results[1] == timeseries_header_optional_expected
+    assert timeseries_header_results[2] == timeseries_header_required_expected
+
+    # 3. Test
+    with pytest.raises(ValueError):
+        get_optional_required_header("something_else")
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)

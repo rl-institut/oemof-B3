@@ -2,6 +2,78 @@ import pandas as pd
 import numpy as np
 
 
+def get_optional_required_header(data_type):
+    """
+    This function returns the header of
+    1. scalars and
+    2. time series
+    along with two lists: optional and required header items
+
+    Parameters
+    ----------
+    data_type : string
+        "scalars" or "timeseries" depending on DataFrame
+
+    Returns
+    -------
+
+    """
+    if data_type == "scalars":
+        # Name of each column in scalars
+        header = [
+            "id_scal",
+            "scenario",
+            "name",
+            "var_name",
+            "carrier",
+            "region",
+            "tech",
+            "type",
+            "var_value",
+            "var_unit",
+            "reference",
+            "comment",
+        ]
+        # Names of optional columns in scalars
+        optional_header = ["id_scal", "var_unit", "reference", "comment"]
+
+    elif data_type == "timeseries":
+        # Names of all columns in a stacked time series
+        header = [
+            "id_ts",
+            "region",
+            "var_name",
+            "timeindex_start",
+            "timeindex_stop",
+            "timeindex_resolution",
+            "series",
+            "var_unit",
+            "source",
+            "comment",
+        ]
+
+        # Names of optional columns in a stacked time series
+        optional_header = [
+            "id_ts",
+            # "region",
+            "var_unit",
+            "source",
+            "comment",
+        ]
+    else:
+        raise ValueError(
+            f"{data_type} is not a valid option of a description of the DataFrame type. "
+            f"Please choose between 'scalars' and 'timeseries'."
+        )
+
+    # Names of required columns in scalars
+    required_header = header.copy()
+    for optional in optional_header:
+        required_header.remove(optional)
+
+    return header, optional_header, required_header
+
+
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
