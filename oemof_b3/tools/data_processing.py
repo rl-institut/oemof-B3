@@ -133,11 +133,13 @@ def load_scalars(path):
             if optional is optional_header[0]:
                 df[optional] = np.arange(0, len(df))
             else:
+                newline = "\n"
                 # For every other optional column name, an empty array is added with the name as
                 # header - A user info is printed
                 df[optional] = [np.nan] * len(df["var_value"])
                 print(
-                    f"User info: The data in {filename} is missing the optional column: {optional}."
+                    f"User info: The data in {filename} is missing the optional column: "
+                    f"{optional}. {newline}"
                     f"An empty column named {optional} is added automatically to the DataFrame."
                 )
 
