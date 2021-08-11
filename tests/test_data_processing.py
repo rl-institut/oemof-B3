@@ -125,6 +125,52 @@ def test_get_optional_required_header():
         get_optional_required_header("something_else")
 
 
+def test_load_scalars():
+    """
+    This test checks whether
+    1. the DataFrame from read data contains all default columns and
+    2. load_scalars errors out if data is missing a required column
+
+    """
+    # 1. Test
+    cols_list = [
+        "scenario",
+        "name",
+        "var_name",
+        "carrier",
+        "region",
+        "tech",
+        "type",
+        "var_value",
+        "id_scal",
+        "var_unit",
+        "reference",
+        "comment",
+    ]
+
+    path_file = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars.csv",
+    )
+
+    df = load_scalars(path_file)
+    df_cols = list(df.columns)
+
+    for col in cols_list:
+        assert col in df_cols
+
+    # 2. Test
+    path_file_missing_required = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars_missing_required.csv",
+    )
+    with pytest.raises(KeyError):
+        # Check whether reading a DataFrame missing required columns errors out
+        load_scalars(path_file_missing_required)
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)

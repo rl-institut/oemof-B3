@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 
@@ -72,6 +73,69 @@ def get_optional_required_header(data_type):
         required_header.remove(optional)
 
     return header, optional_header, required_header
+
+
+def load_scalars(path):
+    """
+    This function loads scalars from a csv file
+
+    Parameters
+    ----------
+    path : str
+        path of input file of csv format
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame with loaded scalars
+
+    """
+    # Get header of scalars
+    scalars_header = get_optional_required_header("scalars")
+    header = scalars_header[0]
+    optional_header = scalars_header[1]
+    required_header = scalars_header[2]
+
+    # Get file name
+    filename = os.path.splitext(path)[0]
+
+    # Read data
+    df = pd.read_csv(path)
+
+    # Save header of DataFrame to variable
+    df_header = list(df.columns)
+
+    # Check whether required columns are missing in the DataFrame
+    missing_required = []
+    for required in required_header:
+        if required not in df_header:
+            # Add required columns, that are missing, to a list
+            missing_required.append(required)
+
+    # Interrupt if required columns are missing and print all affected columns
+    if len(missing_required) > 0:
+        raise KeyError(
+            f"The data in {filename} is missing the required column(s): {missing_required}"
+        )
+
+    # Check whether optional columns are missing
+    for optional in optional_header:
+        if optional not in df_header:
+            # ID in the form of numbering is added if "id_scal" is missing
+            if optional is optional_header[0]:
+                df[optional] = np.arange(0, len(df))
+            else:
+                # For every other optional column name, an empty array is added with the name as
+                # header - A user info is printed
+                df[optional] = [np.nan] * len(df["var_value"])
+                print(
+                    f"User info: The data in {filename} is missing the optional column: {optional}."
+                    f"An empty column named {optional} is added automatically to the DataFrame."
+                )
+
+    # Sort the DataFrame to match the header of the template
+    df = df[header]
+
+    return df
 
 
 def check_consistency_timeindex(df, index):
