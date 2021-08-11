@@ -171,6 +171,77 @@ def test_load_scalars():
         load_scalars(path_file_missing_required)
 
 
+def test_load_timeseries():
+    """
+    This test checks whether
+    1.  the DataFrame read by load_timeseries function from data which is a
+            a. time series with multiIndex
+            b. sequence
+            c. stacked time series / sequence
+        contains all default columns and
+    2.  load_timeseries errors out if data is missing a required column
+
+    """
+    # 1. Test
+    cols_list = [
+        "id_ts",
+        "region",
+        "var_name",
+        "timeindex_start",
+        "timeindex_stop",
+        "timeindex_resolution",
+        "series",
+        "var_unit",
+        "source",
+        "comment",
+    ]
+
+    # a. time series with multiIndex
+    path_file_timeseries = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_timeseries.csv",
+    )
+
+    # b. sequence
+    path_file_sequence = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_sequence.csv",
+    )
+
+    # c. stacked time series / sequence
+    path_file_stacked = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_stacked.csv",
+    )
+
+    paths = [
+        path_file_timeseries,
+        path_file_sequence,
+        path_file_stacked,
+    ]
+
+    # Run 1. Test for formats a., b. and c.
+    for path_file in paths:
+        df = load_timeseries(path_file)
+        df_cols = list(df.columns)
+
+        assert df_cols == cols_list
+
+    # 2. Test
+    path_file_stacked_missing_required = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_stacked_missing_required.csv",
+    )
+
+    with pytest.raises(KeyError):
+        # Check whether reading a stacked DataFrame missing required columns errors out
+        load_timeseries(path_file_stacked_missing_required)
+
+
 def test_stack():
 
     ts_row_wise = stack_timeseries(ts_column_wise)
