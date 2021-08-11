@@ -887,8 +887,8 @@ def unstack_timeseries(df):
 
     # Process values of series
     values_series = []
-    for index, row in _df.iterrows():
-        values_series.append(row["series"].values)
+    for row in _df.iterrows():
+        values_series.append(row[1]["series"])
 
     values_array = np.array(values_series).transpose()
 
