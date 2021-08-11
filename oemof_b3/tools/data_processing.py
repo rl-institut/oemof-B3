@@ -896,6 +896,16 @@ def unstack_timeseries(df):
     timeindex_start = check_consistency_timeindex(_df, "timeindex_start")
     timeindex_stop = check_consistency_timeindex(_df, "timeindex_stop")
 
+    # Warn user if "source" or "comment" in columns of stacked DataFrame
+    # These two columns will be lost once unstacked
+    lost_columns = ["source", "comment"]
+    for col in lost_columns:
+        if col in list(df.columns):
+            print(
+                f"User warning: Caution any remarks in column '{col}' are lost after "
+                f"unstacking."
+            )
+
     # Process values of series
     values_series = []
     for row in _df.iterrows():
