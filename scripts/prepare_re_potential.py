@@ -8,6 +8,8 @@ filename_road_railway : str
     Path incl. file name to area potential roads and railway pv csv
 filename_wind : str
     Path incl. file name to area potential wind csv
+filename_kreise : str
+    Path incl. file name to lookup table Kreise and NUTS of Brandenburg
 filename_assumptions : str
     Path incl. file name to assumptions csv
 
@@ -70,8 +72,36 @@ DROP_COLS = [
 ]
 
 
+def add_names_of_kreise(df, filename_kreise):
+    r"""
+    Merges names of Kreise of Brandenburg to `df` according to 'NUTS'.
+
+    Parameters
+    ----------
+    df: pandas.DataFrame
+        Contains at least a column 'NUTS' with NUTS of Kreise of Brandenburg
+    filename_kreise: str
+        File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
+
+    Returns
+    -------
+    df_with_names: pandas.DataFrame
+        `df` with added Kreise according to NUTS in column 'Kreis'
+
+    """
+    kreise = pd.read_csv(filename_kreise)
+    df.index.name = "NUTS"
+    df_with_names = pd.merge(left=df, right=kreise, on="NUTS")
+    df_with_names.set_index("NUTS", inplace=True)
+    return df_with_names
+
+
 def calculate_potential_pv(
-    filename_agriculture, filename_road_railway, output_file, secondary_output_dir
+    filename_agriculture,
+    filename_road_railway,
+    output_file,
+    secondary_output_dir,
+    filename_kreise,
 ):
     r"""
     Calculates the area and power potential of photovoltaics.
@@ -102,6 +132,8 @@ def calculate_potential_pv(
         File name including path to output of power potential of pv for "Landkreise"
     secondary_output_dir: str
         Directory where secondary outputs are saved.
+    filename_kreise: str
+        File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
 
     Returns
     -------
@@ -170,10 +202,13 @@ def calculate_potential_pv(
         degree_of_agreement=degree_of_agreement,
         output_file=output_file,
         secondary_output_dir=secondary_output_dir,
+        filename_kreise=filename_kreise,
     )
 
 
-def calculate_potential_wind(filename_wind, output_file, secondary_output_dir=None):
+def calculate_potential_wind(
+    filename_wind, output_file, secondary_output_dir, filename_kreise
+):
     r"""
     Calculates the area and power potential of wind energy.
 
@@ -196,6 +231,8 @@ def calculate_potential_wind(filename_wind, output_file, secondary_output_dir=No
         File name including path to output of power potential of wind for "Landkreise"
     secondary_output_dir: str
         Directory where secondary outputs are saved.
+    filename_kreise: str
+        File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
 
     Returns
     -------
@@ -236,6 +273,7 @@ def calculate_potential_wind(filename_wind, output_file, secondary_output_dir=No
         output_file=output_file,
         degree_of_agreement=degree_of_agreement,
         secondary_output_dir=secondary_output_dir,
+        filename_kreise=filename_kreise,
     )
 
 
@@ -310,7 +348,8 @@ def calculate_power_potential(
     output_file,
     required_specific_area,
     degree_of_agreement,
-    secondary_output_dir=None,
+    secondary_output_dir,
+    filename_kreise,
 ):
     r"""
     Calculates wind or pv power potential for each area and Landkreis and saves results to csv.
@@ -341,6 +380,8 @@ def calculate_power_potential(
         Default: None.
     secondary_output_dir: str
         Directory where secondary outputs are saved.
+    filename_kreise: str
+        File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
 
     Returns
     -------
@@ -363,8 +404,8 @@ def calculate_power_potential(
     if type == "wind":
         keep_cols = [
             "area",
-            "overleap_pv_agriculture_percent",
-            "overleap_pv_road_railway_percent",
+            "overleap_pv_agriculture_area",
+            "overleap_pv_road_railway_area",
             "power_potential",
             "power_potential_agreed",
         ]
@@ -372,9 +413,9 @@ def calculate_power_potential(
     elif type == "pv":
         keep_cols = [
             "area",
-            "overleap_pv_agriculture_percent",
-            "overleap_pv_road_railway_percent",
-            "overleap_wind_percent",
+            "overleap_pv_agriculture_area",
+            "overleap_pv_road_railway_area",
+            "overleap_wind_area",
             "power_potential",
             "power_potential_agreed",
         ]
@@ -392,6 +433,11 @@ def calculate_power_potential(
     )
     potentials_kreise = pd.concat([potentials_kreise, potential_bb], axis=0)
 
+    # add names of Kreise in Brandenburg
+    potentials_kreise = add_names_of_kreise(
+        df=potentials_kreise, filename_kreise=filename_kreise
+    )
+
     # save power potential in MW of NUTS3 (Landkreise) todo use SI units?
     potentials_kreise.to_csv(output_file)
 
@@ -405,30 +451,36 @@ def calculate_power_potential(
 
 if __name__ == "__main__":
     try:
-        output_file = sys.argv[3]
-        type = output_file.split("_")[3]
-        secondary_output_dir = sys.argv[4]
-    except IndexError:
         output_file = sys.argv[4]
         type = output_file.split("_")[3]
-        secondary_output_dir = sys.argv[5]
+    except IndexError:
+        output_file = sys.argv[5]
+        type = output_file.split("_")[3]
+
     if type == "pv":
         filename_agriculture = sys.argv[1]
         filename_road_railway = sys.argv[2]
-        filename_assumptions = sys.argv[3]
+        filename_kreise = sys.argv[3]
+        filename_assumptions = sys.argv[4]
+        secondary_output_dir = sys.argv[6]
         calculate_potential_pv(
             filename_agriculture=filename_agriculture,
             filename_road_railway=filename_road_railway,
             output_file=output_file,
             secondary_output_dir=secondary_output_dir,
+            filename_kreise=filename_kreise,
         )
     elif type == "wind":
         filename_wind = sys.argv[1]
-        filename_assumptions = sys.argv[2]
+        filename_kreise = sys.argv[2]
+        filename_assumptions = sys.argv[3]
+        secondary_output_dir = sys.argv[5]
         calculate_potential_wind(
             filename_wind=filename_wind,
             output_file=output_file,
             secondary_output_dir=secondary_output_dir,
+            filename_kreise=filename_kreise,
         )
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
+

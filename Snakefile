@@ -62,24 +62,26 @@ rule prepare_pv_potential:
     input:
         filename_agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
         filename_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
+        filename_kreise="raw/lookup_table_brandenburg_kreise.csv",
         regional_assumptions="raw/regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
         filename_kreise = "results/_resources/power_potential_pv_kreise.csv",
         secondary_output_dir = directory("results/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py {input.filename_agriculture} {input.filename_road_railway} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
+        "python scripts/prepare_re_potential.py {input.filename_agriculture} {input.filename_road_railway} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule prepare_wind_potential:
     input:
         filename_wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
+        filename_kreise="raw/lookup_table_brandenburg_kreise.csv",
         regional_assumptions="raw/regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
         filename_kreise = "results/_resources/power_potential_wind_kreise.csv",
         secondary_output_dir = directory("results/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py  {input.filename_wind} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
+        "python scripts/prepare_re_potential.py  {input.filename_wind} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule optimize:
     input:
