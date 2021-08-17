@@ -1,13 +1,20 @@
 r"""
 Inputs
 -------
+resources : str
+    path of input file with data in scalar resources template format as .csv
+target : str
+    path of output file with prepared data as .csv
 
 Outputs
 ---------
+matplotlib.figure.Figure
+    plotted scalar resources
 
 Description
 -------------
-
+The script takes data in the format of the scalar resources template, prepares the
+data and plots the data.
 """
 import sys
 import os
