@@ -483,4 +483,3 @@ if __name__ == "__main__":
         )
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
-
