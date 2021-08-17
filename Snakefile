@@ -83,6 +83,16 @@ rule prepare_wind_potential:
     shell:
         "python scripts/prepare_re_potential.py  {input.filename_wind} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
+rule process_re_potential:
+    input:
+        filename_wind="results/_resources/power_potential_wind_kreise.csv",
+        filename_pv="results/_resources/power_potential_pv_kreise.csv",
+        script="scripts/process_re_potential.py"
+    output:
+        "results/_resources/potential_wind_pv_kreise.csv",
+    shell:
+        "python scripts/process_re_potential.py  {input.filename_wind} {input.filename_pv} {output}"
+
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
