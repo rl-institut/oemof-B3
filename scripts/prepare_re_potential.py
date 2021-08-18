@@ -182,7 +182,7 @@ def calculate_potential_pv(
         1e4,  # 1 ha --> 1e4 m²
         1.0,
         125 / 1e6,  # 125 MW/km² --> 125/1e6 MW/m²
-        0.1,
+        1.0,
     )
     # todo required_specific_area / 1e6
     # calculate area potential
@@ -326,7 +326,7 @@ def calculate_area_potential(
         # reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra
         # column
         areas["area_before_reduction_by_overleap"] = areas["area"]
-        areas["area"] = areas["area"] * (1 - reduction_by_wind_overleap)
+        areas["area"] = areas["area"]  - (areas["overleap_wind_area"] * reduction_by_wind_overleap)
     elif type == "wind":
         pass
     else:
