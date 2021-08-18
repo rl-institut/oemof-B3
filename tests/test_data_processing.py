@@ -9,8 +9,7 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     load_scalars,
     load_timeseries,
-    save_scalars,
-    save_timeseries,
+    save_df,
     df_filtered,
     df_agg,
     check_consistency_timeindex,
@@ -242,14 +241,15 @@ def test_load_timeseries():
         load_timeseries(path_file_stacked_missing_required)
 
 
-def test_save_scalars():
+def test_save_df():
     """
-    This test checks whether
+    This test checks for scalars and time series whether
     1. the path of the scalars stored in a csv file exists
-    2. scalars remain unchanged after saving. For this purpose, they are read in again after
-    saving and compared with the scalars originally read
+    2. the DataFrame remain unchanged after saving. For this purpose, the data is read in again
+    after saving and compared with the scalars originally read
 
     """
+    # Scalars
     path_file_scalars = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
@@ -266,7 +266,7 @@ def test_save_scalars():
     df = load_scalars(path_file_scalars)
 
     # Save read scalars
-    save_scalars(df, path_file_saved)
+    save_df(df, path_file_saved)
 
     # Load the saved scalars
     df_saved = load_scalars(path_file_saved)
@@ -280,16 +280,7 @@ def test_save_scalars():
     # Remove saved scalars which were saved for this test
     os.remove(path_file_saved)
 
-
-def test_save_timeseries():
-    """
-    This test checks whether
-    1. the path of the time series stored in a csv file exists
-    2. time series remains unchanged after saving. For this purpose, it is read in again after
-    saving and compared with the time series originally read
-
-    """
-
+    # Time series
     path_file_timeseries = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
@@ -303,7 +294,7 @@ def test_save_timeseries():
         "test_stacked_saved.csv",
     )
 
-    save_timeseries(df, path_file_stacked)
+    save_df(df, path_file_stacked)
     assert os.path.exists(path_file_stacked) == 1
 
     df_saved = load_timeseries(path_file_stacked)
