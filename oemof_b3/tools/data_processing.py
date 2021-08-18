@@ -300,44 +300,24 @@ def load_timeseries(path):
     return df
 
 
-def save_scalars(df, path):
+def save_df(df, path):
     """
-    This funtion saves scalars to a csv file
+    This function saves data to a csv file
 
     Parameters
     ----------
     df : pd.DataFrame
-        DataFrame with scalars
+        DataFrame to be saved
 
     path : str
-        Path to save the file
+        Path to save the csv file
 
     """
     # Save scalars to csv file
     df.to_csv(path, index=False)
 
     # Print user info
-    print(f"User info: The scalars have been saved to: {path}.")
-
-
-def save_timeseries(df, path):
-    """
-    This funtion saves a time series to a csv file
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame with time series
-
-    path : str
-        Path to save the file
-
-    """
-    # Save time series to csv file
-    df.to_csv(path, index=False)
-
-    # Print user info
-    print(f"User info: The time series has been saved to: {path}.")
+    print(f"User info: The DataFrame has been saved to: {path}.")
 
 
 def df_filtered(df, key, values):
