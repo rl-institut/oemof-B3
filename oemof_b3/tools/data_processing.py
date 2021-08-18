@@ -99,10 +99,7 @@ def load_scalars(path):
 
     """
     # Get header of scalars
-    scalars_header = get_optional_required_header("scalars")
-    header = scalars_header[0]
-    optional_header = scalars_header[1]
-    required_header = scalars_header[2]
+    header, optional_header, required_header = get_optional_required_header("scalars")
 
     # Get file name
     filename = os.path.splitext(path)[0]
@@ -136,7 +133,7 @@ def load_scalars(path):
                 newline = "\n"
                 # For every other optional column name, an empty array is added with the name as
                 # header - A user info is printed
-                df[optional] = [np.nan] * len(df["var_value"])
+                df[optional] = np.nan
                 print(
                     f"User info: The data in {filename} is missing the optional column: "
                     f"{optional}. {newline}"
