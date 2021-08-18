@@ -111,11 +111,7 @@ def load_scalars(path):
     df_header = list(df.columns)
 
     # Check whether required columns are missing in the DataFrame
-    missing_required = []
-    for required in required_header:
-        if required not in df_header:
-            # Add required columns, that are missing, to a list
-            missing_required.append(required)
+    missing_required = list(set(required_header).difference(set(df_header)))
 
     # Interrupt if required columns are missing and print all affected columns
     if len(missing_required) > 0:
