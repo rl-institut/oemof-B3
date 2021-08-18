@@ -326,7 +326,9 @@ def calculate_area_potential(
         # reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra
         # column
         areas["area_before_reduction_by_overleap"] = areas["area"]
-        areas["area"] = areas["area"]  - (areas["overleap_wind_area"] * reduction_by_wind_overleap)
+        areas["area"] = areas["area"] - (
+            areas["overleap_wind_area"] * reduction_by_wind_overleap
+        )
     elif type == "wind":
         pass
     else:
