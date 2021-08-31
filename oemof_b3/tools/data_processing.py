@@ -345,6 +345,56 @@ def df_filtered(df, column_name, values):
     return df_filtered
 
 
+def isnull_any(df):
+    return df.isna().any().any()
+
+
+def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
+    r"""
+    You have to pass those columns that should be
+
+    groupby: "scenario", "var_name", "var_unit", (carrier, region, tech, type)
+    join_by: carrier, region, tech, type
+    sum: "var_value"
+    """
+    _df = df.copy()
+
+    # Define the columns that are split and thus not aggregated
+    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name", "var_unit"]
+
+    groupby = list(set(groupby).difference(set(columns_to_aggregate)))
+
+    # Define how to aggregate if
+    if not agg_method:
+        agg_method = {
+            "var_value": sum,
+        }
+
+    # When any of the groupby columns has empty entries, print a warning
+    _df_groupby = _df[groupby]
+    if isnull_any(_df_groupby):
+        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
+        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
+
+        for item in columns_with_nan:
+            groupby.remove(item)
+        _df.drop(columns_with_nan, axis=1)
+
+        print("Removed the columns containing NaN from the DataFrame.")
+
+    # Groupby and aggregate
+    df_aggregated = _df.groupby(groupby).agg(agg_method)
+
+    # Assign "ALL" to the columns that where aggregated.
+    for col in columns_to_aggregate:
+        df_aggregated[col] = "ALL"
+
+    # Reset the index
+    df_aggregated.reset_index(inplace=True)
+
+    return df_aggregated
+
+
 def df_agg(df, key):
     """
     This function aggregates columns of a DataFrame
