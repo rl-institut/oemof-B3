@@ -84,6 +84,10 @@ def get_optional_required_header(data_type):
     return header, optional_header, required_header
 
 
+def get_list_diff(list_a, list_b):
+    return list(set(list_a).difference(set(list_b)))
+
+
 def load_scalars(path):
     """
     This function loads scalars from a csv file
@@ -107,11 +111,18 @@ def load_scalars(path):
     # Read data
     df = pd.read_csv(path)
 
+    # Set index
+    if "id_scal" in df:
+        df.set_index("id_scal", inplace=True)
+
+    else:
+        df.index.name = "id_scal"
+
     # Save header of DataFrame to variable
     df_header = list(df.columns)
 
     # Check whether required columns are missing in the DataFrame
-    missing_required = list(set(required_header).difference(set(df_header)))
+    missing_required = get_list_diff(required_header, df_header)
 
     # Interrupt if required columns are missing and print all affected columns
     if len(missing_required) > 0:
@@ -120,21 +131,18 @@ def load_scalars(path):
         )
 
     # Check whether optional columns are missing
-    for optional in optional_header:
-        if optional not in df_header:
-            # ID in the form of numbering is added if "id_scal" is missing
-            if optional is optional_header[0]:
-                df[optional] = np.arange(0, len(df))
-            else:
-                newline = "\n"
-                # For every other optional column name, an empty array is added with the name as
-                # header - A user info is printed
-                df[optional] = np.nan
-                print(
-                    f"User info: The data in {filename} is missing the optional column: "
-                    f"{optional}. {newline}"
-                    f"An empty column named {optional} is added automatically to the DataFrame."
-                )
+    missing_optional = get_list_diff(optional_header, df_header)
+    for optional in missing_optional:
+        # For every other optional column name, an empty array is added with the name as
+        # header - A user info is printed
+        df[optional] = np.nan
+
+        newline = "\n"
+        print(
+            f"User info: The data in {filename} is missing the optional column: "
+            f"{optional}. {newline}"
+            f"An empty column named {optional} is added automatically to the DataFrame."
+        )
 
     # Sort the DataFrame to match the header of the template
     df = df[header]
@@ -310,7 +318,7 @@ def save_df(df, path):
 
     """
     # Save scalars to csv file
-    df.to_csv(path, index=False)
+    df.to_csv(path, index=True)
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")
