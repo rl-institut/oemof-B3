@@ -31,7 +31,7 @@ rule create_input_data_overview:
     input:
         "raw/general.csv"
     output:
-        "results/_tables/general.csv"
+        "results/_tables/technical_and_cost_assumptions.csv"
     shell:
         "python scripts/create_input_data_overview.py {input} {output}"
 
