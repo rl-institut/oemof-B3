@@ -27,6 +27,14 @@ rule clean:
 
 # Rules for intermediate steps
 
+rule create_input_data_overview:
+    input:
+        "raw/general.csv"
+    output:
+        "results/_tables/general.csv"
+    shell:
+        "python scripts/create_input_data_overview.py {input} {output}"
+
 rule prepare_example:
     input:
         "examples/{scenario}/preprocessed/{scenario}"
