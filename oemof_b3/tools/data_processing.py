@@ -114,7 +114,7 @@ def load_scalars(path):
     missing_required = list(set(required_header).difference(set(df_header)))
 
     # Interrupt if required columns are missing and print all affected columns
-    if len(missing_required) > 0:
+    if missing_required:
         raise KeyError(
             f"The data in {filename} is missing the required column(s): {missing_required}"
         )
@@ -161,10 +161,7 @@ def load_timeseries(path):
 
     """
     # Get header of time series
-    timeseries_header = get_optional_required_header("timeseries")
-    header = timeseries_header[0]
-    optional_header = timeseries_header[1]
-    required_header = timeseries_header[2]
+    header, optional_header, required_header = get_optional_required_header("timeseries")
 
     # Read smaller set of data to check its format
     df = pd.read_csv(path, nrows=3)
@@ -316,7 +313,7 @@ def save_df(df, path):
     print(f"User info: The DataFrame has been saved to: {path}.")
 
 
-def df_filtered(df, key, values):
+def filter_df(df, key, values):
     """
     This function filters columns of a DataFrame which can be passed
     as scalars and time series.
