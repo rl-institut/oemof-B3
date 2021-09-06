@@ -4,6 +4,8 @@ An energy system optimization model for Brandenburg/Berlin.
 
 ## Overview
 
+<img src="https://github.com/rl-institut/oemof-B3/blob/dev/docs/_img/model_structure.svg" width="100" height="100"/>
+
 ## Getting started
 
 ## Docs
