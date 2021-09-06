@@ -161,7 +161,9 @@ def load_timeseries(path):
 
     """
     # Get header of time series
-    header, optional_header, required_header = get_optional_required_header("timeseries")
+    header, optional_header, required_header = get_optional_required_header(
+        "timeseries"
+    )
 
     # Read smaller set of data to check its format
     df = pd.read_csv(path, nrows=3)
@@ -334,16 +336,18 @@ def filter_df(df, key, values):
     """
 
     # Get header of scalars
-    scalars_header = get_optional_required_header("scalars")
-    header_scalars = scalars_header[0]
-    optional_header_scalars = scalars_header[1]
-    required_header_scalars = scalars_header[2]
+    (
+        header_scalars,
+        optional_header_scalars,
+        required_header_scalars,
+    ) = get_optional_required_header("scalars")
 
     # Get header of time series
-    timeseries_header = get_optional_required_header("timeseries")
-    header_timeseries = timeseries_header[0]
-    optional_header_timeseries = timeseries_header[1]
-    required_header_timeseries = timeseries_header[2]
+    (
+        header_timeseries,
+        optional_header_timeseries,
+        required_header_timeseries,
+    ) = get_optional_required_header("timeseries")
 
     # Save header of DataFrame to variable
     df_header = list(df.columns)
@@ -421,16 +425,18 @@ def df_agg(df, key):
     """
 
     # Get header of scalars
-    scalars_header = get_optional_required_header("scalars")
-    header_scalars = scalars_header[0]
-    optional_header_scalars = scalars_header[1]
-    required_header_scalars = scalars_header[2]
+    (
+        header_scalars,
+        optional_header_scalars,
+        required_header_scalars,
+    ) = get_optional_required_header("scalars")
 
     # Get header of time series
-    timeseries_header = get_optional_required_header("timeseries")
-    header_timeseries = timeseries_header[0]
-    optional_header_timeseries = timeseries_header[1]
-    required_header_timeseries = timeseries_header[2]
+    (
+        header_timeseries,
+        optional_header_timeseries,
+        required_header_timeseries,
+    ) = get_optional_required_header("timeseries")
 
     # Save header of DataFrame to variable
     df_header = list(df.columns)

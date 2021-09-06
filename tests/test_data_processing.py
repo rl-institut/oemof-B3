@@ -10,7 +10,7 @@ from oemof_b3.tools.data_processing import (
     load_scalars,
     load_timeseries,
     save_df,
-    df_filtered,
+    filter_df,
     df_agg,
     check_consistency_timeindex,
 )
@@ -305,7 +305,7 @@ def test_save_df():
     os.remove(path_file_stacked)
 
 
-def test_df_filtered():
+def test_filter_df():
     """
     This test checks whether
     1. scalars and
@@ -323,20 +323,20 @@ def test_df_filtered():
     # Read scalars
     df = load_scalars(path_file_scalars)
 
-    df_BE = df_filtered(df, "region", ["BE"])
+    df_BE = filter_df(df, "region", ["BE"])
 
     assert df_BE["region"].values[0] == "BE"
     assert len(df_BE["region"]) == 7
 
-    df_BE_BB = df_filtered(df, "region", ["BE_BB"])
+    df_BE_BB = filter_df(df, "region", ["BE_BB"])
 
     assert df_BE_BB.empty
 
-    df_conversion = df_filtered(df, "type", ["conversion"])
+    df_conversion = filter_df(df, "type", ["conversion"])
     assert len(df_conversion["type"]) == 10
 
     with pytest.raises(KeyError):
-        df_filtered(df, "something", ["conversion"])
+        filter_df(df, "something", ["conversion"])
 
     # 2. Test
     path_file_timeseries = os.path.join(
@@ -348,7 +348,7 @@ def test_df_filtered():
     # Read stacked time series
     df = load_timeseries(path_file_timeseries)
 
-    df_BE_BB = df_filtered(df, "region", ["BE_BB"])
+    df_BE_BB = filter_df(df, "region", ["BE_BB"])
 
     assert (
         df_BE_BB["region"].values[0] == "BE_BB"
@@ -356,7 +356,7 @@ def test_df_filtered():
     )
     assert len(df_BE_BB["region"]) == 2
 
-    df_var_name = df_filtered(
+    df_var_name = filter_df(
         df,
         "var_name",
         [
