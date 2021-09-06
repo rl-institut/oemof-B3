@@ -45,5 +45,16 @@ if __name__ == "__main__":
     # unstack
     df = df.set_index(["name", "var_name"]).unstack("var_name")
 
+    # bring table into correct end format
+    df = df.loc[:, "var_value"]
+
+    for var_name in var_names:
+        if var_name not in df.columns:
+            df[var_name] = ""
+
+    df = df[var_names]
+
+    # TODO: map names
+
     # save
     df.to_csv(out_path)
