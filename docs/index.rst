@@ -12,6 +12,7 @@ oemof-B3: A sector-integrated energy system model of Brandenburg and Berlin
 
    overview
    getting_started
+   examples
 
 .. toctree::
    :maxdepth: 1
