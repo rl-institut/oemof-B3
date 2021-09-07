@@ -1,10 +1,18 @@
 # oemof-B3
 
-An energy system optimization model for Brandenburg/Berlin.
-
-## Overview
+Oemof-B3 is an energy system model of Berlin and Brandenburg. It represents many sectors:
+Electricity, central and decentral heat, hydrogen, CO2 and methane. It is a multi-node-model, which
+means that several distinct regions are represented that are connected via transmission lines.
 
 <img src="/docs/_img/model_structure.svg" width="700"/>
+
+The model is a perfect-foresight, cost minimizing linear optimization model that builds upon
+`oemof.solph <https://github.com/oemof/oemof-solph>_`,
+`oemof.tabular <https://github.com/oemof/oemof-tabular>_`
+and `oemoflex <https://github.com/rl-institut/oemoflex>_`
+
+Oemof-B3 is currently under heavy development, which means that first full scenario runs will be
+available in the coming months.
 
 ## Getting started
 
@@ -25,15 +33,5 @@ and run
     make html
 
 The output will then be located in `docs/_build/html` and can be opened with your favorite browser
-
-## Code linting
-
-In this template, 3 possible linters are proposed:
-- flake8 only sends warnings and error about linting (PEP8)
-- pylint sends warnings and error about linting (PEP8) and also allows warning about imports order
-- black sends warning but can also fix the files for you
-
-You can perfectly use the 3 of them or subset, at your preference. Don't forget to edit
-`.travis.yml` if you want to desactivate the automatic testing of some linters!
 
 ## License
