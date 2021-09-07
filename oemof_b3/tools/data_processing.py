@@ -389,6 +389,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     if not agg_method:
         agg_method = {
             "var_value": sum,
+            "name": lambda x: "None",
         }
 
     # When any of the groupby columns has empty entries, print a warning
