@@ -323,7 +323,7 @@ def save_df(df, path):
     print(f"User info: The DataFrame has been saved to: {path}.")
 
 
-def df_filtered(df, column_name, values):
+def filter_df(df, column_name, values):
     """
     This function filters a DataFrame.
 

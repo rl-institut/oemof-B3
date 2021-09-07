@@ -11,7 +11,7 @@ from oemof_b3.tools.data_processing import (
     load_timeseries,
     save_df,
     filter_df,
-    df_agg,
+    aggregate_scalars,
     check_consistency_timeindex,
 )
 
@@ -372,7 +372,7 @@ def test_filter_df():
     )
 
 
-def test_df_agg():
+def test_aggregate_scalars():
     """
     This test checks whether
     1. scalars and
@@ -391,7 +391,7 @@ def test_df_agg():
     df = load_scalars(path_file_scalars)
 
     # Aggregate by region
-    df_aggregated_by_region = df_agg(df, "region")
+    df_aggregated_by_region = aggregate_scalars(df, "region")
 
     # Add expected results of aggregation
     df_aggregated_expected = pd.DataFrame(
@@ -433,7 +433,7 @@ def test_df_agg():
     pd.testing.assert_frame_equal(df_aggregated_by_region, df_aggregated_expected)
 
     # Aggregate by carrier
-    df_aggregated_by_carrier = df_agg(df, "carrier")
+    df_aggregated_by_carrier = aggregate_scalars(df, "carrier")
 
     assert list(df_aggregated_by_carrier["var_value"].values) == [
         400000,
@@ -444,7 +444,7 @@ def test_df_agg():
     ]
 
     # Aggregate by tech
-    df_aggregated_by_tech = df_agg(df, "tech")
+    df_aggregated_by_tech = aggregate_scalars(df, "tech")
 
     expected_results_series_tech = [
         400000.000,
@@ -469,7 +469,7 @@ def test_df_agg():
     df = load_timeseries(path_file_timeseries)
 
     # Aggregate by region
-    df_aggregated_by_region = df_agg(df, "region")
+    df_aggregated_by_region = aggregate_scalars(df, "region")
 
     # Add expected results of aggregation
     df_aggregated_expected = pd.DataFrame(
