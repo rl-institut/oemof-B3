@@ -377,6 +377,9 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
+    if not isinstance(columns_to_aggregate, list):
+        columns_to_aggregate = [columns_to_aggregate]
+
     # Define the columns that are split and thus not aggregated
     groupby = ["scenario", "carrier", "region", "tech", "type", "var_name", "var_unit"]
 
