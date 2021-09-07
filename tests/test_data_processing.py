@@ -150,7 +150,7 @@ def test_load_scalars():
     path_file = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars.csv",
+        "oemof_b3_resources_scalars.csv",
     )
 
     df = load_scalars(path_file)
@@ -163,7 +163,7 @@ def test_load_scalars():
     path_file_missing_required = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_missing_required.csv",
+        "oemof_b3_resources_scalars_missing_required.csv",
     )
     with pytest.raises(KeyError):
         # Check whether reading a DataFrame missing required columns errors out
@@ -199,21 +199,21 @@ def test_load_timeseries():
     path_file_timeseries = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_timeseries.csv",
+        "oemoflex_results_timeseries.csv",
     )
 
     # b. sequence
     path_file_sequence = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_sequence.csv",
+        "oemof_tabular_sequence.csv",
     )
 
     # c. stacked time series / sequence
     path_file_stacked = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked.csv",
+        "oemof_b3_resources_timeseries_stacked.csv",
     )
 
     paths = [
@@ -233,7 +233,7 @@ def test_load_timeseries():
     path_file_stacked_missing_required = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked_missing_required.csv",
+        "oemof_b3_resources_timeseries_stacked_missing_required.csv",
     )
 
     with pytest.raises(KeyError):
@@ -253,7 +253,7 @@ def test_save_df():
     path_file_scalars = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars.csv",
+        "oemof_b3_resources_scalars.csv",
     )
 
     path_file_saved = os.path.join(
@@ -284,7 +284,7 @@ def test_save_df():
     path_file_timeseries = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_timeseries.csv",
+        "oemoflex_results_timeseries.csv",
     )
     df = load_timeseries(path_file_timeseries)
 
@@ -317,7 +317,7 @@ def test_filter_df():
     path_file_scalars = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars.csv",
+        "oemof_b3_resources_scalars.csv",
     )
 
     # Read scalars
@@ -342,7 +342,7 @@ def test_filter_df():
     path_file_timeseries = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked.csv",
+        "oemof_b3_resources_timeseries_stacked.csv",
     )
 
     # Read stacked time series
@@ -384,7 +384,7 @@ def test_aggregate_scalars():
     path_file_scalars = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars.csv",
+        "oemof_b3_resources_scalars.csv",
     )
 
     # Read scalars
@@ -462,7 +462,7 @@ def test_aggregate_scalars():
     path_file_timeseries = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked.csv",
+        "oemof_b3_resources_timeseries_stacked.csv",
     )
 
     # Read stacked time series
@@ -567,7 +567,7 @@ def test_stack_unstack_on_example_data():
     file_path = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_sequence.csv",
+        "oemof_tabular_sequence.csv",
     )
 
     df = pd.read_csv(file_path, index_col=0)
