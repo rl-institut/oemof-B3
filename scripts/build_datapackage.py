@@ -6,6 +6,30 @@ from oemoflex.tools.helpers import load_yaml
 
 from oemof_b3.model import component_attrs_update, bus_attrs_update
 
+
+def update_with_checks(old, new):
+    # Check if some data would get lost
+    if not new.index.isin(old.index).all():
+        raise Warning("Index of new data is not in the index of old data.")
+
+    try:
+        # Check if it overwrites by setting errors = 'raise'
+        old.update(new, errors="raise")
+    except ValueError:
+        raise Warning("Update would overwrite existing data.")
+
+
+def parametrize_scalars(edp, scalars):
+
+    edp.stack_components()
+
+    update_with_checks(edp.data["component"], scalars)
+
+    edp.unstack_components()
+
+    return edp
+
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -13,16 +37,28 @@ if __name__ == "__main__":
 
     scenario_specs = load_yaml(scenario_specs)
 
-    datetimeindex = (pd.date_range(start="2019-01-01", freq="H", periods=8760),)
+    # setup empty EnergyDataPackage
+    datetimeindex = pd.date_range(start="2019-01-01", freq="H", periods=8760)
 
     # setup default structure
     edp = EnergyDataPackage.setup_default(
         basepath=destination,
-        datetimeindex=pd.date_range("1/1/2016", periods=24 * 10, freq="H"),
+        datetimeindex=datetimeindex,
         bus_attrs_update=bus_attrs_update,
         component_attrs_update=component_attrs_update,
-        **scenario_specs,
+        name=scenario_specs["name"],
+        regions=scenario_specs["regions"],
+        links=scenario_specs["links"],
+        busses=scenario_specs["busses"],
+        components=scenario_specs["components"],
     )
+
+    # parametrize
+    path_scalars = scenario_specs["path_scalars"]
+
+    scalars = pd.read_csv(path_scalars, index_col=[0, 1])["var_value"]
+
+    edp = parametrize_scalars(edp, scalars)
 
     # save to csv
     edp.to_csv_dir(destination)
