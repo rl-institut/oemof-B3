@@ -356,6 +356,29 @@ def isnull_any(df):
     return df.isna().any().any()
 
 
+def aggregate_units(units):
+    r"""
+    This function checks if units that should be aggregated are unique.
+    If they are not, it raises an error. If they are, it returns the unique unit.
+
+    Parameters
+    ----------
+    units:
+        pd.Series of units
+
+    Returns
+    -------
+    unique_unit : str
+        Unique unit
+    """
+    unique_units = units.unique()
+
+    if len(unique_units) > 1:
+        raise ValueError("Units are not consistent!")
+    else:
+        return unique_units[0]
+
+
 def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     r"""
     This functions aggregates scalar data in oemof-B3-resources format and sums up
@@ -381,7 +404,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
         columns_to_aggregate = [columns_to_aggregate]
 
     # Define the columns that are split and thus not aggregated
-    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name", "var_unit"]
+    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name"]
 
     groupby = list(set(groupby).difference(set(columns_to_aggregate)))
 
@@ -390,6 +413,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
         agg_method = {
             "var_value": sum,
             "name": lambda x: "None",
+            "var_unit": aggregate_units,
         }
 
     # When any of the groupby columns has empty entries, print a warning
