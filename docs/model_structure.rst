@@ -41,7 +41,7 @@ There is a set of general variables that appear in all components:
 
 Beyond that, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
-`oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>_`.
+`oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
 
 Sequences
 ---------

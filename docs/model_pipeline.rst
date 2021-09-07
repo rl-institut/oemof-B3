@@ -22,7 +22,7 @@ re-run all steps that are not affected by it. This can save a lot of time.
 
 The model oemof-B3 uses snakemake to keep the
 execution of these steps reproducible, adaptable and transparent. Visit the
-`snakemake docs <https://snakemake.readthedocs.io/en/stable/>_` to learn more about snakemake and
+`snakemake docs <https://snakemake.readthedocs.io/en/stable/>`_ to learn more about snakemake and
 how to install it.
 
 
