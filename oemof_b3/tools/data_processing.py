@@ -358,11 +358,22 @@ def isnull_any(df):
 
 def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     r"""
-    You have to pass those columns that should be
+    This functions aggregates scalar data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
 
-    groupby: "scenario", "var_name", "var_unit", (carrier, region, tech, type)
-    join_by: carrier, region, tech, type
-    sum: "var_value"
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame in oemof-B3-resources format.
+    columns_to_aggregate : string or list
+        The columns to sum together ('region', 'carrier', 'tech' or 'type).
+    agg_method : dict
+        Dictionary to specify aggregation method.
+
+    Returns
+    -------
+    df_aggregated : pd.DataFrame
+        Aggregated data.
     """
     _df = df.copy()
 
