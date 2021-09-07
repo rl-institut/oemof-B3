@@ -10,8 +10,8 @@ Model pipeline
     :backlinks: top
 
 
-Separation of processing steps
-==============================
+Workflow management: Separating the steps
+=========================================
 
 The modeling of energy systems in most cases entails multiple distinct steps with different
 processing times (e.g. computations, aggregation, filtering in preprocessing, optimization,
@@ -20,25 +20,10 @@ establishing derived results, plots and reports in postprocessing).
 Separating these steps allows to work on a certain part of the model pipeline without having to
 re-run all steps that are not affected by it. This can save a lot of time.
 
-Apart from the complex workflow in energy system modelling itself, open-source software should aim for 
-long lasting impact. To achieve this sustainable impact with software dealing with data analysis,
-three concepts should be considered: reproducibility, adaptability and transparency.
-The first allows technical validation and regeneration of results. It is widely recognized in data analyses.
-The latter two should be equally important. 
-Adaptability refers to the ability to modify the analysis to answer extended or slightly different
-research questions.
-Transparency is necessary to judge whether the analysis is not only technically, but methodologically valid.
-:cite:`Molder.2021`
-
-Thus, a separation of processing steps is very useful in energy system modelling. 
-There are different tools which provide such a workflow management. 
-In the oemof-B3 model, the tool snakemake is used.
-
-
-Workflow management with Snakemake
-==================================
-
-Visit the `snakemake docs <>_` to learn more about snakemake and how to install it.
+The model oemof-B3 uses snakemake to keep the
+execution of these steps reproducible, adaptable and transparent. Visit the
+`snakemake docs <https://snakemake.readthedocs.io/en/stable/>_` to learn more about snakemake and
+how to install it.
 
 
 How can snakemake help at workflow management?
