@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to oemof-B3's documentation!
-====================================
+oemof-B3: A sector-integrated energy system model of Brandenburg and Berlin
+===========================================================================
 
 .. toctree::
    :maxdepth: 1
@@ -18,9 +18,8 @@ Welcome to oemof-B3's documentation!
    :maxdepth: 1
    :caption: User's guide
 
-   model_pipeline
    model_structure
-   preprocessing
+   model_pipeline
 
 .. toctree::
    :maxdepth: 1
