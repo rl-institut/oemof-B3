@@ -12,7 +12,7 @@ Model structure
 
 An `oemof.solph.EnergySystem` in the form of a tabular Datapackage form comprises scalar data
 (elements) and data with a time index (sequences). The model oemof-B3 uses
-`oemoflex <https://github.com/rl-institut/oemoflex>_` to build empty
+`oemoflex <https://github.com/rl-institut/oemoflex>`_ to build empty
 DataPackages and fills them with concrete numbers.
 
 
