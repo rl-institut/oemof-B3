@@ -54,11 +54,12 @@ if __name__ == "__main__":
     )
 
     # parametrize
-    path_scalars = scenario_specs["path_scalars"]
+    paths_scalars = scenario_specs["paths_scalars"]
 
-    scalars = pd.read_csv(path_scalars, index_col=[0, 1])["var_value"]
-
-    edp = parametrize_scalars(edp, scalars)
+    for path in paths_scalars:
+        print(f"Updating DataPackage with data from '{path}'.")
+        scalars = pd.read_csv(path, index_col=[0, 1])["var_value"]
+        edp = parametrize_scalars(edp, scalars)
 
     # save to csv
     edp.to_csv_dir(destination)

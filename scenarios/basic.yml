@@ -44,7 +44,8 @@ components:
 # parametrize
 # paths to input data files
 
-path_scalars: raw/component.csv
+paths_scalars:
+  - raw/component.csv
 
 # optimize
 
