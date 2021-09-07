@@ -12,7 +12,7 @@ Model structure
 
 An `oemof.solph.EnergySystem` in the form of a tabular Datapackage form comprises scalar data
 (elements) and data with a time index (sequences). The model oemof-B3 uses
-[oemoflex](https://github.com/rl-institut/oemoflex) to build empty
+`oemoflex <https://github.com/rl-institut/oemoflex>_` to build empty
 DataPackages and fills them with concrete numbers.
 
 
@@ -27,8 +27,8 @@ carrier-tech.csv (e.g. :file:`electricity-demand.csv`, :file:`gas-bpchp.csv`).
 
 There is a set of general variables that appear in all components:
 
-* **region** Region of a component. (the regions are defined in the regions file
-  :file: ../oemofB3/model_structure/components.csv)
+* **region** Region of a component. (the regions are defined in the topology file
+  :file: ../oemof_b3/model/topology.yml)
 * **name** Unique name of the form :py:attr:`'region-carrier-tech'` (e.g. :py:attr:`'LU-gas-bpchp'`,
   :py:attr:`'AT-electricity-airsourcehp'`).
 * **carrier** Energy carrier of the flow into the component (e.g. solar, wind, biomass, coal,
@@ -41,7 +41,7 @@ There is a set of general variables that appear in all components:
 
 Beyond that, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
-[oemoflex](https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model).
+`oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>_`.
 
 Sequences
 ---------
