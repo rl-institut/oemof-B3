@@ -47,6 +47,8 @@ components:
 paths_scalars:
   - raw/component.csv
 
+paths_timeseries: results/_resources/_timeseries_test.csv
+
 # optimize
 
 # solver: "cbc"

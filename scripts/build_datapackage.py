@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
+from oemof_b3.tools.data_processing import unstack_timeseries
 
 from oemof_b3.model import component_attrs_update, bus_attrs_update
 
@@ -30,6 +31,11 @@ def parametrize_scalars(edp, scalars):
     return edp
 
 
+def parametrize_sequences(edp, timeseries):
+
+    return edp
+
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -53,13 +59,26 @@ if __name__ == "__main__":
         components=scenario_specs["components"],
     )
 
-    # parametrize
+    # parametrize scalars
     paths_scalars = scenario_specs["paths_scalars"]
 
     for path in paths_scalars:
         scalars = pd.read_csv(path, index_col=[0, 1])["var_value"]
         edp = parametrize_scalars(edp, scalars)
-        print(f"Updated DataPackage with data from '{path}'.")
+        print(f"Updated DataPackage with scalars from '{path}'.")
+
+    # parametrize timeseries
+    paths_timeseries = scenario_specs["paths_timeseries"]
+
+    ts = pd.read_csv(paths_timeseries, delimiter=",", header=0)
+
+    ts_filtered = ts
+
+    ts_unstacked = unstack_timeseries(ts)
+
+    edp = parametrize_sequences(edp, ts_unstacked)
+
+    print(f"Updated DataPackage with timeseries from '{path}'.")
 
     # save to csv
     edp.to_csv_dir(destination)
