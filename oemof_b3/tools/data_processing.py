@@ -125,7 +125,7 @@ def load_scalars(path):
     missing_required = get_list_diff(required_header, df_header)
 
     # Interrupt if required columns are missing and print all affected columns
-    if len(missing_required) > 0:
+    if missing_required:
         raise KeyError(
             f"The data in {filename} is missing the required column(s): {missing_required}"
         )
@@ -169,10 +169,9 @@ def load_timeseries(path):
 
     """
     # Get header of time series
-    timeseries_header = get_optional_required_header("timeseries")
-    header = timeseries_header[0]
-    optional_header = timeseries_header[1]
-    required_header = timeseries_header[2]
+    header, optional_header, required_header = get_optional_required_header(
+        "timeseries"
+    )
 
     # Read smaller set of data to check its format
     df = pd.read_csv(path, nrows=3)
@@ -421,16 +420,18 @@ def df_agg(df, key):
     """
 
     # Get header of scalars
-    scalars_header = get_optional_required_header("scalars")
-    header_scalars = scalars_header[0]
-    optional_header_scalars = scalars_header[1]
-    required_header_scalars = scalars_header[2]
+    (
+        header_scalars,
+        optional_header_scalars,
+        required_header_scalars,
+    ) = get_optional_required_header("scalars")
 
     # Get header of time series
-    timeseries_header = get_optional_required_header("timeseries")
-    header_timeseries = timeseries_header[0]
-    optional_header_timeseries = timeseries_header[1]
-    required_header_timeseries = timeseries_header[2]
+    (
+        header_timeseries,
+        optional_header_timeseries,
+        required_header_timeseries,
+    ) = get_optional_required_header("timeseries")
 
     # Save header of DataFrame to variable
     df_header = list(df.columns)
