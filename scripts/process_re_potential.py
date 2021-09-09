@@ -38,7 +38,10 @@ if __name__ == "__main__":
     output_scalars = sys.argv[4]
     output_tables = sys.argv[5]
 
-    ######## prepare potentials for scalar _resources ########
+    ############################################
+    # prepare potentials for scalar _resources #
+    ############################################
+
     # prepare wind and pv potential
     potentials = pd.DataFrame()
     for type in ["pv", "wind"]:
@@ -47,9 +50,10 @@ if __name__ == "__main__":
         if type == "pv":
             df["carrier"] = "solar"
             df["tech"] = "pv"
-            df[
-                "comment"
-            ] = "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv, 2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
+            df["comment"] = (
+                "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv, "
+                "2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
+            )
         else:
             df["carrier"] = "wind"
             df["tech"] = "onshore"
@@ -79,7 +83,10 @@ if __name__ == "__main__":
 
     scalar_df.to_csv(output_scalars, sep=";")
 
-    ######## prepare potentials for _tables ########
+    ##################################
+    # prepare potentials for _tables #
+    ##################################
+
     # prepare wind pot
     wind_pot = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
     wind_pot["power_potential"] = wind_pot["power_potential"] / 1000
