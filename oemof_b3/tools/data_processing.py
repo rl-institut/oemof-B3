@@ -399,7 +399,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
         Aggregated data.
     """
     _df = df.copy()
-
+    df_columns = _df.columns
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
 
@@ -437,6 +437,21 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
 
     # Reset the index
     df_aggregated.reset_index(inplace=True)
+
+    # Order columns according to original order
+    def ordered_intersection(ordered_a, b):
+        o_intersect = []
+
+        for item_a in ordered_a:
+            if item_a in b:
+                o_intersect.append(item_a)
+        return o_intersect
+
+    df_aggregated_columns = df_aggregated.columns
+
+    ordered_cols = ordered_intersection(df_columns, df_aggregated_columns)
+
+    df_aggregated = df_aggregated[ordered_cols]
 
     return df_aggregated
 
