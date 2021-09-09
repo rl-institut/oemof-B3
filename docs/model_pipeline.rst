@@ -5,26 +5,32 @@ Model pipeline
 ~~~~~~~~~~~~~~
 
 .. contents:: `Contents`
-    :depth: 1
+    :depth: 2
     :local:
     :backlinks: top
 
 
-Setup the model structure
-=========================
+Preprocessing
+=============
 
-For more details, refer to :ref:`model_structure_label`.
+.. toctree::
+   :maxdepth: 1
+   :glob:
 
-Parametrize
-===========
+   preprocessing/*
 
-Infer metadata
+
+Optimization
+============
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+
+Postprocessing
 ==============
 
-Optimize
-========
-
-Postprocess
-===========
-
-Consider :ref:`postprocessing_label` for an overview of the key results of postprocessing.
+.. toctree::
+   :maxdepth: 1
+   :glob:
