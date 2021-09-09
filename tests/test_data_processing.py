@@ -314,9 +314,6 @@ def test_filter_df_sc_region_BE():
     )
     df_filtered_sc_expected = load_scalars(path_file_filtered_sc)
 
-    # Modify id_scal column of filtered DataFrame to integer values to pass the test
-    df_BE["id_scal"] = df_BE["id_scal"].astype(int)
-
     # Test if expected and filtered DataFrame are same
     pd.testing.assert_frame_equal(df_filtered_sc_expected, df_BE)
 
@@ -352,9 +349,6 @@ def test_filter_df_sc_type_conversion():
         "oemof_b3_resources_scalars_filtered_conversion.csv",
     )
     df_filtered_sc_expected = load_scalars(path_file_filtered_sc)
-
-    # Modify id_scal column of filtered DataFrame to integer values to pass the test
-    df_conversion["id_scal"] = df_conversion["id_scal"].astype(int)
 
     # Test if expected and filtered DataFrame are same
     pd.testing.assert_frame_equal(df_filtered_sc_expected, df_conversion)
@@ -418,6 +412,8 @@ def test_df_agg_sc():
     df_agg_region_expected = load_scalars(path_file_agg_sc)
 
     # Check if results of aggregation equal the expected ones
+    df_agg_by_region.to_csv("~/Desktop/agg.csv")
+    df_agg_region_expected.to_csv("~/Desktop/agg_exp.csv")
     pd.testing.assert_frame_equal(
         df_agg_by_region, df_agg_region_expected, check_dtype=False
     )
