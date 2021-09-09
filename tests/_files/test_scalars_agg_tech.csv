@@ -1,0 +1,7 @@
+id_scal,scenario,name,var_name,carrier,region,tech,type,var_value,var_unit,reference,comment
+,base,Aggregated by tech,capacity,All,All,gt,All,400000,-,,
+,base,Aggregated by tech,flow_biomass_biomass,All,All,gt,All,2692790078.84687,-,,
+,base,Aggregated by tech,flow_electricity_biomass,All,All,gt,All,-1023260209.6668,-,,
+,base,Aggregated by tech,costs,All,All,gt,All,108971828.939188,-,,
+,base,Aggregated by tech,flow_electricity_electricity,All,All,curtailment,All,6666117465.73977,-,,
+,base,Aggregated by tech,flow_electricity_electricity,All,All,demand,All,33727319999.9999,-,,

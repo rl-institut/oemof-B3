@@ -404,6 +404,18 @@ def filter_df(df, key, values):
                         row, ignore_index=True
                     )
 
+    # Match index of filtered DataFrame with origin DataFrame
+    df_filtered_by_value.index.name = df.index.name
+
+    # Todo: Here a function for adapting dtypes of df_filtered_by_value to the ones of df would
+    #  be best. However DataFrame.convert_dtypes leads to error message
+    # Change type of id (id_scal or id_ts) to integer as in the origin DataFrame
+    if "id_scal" in df_filtered_by_value.columns:
+        df_filtered_by_value["id_scal"] = df_filtered_by_value["id_scal"].astype(int)
+    if "id_ts" in df_filtered_by_value.columns:
+        df_filtered_by_value["id_ts"] = df_filtered_by_value["id_ts"].astype(int)
+    # ToDo: Change type of "var_unit", "source", "comment"
+
     return df_filtered_by_value
 
 
@@ -728,6 +740,13 @@ def df_agg(df, key):
             }
             # Append row to the aggregated DataFrame
             df_agg_by_key = df_agg_by_key.append(new_row, ignore_index=True)
+
+        # Match index of filtered DataFrame with origin DataFrame
+        df_agg_by_key.index.name = df.index.name
+
+        # Todo: Here a function for adapting dtypes of df_agg_by_key to the ones of df would
+        #  be best. However DataFrame.convert_dtypes leads to error message
+        # ToDo: Change type of "var_unit", "source", "comment"
 
     return df_agg_by_key
 

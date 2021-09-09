@@ -1,0 +1,6 @@
+id_scal,scenario,name,var_name,carrier,region,tech,type,var_value,var_unit,reference,comment
+,base,Aggregated by carrier,capacity,biomass,All,All,All,400000,-,,
+,base,Aggregated by carrier,flow_biomass_biomass,biomass,All,All,All,2692790078.84687,-,,
+,base,Aggregated by carrier,flow_electricity_biomass,biomass,All,All,All,-1023260209.6668,-,,
+,base,Aggregated by carrier,costs,biomass,All,All,All,108971828.939188,-,,
+,base,Aggregated by carrier,flow_electricity_electricity,electricity,All,All,All,40393437465.7397,-,,
