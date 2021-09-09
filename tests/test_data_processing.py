@@ -310,7 +310,7 @@ def test_filter_df_sc_region_BE():
     path_file_filtered_sc = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_filtered_BE.csv",
+        "oemof_b3_resources_scalars_filtered_BE.csv",
     )
     df_filtered_sc_expected = load_scalars(path_file_filtered_sc)
 
@@ -349,7 +349,7 @@ def test_filter_df_sc_type_conversion():
     path_file_filtered_sc = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_filtered_conversion.csv",
+        "oemof_b3_resources_scalars_filtered_conversion.csv",
     )
     df_filtered_sc_expected = load_scalars(path_file_filtered_sc)
 
@@ -385,7 +385,7 @@ def test_filter_df_ts():
     path_file_filtered_ts = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked_filtered_BE_BB.csv",
+        "oemof_b3_resources_stacked_filtered_BE_BB.csv",
     )
     df_filtered_ts_expected = load_timeseries(path_file_filtered_ts)
 
@@ -413,7 +413,7 @@ def test_df_agg_sc():
     path_file_agg_sc = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_agg_region.csv",
+        "oemof_b3_resources_scalars_agg_region.csv",
     )
     df_agg_region_expected = load_scalars(path_file_agg_sc)
 
@@ -429,7 +429,7 @@ def test_df_agg_sc():
     path_file_agg_sc = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_agg_carrier.csv",
+        "oemof_b3_resources_scalars_agg_carrier.csv",
     )
     df_agg_carrier_expected = load_scalars(path_file_agg_sc)
 
@@ -445,7 +445,7 @@ def test_df_agg_sc():
     path_file_agg_sc = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_agg_tech.csv",
+        "oemof_b3_resources_test_scalars_agg_tech.csv",
     )
     df_agg_tech_expected = load_scalars(path_file_agg_sc)
 
@@ -469,7 +469,7 @@ def test_df_agg_ts():
     path_file_agg_ts = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked_agg_region.csv",
+        "oemof_b3_resources_stacked_agg_region.csv",
     )
     df_agg_expected = load_timeseries(path_file_agg_ts)
 
