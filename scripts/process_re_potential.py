@@ -38,7 +38,6 @@ if __name__ == "__main__":
     output_scalars = sys.argv[4]
     output_tables = sys.argv[5]
 
-
     ######## prepare potentials for scalar _resources ########
     # prepare wind and pv potential
     potentials = pd.DataFrame()
@@ -48,7 +47,9 @@ if __name__ == "__main__":
         if type == "pv":
             df["carrier"] = "solar"
             df["tech"] = "pv"
-            df["comment"] = "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv, 2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
+            df[
+                "comment"
+            ] = "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv, 2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
         else:
             df["carrier"] = "wind"
             df["tech"] = "onshore"
@@ -69,10 +70,10 @@ if __name__ == "__main__":
     scalar_df["type"] = "volatile"
     scalar_df["var_value"] = potentials["power_potential_agreed"]
     scalar_df["var_unit"] = "MW"
-    scalar_df["reference"] = "area potentials - https://sandbox.zenodo.org/record/746695/"
     scalar_df[
-        "comment"
-    ] = potentials["comment"]
+        "reference"
+    ] = "area potentials - https://sandbox.zenodo.org/record/746695/"
+    scalar_df["comment"] = potentials["comment"]
     # set index
     scalar_df.set_index("id_scal", inplace=True)
 
@@ -84,7 +85,11 @@ if __name__ == "__main__":
     wind_pot["power_potential"] = wind_pot["power_potential"] / 1000
     wind_pot["area"] = wind_pot["area"] / 1e6
     wind_pot_prepared = wind_pot[["region", "area", "power_potential"]].rename(
-        columns={"area": "Fläche Wind [km2]", "power_potential": "Leistung Wind [GW]", "region": "Kreis"}
+        columns={
+            "area": "Fläche Wind [km2]",
+            "power_potential": "Leistung Wind [GW]",
+            "region": "Kreis",
+        }
     )
 
     # prepare pv pot
@@ -92,7 +97,11 @@ if __name__ == "__main__":
     pv_pot["power_potential"] = pv_pot["power_potential"] / 1000
     pv_pot["area"] = pv_pot["area"] / 1e6
     pv_pot_prepared = pv_pot[["area", "power_potential"]].rename(
-        columns={"area": "Fläche PV [km2]", "power_potential": "Leistung PV [GW]", "region": "Kreis"}
+        columns={
+            "area": "Fläche PV [km2]",
+            "power_potential": "Leistung PV [GW]",
+            "region": "Kreis",
+        }
     )
 
     potentials = pd.concat([wind_pot_prepared, pv_pot_prepared], axis=1)

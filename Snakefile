@@ -67,8 +67,8 @@ rule prepare_pv_potential:
         regional_assumptions="raw/regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
-        filename_kreise = "results/_resources/power_potential_pv_kreise.csv",
-        secondary_output_dir = directory("results/_resources/RE_potential/")
+        filename_kreise="results/_resources/power_potential_pv_kreise.csv",
+        secondary_output_dir=directory("results/_resources/RE_potential/")
     shell:
         "python scripts/prepare_re_potential.py {input.filename_agriculture} {input.filename_road_railway} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
@@ -79,8 +79,8 @@ rule prepare_wind_potential:
         regional_assumptions="raw/regional.csv",
         script="scripts/prepare_re_potential.py"
     output:
-        filename_kreise = "results/_resources/power_potential_wind_kreise.csv",
-        secondary_output_dir = directory("results/_resources/RE_potential/")
+        filename_kreise="results/_resources/power_potential_wind_kreise.csv",
+        secondary_output_dir=directory("results/_resources/RE_potential/")
     shell:
         "python scripts/prepare_re_potential.py  {input.filename_wind} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
