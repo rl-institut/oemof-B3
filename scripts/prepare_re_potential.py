@@ -169,7 +169,7 @@ def calculate_potential_pv(
     filename = os.path.join(
         secondary_output_dir, "area_potential_single_areas_pv_raw.csv"
     )
-    areas_pv.to_csv(filename)
+    areas_pv.to_csv(filename, sep=";")
 
     # read parameters for calculatons like minimum required area and degree of agreement from
     # 'xyz.csv' todo
@@ -339,7 +339,7 @@ def calculate_area_potential(
         secondary_output_dir,
         f"area_potential_single_areas_{type}.csv",
     )
-    areas.to_csv(filename_single_areas)
+    areas.to_csv(filename_single_areas, sep=";")
 
     return filename_single_areas
 
@@ -391,7 +391,7 @@ def calculate_power_potential(
 
     """
     # read area potential
-    potentials = pd.read_csv(input_file, header=0)
+    potentials = pd.read_csv(input_file, header=0, sep=";")
 
     # calculate power potential with required specific area
     potentials["power_potential"] = potentials["area"] * required_specific_area
@@ -441,14 +441,14 @@ def calculate_power_potential(
     )
 
     # save power potential in MW of NUTS3 (Landkreise) todo use SI units?
-    potentials_kreise.to_csv(output_file)
+    potentials_kreise.to_csv(output_file, sep=";")
 
     # additionally save power potential of single areas in MW
     filename_single_areas = os.path.join(
         secondary_output_dir,
         f"power_potential_single_areas_{type}.csv",
     )
-    potentials.to_csv(filename_single_areas)
+    potentials.to_csv(filename_single_areas, sep=";")
 
 
 if __name__ == "__main__":

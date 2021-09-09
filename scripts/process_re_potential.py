@@ -33,7 +33,7 @@ if __name__ == "__main__":
     output_file = sys.argv[3]
 
     # prepare wind pot
-    wind_pot = pd.read_csv(filename_wind).set_index("NUTS")
+    wind_pot = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
     wind_pot["power_potential"] = wind_pot["power_potential"] / 1000
     wind_pot["area"] = wind_pot["area"] / 1e6
     wind_pot_prepared = wind_pot[["Kreis", "area", "power_potential"]].rename(
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     )
 
     # prepare pv pot
-    pv_pot = pd.read_csv(filename_pv).set_index("NUTS")
+    pv_pot = pd.read_csv(filename_pv, sep=";").set_index("NUTS")
     pv_pot["power_potential"] = pv_pot["power_potential"] / 1000
     pv_pot["area"] = pv_pot["area"] / 1e6
     pv_pot_prepared = pv_pot[["area", "power_potential"]].rename(
@@ -58,4 +58,4 @@ if __name__ == "__main__":
     potential_bb["Kreis"] = "Summe Brandenburg"
     potentials = pd.concat([potentials, potential_bb], axis=0)
 
-    potentials.to_csv(output_file)
+    potentials.to_csv(output_file, sep=";")
