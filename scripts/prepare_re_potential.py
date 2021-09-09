@@ -440,7 +440,7 @@ def calculate_power_potential(
         df=potentials_kreise, filename_kreise=filename_kreise
     )
 
-    # save power potential in MW of NUTS3 (Landkreise) todo use SI units?
+    # save power potential in MW of NUTS3 (Landkreise)
     potentials_kreise.to_csv(output_file, sep=";")
 
     # additionally save power potential of single areas in MW
