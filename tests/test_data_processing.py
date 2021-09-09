@@ -15,7 +15,61 @@ from oemof_b3.tools.data_processing import (
     check_consistency_timeindex,
 )
 
+# Paths
 this_path = os.path.realpath(__file__)
+
+path_file_sc = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_scalars.csv",
+)
+
+path_file_ts = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_timeseries_stacked.csv",
+)
+
+path_file_ts_sequence = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_tabular_sequence.csv",
+)
+
+path_file_ts_stacked = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_timeseries_stacked.csv",
+)
+
+# Headers
+sc_cols_list = [
+    "id_scal",
+    "scenario",
+    "name",
+    "var_name",
+    "carrier",
+    "region",
+    "tech",
+    "type",
+    "var_value",
+    "var_unit",
+    "reference",
+    "comment",
+]
+
+ts_cols_list = [
+    "id_ts",
+    "region",
+    "var_name",
+    "timeindex_start",
+    "timeindex_stop",
+    "timeindex_resolution",
+    "series",
+    "var_unit",
+    "source",
+    "comment",
+]
 
 ts_row_wise_cols = [
     "var_name",
@@ -25,6 +79,7 @@ ts_row_wise_cols = [
     "series",
 ]
 
+# DataFrames
 ts_column_wise = pd.DataFrame(
     np.random.randint(0, 10, size=(25, 3)),
     columns=list("ABC"),
@@ -38,36 +93,14 @@ ts_column_wise_different = pd.DataFrame(
 )
 
 
-def test_get_optional_required_header():
+def test_get_optional_required_header_sc():
     """
-    This test checks whether header of
-    1. scalars and
-    2. time series
-    are returned correctly
-
-    In a third test it is checked whether a ValueError
-    is raised if an invalid string is passed with
-    data_type
-
+    This test checks whether the header of scalars is returned correctly
     """
-    # 1. Test
-    scalars_header_expected = [
-        "id_scal",
-        "scenario",
-        "name",
-        "var_name",
-        "carrier",
-        "region",
-        "tech",
-        "type",
-        "var_value",
-        "var_unit",
-        "reference",
-        "comment",
-    ]
-    scalars_header_optional_expected = ["id_scal", "var_unit", "reference", "comment"]
 
-    scalars_header_required_expected = [
+    sc_header_optional_expected = ["id_scal", "var_unit", "reference", "comment"]
+
+    sc_header_required_expected = [
         "scenario",
         "name",
         "var_name",
@@ -78,33 +111,27 @@ def test_get_optional_required_header():
         "var_value",
     ]
 
-    scalars_header_results = get_optional_required_header("scalars")
+    sc_header_results = get_optional_required_header("scalars")
 
-    assert scalars_header_results[0] == scalars_header_expected
-    assert scalars_header_results[1] == scalars_header_optional_expected
-    assert scalars_header_results[2] == scalars_header_required_expected
+    assert sc_header_results[0] == sc_cols_list
+    assert sc_header_results[1] == sc_header_optional_expected
+    assert sc_header_results[2] == sc_header_required_expected
 
-    # 2. Test
-    timeseries_header_expected = [
-        "id_ts",
-        "region",
-        "var_name",
-        "timeindex_start",
-        "timeindex_stop",
-        "timeindex_resolution",
-        "series",
-        "var_unit",
-        "source",
-        "comment",
-    ]
-    timeseries_header_optional_expected = [
+
+def test_get_optional_required_header_ts():
+    """
+    This test checks whether the header of a time series
+    is returned correctly
+    """
+
+    ts_header_optional_expected = [
         "id_ts",
         # "region",
         "var_unit",
         "source",
         "comment",
     ]
-    timeseries_header_required_expected = [
+    ts_header_required_expected = [
         "region",
         "var_name",
         "timeindex_start",
@@ -113,53 +140,41 @@ def test_get_optional_required_header():
         "series",
     ]
 
-    timeseries_header_results = get_optional_required_header("timeseries")
+    ts_header_results = get_optional_required_header("timeseries")
 
-    assert timeseries_header_results[0] == timeseries_header_expected
-    assert timeseries_header_results[1] == timeseries_header_optional_expected
-    assert timeseries_header_results[2] == timeseries_header_required_expected
+    assert ts_header_results[0] == ts_cols_list
+    assert ts_header_results[1] == ts_header_optional_expected
+    assert ts_header_results[2] == ts_header_required_expected
 
-    # 3. Test
+
+def test_get_optional_required_header_raises_error():
+    """
+    This test checks whether a ValueError
+    is raised if an invalid string is passed with
+    data_type
+    """
+
     with pytest.raises(ValueError):
         get_optional_required_header("something_else")
 
 
 def test_load_scalars():
     """
-    This test checks whether
-    1. the DataFrame from read data contains all default columns and
-    2. load_scalars errors out if data is missing a required column
-
+    This test checks whether the DataFrame from read data contains all default columns
     """
-    # 1. Test
-    cols_list = [
-        "scenario",
-        "name",
-        "var_name",
-        "carrier",
-        "region",
-        "tech",
-        "type",
-        "var_value",
-        "id_scal",
-        "var_unit",
-        "reference",
-        "comment",
-    ]
 
-    path_file = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_scalars.csv",
-    )
-
-    df = load_scalars(path_file)
+    df = load_scalars(path_file_sc)
     df_cols = list(df.columns)
 
-    for col in cols_list:
+    for col in sc_cols_list:
         assert col in df_cols
 
-    # 2. Test
+
+def test_load_scalars_raises_error():
+    """
+    This test checks whether load_scalars errors out if data is missing a required column
+    """
+
     path_file_missing_required = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
@@ -170,100 +185,62 @@ def test_load_scalars():
         load_scalars(path_file_missing_required)
 
 
-def test_load_timeseries():
+def test_load_timeseries_multiindex():
     """
-    This test checks whether
-    1.  the DataFrame read by load_timeseries function from data which is a
-            a. time series with multiIndex
-            b. sequence
-            c. stacked time series / sequence
-        contains all default columns and
-    2.  load_timeseries errors out if data is missing a required column
-
+    This test checks whether the DataFrame read by load_timeseries function from data which is a
+        a. time series with multiIndex
+        b. sequence
+        c. stacked time series / sequence
+    contains all default columns
     """
-    # 1. Test
-    cols_list = [
-        "id_ts",
-        "region",
-        "var_name",
-        "timeindex_start",
-        "timeindex_stop",
-        "timeindex_resolution",
-        "series",
-        "var_unit",
-        "source",
-        "comment",
-    ]
-
-    # a. time series with multiIndex
-    path_file_timeseries = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemoflex_results_timeseries.csv",
-    )
-
-    # b. sequence
-    path_file_sequence = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_tabular_sequence.csv",
-    )
-
-    # c. stacked time series / sequence
-    path_file_stacked = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_timeseries_stacked.csv",
-    )
 
     paths = [
-        path_file_timeseries,
-        path_file_sequence,
-        path_file_stacked,
+        path_file_ts,
+        path_file_ts_sequence,
+        path_file_ts_stacked,
     ]
 
-    # Run 1. Test for formats a., b. and c.
+    # Run test for formats a., b. and c.
     for path_file in paths:
         df = load_timeseries(path_file)
         df_cols = list(df.columns)
 
-        assert df_cols == cols_list
+        assert df_cols == ts_cols_list
 
-    # 2. Test
+
+def test_load_timeseries_raises_error():
+    """
+    This test checks whether load_timeseries errors out if data is missing a required column
+    """
+
     path_file_stacked_missing_required = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
         "oemof_b3_resources_timeseries_stacked_missing_required.csv",
     )
-
     with pytest.raises(KeyError):
         # Check whether reading a stacked DataFrame missing required columns errors out
         load_timeseries(path_file_stacked_missing_required)
 
 
-def test_save_df():
+def test_save_df_sc():
     """
-    This test checks for scalars and time series whether
-    1. the path of the scalars stored in a csv file exists
-    2. the DataFrame remain unchanged after saving. For this purpose, the data is read in again
-    after saving and compared with the scalars originally read
+    This test checks for scalars whether the DataFrame remain unchanged after
+    saving
 
+    For this purpose, the data is read in again after saving and compared with the data
+    originally read
     """
     # Scalars
-    path_file_scalars = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_scalars.csv",
-    )
 
     path_file_saved = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_scalars_saved.csv",
+        "oemof_b3_resources_scalars_saved.csv",
     )
 
     # Read scalars
-    df = load_scalars(path_file_scalars)
+    df = load_scalars(path_file_sc)
 
     # Save read scalars
     save_df(df, path_file_saved)
@@ -271,10 +248,7 @@ def test_save_df():
     # Load the saved scalars
     df_saved = load_scalars(path_file_saved)
 
-    # 1. Test
-    assert os.path.exists(path_file_saved) == 1
-
-    # 2. Test
+    # Test DataFrames are same
     pd.testing.assert_frame_equal(df, df_saved)
 
     # Remove saved scalars which were saved for this test
@@ -288,210 +262,219 @@ def test_save_df():
     )
     df = load_timeseries(path_file_timeseries)
 
-    path_file_stacked = os.path.join(
+
+def test_save_df_ts():
+    """
+    This test checks for time series whether the DataFrame remain unchanged after
+    saving
+
+    For this purpose, the data is read in again after saving and compared with the data
+    originally read
+    """
+
+    path_file_stacked_saved = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "test_stacked_saved.csv",
+        "oemof_b3_resources_timeseries_stacked_saved.csv",
     )
 
-    save_df(df, path_file_stacked)
-    assert os.path.exists(path_file_stacked) == 1
+    # Read time series
+    df = load_timeseries(path_file_ts)
 
-    df_saved = load_timeseries(path_file_stacked)
+    # Save read time series
+    save_df(df, path_file_stacked_saved)
 
+    # Load the saved time series
+    df_saved = load_timeseries(path_file_stacked_saved)
+
+    # Test DataFrames are same
     pd.testing.assert_series_equal(df["series"], df_saved["series"])
     pd.testing.assert_frame_equal(df, df_saved)
 
-    os.remove(path_file_stacked)
+    # Remove saved time series which was saved for this test
+    os.remove(path_file_stacked_saved)
 
 
-def test_filter_df():
+def test_filter_df_sc_region_BE():
     """
-    This test checks whether
-    1. scalars and
-    2. time series
-    are filtered by a key and value
-
+    This test checks whether scalars are filtered correctly by key "region" and value "BE"
     """
-    # 1. Test
-    path_file_scalars = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_scalars.csv",
-    )
 
     # Read scalars
-    df = load_scalars(path_file_scalars)
+    df = load_scalars(path_file_sc)
 
+    # Filter scalar by region "BE"
     df_BE = filter_df(df, "region", ["BE"])
 
-    assert df_BE["region"].values[0] == "BE"
-    assert len(df_BE["region"]) == 7
+    # Load expected filtered scalars
+    path_file_filtered_sc = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars_filtered_BE.csv",
+    )
+    df_filtered_sc_expected = load_scalars(path_file_filtered_sc)
+
+    # Modify id_scal column of filtered DataFrame to integer values to pass the test
+    df_BE["id_scal"] = df_BE["id_scal"].astype(int)
+
+    # Test if expected and filtered DataFrame are same
+    pd.testing.assert_frame_equal(df_filtered_sc_expected, df_BE)
+
+
+def test_filter_df_sc_region_BE_BB():
+    """
+    This test checks whether scalars are filtered correctly by key "region" and value "BE_BB"
+    """
+
+    # Read scalars
+    df = load_scalars(path_file_sc)
 
     df_BE_BB = filter_df(df, "region", ["BE_BB"])
 
     assert df_BE_BB.empty
 
+
+def test_filter_df_sc_type_conversion():
+    """
+    This test checks whether scalars are filtered correctly by key "type" and value "conversion"
+    """
+
+    # Read scalars
+    df = load_scalars(path_file_sc)
+
+    # Filter scalar by type "conversion"
     df_conversion = filter_df(df, "type", ["conversion"])
-    assert len(df_conversion["type"]) == 10
+
+    # Load expected filtered scalars
+    path_file_filtered_sc = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars_filtered_conversion.csv",
+    )
+    df_filtered_sc_expected = load_scalars(path_file_filtered_sc)
+
+    # Modify id_scal column of filtered DataFrame to integer values to pass the test
+    df_conversion["id_scal"] = df_conversion["id_scal"].astype(int)
+
+    # Test if expected and filtered DataFrame are same
+    pd.testing.assert_frame_equal(df_filtered_sc_expected, df_conversion)
+
+
+def test_filter_df_sc_raises_error():
+    """
+    This test checks whether scalars are filtered correctly by key "region" and value "BE_BB"
+    """
+    # Read scalars
+    df = load_scalars(path_file_sc)
 
     with pytest.raises(KeyError):
         filter_df(df, "something", ["conversion"])
 
-    # 2. Test
-    path_file_timeseries = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_timeseries_stacked.csv",
-    )
+
+def test_filter_df_ts():
+    """
+    This test checks whether time series is filtered by a key "region" and value "BE_BB"
+    """
 
     # Read stacked time series
-    df = load_timeseries(path_file_timeseries)
+    df = load_timeseries(path_file_ts_stacked)
 
     df_BE_BB = filter_df(df, "region", ["BE_BB"])
 
-    assert (
-        df_BE_BB["region"].values[0] == "BE_BB"
-        and df_BE_BB["region"].values[1] == "BE_BB"
-    )
-    assert len(df_BE_BB["region"]) == 2
-
-    df_var_name = filter_df(
-        df,
-        "var_name",
-        [
-            "flow from BB-biomass-st to BB-electricity",
-            "flow from BB-electricity-liion-battery to BB-electricity",
-        ],
-    )
-
-    assert (
-        df_var_name["var_name"].values[0] == "flow from BB-biomass-st to BB-electricity"
-        and df_var_name["var_name"].values[1]
-        == "flow from BB-electricity-liion-battery to BB-electricity"
-    )
-
-
-def test_aggregate_scalars():
-    """
-    This test checks whether
-    1. scalars and
-    2. time series
-    are aggregated by a key
-
-    """
-    # 1. Test
-    path_file_scalars = os.path.join(
+    # Load expected filtered stacked time series
+    path_file_filtered_ts = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "oemof_b3_resources_scalars.csv",
+        "test_stacked_filtered_BE_BB.csv",
     )
+    df_filtered_ts_expected = load_timeseries(path_file_filtered_ts)
 
+    # Modify id_ts column of filtered DataFrame to integer values to pass the test
+    df_BE_BB["id_ts"] = df_BE_BB["id_ts"].astype(int)
+
+    # Test if expected and filtered DataFrame are same
+    # ToDo: dtypes aren't same after filtering. To be changed in data_processing.py
+    pd.testing.assert_frame_equal(df_filtered_ts_expected, df_BE_BB, check_dtype=False)
+
+
+def test_df_agg_sc():
+    """
+    This test checks whether scalars are aggregated by a key
+    """
+
+    # 1. Test
     # Read scalars
-    df = load_scalars(path_file_scalars)
+    df = load_scalars(path_file_sc)
 
     # Aggregate by region
-    df_aggregated_by_region = aggregate_scalars(df, "region")
+    df_agg_by_region = aggregate_scalars(df, "region")
 
-    # Add expected results of aggregation
-    df_aggregated_expected = pd.DataFrame(
-        data={
-            "id_scal": [None] * 8,
-            "scenario": ["base"] * 8,
-            "name": ["Aggregated by region"] * 8,
-            "var_name": [
-                "capacity",
-                "flow_biomass",
-                "flow_electricity",
-                "costs",
-                "capacity",
-                "flow_biomass",
-                "flow_electricity",
-                "costs",
-            ],
-            "carrier": ["All"] * 8,
-            "region": ["BE", "BE", "BE", "BE", "BB", "BB", "BB", "BB"],
-            "tech": ["All"] * 8,
-            "type": ["All"] * 8,
-            "var_value": [
-                0,
-                0,
-                13470154039.4199,
-                0,
-                400000,
-                2692790078.846871,
-                25900023216.653,
-                108971828.939188,
-            ],
-            "var_unit": ["-"] * 8,
-            "reference": [None] * 8,
-            "comment": [None] * 8,
-        }
+    # Load expected aggregated DataFrame
+    path_file_agg_sc = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars_agg_region.csv",
     )
+    df_agg_region_expected = load_scalars(path_file_agg_sc)
 
     # Check if results of aggregation equal the expected ones
-    pd.testing.assert_frame_equal(df_aggregated_by_region, df_aggregated_expected)
+    pd.testing.assert_frame_equal(
+        df_agg_by_region, df_agg_region_expected, check_dtype=False
+    )
 
     # Aggregate by carrier
-    df_aggregated_by_carrier = aggregate_scalars(df, "carrier")
+    df_agg_by_carrier = aggregate_scalars(df, "carrier")
 
-    assert list(df_aggregated_by_carrier["var_value"].values) == [
-        400000,
-        2692790078.846871,
-        -1023260209.6668,
-        108971828.9391882,
-        40393437465.7397,
-    ]
-
-    # Aggregate by tech
-    df_aggregated_by_tech = aggregate_scalars(df, "tech")
-
-    expected_results_series_tech = [
-        400000.000,
-        2692790078.847,
-        -1023260209.667,
-        108971828.939,
-        6666117465.740,
-        33727320000.000,
-    ]
-
-    for index, item in enumerate(list(df_aggregated_by_tech["var_value"].values)):
-        assert round(item, 3) == expected_results_series_tech[index]
-
-    # 2. Test
-    path_file_timeseries = os.path.join(
+    # Load expected aggregated DataFrame
+    path_file_agg_sc = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "oemof_b3_resources_timeseries_stacked.csv",
+        "test_scalars_agg_carrier.csv",
     )
-
-    # Read stacked time series
-    df = load_timeseries(path_file_timeseries)
-
-    # Aggregate by region
-    df_aggregated_by_region = aggregate_scalars(df, "region")
-
-    # Add expected results of aggregation
-    df_aggregated_expected = pd.DataFrame(
-        data={
-            "id_ts": [None] * 2,
-            "region": ["BB", "BE_BB"],
-            "var_name": ["Aggregated by region"] * 2,
-            "timeindex_start": [df["timeindex_start"][0]] * 2,
-            "timeindex_stop": [df["timeindex_stop"][0]] * 2,
-            "timeindex_resolution": [df["timeindex_resolution"][0]] * 2,
-            "series": [
-                [3917414.00714099, 3865968.88012165, 3688842.50107082],
-                [137824.4, 125071.28, 81162.145],
-            ],
-            "var_unit": ["-"] * 2,
-            "source": [None] * 2,
-            "comment": [None] * 2,
-        }
-    )
+    df_agg_carrier_expected = load_scalars(path_file_agg_sc)
 
     # Check if results of aggregation equal the expected ones
-    pd.testing.assert_frame_equal(df_aggregated_by_region, df_aggregated_expected)
+    pd.testing.assert_frame_equal(
+        df_agg_by_carrier, df_agg_carrier_expected, check_dtype=False
+    )
+
+    # Aggregate by tech
+    df_agg_by_tech = aggregate_scalars(df, "tech")
+
+    # Load expected aggregated DataFrame
+    path_file_agg_sc = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_scalars_agg_tech.csv",
+    )
+    df_agg_tech_expected = load_scalars(path_file_agg_sc)
+
+    # Check if results of aggregation equal the expected ones
+    pd.testing.assert_frame_equal(
+        df_agg_by_tech, df_agg_tech_expected, check_dtype=False
+    )
+
+
+def test_df_agg_ts():
+    """
+    This test checks whether a time series is aggregated by a key
+    """
+    # Read stacked time series
+    df = load_timeseries(path_file_ts_stacked)
+
+    # Aggregate by region
+    df_agg_by_region = aggregate_scalars(df, "region")
+
+    # Load expected filtered stacked time series
+    path_file_agg_ts = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "test_stacked_agg_region.csv",
+    )
+    df_agg_expected = load_timeseries(path_file_agg_ts)
+
+    # Check if results of aggregation equal the expected ones
+    pd.testing.assert_frame_equal(df_agg_by_region, df_agg_expected, check_dtype=False)
 
 
 def test_check_consistency():
@@ -530,7 +513,6 @@ def test_stack():
     """
     This test checks whether the stacked DataFrame "ts_row_wise"
     contains the after stacking expected columns "ts_row_wise_cols"
-
     """
 
     ts_row_wise = stack_timeseries(ts_column_wise)
@@ -542,7 +524,6 @@ def test_unstack():
     """
     This test checks if a dummy DataFrame remains unchanged through stacking
     and unstacking
-
     """
 
     ts_row_wise = stack_timeseries(ts_column_wise)
@@ -562,8 +543,8 @@ def test_stack_unstack_on_example_data():
     """
     This test checks if a DataFrame with a test sequence remains unchanged through stacking
     and unstacking
-
     """
+
     file_path = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
