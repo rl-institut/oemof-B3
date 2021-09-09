@@ -412,8 +412,6 @@ def test_df_agg_sc():
     df_agg_region_expected = load_scalars(path_file_agg_sc)
 
     # Check if results of aggregation equal the expected ones
-    df_agg_by_region.to_csv("~/Desktop/agg.csv")
-    df_agg_region_expected.to_csv("~/Desktop/agg_exp.csv")
     pd.testing.assert_frame_equal(
         df_agg_by_region, df_agg_region_expected, check_dtype=False
     )
