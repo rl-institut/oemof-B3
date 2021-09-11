@@ -4,90 +4,6 @@ import pandas as pd
 import numpy as np
 
 
-def get_optional_required_header(data_type):
-    """
-    This function returns the header of
-    1. scalars and
-    2. time series
-    along with two lists: optional and required header items
-
-    Parameters
-    ----------
-    data_type : string
-        "scalars" or "timeseries" depending on DataFrame
-
-    Returns
-    -------
-    header : list
-        list of strings with all positions in the header
-
-    optional_header : list
-        list of strings with optional positions in the header
-
-    required_header : list
-        list of strings with required positions in the header
-
-    """
-    if data_type == "scalars":
-        # Name of each column in scalars
-        header = [
-            "id_scal",
-            "scenario",
-            "name",
-            "var_name",
-            "carrier",
-            "region",
-            "tech",
-            "type",
-            "var_value",
-            "var_unit",
-            "reference",
-            "comment",
-        ]
-        # Names of optional columns in scalars
-        optional_header = ["id_scal", "var_unit", "reference", "comment"]
-
-    elif data_type == "timeseries":
-        # Names of all columns in a stacked time series
-        header = [
-            "id_ts",
-            "region",
-            "var_name",
-            "timeindex_start",
-            "timeindex_stop",
-            "timeindex_resolution",
-            "series",
-            "var_unit",
-            "source",
-            "comment",
-        ]
-
-        # Names of optional columns in a stacked time series
-        optional_header = [
-            "id_ts",
-            # "region",
-            "var_unit",
-            "source",
-            "comment",
-        ]
-    else:
-        raise ValueError(
-            f"{data_type} is not a valid option of a description of the DataFrame type. "
-            f"Please choose between 'scalars' and 'timeseries'."
-        )
-
-    # Names of required columns in scalars
-    required_header = header.copy()
-    for optional in optional_header:
-        required_header.remove(optional)
-
-    return header, optional_header, required_header
-
-
-def get_list_diff(list_a, list_b):
-    return list(set(list_a).difference(set(list_b)))
-
-
 here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "..", "results", "_resources")
@@ -99,6 +15,10 @@ HEADER_B3_SCAL = pd.read_csv(
 HEADER_B3_TS = pd.read_csv(
     os.path.join(template_dir, "_timeseries_template.csv"), delimiter=";"
 ).columns
+
+
+def get_list_diff(list_a, list_b):
+    return list(set(list_a).difference(set(list_b)))
 
 
 def format_header(df, header):
@@ -124,7 +44,7 @@ def format_header(df, header):
     return df_formatted
 
 
-def load_scalars(path):
+def load_b3_scalars(path):
     """
     This function loads scalars from a csv file
 
@@ -146,12 +66,9 @@ def load_scalars(path):
     return df
 
 
-def load_timeseries(path):
+def load_b3_timeseries(path):
     """
-    This function loads a time series from a csv file
-
-    A stacked and non-stacked time series can be passed.
-    If a non-stacked time series is passed, it will be stacked in this function.
+    This function loads a stacked time series from a csv file
 
     Parameters
     ----------
@@ -164,137 +81,10 @@ def load_timeseries(path):
         DataFrame with loaded time series
 
     """
-    # Get header of time series
-    header, optional_header, required_header = get_optional_required_header(
-        "timeseries"
-    )
+    # Read data
+    df = pd.read_csv(path)
 
-    # Read smaller set of data to check its format
-    df = pd.read_csv(path, nrows=3)
-
-    # Check if the format matches the one from the results
-    # It has a multiIndex with "from", "to", "type" and "timeindex"
-    if (
-        "from" in df.columns
-        and df["from"][0] == "to"
-        and df["from"][1] == "type"
-        and df["from"][2] == "timeindex"
-    ):
-        # As a work around for the multiIndex these four lines are combined in one header
-        # The convenion is the following:
-        # <type> from <from> to <to>
-        # E.g.: flow from BB-biomass-st to BB-electricity
-        df_columns = []
-        for index, col in enumerate(df.columns):
-            # First column is the datetime column with the name timeindex
-            if index == 0:
-                df_columns.append("timeindex")
-            # Assign new header of above mentioned format for each column
-            else:
-                df_columns.append(df[col][1] + " from " + col + " to " + df[col][0])
-
-        # Read the data, which has the format of the results, skipping the multiIndex
-        # and adding the assigned header to each column of the data
-        df = pd.read_csv(path, skiprows=3)
-        for index, col in enumerate(df.columns):
-            df.rename(columns={col: df_columns[index]}, inplace=True)
-
-    # Make sure to only stack the DataFrame if it is not stacked already
-    stacked = False
-    for item in list(df.columns):
-        if item in required_header:
-            stacked = True
-
-    if not stacked:
-        # Convert timeindex column to datetime format
-        df["timeindex"] = pd.to_datetime(df[df.columns[0]])
-        # In case there is another datetime series with other header than timeindex,
-        # it is redundant and deleted
-        if df.columns[0] != "timeindex":
-            del df[df.columns[0]]
-        # Set timeindex as index
-        df = df.set_index("timeindex")
-
-        # Stack time series
-        df = stack_timeseries(df)
-
-    else:
-        # Read data with stacked time series out of a csv
-        df = pd.read_csv(path)
-
-        # Save header of DataFrame to variable
-        df_header = list(df.columns)
-
-        # Get file name
-        filename = os.path.splitext(path)[0]
-
-        # Check whether required columns are missing in the DataFrame
-        missing_required = []
-        for required in required_header:
-            if required not in df_header:
-                if "region" not in required:
-                    # Add required columns, that are missing, to a list
-                    missing_required.append(required)
-
-        # Interrupt if required columns are missing and print all affected columns
-        if len(missing_required) > 0:
-            raise KeyError(
-                f"The data in {filename} is missing the required column(s): {missing_required}"
-            )
-
-        # Set timeindex as default name of timeindex_start index
-        # This is necessary if DataFrame is to be unstacked afterwards
-        df["timeindex_start"].index.name = "timeindex"
-        # Convert to datetime format
-        df["timeindex_start"] = pd.to_datetime(df["timeindex_start"])
-        df["timeindex_stop"] = pd.to_datetime(df["timeindex_stop"])
-        # Convert series values from string to list
-        for number, item in enumerate(df["series"].values):
-            df["series"].values[number] = ast.literal_eval(item)
-
-    # "region" can be extraced from var_name. Therefore a further
-    # required header required_header_without_reg is introduced
-    required_header_without_reg = required_header.copy()
-    required_header_without_reg.remove("region")
-    # If optional columns are missing in the stacked DataFrame
-    if (
-        list(df.columns) == required_header
-        or list(df.columns) == required_header_without_reg
-    ) and list(df.columns) != header:
-        # ID in the form of numbering is added if "id_ts" is missing
-        if optional_header[0] not in df.columns:
-            df[optional_header[0]] = np.arange(0, len(df))
-
-        # The region is extracted out of "var_name"
-        if required_header[0] not in df.columns:
-            region = []
-            for row in np.arange(0, len(df)):
-                # "BE_BB" is added if both "BE" and "BB" in var_name
-                if "BE" in df["var_name"][row] and "BB" in df["var_name"][row]:
-                    region.append("BE_BB")
-                # "BE" is added if "BE" in var_name
-                elif "BE" in df["var_name"][row] and "BB" not in df["var_name"][row]:
-                    region.append("BE")
-                # "BB" is added if "BB" in var_name
-                elif "BE" not in df["var_name"][row] and "BB" in df["var_name"][row]:
-                    region.append("BB")
-                # An error is raised since the region is missing in var_name
-                else:
-                    raise ValueError(
-                        "The data is missing the region."
-                        "Please add BB or BE to var_name column"
-                    )
-            # Add list with region to DataFrame
-            df[required_header[0]] = region
-
-        for num_col in np.arange(1, len(optional_header)):
-            # For every other optional column name, an empty array is added with the name as
-            # header - A user info is printed
-            if optional_header[num_col] not in df.columns:
-                df[optional_header[num_col]] = [np.nan] * len(df["series"])
-
-    # Sort the DataFrame to match the header of the template
-    df = df[header]
+    df = format_header(df, HEADER_B3_TS)
 
     return df
 
