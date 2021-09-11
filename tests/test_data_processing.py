@@ -57,7 +57,6 @@ sc_cols_list = [
 ]
 
 ts_cols_list = [
-    "id_ts",
     "region",
     "var_name",
     "timeindex_start",
@@ -103,27 +102,16 @@ def test_load_b3_scalars():
         assert col in df_cols
 
 
-def test_load_b3_timeseries_multiindex():
+def test_load_b3_timeseries():
     """
     This test checks whether the DataFrame read by load_b3_timeseries function from data which is a
-        a. time series with multiIndex
-        b. sequence
-        c. stacked time series / sequence
+    c. stacked timeseries
     contains all default columns
     """
+    df = load_b3_timeseries(path_file_ts_stacked)
+    df_cols = list(df.columns)
 
-    paths = [
-        path_file_ts,
-        path_file_ts_sequence,
-        path_file_ts_stacked,
-    ]
-
-    # Run test for formats a., b. and c.
-    for path_file in paths:
-        df = load_b3_timeseries(path_file)
-        df_cols = list(df.columns)
-
-        assert df_cols == ts_cols_list
+    assert df_cols == ts_cols_list
 
 
 def test_save_df_sc():
