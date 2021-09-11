@@ -21,7 +21,7 @@ def get_list_diff(list_a, list_b):
     return list(set(list_a).difference(set(list_b)))
 
 
-def format_header(df, header):
+def format_header(df, header, index_name):
 
     extra_colums = get_list_diff(df.columns, header)
 
@@ -39,7 +39,7 @@ def format_header(df, header):
     except KeyError:
         print("Failed to format data according to specified header.")
 
-    df_formatted.set_index("id_scal", inplace=True)
+    df_formatted.set_index(index_name, inplace=True)
 
     return df_formatted
 
@@ -61,7 +61,7 @@ def load_b3_scalars(path):
     # Read data
     df = pd.read_csv(path)
 
-    df = format_header(df, HEADER_B3_SCAL)
+    df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
     return df
 
@@ -84,7 +84,7 @@ def load_b3_timeseries(path):
     # Read data
     df = pd.read_csv(path)
 
-    df = format_header(df, HEADER_B3_TS)
+    df = format_header(df, HEADER_B3_TS, "id_ts")
 
     return df
 
