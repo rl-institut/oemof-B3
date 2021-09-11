@@ -90,6 +90,8 @@ def load_b3_timeseries(path):
 
     df = format_header(df, HEADER_B3_TS, "id_ts")
 
+    df.loc[:, "series"] = df.loc[:, "series"].apply(lambda x: ast.literal_eval(x), 1)
+
     return df
 
 

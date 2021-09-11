@@ -114,6 +114,13 @@ def test_load_b3_timeseries():
     assert df_cols == ts_cols_list
 
 
+def test_load_b3_timeseries_interpret_series():
+    df = load_b3_timeseries(path_file_ts_stacked)
+
+    for _, row in df.iterrows():
+        assert isinstance(row["series"], list)
+
+
 def test_save_df_sc():
     """
     This test checks for scalars whether the DataFrame remain unchanged after
