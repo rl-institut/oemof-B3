@@ -172,14 +172,6 @@ def test_save_df_sc():
     # Remove saved scalars which were saved for this test
     os.remove(path_file_saved)
 
-    # Time series
-    path_file_timeseries = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemoflex_results_timeseries.csv",
-    )
-    df = load_b3_timeseries(path_file_timeseries)
-
 
 def test_save_df_ts():
     """
