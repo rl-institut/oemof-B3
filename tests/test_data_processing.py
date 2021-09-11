@@ -43,7 +43,6 @@ path_file_ts_stacked = os.path.join(
 
 # Headers
 sc_cols_list = [
-    "id_scal",
     "scenario",
     "name",
     "var_name",
