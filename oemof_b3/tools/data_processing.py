@@ -88,6 +88,42 @@ def get_list_diff(list_a, list_b):
     return list(set(list_a).difference(set(list_b)))
 
 
+here = os.path.dirname(__file__)
+
+template_dir = os.path.join(here, "..", "..", "results", "_resources")
+
+HEADER_B3_SCAL = pd.read_csv(
+    os.path.join(template_dir, "_scalar_template.csv"), delimiter=";"
+).columns
+
+HEADER_B3_TS = pd.read_csv(
+    os.path.join(template_dir, "_timeseries_template.csv"), delimiter=";"
+).columns
+
+
+def format_header(df, header):
+
+    extra_colums = get_list_diff(df.columns, header)
+
+    if extra_colums:
+        raise ValueError(f"There are extra columns {extra_colums}")
+
+    missing_columns = get_list_diff(header, df.columns)
+
+    for col in missing_columns:
+        df[col] = np.nan
+
+    try:
+        df_formatted = df[header]
+
+    except KeyError:
+        print("Failed to format data according to specified header.")
+
+    df_formatted.set_index("id_scal", inplace=True)
+
+    return df_formatted
+
+
 def load_scalars(path):
     """
     This function loads scalars from a csv file
@@ -102,50 +138,10 @@ def load_scalars(path):
         DataFrame with loaded scalars
 
     """
-    # Get header of scalars
-    header, optional_header, required_header = get_optional_required_header("scalars")
-
-    # Get file name
-    filename = os.path.splitext(path)[0]
-
     # Read data
     df = pd.read_csv(path)
 
-    # Set index
-    if "id_scal" in df:
-        df.set_index("id_scal", inplace=True)
-
-    else:
-        df.index.name = "id_scal"
-
-    # Save header of DataFrame to variable
-    df_header = list(df.columns)
-
-    # Check whether required columns are missing in the DataFrame
-    missing_required = get_list_diff(required_header, df_header)
-
-    # Interrupt if required columns are missing and print all affected columns
-    if missing_required:
-        raise KeyError(
-            f"The data in {filename} is missing the required column(s): {missing_required}"
-        )
-
-    # Check whether optional columns are missing
-    missing_optional = get_list_diff(optional_header, df_header)
-    for optional in missing_optional:
-        # For every other optional column name, an empty array is added with the name as
-        # header - A user info is printed
-        df[optional] = np.nan
-
-        newline = "\n"
-        print(
-            f"User info: The data in {filename} is missing the optional column: "
-            f"{optional}. {newline}"
-            f"An empty column named {optional} is added automatically to the DataFrame."
-        )
-
-    # Sort the DataFrame to match the header of the template
-    df = df[header]
+    df = format_header(df, HEADER_B3_SCAL)
 
     return df
 
