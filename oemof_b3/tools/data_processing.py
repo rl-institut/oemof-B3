@@ -189,7 +189,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
         Aggregated data.
     """
     _df = df.copy()
-    df_columns = _df.columns
+
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
 
