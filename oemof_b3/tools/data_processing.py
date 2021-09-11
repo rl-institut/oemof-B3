@@ -41,6 +41,10 @@ def format_header(df, header, index_name):
 
     df_formatted.set_index(index_name, inplace=True)
 
+    if index_name in missing_columns:
+        df_formatted.reset_index(inplace=True, drop=True)
+        df_formatted.index.name = index_name
+
     return df_formatted
 
 
