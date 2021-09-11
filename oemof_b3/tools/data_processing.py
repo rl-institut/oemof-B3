@@ -453,6 +453,8 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
 
     df_aggregated = df_aggregated[ordered_cols]
 
+    df_aggregated.index.name = "id_scal"
+
     return df_aggregated
 
 
