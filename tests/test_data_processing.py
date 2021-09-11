@@ -103,21 +103,6 @@ def test_load_b3_scalars():
         assert col in df_cols
 
 
-def test_load_b3_scalars_raises_error():
-    """
-    This test checks whether load_b3_scalars errors out if data is missing a required column
-    """
-
-    path_file_missing_required = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_scalars_missing_required.csv",
-    )
-    with pytest.raises(KeyError):
-        # Check whether reading a DataFrame missing required columns errors out
-        load_b3_scalars(path_file_missing_required)
-
-
 def test_load_b3_timeseries_multiindex():
     """
     This test checks whether the DataFrame read by load_b3_timeseries function from data which is a
