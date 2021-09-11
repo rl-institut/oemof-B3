@@ -301,9 +301,6 @@ def test_filter_df_ts():
     )
     df_filtered_ts_expected = load_b3_timeseries(path_file_filtered_ts)
 
-    # Modify id_ts column of filtered DataFrame to integer values to pass the test
-    df_BE_BB["id_ts"] = df_BE_BB["id_ts"].astype(int)
-
     # Test if expected and filtered DataFrame are same
     # ToDo: dtypes aren't same after filtering. To be changed in data_processing.py
     pd.testing.assert_frame_equal(df_filtered_ts_expected, df_BE_BB, check_dtype=False)
