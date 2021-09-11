@@ -223,7 +223,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
 
     # Assign "ALL" to the columns that where aggregated.
     for col in columns_to_aggregate:
-        df_aggregated[col] = "ALL"
+        df_aggregated[col] = "All"
 
     # Reset the index
     df_aggregated.reset_index(inplace=True)
