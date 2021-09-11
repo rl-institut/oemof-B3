@@ -126,21 +126,6 @@ def test_load_b3_timeseries_multiindex():
         assert df_cols == ts_cols_list
 
 
-def test_load_b3_timeseries_raises_error():
-    """
-    This test checks whether load_b3_timeseries errors out if data is missing a required column
-    """
-
-    path_file_stacked_missing_required = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_timeseries_stacked_missing_required.csv",
-    )
-    with pytest.raises(KeyError):
-        # Check whether reading a stacked DataFrame missing required columns errors out
-        load_b3_timeseries(path_file_stacked_missing_required)
-
-
 def test_save_df_sc():
     """
     This test checks for scalars whether the DataFrame remain unchanged after
