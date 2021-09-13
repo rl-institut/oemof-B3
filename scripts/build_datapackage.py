@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
-from oemof_b3.tools.data_processing import unstack_timeseries
+from oemof_b3.tools.data_processing import load_b3_timeseries, unstack_timeseries
 
 from oemof_b3.model import component_attrs_update, bus_attrs_update
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     # parametrize timeseries
     paths_timeseries = scenario_specs["paths_timeseries"]
 
-    ts = pd.read_csv(paths_timeseries, delimiter=",", header=0)
+    ts = load_b3_timeseries(paths_timeseries)
 
     ts_filtered = ts
 
