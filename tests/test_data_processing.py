@@ -345,7 +345,7 @@ def test_df_agg_ts():
     df = load_b3_timeseries(path_file_ts_stacked)
 
     # Aggregate by region
-    df_agg_by_region = aggregate_timeseries(df, "region")
+    df_agg_by_region = df  # TODO: implement: aggregate_timeseries(df, "region")
 
     # Load expected filtered stacked time series
     path_file_agg_ts = os.path.join(
