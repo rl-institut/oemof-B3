@@ -15,7 +15,7 @@ def update_with_checks(old, new):
 
     try:
         # Check if it overwrites by setting errors = 'raise'
-        old.update(new, errors="raise")
+        old.update(new, errors="ignore")
     except ValueError:
         print("Update overwrites existing data.")
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     paths_scalars = scenario_specs["paths_scalars"]
 
     for path in paths_scalars:
-        scalars = pd.read_csv(path, index_col=[0, 1])["var_value"]
+        scalars = pd.read_csv(path).set_index(["name", "var_name"]).loc[:, "var_value"]
         edp = parametrize_scalars(edp, scalars)
         print(f"Updated DataPackage with scalars from '{path}'.")
 

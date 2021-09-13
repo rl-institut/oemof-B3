@@ -45,7 +45,8 @@ components:
 # paths to input data files
 
 paths_scalars:
-  - raw/component.csv
+  - raw/toy-scenario-basic.csv
+  - raw/toy-scenario-basic-update.csv
 
 paths_timeseries: results/_resources/_timeseries_test.csv
 
