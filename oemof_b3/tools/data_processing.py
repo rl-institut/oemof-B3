@@ -221,7 +221,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
         print("Removed the columns containing NaN from the DataFrame.")
 
     # Groupby and aggregate
-    df_aggregated = _df.groupby(groupby, sort=True).agg(agg_method)
+    df_aggregated = _df.groupby(groupby, sort=False).agg(agg_method)
 
     # Assign "ALL" to the columns that where aggregated.
     for col in columns_to_aggregate:
