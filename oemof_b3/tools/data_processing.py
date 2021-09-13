@@ -37,7 +37,7 @@ def format_header(df, header, index_name):
         df_formatted = df[header]
 
     except KeyError:
-        print("Failed to format data according to specified header.")
+        raise KeyError("Failed to format data according to specified header.")
 
     df_formatted.set_index(index_name, inplace=True)
 
