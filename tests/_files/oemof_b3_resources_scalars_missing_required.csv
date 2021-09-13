@@ -1,4 +1,0 @@
-scenario,name,var_name,region,type,carrier,tech
-base,BE-biomass-st,capacity,BE,conversion,biomass,gt
-base,BB-biomass-st,capacity,BB,conversion,biomass,gt
-base,BB-biomass-st,flow_in_biomass,BB,conversion,biomass,gt

@@ -23,18 +23,6 @@ path_file_sc = os.path.join(
     "oemof_b3_resources_scalars.csv",
 )
 
-path_file_ts = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_timeseries_stacked.csv",
-)
-
-path_file_ts_sequence = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_tabular_sequence.csv",
-)
-
 path_file_ts_stacked = os.path.join(
     os.path.abspath(os.path.join(this_path, os.pardir)),
     "_files",
@@ -169,7 +157,7 @@ def test_save_df_ts():
     )
 
     # Read time series
-    df = load_b3_timeseries(path_file_ts)
+    df = load_b3_timeseries(path_file_ts_stacked)
 
     # Save read time series
     save_df(df, path_file_stacked_saved)

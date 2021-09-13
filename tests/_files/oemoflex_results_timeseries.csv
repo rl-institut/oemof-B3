@@ -1,7 +1,0 @@
-from,BB-biomass-st,BB-ch4-gt,BB-electricity,BB-electricity,BB-electricity,BB-electricity,BB-electricity-liion-battery,BB-electricity-shortage,BB-solar-pv,BB-wind-onshore,BE-BB-electricity-transmission
-to,BB-electricity,BB-electricity,BB-electricity-curtailment,BB-electricity-demand,BB-electricity-liion-battery,BE-BB-electricity-transmission,BB-electricity,BB-electricity,BB-electricity,BB-electricity,BB-electricity
-type,flow,flow,flow,flow,flow,flow,flow,flow,flow,flow,flow
-timeindex,,,,,,,,,,,
-2019-01-01 00:00:00,0.0,0.0,0.0,1889794.8071409904,0.0,137824.4,882505.2,0.0,0.0,1145114.0,0.0
-2019-01-01 01:00:00,0.0,0.0,0.0,1870448.7801216468,0.0,125071.28,1194379.0,0.0,0.0,801141.1,0.0
-2019-01-01 02:00:00,0.0,0.0,0.0,1803840.2010708165,0.0,81162.145,1289504.5,0.0,0.0,595497.8,0.0
