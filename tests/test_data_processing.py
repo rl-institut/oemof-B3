@@ -336,6 +336,7 @@ def test_df_agg_sc():
     )
 
 
+@pytest.mark.skip(reason="Timeseries aggregation is not implemented yet.")
 def test_df_agg_ts():
     """
     This test checks whether a time series is aggregated by a key
