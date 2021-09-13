@@ -31,7 +31,17 @@ def parametrize_scalars(edp, scalars):
     return edp
 
 
-def parametrize_sequences(edp, timeseries):
+def parametrize_sequences(edp, ts):
+
+    ts_groups = ts.groupby("var_name")
+
+    for name, data in ts_groups:
+
+        data["var_name"] = data["region"] + "-" + data["var_name"]
+
+        data_unstacked = unstack_timeseries(data)
+
+        edp.data[name].update(data_unstacked)
 
     return edp
 
@@ -74,9 +84,7 @@ if __name__ == "__main__":
 
     ts_filtered = ts
 
-    ts_unstacked = unstack_timeseries(ts)
-
-    edp = parametrize_sequences(edp, ts_unstacked)
+    edp = parametrize_sequences(edp, ts)
 
     print(f"Updated DataPackage with timeseries from '{path}'.")
 
