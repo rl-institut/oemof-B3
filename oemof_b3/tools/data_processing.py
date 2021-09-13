@@ -18,11 +18,42 @@ HEADER_B3_TS = pd.read_csv(
 
 
 def get_list_diff(list_a, list_b):
+    r"""
+    Returns all items of list_a that are not in list_b.
+
+    Parameters
+    ----------
+    list_a : list
+        First list
+    list_b : list
+        Second list
+    Returns
+    -------
+    list_a_diff_b : list
+        List of all items in list_a that are not in list_b.
+    """
     return list(set(list_a).difference(set(list_b)))
 
 
 def format_header(df, header, index_name):
+    r"""
+    Formats columns of a DataFrame according to a specified header and index name.
+    Fills missing columns with NaN. In case there are columns that are not in header,
+    an error is raised.
 
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to format
+    header : list
+        List of columns
+    index_name : str
+        Name of the index
+
+    Returns
+    -------
+    df_formatted : pd.DataFrame
+    """
     extra_colums = get_list_diff(df.columns, header)
 
     if extra_colums:
@@ -50,7 +81,7 @@ def format_header(df, header, index_name):
 
 def load_b3_scalars(path):
     """
-    This function loads scalars from a csv file
+    This function loads scalars from a csv file.
 
     Parameters
     ----------
@@ -60,7 +91,6 @@ def load_b3_scalars(path):
     -------
     df : pd.DataFrame
         DataFrame with loaded scalars
-
     """
     # Read data
     df = pd.read_csv(path)
@@ -72,7 +102,7 @@ def load_b3_scalars(path):
 
 def load_b3_timeseries(path):
     """
-    This function loads a stacked time series from a csv file
+    This function loads a stacked time series from a csv file.
 
     Parameters
     ----------
@@ -83,7 +113,6 @@ def load_b3_timeseries(path):
     -------
     df : pd.DataFrame
         DataFrame with loaded time series
-
     """
     # Read data
     df = pd.read_csv(path)
@@ -97,7 +126,7 @@ def load_b3_timeseries(path):
 
 def save_df(df, path):
     """
-    This function saves data to a csv file
+    This function saves data to a csv file.
 
     Parameters
     ----------
@@ -106,7 +135,6 @@ def save_df(df, path):
 
     path : str
         Path to save the csv file
-
     """
     # Save scalars to csv file
     df.to_csv(path, index=True)
@@ -238,7 +266,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
-    for all time steps
+    for all time steps.
 
     Parameters
     ----------
@@ -251,7 +279,6 @@ def check_consistency_timeindex(df, index):
     -------
     value : string
         Single value of the series of duplicates
-
     """
     if index == "timeindex_start":
         name = "start date"
@@ -278,7 +305,7 @@ def check_consistency_timeindex(df, index):
 
 def stack_timeseries(df):
     """
-    This function stacks a Dataframe in a form where one series resides in one row
+    This function stacks a Dataframe in a form where one series resides in one row.
 
     Parameters
     ----------
@@ -289,7 +316,6 @@ def stack_timeseries(df):
     -------
     df_stacked : pandas.DataFrame
         Stacked DataFrame
-
     """
     _df = df.copy()
 
@@ -357,7 +383,7 @@ def stack_timeseries(df):
 
 def unstack_timeseries(df):
     """
-    This function unstacks a Dataframe so that there is a row for each value
+    This function unstacks a Dataframe so that there is a row for each value.
 
     Parameters
     ----------
@@ -368,7 +394,6 @@ def unstack_timeseries(df):
     -------
     df_unstacked : pandas.DataFrame
         Unstacked DataFrame
-
     """
     _df = df.copy()
 
