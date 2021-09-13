@@ -1,9 +1,0 @@
-id_scal,scenario,name,var_name,carrier,region,tech,type,var_value,var_unit,reference,comment
-,base,Aggregated by region,capacity,All,BE,All,All,0.0,-,,
-,base,Aggregated by region,flow_biomass,All,BE,All,All,0.0,-,,
-,base,Aggregated by region,flow_electricity,All,BE,All,All,13470154039.4199,-,,
-,base,Aggregated by region,costs,All,BE,All,All,0.0,-,,
-,base,Aggregated by region,capacity,All,BB,All,All,400000.0,-,,
-,base,Aggregated by region,flow_biomass,All,BB,All,All,2692790078.846871,-,,
-,base,Aggregated by region,flow_electricity,All,BB,All,All,25900023216.653,-,,
-,base,Aggregated by region,costs,All,BB,All,All,108971828.939188,-,,

@@ -4,89 +4,84 @@ import pandas as pd
 import numpy as np
 
 
-def get_optional_required_header(data_type):
-    """
-    This function returns the header of
-    1. scalars and
-    2. time series
-    along with two lists: optional and required header items
+here = os.path.dirname(__file__)
+
+template_dir = os.path.join(here, "..", "..", "results", "_resources")
+
+HEADER_B3_SCAL = pd.read_csv(
+    os.path.join(template_dir, "_scalar_template.csv"), delimiter=";"
+).columns
+
+HEADER_B3_TS = pd.read_csv(
+    os.path.join(template_dir, "_timeseries_template.csv"), delimiter=";"
+).columns
+
+
+def get_list_diff(list_a, list_b):
+    r"""
+    Returns all items of list_a that are not in list_b.
 
     Parameters
     ----------
-    data_type : string
-        "scalars" or "timeseries" depending on DataFrame
+    list_a : list
+        First list
+    list_b : list
+        Second list
+    Returns
+    -------
+    list_a_diff_b : list
+        List of all items in list_a that are not in list_b.
+    """
+    return list(set(list_a).difference(set(list_b)))
+
+
+def format_header(df, header, index_name):
+    r"""
+    Formats columns of a DataFrame according to a specified header and index name.
+    Fills missing columns with NaN. In case there are columns that are not in header,
+    an error is raised.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to format
+    header : list
+        List of columns
+    index_name : str
+        Name of the index
 
     Returns
     -------
-    header : list
-        list of strings with all positions in the header
-
-    optional_header : list
-        list of strings with optional positions in the header
-
-    required_header : list
-        list of strings with required positions in the header
-
+    df_formatted : pd.DataFrame
     """
-    if data_type == "scalars":
-        # Name of each column in scalars
-        header = [
-            "id_scal",
-            "scenario",
-            "name",
-            "var_name",
-            "carrier",
-            "region",
-            "tech",
-            "type",
-            "var_value",
-            "var_unit",
-            "reference",
-            "comment",
-        ]
-        # Names of optional columns in scalars
-        optional_header = ["id_scal", "var_unit", "reference", "comment"]
+    extra_colums = get_list_diff(df.columns, header)
 
-    elif data_type == "timeseries":
-        # Names of all columns in a stacked time series
-        header = [
-            "id_ts",
-            "region",
-            "var_name",
-            "timeindex_start",
-            "timeindex_stop",
-            "timeindex_resolution",
-            "series",
-            "var_unit",
-            "source",
-            "comment",
-        ]
+    if extra_colums:
+        raise ValueError(f"There are extra columns {extra_colums}")
 
-        # Names of optional columns in a stacked time series
-        optional_header = [
-            "id_ts",
-            # "region",
-            "var_unit",
-            "source",
-            "comment",
-        ]
-    else:
-        raise ValueError(
-            f"{data_type} is not a valid option of a description of the DataFrame type. "
-            f"Please choose between 'scalars' and 'timeseries'."
-        )
+    missing_columns = get_list_diff(header, df.columns)
 
-    # Names of required columns in scalars
-    required_header = header.copy()
-    for optional in optional_header:
-        required_header.remove(optional)
+    for col in missing_columns:
+        df[col] = np.nan
 
-    return header, optional_header, required_header
+    try:
+        df_formatted = df[header]
+
+    except KeyError:
+        raise KeyError("Failed to format data according to specified header.")
+
+    df_formatted.set_index(index_name, inplace=True)
+
+    if index_name in missing_columns:
+        df_formatted.reset_index(inplace=True, drop=True)
+        df_formatted.index.name = index_name
+
+    return df_formatted
 
 
-def load_scalars(path):
+def load_b3_scalars(path):
     """
-    This function loads scalars from a csv file
+    This function loads scalars from a csv file.
 
     Parameters
     ----------
@@ -96,58 +91,18 @@ def load_scalars(path):
     -------
     df : pd.DataFrame
         DataFrame with loaded scalars
-
     """
-    # Get header of scalars
-    header, optional_header, required_header = get_optional_required_header("scalars")
-
-    # Get file name
-    filename = os.path.splitext(path)[0]
-
     # Read data
     df = pd.read_csv(path)
 
-    # Save header of DataFrame to variable
-    df_header = list(df.columns)
-
-    # Check whether required columns are missing in the DataFrame
-    missing_required = list(set(required_header).difference(set(df_header)))
-
-    # Interrupt if required columns are missing and print all affected columns
-    if missing_required:
-        raise KeyError(
-            f"The data in {filename} is missing the required column(s): {missing_required}"
-        )
-
-    # Check whether optional columns are missing
-    for optional in optional_header:
-        if optional not in df_header:
-            # ID in the form of numbering is added if "id_scal" is missing
-            if optional is optional_header[0]:
-                df[optional] = np.arange(0, len(df))
-            else:
-                newline = "\n"
-                # For every other optional column name, an empty array is added with the name as
-                # header - A user info is printed
-                df[optional] = np.nan
-                print(
-                    f"User info: The data in {filename} is missing the optional column: "
-                    f"{optional}. {newline}"
-                    f"An empty column named {optional} is added automatically to the DataFrame."
-                )
-
-    # Sort the DataFrame to match the header of the template
-    df = df[header]
+    df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
     return df
 
 
-def load_timeseries(path):
+def load_b3_timeseries(path):
     """
-    This function loads a time series from a csv file
-
-    A stacked and non-stacked time series can be passed.
-    If a non-stacked time series is passed, it will be stacked in this function.
+    This function loads a stacked time series from a csv file.
 
     Parameters
     ----------
@@ -158,146 +113,20 @@ def load_timeseries(path):
     -------
     df : pd.DataFrame
         DataFrame with loaded time series
-
     """
-    # Get header of time series
-    header, optional_header, required_header = get_optional_required_header(
-        "timeseries"
-    )
+    # Read data
+    df = pd.read_csv(path)
 
-    # Read smaller set of data to check its format
-    df = pd.read_csv(path, nrows=3)
+    df = format_header(df, HEADER_B3_TS, "id_ts")
 
-    # Check if the format matches the one from the results
-    # It has a multiIndex with "from", "to", "type" and "timeindex"
-    if (
-        "from" in df.columns
-        and df["from"][0] == "to"
-        and df["from"][1] == "type"
-        and df["from"][2] == "timeindex"
-    ):
-        # As a work around for the multiIndex these four lines are combined in one header
-        # The convenion is the following:
-        # <type> from <from> to <to>
-        # E.g.: flow from BB-biomass-st to BB-electricity
-        df_columns = []
-        for index, col in enumerate(df.columns):
-            # First column is the datetime column with the name timeindex
-            if index == 0:
-                df_columns.append("timeindex")
-            # Assign new header of above mentioned format for each column
-            else:
-                df_columns.append(df[col][1] + " from " + col + " to " + df[col][0])
-
-        # Read the data, which has the format of the results, skipping the multiIndex
-        # and adding the assigned header to each column of the data
-        df = pd.read_csv(path, skiprows=3)
-        for index, col in enumerate(df.columns):
-            df.rename(columns={col: df_columns[index]}, inplace=True)
-
-    # Make sure to only stack the DataFrame if it is not stacked already
-    stacked = False
-    for item in list(df.columns):
-        if item in required_header:
-            stacked = True
-
-    if not stacked:
-        # Convert timeindex column to datetime format
-        df["timeindex"] = pd.to_datetime(df[df.columns[0]])
-        # In case there is another datetime series with other header than timeindex,
-        # it is redundant and deleted
-        if df.columns[0] != "timeindex":
-            del df[df.columns[0]]
-        # Set timeindex as index
-        df = df.set_index("timeindex")
-
-        # Stack time series
-        df = stack_timeseries(df)
-
-    else:
-        # Read data with stacked time series out of a csv
-        df = pd.read_csv(path)
-
-        # Save header of DataFrame to variable
-        df_header = list(df.columns)
-
-        # Get file name
-        filename = os.path.splitext(path)[0]
-
-        # Check whether required columns are missing in the DataFrame
-        missing_required = []
-        for required in required_header:
-            if required not in df_header:
-                if "region" not in required:
-                    # Add required columns, that are missing, to a list
-                    missing_required.append(required)
-
-        # Interrupt if required columns are missing and print all affected columns
-        if len(missing_required) > 0:
-            raise KeyError(
-                f"The data in {filename} is missing the required column(s): {missing_required}"
-            )
-
-        # Set timeindex as default name of timeindex_start index
-        # This is necessary if DataFrame is to be unstacked afterwards
-        df["timeindex_start"].index.name = "timeindex"
-        # Convert to datetime format
-        df["timeindex_start"] = pd.to_datetime(df["timeindex_start"])
-        df["timeindex_stop"] = pd.to_datetime(df["timeindex_stop"])
-        # Convert series values from string to list
-        for number, item in enumerate(df["series"].values):
-            df["series"].values[number] = ast.literal_eval(item)
-
-    # "region" can be extraced from var_name. Therefore a further
-    # required header required_header_without_reg is introduced
-    required_header_without_reg = required_header.copy()
-    required_header_without_reg.remove("region")
-    # If optional columns are missing in the stacked DataFrame
-    if (
-        list(df.columns) == required_header
-        or list(df.columns) == required_header_without_reg
-    ) and list(df.columns) != header:
-        # ID in the form of numbering is added if "id_ts" is missing
-        if optional_header[0] not in df.columns:
-            df[optional_header[0]] = np.arange(0, len(df))
-
-        # The region is extracted out of "var_name"
-        if required_header[0] not in df.columns:
-            region = []
-            for row in np.arange(0, len(df)):
-                # "BE_BB" is added if both "BE" and "BB" in var_name
-                if "BE" in df["var_name"][row] and "BB" in df["var_name"][row]:
-                    region.append("BE_BB")
-                # "BE" is added if "BE" in var_name
-                elif "BE" in df["var_name"][row] and "BB" not in df["var_name"][row]:
-                    region.append("BE")
-                # "BB" is added if "BB" in var_name
-                elif "BE" not in df["var_name"][row] and "BB" in df["var_name"][row]:
-                    region.append("BB")
-                # An error is raised since the region is missing in var_name
-                else:
-                    raise ValueError(
-                        "The data is missing the region."
-                        "Please add BB or BE to var_name column"
-                    )
-            # Add list with region to DataFrame
-            df[required_header[0]] = region
-
-        for num_col in np.arange(1, len(optional_header)):
-            # For every other optional column name, an empty array is added with the name as
-            # header - A user info is printed
-            if optional_header[num_col] not in df.columns:
-                df[optional_header[num_col]] = [np.nan] * len(df["series"])
-
-    # Sort the DataFrame to match the header of the template
-    df = df[header]
+    df.loc[:, "series"] = df.loc[:, "series"].apply(lambda x: ast.literal_eval(x), 1)
 
     return df
 
 
 def save_df(df, path):
     """
-    This function saves data to a csv file
+    This function saves data to a csv file.
 
     Parameters
     ----------
@@ -306,455 +135,138 @@ def save_df(df, path):
 
     path : str
         Path to save the csv file
-
     """
     # Save scalars to csv file
-    df.to_csv(path, index=False)
+    df.to_csv(path, index=True)
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")
 
 
-def filter_df(df, key, values):
+def filter_df(df, column_name, values):
     """
-    This function filters columns of a DataFrame which can be passed
-    as scalars and time series.
+    This function filters a DataFrame.
 
     Parameters
     ----------
     df : pd.DataFrame
         DataFrame
-    key : string
-        The column's name filtered by
-    values : list
-        List of a value or values to filter by
+    column_name : string
+        The column's name to filter.
+    values : str/numeric/list
+        String, number or list of strings or numbers to filter by.
 
     Returns
     -------
-    df_agg : pd.DataFrame
-        DataFrame with aggregated columns
+    df_filtered : pd.DataFrame
+        Filtered data.
     """
+    _df = df.copy()
 
-    # Get header of scalars
-    (
-        header_scalars,
-        optional_header_scalars,
-        required_header_scalars,
-    ) = get_optional_required_header("scalars")
-
-    # Get header of time series
-    (
-        header_timeseries,
-        optional_header_timeseries,
-        required_header_timeseries,
-    ) = get_optional_required_header("timeseries")
-
-    # Save header of DataFrame to variable
-    df_header = list(df.columns)
-
-    df_header_required = df_header.copy()
-    for item in df_header:
-        if item in optional_header_scalars:
-            df_header_required.remove(item)
-        elif item in optional_header_timeseries:
-            df_header_required.remove(item)
-
-    if df_header_required == required_header_scalars:
-        # Filter options for scalars
-        filter_options = ["scenario", "region", "carrier", "tech", "type", "var_name"]
-
-    elif df_header_required == required_header_timeseries:
-        # Filter options for time series
-        filter_options = ["region", "var_name"]
+    if isinstance(values, list):
+        df_filtered = _df.loc[df[column_name].isin(values)]
 
     else:
-        newline = "\n"
-        raise KeyError(
-            f"The data you passed is neither a stacked time series nor does it contain scalars. "
-            f"{newline}"
-            f"Please make sure your data contains the following columns {newline}"
-            f"time series: {header_timeseries}{newline}"
-            f"scalars: {header_scalars}{newline}"
-        )
+        df_filtered = _df.loc[df[column_name] == values]
 
-    # Ensure key is a valid filter option
-    if key not in filter_options:
-        raise KeyError(
-            f"{key} is not a option for a filter."
-            f"Please choose of one of these filter options: {filter_options}"
-        )
-
-    # Check if key is in header
-    if key not in df_header:
-        raise KeyError(
-            f"Your data is missing the column {key}."
-            f"Please provide a complete data set with the required column"
-        )
-
-    # Empty DataFrame, which will contain filtered items
-    df_filtered_by_value = pd.DataFrame(columns=list(df.columns))
-
-    for value in values:
-        if value not in list(df[key]):
-            print(f"User info: {value} not found as item in column {key}.")
-        else:
-            for index, row in df.iterrows():
-                if value == df[key][index]:
-                    df_filtered_by_value = df_filtered_by_value.append(
-                        row, ignore_index=True
-                    )
-
-    # Match index of filtered DataFrame with origin DataFrame
-    df_filtered_by_value.index.name = df.index.name
-
-    # Todo: Here a function for adapting dtypes of df_filtered_by_value to the ones of df would
-    #  be best. However DataFrame.convert_dtypes leads to error message
-    # Change type of id (id_scal or id_ts) to integer as in the origin DataFrame
-    if "id_scal" in df_filtered_by_value.columns:
-        df_filtered_by_value["id_scal"] = df_filtered_by_value["id_scal"].astype(int)
-    if "id_ts" in df_filtered_by_value.columns:
-        df_filtered_by_value["id_ts"] = df_filtered_by_value["id_ts"].astype(int)
-    # ToDo: Change type of "var_unit", "source", "comment"
-
-    return df_filtered_by_value
+    return df_filtered
 
 
-def df_agg(df, key):
+def isnull_any(df):
+    return df.isna().any().any()
+
+
+def aggregate_units(units):
+    r"""
+    This function checks if units that should be aggregated are unique.
+    If they are not, it raises an error. If they are, it returns the unique unit.
+
+    Parameters
+    ----------
+    units:
+        pd.Series of units
+
+    Returns
+    -------
+    unique_unit : str
+        Unique unit
     """
-    This function aggregates columns of a DataFrame
+    unique_units = units.unique()
+
+    if len(unique_units) > 1:
+        raise ValueError("Units are not consistent!")
+    else:
+        return unique_units[0]
+
+
+def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
+    r"""
+    This functions aggregates scalar data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
 
     Parameters
     ----------
     df : pd.DataFrame
-        DataFrame
-    key : string
-        The column's name aggregated by
+        DataFrame in oemof-B3-resources format.
+    columns_to_aggregate : string or list
+        The columns to sum together ('region', 'carrier', 'tech' or 'type).
+    agg_method : dict
+        Dictionary to specify aggregation method.
 
     Returns
     -------
-    df_agg : pd.DataFrame
-        DataFrame with aggregated columns
+    df_aggregated : pd.DataFrame
+        Aggregated data.
     """
+    _df = df.copy()
 
-    # Get header of scalars
-    (
-        header_scalars,
-        optional_header_scalars,
-        required_header_scalars,
-    ) = get_optional_required_header("scalars")
+    if not isinstance(columns_to_aggregate, list):
+        columns_to_aggregate = [columns_to_aggregate]
 
-    # Get header of time series
-    (
-        header_timeseries,
-        optional_header_timeseries,
-        required_header_timeseries,
-    ) = get_optional_required_header("timeseries")
+    # Define the columns that are split and thus not aggregated
+    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name"]
 
-    # Save header of DataFrame to variable
-    df_header = list(df.columns)
+    groupby = list(set(groupby).difference(set(columns_to_aggregate)))
 
-    df_header_required = df_header.copy()
-    for item in df_header:
-        if item in optional_header_scalars:
-            df_header_required.remove(item)
-        elif item in optional_header_timeseries:
-            df_header_required.remove(item)
+    # Define how to aggregate if
+    if not agg_method:
+        agg_method = {
+            "var_value": sum,
+            "name": lambda x: "None",
+            "var_unit": aggregate_units,
+        }
 
-    scalars = False
-    time_series = False
+    # When any of the groupby columns has empty entries, print a warning
+    _df_groupby = _df[groupby]
+    if isnull_any(_df_groupby):
+        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
+        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
 
-    if df_header_required == required_header_scalars:
+        for item in columns_with_nan:
+            groupby.remove(item)
+        _df.drop(columns_with_nan, axis=1)
 
-        # Aggregation options for scalars
-        scalars = True
-        agg_options = ["region", "carrier", "tech"]
+        print("Removed the columns containing NaN from the DataFrame.")
 
-    elif df_header_required == required_header_timeseries:
-        time_series = True
-        # Aggregation options for time series
-        agg_options = ["region"]
+    # Groupby and aggregate
+    df_aggregated = _df.groupby(groupby, sort=False).agg(agg_method)
 
-    else:
-        newline = "\n"
-        raise KeyError(
-            f"The data you passed is neither a stacked time series nor does it contain scalars. "
-            f"{newline}"
-            f"Please make sure your data contains the following columns {newline}"
-            f"time series: {header_timeseries}{newline}"
-            f"scalars: {header_scalars}{newline}"
-        )
+    # Assign "ALL" to the columns that where aggregated.
+    for col in columns_to_aggregate:
+        df_aggregated[col] = "All"
 
-    # Ensure key is a valid aggregation option
-    if key not in agg_options:
-        raise KeyError(
-            f"{key} is not a option for a aggregation."
-            f"Please choose of one of these aggregation options: {agg_options}"
-        )
+    # Reset the index
+    df_aggregated.reset_index(inplace=True)
 
-    # Check if key is in header
-    if key not in df_header:
-        raise KeyError(
-            f"Your data is missing the column {key}."
-            f"Please provide a complete data set with the required column"
-        )
+    df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
 
-    # Empty DataFrame, which will contain aggregated items
-    df_agg_by_key = pd.DataFrame(columns=list(df.columns))
-
-    # Get list of all items existing in the column passed with key
-    key_list = list(df[key])
-    key_list = list(dict.fromkeys(key_list))
-
-    # Begin aggregation of scalars
-    if scalars:
-        # Get list of all scenarios existing in column scenario
-        scenario_list = list(df["scenario"])
-        scenario_list = list(dict.fromkeys(scenario_list))
-
-        # Aggregation is done by scenario
-        for scenario in scenario_list:
-            # Aggregation is further done by key
-            for key_item in key_list:
-                # Add empty dictionary for results
-                results_dict = {}
-                # Iterate over each row of the scalars DataFrame
-                for index_row in df.iterrows():
-                    # Set index of iteration
-                    index = index_row[0]
-                    # Check if scenario and key of the row match the one of the iteration
-                    # over the scenario and all keys, which exist in the DataFrame
-                    if df["scenario"][index] == scenario and df[key][index] == key_item:
-                        # Aggregate with regard to the variable
-                        # Aggregation of capacity
-                        if "capacity" in df["var_name"][index]:
-                            # If capacity does not exist as a key in the result dictionary
-                            # it will be added first
-                            if "capacity" not in results_dict.keys():
-                                results_dict["capacity"] = 0
-                            # Add the value of the capacity to the results dictionary
-                            results_dict["capacity"] = (
-                                results_dict["capacity"] + df["var_value"][index]
-                            )
-                        # Aggregation of flows of energy carrier
-                        # The energy carrier has to be obtained from var_name because we want to
-                        # aggregate the end energy. E.g. wind and solar can be aggregated with
-                        # electricity as energy carrier
-                        elif "flow" in df["var_name"][index]:
-                            # Extract energy carrier out of var_name string
-                            energy_carrier = df["var_name"][index].split("_")[2]
-                            if "carrier" not in key and "tech" not in key:
-                                # If the flow of the respective energy carrier does not exist as
-                                # a key in the result dictionary it will be added first
-                                if "flow_" + energy_carrier not in results_dict.keys():
-                                    results_dict["flow_" + energy_carrier] = 0
-                                # If the flow goes "in" energy carrier it will be added to the
-                                # same flows
-                                if "in" in df["var_name"][index]:
-                                    results_dict["flow_" + energy_carrier] = (
-                                        results_dict["flow_" + energy_carrier]
-                                        + df["var_value"][index]
-                                    )
-                                # If the flow goes "out" energy carrier it will be subtracted from
-                                # the same flows
-                                elif "out" in df["var_name"][index]:
-                                    results_dict["flow_" + energy_carrier] = (
-                                        results_dict["flow_" + energy_carrier]
-                                        - df["var_value"][index]
-                                    )
-                            else:
-                                # If the flow of the respective energy carrier does not exist as
-                                # a key in the result dictionary it will be added first
-                                if (
-                                    "flow_"
-                                    + energy_carrier
-                                    + "_"
-                                    + df["carrier"][index]
-                                    not in results_dict.keys()
-                                ):
-                                    results_dict[
-                                        "flow_"
-                                        + energy_carrier
-                                        + "_"
-                                        + df["carrier"][index]
-                                    ] = 0
-                                # If the flow goes "in" energy carrier it will be added to the
-                                # same flows
-                                if "in" in df["var_name"][index]:
-                                    results_dict[
-                                        "flow_"
-                                        + energy_carrier
-                                        + "_"
-                                        + df["carrier"][index]
-                                    ] = (
-                                        results_dict[
-                                            "flow_"
-                                            + energy_carrier
-                                            + "_"
-                                            + df["carrier"][index]
-                                        ]
-                                        + df["var_value"][index]
-                                    )
-                                # If the flow goes "out" energy carrier it will be subtracted from
-                                # the same flows
-                                elif "out" in df["var_name"][index]:
-                                    results_dict[
-                                        "flow_"
-                                        + energy_carrier
-                                        + "_"
-                                        + df["carrier"][index]
-                                    ] = (
-                                        results_dict[
-                                            "flow_"
-                                            + energy_carrier
-                                            + "_"
-                                            + df["carrier"][index]
-                                        ]
-                                        - df["var_value"][index]
-                                    )
-                        # Aggregation of costs
-                        elif "costs" in df["var_name"][index]:
-                            # If costs does not exist as a key in the result dictionary it will
-                            # be added first
-                            if "costs" not in results_dict.keys():
-                                results_dict["costs"] = 0
-                            # If the costs go "in" energy carrier it will be added to the
-                            # same costs
-                            if "in" in df["var_name"][index]:
-                                results_dict["costs"] = (
-                                    results_dict["costs"] + df["var_value"][index]
-                                )
-                            # If the costs go "out" energy carrier it will be subtracted from
-                            # the same costs
-                            elif "out" in df["var_name"][index]:
-                                results_dict["costs"] = (
-                                    results_dict["costs"] - df["var_value"][index]
-                                )
-                        # Aggregation of invest
-                        elif "invest" in df["var_name"][index]:
-                            # If invest does not exist as a key in the result dictionary it will
-                            # be added first
-                            if "invest" not in results_dict.keys():
-                                results_dict["invest"] = 0
-                            # If invest goes "in" energy carrier it will be added to the
-                            # same invest
-                            if "in" in df["var_name"][index]:
-                                results_dict["invest"] = (
-                                    results_dict["invest"] + df["var_value"][index]
-                                )
-                            # If invest goes "out" energy carrier it will be subtracted from the
-                            # same invest
-                            elif "out" in df["var_name"][index]:
-                                results_dict["invest"] = (
-                                    results_dict["invest"] - df["var_value"][index]
-                                )
-                        # Aggregation of losses
-                        elif "losses" in df["var_name"][index]:
-                            # If losses does not exist as a key in the result dictionary it will
-                            # be added first
-                            if "losses" not in results_dict.keys():
-                                results_dict["losses"] = 0
-                            # Losses are gathered so far. In future they could be substracted from
-                            # the respective flow or capacity
-                            results_dict["losses"] = (
-                                results_dict["losses"] + df["var_value"][index]
-                            )
-                        else:
-                            newline = "\n"
-                            # In case a so far unknown var_name occurs, a ValueError will be
-                            # raised and the code will error out with exit code 1
-                            var_name = df["var_name"][index]
-                            raise ValueError(
-                                f"Unknown var_name: {var_name}. {newline}"
-                                f"This variable is not implemented in the aggregation. "
-                                f"Consider adding it to df_agg function."
-                            )
-
-                # Add the results of the dictionary per scenario and per key to new row, which is
-                # in the format of scalars DataFrame.
-                # Iterate over the results in the dictionary and add the key to the respective
-                # column: region, carrier or tech. The other two are set to "All"
-                for dict_key, dict_item in results_dict.items():
-                    if key == "region":
-                        region = key_item
-                        carrier = "All"
-                        tech = "All"
-                    elif key == "carrier":
-                        region = "All"
-                        carrier = key_item
-                        tech = "All"
-                    elif key == "tech":
-                        region = "All"
-                        carrier = "All"
-                        tech = key_item
-
-                    # Add new row, which will be appended to the aggregated DataFrame
-                    new_row = {
-                        "id_scal": None,
-                        "scenario": scenario,
-                        "name": "Aggregated by " + key,
-                        "var_name": dict_key,
-                        "carrier": carrier,
-                        "region": region,
-                        "tech": tech,
-                        "type": "All",
-                        "var_value": dict_item,
-                        "var_unit": "-",
-                        "reference": None,
-                        "comment": None,
-                    }
-                    # Append row to the aggregated DataFrame
-                    df_agg_by_key = df_agg_by_key.append(new_row, ignore_index=True)
-
-    # Begin aggregation of time series
-    if time_series:
-        # Aggregation is done by key
-        for key_item in key_list:
-            # Add empty dictionary for results
-            results_dict = {}
-            # Iterate over each row of the stacked time series DataFrame
-            for index_row in df.iterrows():
-                # Set index of iteration
-                index = index_row[0]
-                # Check if key of the row matches the one of the iteration
-                # over all keys, which exist in the DataFrame
-                if df[key][index] == key_item:
-                    # If series not in results dictionary, it will be added
-                    if "series" not in results_dict.keys():
-                        results_dict["series"] = [0] * len(df["series"][0])
-                    # Aggregate series by adding it to the results dictionary
-                    results_dict["series"] = np.add(
-                        results_dict["series"], df["series"][index]
-                    )
-            # Add new row, which will be appended to the aggregated DataFrame
-            new_row = {
-                "id_ts": None,
-                "region": key_item,
-                "var_name": "Aggregated by " + key,
-                "timeindex_start": df["timeindex_start"][0],
-                "timeindex_stop": df["timeindex_stop"][0],
-                "timeindex_resolution": df["timeindex_resolution"][0],
-                "series": results_dict["series"],
-                "var_unit": "-",
-                "source": None,
-                "comment": None,
-            }
-            # Append row to the aggregated DataFrame
-            df_agg_by_key = df_agg_by_key.append(new_row, ignore_index=True)
-
-        # Match index of filtered DataFrame with origin DataFrame
-        df_agg_by_key.index.name = df.index.name
-
-        # Todo: Here a function for adapting dtypes of df_agg_by_key to the ones of df would
-        #  be best. However DataFrame.convert_dtypes leads to error message
-        # ToDo: Change type of "var_unit", "source", "comment"
-
-    return df_agg_by_key
+    return df_aggregated
 
 
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
-    for all time steps
+    for all time steps.
 
     Parameters
     ----------
@@ -767,7 +279,6 @@ def check_consistency_timeindex(df, index):
     -------
     value : string
         Single value of the series of duplicates
-
     """
     if index == "timeindex_start":
         name = "start date"
@@ -794,7 +305,7 @@ def check_consistency_timeindex(df, index):
 
 def stack_timeseries(df):
     """
-    This function stacks a Dataframe in a form where one series resides in one row
+    This function stacks a Dataframe in a form where one series resides in one row.
 
     Parameters
     ----------
@@ -805,7 +316,6 @@ def stack_timeseries(df):
     -------
     df_stacked : pandas.DataFrame
         Stacked DataFrame
-
     """
     _df = df.copy()
 
@@ -873,7 +383,7 @@ def stack_timeseries(df):
 
 def unstack_timeseries(df):
     """
-    This function unstacks a Dataframe so that there is a row for each value
+    This function unstacks a Dataframe so that there is a row for each value.
 
     Parameters
     ----------
@@ -884,7 +394,6 @@ def unstack_timeseries(df):
     -------
     df_unstacked : pandas.DataFrame
         Unstacked DataFrame
-
     """
     _df = df.copy()
 
