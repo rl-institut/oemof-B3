@@ -48,7 +48,7 @@ paths_scalars:
   - raw/toy-scenario-basic.csv
   - raw/toy-scenario-basic-update.csv
 
-paths_timeseries: raw/timeseries.csv
+paths_timeseries: raw/toy-scenario-timeseries.csv
 
 # optimize
 
