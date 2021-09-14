@@ -1,15 +1,19 @@
 r"""
 Inputs
 -------
-
+scalars_path : str
+    path to csv with scalar data.
+target : str
+    path where a new directory is created and the plots are saved.
 
 Outputs
 ---------
-
+.png
+    plots in .png format.
 
 Description
 -------------
-
+The result scalars of all scenarios are plotted in a single plot.
 """
 import sys
 import os
