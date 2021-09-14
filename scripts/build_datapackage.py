@@ -5,7 +5,7 @@ from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
 from oemof_b3.tools.data_processing import load_b3_timeseries, unstack_timeseries
 
-from oemof_b3.model import component_attrs_update, bus_attrs_update
+from oemof_b3.model import component_attrs_update, bus_attrs_update, foreign_keys_update
 
 
 def update_with_checks(old, new):
@@ -92,4 +92,4 @@ if __name__ == "__main__":
     edp.to_csv_dir(destination)
 
     # add metadata
-    edp.infer_metadata()
+    edp.infer_metadata(foreign_keys_update=foreign_keys_update)
