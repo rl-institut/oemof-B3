@@ -109,6 +109,6 @@ rule plot_joined_scalars:
     input:
         "results/joined_scenarios/examples/scalars.csv"
     output:
-        "results/joined_scenarios/plotted"
+        directory("results/joined_scenarios/plotted/")
     shell:
-        "python scripts/plot_joined_scalars {input} {output}"
+        "python scripts/plot_joined_scalars.py {input} {output}"
