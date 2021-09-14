@@ -17,6 +17,7 @@ busses:
   - electricity
   - h2
   - heat
+  - biomass
 
 components:
   - biomass-gt
