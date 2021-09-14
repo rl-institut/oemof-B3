@@ -60,7 +60,7 @@ if __name__ == "__main__":
                 df, index=["scenario", "region"], columns="name", values="var_value"
             )
             # rename and aggregate duplicated columns
-            df_pivot=plots.map_labels(df_pivot)
+            df_pivot = plots.map_labels(df_pivot)
             df_pivot = df_pivot.groupby(level=0, axis=1).sum()
             df_pivot.drop("Shortage", axis=1, inplace=True)
             # define ordering and use concrete_order as keys for colors_odict in plot_scalars()
@@ -76,7 +76,6 @@ if __name__ == "__main__":
             if conv_number is not None:
                 df_pivot *= conv_number
             return df_pivot, concrete_order
-
 
         def plot_scalars(df, var_name, color_keys, unit_dict=unit_dict, fontsize=14):
             plt.rcParams.update({"font.size": fontsize})
@@ -101,9 +100,7 @@ if __name__ == "__main__":
                 axes_list.append(axes)
 
             # Loop through array of axes to create grouped bar chart for each scenario
-            alpha = (
-                0.3  # used for grid lines, bottom spine and separation lines between scenarios
-            )
+            alpha = 0.3  # used for grid lines, bottom spine and separation lines between scenarios
             for scenario, ax in zip(scenarios, axes_list):
                 # df.xs() Return cross-section from the Series/DataFrame. Here: return data of one scenario.
                 df_scenario = df.xs(scenario)
@@ -146,20 +143,22 @@ if __name__ == "__main__":
                     ax.set_xticks([*ax.get_xlim()], minor=True)
                 else:
                     ax.set_xticks([ax.get_xlim()[1]], minor=True)
-                ax.tick_params(which="minor", length=55, width=0.8, color=[0, 0, 0, alpha])
+                ax.tick_params(
+                    which="minor", length=55, width=0.8, color=[0, 0, 0, alpha]
+                )
 
             # Add legend using the labels and handles from the last subplot
             fig.legend(*ax.get_legend_handles_labels(), frameon=True, framealpha=1)
 
-            #plt.ylabel(ylabel=ylabel)
+            # plt.ylabel(ylabel=ylabel)
 
             plt.tight_layout()
             plt.savefig(os.path.join(target, var_name + ".png"), bbox_inches="tight")
 
-
         # prepare data
         prepared_scalar_data, colors = prepare_scalar_data(
-            df=selected_scalar_data, colors_odict=colors_odict,
+            df=selected_scalar_data,
+            colors_odict=colors_odict,
         )
         # plot data
         plot_scalars(
