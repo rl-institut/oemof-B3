@@ -1,11 +1,16 @@
 import sys
+from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
-from oemof_b3.tools.data_processing import load_b3_timeseries, unstack_timeseries
 
-from oemof_b3.model import component_attrs_update, bus_attrs_update, foreign_keys_update
+from oemof_b3.model import bus_attrs_update, component_attrs_update, foreign_keys_update
+from oemof_b3.tools.data_processing import (
+    filter_df,
+    load_b3_timeseries,
+    unstack_timeseries,
+)
 
 
 def update_with_checks(old, new):
@@ -70,12 +75,24 @@ if __name__ == "__main__":
     )
 
     # parametrize scalars
-    paths_scalars = scenario_specs["paths_scalars"]
+    path_scalars = scenario_specs["path_scalars"]
 
-    for path in paths_scalars:
-        scalars = pd.read_csv(path).set_index(["name", "var_name"]).loc[:, "var_value"]
-        edp = parametrize_scalars(edp, scalars)
-        print(f"Updated DataPackage with scalars from '{path}'.")
+    scalars = pd.read_csv(path_scalars)
+
+    filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
+
+    for id, filt in filters.items():
+        filtered = scalars.copy()
+
+        for key, value in filt.items():
+
+            filtered = filter_df(filtered, key, value)
+
+        filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
+
+        edp = parametrize_scalars(edp, filtered)
+
+        print(f"Updated DataPackage with scalars filtered by {filt}.")
 
     # parametrize timeseries
     paths_timeseries = scenario_specs["paths_timeseries"]
@@ -86,7 +103,7 @@ if __name__ == "__main__":
 
     edp = parametrize_sequences(edp, ts)
 
-    print(f"Updated DataPackage with timeseries from '{path}'.")
+    print(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
 
     # save to csv
     edp.to_csv_dir(destination)

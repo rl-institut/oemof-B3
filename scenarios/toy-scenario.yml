@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: basic
+name: toy-scenario
 
 regions:
   - BB
@@ -45,9 +45,15 @@ components:
 # parametrize
 # paths to input data files
 
-paths_scalars:
-  - raw/toy-scenario-basic.csv
-  - raw/toy-scenario-basic-update.csv
+path_scalars: raw/toy-scenario.csv
+
+filter_scalars:
+  1:
+    scenario:
+      toy-scenario
+  2:
+    scenario:
+      toy-scenario-high
 
 paths_timeseries: raw/toy-scenario-timeseries.csv
 
