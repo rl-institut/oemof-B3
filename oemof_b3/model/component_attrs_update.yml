@@ -4,6 +4,7 @@ ch4-demand:
   type: load
   foreign_keys:
     bus: ch4
+    profile: ch4-demand-profile
 
 electricity-electrolyzer:
   carrier: electricity
