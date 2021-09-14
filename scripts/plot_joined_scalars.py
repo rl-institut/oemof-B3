@@ -39,6 +39,9 @@ if __name__ == "__main__":
     # Load scalar data
     scalars = load_scalars(scalars_path)
 
+    # To obey flake8
+    colors_odict = colors_odict
+
     # User input
     regions = ["BB", "BE"]  # BE_BB
     conv_number = 1000
@@ -102,7 +105,8 @@ if __name__ == "__main__":
             # Loop through array of axes to create grouped bar chart for each scenario
             alpha = 0.3  # used for grid lines, bottom spine and separation lines between scenarios
             for scenario, ax in zip(scenarios, axes_list):
-                # df.xs() Return cross-section from the Series/DataFrame. Here: return data of one scenario.
+                # df.xs() Return cross-section from the Series/DataFrame. Here: return data of one
+                # scenario.
                 df_scenario = df.xs(scenario)
                 # apply EngFormatter
                 ax = plots.eng_format(ax, unit_dict[var_name])
