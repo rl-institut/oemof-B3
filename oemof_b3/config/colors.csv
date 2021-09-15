@@ -1,0 +1,49 @@
+,Color
+PV,#bcbd22
+Wind on,#1f77b4
+Wind off,#17becf
+Biomass ST,#2ca02c
+Biomass GT,#007000
+Hydro reservoir,lightseagreen
+Hydro ror,turquoise
+
+H2 GT,magenta
+CH4 GT,#d62728
+Nuclear ST,pink
+
+Battery,#9467bd
+Battery out,#9467bd
+Battery in,#9467bd
+
+El. H2 cavern,orchid
+BEV,gold
+
+Import,#8c564b
+Export,#8c564b
+Transmission,#8c564b
+
+Shortage,#7f7f7f
+Curtailment,#7f7f7f
+
+El. demand,#000000
+
+CH4 bpchp,brown
+CH4 extchp,darkred
+
+Heat demand,#000000
+Heat excess,#7f7f7f
+Heat shortage,#7f7f7f
+Heat storage,#9467bd
+
+CH4 boiler,#d62728
+Heatpump,#2ca02c
+PtH,#ff7f0e
+
+CH4 excess,red
+
+Biomass,#2ca02c
+CH4,#d62728
+Hard coal,black
+Lignite,saddlebrown
+Oil,#9467bd
+Other,#7f7f7f

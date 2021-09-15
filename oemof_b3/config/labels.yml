@@ -1,0 +1,18 @@
+biomass-gt: Biomass GT
+biomass-st: Biomass ST
+ch4-boiler: CH4 Boiler
+ch4-bpchp: CH4 Backpressure CHP
+ch4-extchp: CH4 Extraction CHP
+ch4-gt: CH4 GT
+electricity-curtailment: Curtailment
+electricity-demand: El. demand
+electricity-electrolyzer: Electrolyzer
+electricity-liion_battery: Battery
+electricity-pth: res. PtH
+electricity-shortage: Shortage
+electricity-transmission: Import/Export
+h2-gt: H2 GT
+heat-demand: Heat demand
+hydro-ror: Hydro ROR
+solar-pv: PV
+wind-onshore: Wind on
