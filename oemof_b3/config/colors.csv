@@ -18,9 +18,8 @@ Battery in,#9467bd
 El. H2 cavern,orchid
 BEV,gold
 
-Import,#8c564b
-Export,#8c564b
-Transmission,#8c564b
+Transmission in,#8c564b
+Transmission out,#8c564b
 
 Shortage,#7f7f7f
 Curtailment,#7f7f7f

@@ -10,7 +10,7 @@ electricity-electrolyzer: Electrolyzer
 electricity-liion_battery: Battery
 electricity-pth: res. PtH
 electricity-shortage: Shortage
-electricity-transmission: Import/Export
+electricity-transmission: Transmission
 h2-gt: H2 GT
 heat-demand: Heat demand
 hydro-ror: Hydro ROR
