@@ -100,7 +100,7 @@ def parametrize_scalars(edp, scalars, filters):
     return edp
 
 
-def parametrize_sequences(edp, ts):
+def parametrize_sequences(edp, ts, filters):
     r"""
     Parametrizes an oemoflex.EnergyDataPackage with timeseries.
 
@@ -110,15 +110,22 @@ def parametrize_sequences(edp, ts):
         EnergyDatapackage to parametrize
     ts : pd.DataFrame in oemof_B3-Resources format.
         Timeseries data
+    filters : dict
+        Filters for timeseries data
 
     Returns
     -------
     edp : oemoflex.EnergyDatapackage
         Parametrized EnergyDatapackage
     """
-    # TODO: Allow to filter the timeseries
+    # Filter timeseries
+    _ts = ts.copy()
 
-    ts_groups = ts.groupby("var_name")
+    for key, value in filters.items():
+        _ts = filter_df(_ts, key, value)
+
+    # Group timeseries and parametrize EnergyDatapackage
+    ts_groups = _ts.groupby("var_name")
 
     for name, data in ts_groups:
 
@@ -170,7 +177,9 @@ if __name__ == "__main__":
 
     ts = load_b3_timeseries(paths_timeseries)
 
-    edp = parametrize_sequences(edp, ts)
+    filters = scenario_specs["filter_timeseries"]
+
+    edp = parametrize_sequences(edp, ts, filters)
 
     # save to csv
     edp.to_csv_dir(destination)

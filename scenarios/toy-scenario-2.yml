@@ -57,6 +57,10 @@ filter_scalars:
 
 paths_timeseries: raw/toy-scenario-timeseries.csv
 
+filter_timeseries:
+  scenario:
+    toy-scenario-update
+
 # optimize
 
 # solver: "cbc"
