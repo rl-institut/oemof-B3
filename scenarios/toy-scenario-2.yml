@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: toy-scenario
+name: toy-scenario-2
 
 regions:
   - BB
@@ -51,6 +51,9 @@ filter_scalars:
   1:
     scenario:
       toy-scenario
+  2:
+    scenario:
+      toy-scenario-high
 
 paths_timeseries: raw/toy-scenario-timeseries.csv
 
