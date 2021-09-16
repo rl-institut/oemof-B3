@@ -5,7 +5,7 @@ Wind off,#17becf
 Biomass ST,#2ca02c
 Biomass GT,#007000
 Hydro reservoir,lightseagreen
-Hydro ror,turquoise
+Hydro ROR,turquoise
 
 H2 GT,magenta
 CH4 GT,#d62728
@@ -26,8 +26,8 @@ Curtailment,#7f7f7f
 
 El. demand,#000000
 
-CH4 bpchp,brown
-CH4 extchp,darkred
+CH4 Backpressure CHP,brown
+CH4 Extraction CHP,darkred
 
 Heat demand,#000000
 Heat excess,#7f7f7f
@@ -36,9 +36,11 @@ Heat storage,#9467bd
 
 CH4 boiler,#d62728
 Heatpump,#2ca02c
-PtH,#ff7f0e
+res. PtH,#ff7f0e
 
 CH4 excess,red
+
+Electrolyzer,yellow
 
 Biomass,#2ca02c
 CH4,#d62728

@@ -1,0 +1,17 @@
+ch4-demand:
+  carrier: ch4
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: ch4
+    profile: ch4-demand-profile
+
+electricity-electrolyzer:
+  carrier: electricity
+  tech: electrolyzer
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: h2
+  defaults:
+    output_parameters: "{}"

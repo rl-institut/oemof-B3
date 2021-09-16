@@ -45,6 +45,7 @@ sc_cols_list = [
 ]
 
 ts_cols_list = [
+    "scenario",
     "region",
     "var_name",
     "timeindex_start",
