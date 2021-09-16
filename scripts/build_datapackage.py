@@ -1,3 +1,23 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+scenario_specs : str
+    path of input file (.yml) containing scenario specifications
+destination : str
+    path of output directory
+
+Outputs
+---------
+oemoflex.EnergyDatapackage
+    EnergyDatapackage in the correct structure, with data (scalars and timeseries) as csv and
+    metadata (describing resources and foreign key relations) as json.
+
+Description
+-------------
+The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
+fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
+"""
 import sys
 from collections import OrderedDict
 
