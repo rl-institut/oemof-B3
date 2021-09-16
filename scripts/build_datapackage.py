@@ -15,14 +15,29 @@ from oemof_b3.tools.data_processing import (
 
 
 def update_with_checks(old, new):
+    r"""
+    Updates a Series or DataFrame with new data. Raises a warning if there is new data that is not
+    in the index of the old data.
+    Parameters
+    ----------
+    old : pd.Series or pd.DataFrame
+        Old Series or DataFrame to update
+    new : pd.Series or pd.DataFrame
+        New Series or DataFrame
+
+    Returns
+    -------
+    None
+    """
     # Check if some data would get lost
     if not new.index.isin(old.index).all():
         raise Warning("Index of new data is not in the index of old data.")
 
     try:
         # Check if it overwrites by setting errors = 'raise'
-        old.update(new, errors="ignore")
+        old.update(new, errors="raise")
     except ValueError:
+        old.update(new, errors="ignore")
         print("Update overwrites existing data.")
 
 
