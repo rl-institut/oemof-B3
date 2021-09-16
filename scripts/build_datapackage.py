@@ -41,11 +41,39 @@ def update_with_checks(old, new):
         print("Update overwrites existing data.")
 
 
-def parametrize_scalars(edp, scalars):
+def parametrize_scalars(edp, scalars, filters):
+    r"""
+    Parametrizes an oemoflex.EnergyDataPackage with scalars. Accepts an OrderedDict of filters
+    that is used to filter the scalars and subsequently update the EnergyDatapackage.
 
+    Parameters
+    ----------
+    edp : oemoflex.EnergyDatapackage
+        EnergyDatapackage to parametrize
+    scalars : pd.DataFrame in oemof_B3-Resources format.
+        Scalar data
+    filters : OrderedDict
+        Filters for the scalar data
+
+    Returns
+    -------
+    edp : oemoflex.EnergyDatapackage
+        Parametrized EnergyDatapackage
+    """
     edp.stack_components()
 
-    update_with_checks(edp.data["component"], scalars)
+    for id, filt in filters.items():
+        filtered = scalars.copy()
+
+        for key, value in filt.items():
+
+            filtered = filter_df(filtered, key, value)
+
+        filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
+
+        update_with_checks(edp.data["component"], filtered)
+
+        print(f"Updated DataPackage with scalars filtered by {filt}.")
 
     edp.unstack_components()
 
@@ -97,18 +125,7 @@ if __name__ == "__main__":
 
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 
-    for id, filt in filters.items():
-        filtered = scalars.copy()
-
-        for key, value in filt.items():
-
-            filtered = filter_df(filtered, key, value)
-
-        filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
-
-        edp = parametrize_scalars(edp, filtered)
-
-        print(f"Updated DataPackage with scalars filtered by {filt}.")
+    edp = parametrize_scalars(edp, scalars, filters)
 
     # parametrize timeseries
     paths_timeseries = scenario_specs["paths_timeseries"]
