@@ -1,0 +1,3 @@
+id_ts,region,var_name,timeindex_start,timeindex_stop,timeindex_resolution,series,var_unit,source,comment
+,BB,Aggregated by region,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[3917414.00714099, 3865968.88012165, 3688842.50107082]",-,,
+,BE_BB,Aggregated by region,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[137824.4, 125071.28, 81162.145]",-,,
