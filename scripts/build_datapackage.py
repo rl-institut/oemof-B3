@@ -8,6 +8,7 @@ from oemoflex.tools.helpers import load_yaml
 from oemof_b3.model import bus_attrs_update, component_attrs_update, foreign_keys_update
 from oemof_b3.tools.data_processing import (
     filter_df,
+    load_b3_scalars,
     load_b3_timeseries,
     unstack_timeseries,
 )
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     # parametrize scalars
     path_scalars = scenario_specs["path_scalars"]
 
-    scalars = pd.read_csv(path_scalars)
+    scalars = load_b3_scalars(path_scalars)
 
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 
