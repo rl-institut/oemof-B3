@@ -136,8 +136,8 @@ rule join_scenario_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/examples/scalars.csv"
+        "results/joined_scenarios/examples/postprocessed/scalars.csv"
     output:
-        directory("results/joined_scenarios/plotted/")
+        directory("results/joined_scenarios/examples/plotted/")
     shell:
         "python scripts/plot_joined_scalars.py {input} {output}"
