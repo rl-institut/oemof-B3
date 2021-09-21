@@ -10,11 +10,15 @@ Outputs
 ---------
 .pdf
     dispatch plot in pdf-format.
+.html
+    interactive plotly dispatch plot in html-format.
 
 Description
 -------------
-The script creates dispatch plots based on plot_dispatch function in oemoflex.
-The plots are saved as pdf-files in a new directory called plotted.
+The script creates dispatch plots based on plot_dispatch and plot_dispatch_plotly
+functions in oemoflex.
+The static plots are saved as pdf-files and the interactive plotly plots as html-files
+in a new directory called plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
 import sys
@@ -23,6 +27,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
+
+from oemof_b3 import labels_dict, colors_odict
+
 
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
@@ -52,35 +59,54 @@ if __name__ == "__main__":
 
         data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
-        # interactive plotly dispatch plot
-        fig_plotly = plots.plot_dispatch_plotly(
-            df=data.copy(),
+        # prepare dispatch data
+        # convert data to SI-unit
+        conv_number = 1000
+        data = data * conv_number
+        df, df_demand = plots.prepare_dispatch_data(
+            data,
             bus_name=bus_name,
+            demand_name="demand",
+            general_labels_dict=labels_dict,
         )
 
+        # interactive plotly dispatch plot
+        fig_plotly = plots.plot_dispatch_plotly(
+            df=df, df_demand=df_demand, unit="W", colors_odict=colors_odict
+        )
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
             file=os.path.join(plotted, file_name),
-            # include_plotlyjs=False,
-            # full_html=False
+            # The following parameters are set according to
+            # https://plotly.github.io/plotly.py-docs/generated/plotly.io.write_html.html
+            # The files are much smaller now because a script tag containing the plotly.js source
+            # code (~3MB) is not included in the output anymore. It is refered to plotlyjs via a
+            # link in div of the plot.
+            include_plotlyjs="cdn",
+            full_html=False,
         )
 
         # normal dispatch plot
         # plot one winter and one summer month
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
-            ax, data = plots.eng_format(ax, data, "W", 1000)
 
+            # filter timeseries
+            df_time_filtered = plots.filter_timeseries(df, start_date, end_date)
+            df_demand_time_filtered = plots.filter_timeseries(
+                df_demand, start_date, end_date
+            )
+            # plot time filtered data
             plots.plot_dispatch(
                 ax=ax,
-                df=data,
-                start_date=start_date,
-                end_date=end_date,
-                bus_name=bus_name,
+                df=df_time_filtered,
+                df_demand=df_demand_time_filtered,
+                unit="W",
+                colors_odict=colors_odict,
             )
 
             plt.grid()
-            plt.title(bus_name + " Dispatch", pad=20, fontdict={"size": 22})
+            plt.title(bus_name + " dispatch", pad=20, fontdict={"size": 22})
             plt.xlabel("Date", loc="right", fontdict={"size": 17})
             plt.ylabel("Power", loc="top", fontdict={"size": 17})
             plt.xticks(fontsize=14)
