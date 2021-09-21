@@ -38,7 +38,7 @@ if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
     in_path2 = sys.argv[2]  # path to geopackage of german regions
     in_path3 = sys.argv[3]  # path to b3_regions.yaml
-    in_path4 = sys.argv[4]  # path to _scalar_template.csv
+    in_path4 = sys.argv[4]  # path to b3 schema scalars.csv
     out_path = sys.argv[5]
 
     pp_opsd_de = pd.read_csv(in_path1)
