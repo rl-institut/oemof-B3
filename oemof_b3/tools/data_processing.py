@@ -6,7 +6,7 @@ import numpy as np
 
 here = os.path.dirname(__file__)
 
-template_dir = os.path.join(here, "..", "..", "results", "_resources")
+template_dir = os.path.join(here, "..", "schema")
 
 HEADER_B3_SCAL = pd.read_csv(
     os.path.join(template_dir, "_scalar_template.csv"), delimiter=";"
