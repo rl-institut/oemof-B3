@@ -4,7 +4,11 @@ examples = [
     'more_renewables_less_fossil'
 ]
 
+scenario_list_example = ['examples']
 # Target rules
+rule plot_grouped_scenarios:
+    input:
+        expand("results/joined_scenarios/{scenario_list}/plots/", scenario_list="examples")
 
 rule run_all_examples:
     input:
@@ -136,8 +140,8 @@ rule join_scenario_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/examples/postprocessed/scalars.csv"
+        "results/joined_scenarios/{scenario_list}/postprocessed/scalars.csv"
     output:
-        directory("results/joined_scenarios/examples/plotted/")
+        directory("results/joined_scenarios/{scenario_list}/plots/")
     shell:
         "python scripts/plot_joined_scalars.py {input} {output}"
