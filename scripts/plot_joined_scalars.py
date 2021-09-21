@@ -65,7 +65,6 @@ if __name__ == "__main__":
             # rename and aggregate duplicated columns
             df_pivot = plots.map_labels(df_pivot)
             df_pivot = df_pivot.groupby(level=0, axis=1).sum()
-            df_pivot.drop("Shortage", axis=1, inplace=True)
             # define ordering and use concrete_order as keys for colors_odict in plot_scalars()
             order = list(colors_odict)
             concrete_order = []
