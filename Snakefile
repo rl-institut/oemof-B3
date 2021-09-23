@@ -8,7 +8,7 @@ scenario_list_example = ['examples']
 # Target rules
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_list}/plots/", scenario_list="examples")
+        expand("results/joined_scenarios/{scenario_list}/joined_plotted/", scenario_list=scenario_list_example)
 
 rule run_all_examples:
     input:
