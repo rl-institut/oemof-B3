@@ -52,7 +52,7 @@ filter_scalars:
     scenario:
       toy-scenario
 
-paths_timeseries: raw/toy-scenario-timeseries.csv
+paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 
 filter_timeseries:
   scenario:
