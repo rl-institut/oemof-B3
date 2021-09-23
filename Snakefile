@@ -4,7 +4,13 @@ examples = [
     'more_renewables_less_fossil'
 ]
 
+scenarios = ["toy-scenario", "toy-scenario-2"]
+
 # Target rules
+
+rule plot_all_scenarios:
+    input:
+        expand("results/{scenario}/plotted/", scenario=scenarios)
 
 rule run_all_examples:
     input:
