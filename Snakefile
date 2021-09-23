@@ -130,14 +130,14 @@ rule join_scenario_results:
     input:
         "scenario_groups/{scenario_list}.yml"
     output:
-        "results/joined_scenarios/{scenario_list}/postprocessed/scalars.csv"
+        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/examples/postprocessed/scalars.csv"
+        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
     output:
-        directory("results/joined_scenarios/examples/plotted/")
+        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
     shell:
         "python scripts/plot_joined_scalars.py {input} {output}"
