@@ -6,7 +6,13 @@ examples = [
 
 resources = ['conv_pp_scalar']
 
+scenarios = ["toy-scenario", "toy-scenario-2"]
+
 # Target rules
+
+rule plot_all_scenarios:
+    input:
+        expand("results/{scenario}/plotted/", scenario=scenarios)
 
 rule run_all_examples:
     input:
