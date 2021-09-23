@@ -30,6 +30,7 @@ var_names = ["capacity", "flow_out_electricity"]
 
 unit_dict = {"capacity": "W", "flow_out_electricity": "Wh"}
 
+
 def prepare_scalar_data(df, colors_odict, conv_number=conv_number):
     # pivot
     df_pivot = pd.pivot_table(
@@ -76,7 +77,9 @@ def plot_scalars(df, var_name, color_keys, unit_dict=unit_dict, fontsize=14):
         axes_list.append(axes)
 
     # Loop through array of axes to create grouped bar chart for each scenario
-    alpha = 0.3  # used for grid lines, bottom spine and separation lines between scenarios
+    alpha = (
+        0.3  # used for grid lines, bottom spine and separation lines between scenarios
+    )
     for scenario, ax in zip(scenarios, axes_list):
         # df.xs() Return cross-section from the Series/DataFrame. Here: return data of one
         # scenario.
@@ -120,9 +123,7 @@ def plot_scalars(df, var_name, color_keys, unit_dict=unit_dict, fontsize=14):
             ax.set_xticks([*ax.get_xlim()], minor=True)
         else:
             ax.set_xticks([ax.get_xlim()[1]], minor=True)
-        ax.tick_params(
-            which="minor", length=55, width=0.8, color=[0, 0, 0, alpha]
-        )
+        ax.tick_params(which="minor", length=55, width=0.8, color=[0, 0, 0, alpha])
 
     # Add legend using the labels and handles from the last subplot
     fig.legend(*ax.get_legend_handles_labels(), frameon=True, framealpha=1)
