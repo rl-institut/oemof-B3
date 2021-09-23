@@ -26,7 +26,7 @@ from oemoflex.tools.plots import colors_odict
 
 # User input
 var_name = "capacity_net_el"
-    # converting from MW to W
+# converting from MW to W
 conv_number = 1e6
 german_translation = True
 
