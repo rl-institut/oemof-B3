@@ -13,7 +13,7 @@ rule plot_grouped_scenarios:
 
 rule plot_all_scenarios:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenarios)
+        expand("results/{scenario}/plotted/", scenario=examples)
 
 rule run_all_examples:
     input:
