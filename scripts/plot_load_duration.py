@@ -23,6 +23,7 @@ def plot_stacked_load_duration(ax, df):
     offset = 0
     for col, series in df.iteritems():
         series += offset
+        ax.axhline(offset, c="k", linewidth=0.5)
         ax.fill_between(series.index, offset, series, label=col)
         offset = series.max()
 
@@ -64,6 +65,9 @@ if __name__ == "__main__":
     # Shrink current axis's height by 10% on the bottom
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85])
+
+    ax.set_xlim(0, len(df.index))
+
     # Put a legend below current axis
     ax.legend(
         loc="upper center",
