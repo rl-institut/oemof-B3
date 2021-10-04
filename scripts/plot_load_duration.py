@@ -67,6 +67,10 @@ if __name__ == "__main__":
 
     df = df.reset_index(drop=True)
 
+    df = df.iloc[::-1]
+
+    df = df.reset_index(drop=True)
+
     df, df_demand = plots.prepare_dispatch_data(
         df, "BE-electricity", "BE-electricity-demand", labels_dict=labels_dict
     )
