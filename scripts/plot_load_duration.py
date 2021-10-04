@@ -19,12 +19,17 @@ def sort_by_downtime(df, epsilon=1e-6):
     return df_sorted
 
 
-def plot_stacked_load_duration(ax, df):
+def plot_stacked_load_duration(ax, df, colors_dict=None):
     offset = 0
     for col, series in df.iteritems():
         series += offset
         ax.axhline(offset, c="k", linewidth=0.5)
-        ax.fill_between(series.index, offset, series, label=col)
+        if colors_dict:
+            ax.fill_between(
+                series.index, offset, series, label=col, color=colors_dict[col]
+            )
+        else:
+            ax.fill_between(series.index, offset, series, label=col)
         offset = series.max()
 
     return ax
