@@ -57,7 +57,9 @@ if __name__ == "__main__":
 
     df = plots.map_labels(df)
 
-    df = df[df.columns.drop(["El. demand", "BAT charge", "Export"])]
+    df, df_demand = plots.prepare_dispatch_data(
+        df, "BE-electricity", "BE-electricity-demand"
+    )
 
     fig, ax = plt.subplots(figsize=(12, 7))
 
@@ -65,7 +67,7 @@ if __name__ == "__main__":
     df_sorted = sort_by_downtime(df)
 
     # plot load duration
-    plot_stacked_load_duration(ax, df_sorted)
+    plot_stacked_load_duration(ax, df_sorted, colors_dict=plots.default_colors_odict)
 
     # Shrink current axis's height by 10% on the bottom
     box = ax.get_position()
@@ -81,7 +83,5 @@ if __name__ == "__main__":
         ncol=4,
         fontsize=14,
     )
-
-    fig.tight_layout()
 
     plt.savefig(os.path.join(plotted, "load_duration.png"))
