@@ -58,44 +58,61 @@ if __name__ == "__main__":
 
     # TODO: Do this with all electricity timeseries using a function that can be used \
     # for plot_dispatch as well.
-    path_ts = os.path.join(postprocessed, "sequences", "bus", "BE-electricity.csv")
 
-    df = pd.read_csv(path_ts, index_col=0, header=[0, 1, 2], parse_dates=True)
+    bus_directory = os.path.join(postprocessed, "sequences/bus/")
 
-    # sort
-    df = df.apply(sorted, 0)
+    bus_files = os.listdir(bus_directory)
 
-    df = df.reset_index(drop=True)
+    carriers = ["electricity", "heat_central", "heat_decentral"]
 
-    df = df.iloc[::-1]
+    selected_bus_files = [
+        file for file in bus_files for carrier in carriers if carrier in file
+    ]
 
-    df = df.reset_index(drop=True)
+    for bus_file in selected_bus_files:
 
-    df, df_demand = plots.prepare_dispatch_data(
-        df, "BE-electricity", "BE-electricity-demand", labels_dict=labels_dict
-    )
+        bus_name = os.path.splitext(bus_file)[0]
 
-    fig, ax = plt.subplots(figsize=(12, 7))
+        path_ts = os.path.join(bus_directory, bus_file)
 
-    # sort by number of nonzero
-    df_sorted = sort_by_downtime(df)
+        df = pd.read_csv(path_ts, index_col=0, header=[0, 1, 2], parse_dates=True)
 
-    # plot load duration
-    plot_stacked_load_duration(ax, df_sorted, colors_dict=colors_odict)
+        # sort
+        df = df.apply(sorted, 0)
 
-    # Shrink current axis's height by 10% on the bottom
-    box = ax.get_position()
-    ax.set_position([box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85])
+        df = df.reset_index(drop=True)
 
-    ax.set_xlim(0, len(df.index))
+        df = df.iloc[::-1]
 
-    # Put a legend below current axis
-    ax.legend(
-        loc="upper center",
-        bbox_to_anchor=(0.5, -0.1),
-        fancybox=True,
-        ncol=4,
-        fontsize=14,
-    )
+        df = df.reset_index(drop=True)
 
-    plt.savefig(os.path.join(plotted, "load_duration.png"))
+        df, df_demand = plots.prepare_dispatch_data(
+            df, bus_name, "demand", labels_dict=labels_dict
+        )
+
+        fig, ax = plt.subplots(figsize=(12, 7))
+
+        # sort by number of nonzero
+        df_sorted = sort_by_downtime(df)
+
+        # plot load duration
+        plot_stacked_load_duration(ax, df_sorted, colors_dict=colors_odict)
+
+        # Shrink current axis's height by 10% on the bottom
+        box = ax.get_position()
+        ax.set_position(
+            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
+        )
+
+        ax.set_xlim(0, len(df.index))
+
+        # Put a legend below current axis
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.1),
+            fancybox=True,
+            ncol=4,
+            fontsize=14,
+        )
+
+        plt.savefig(os.path.join(plotted, bus_name + ".png"))
