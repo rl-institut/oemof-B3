@@ -4,6 +4,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
+from oemof_b3 import labels_dict, colors_odict
 
 
 def sort_by_downtime(df, epsilon=1e-6):
@@ -55,10 +56,8 @@ if __name__ == "__main__":
 
     df = df.reset_index(drop=True)
 
-    df = plots.map_labels(df)
-
     df, df_demand = plots.prepare_dispatch_data(
-        df, "BE-electricity", "BE-electricity-demand"
+        df, "BE-electricity", "BE-electricity-demand", labels_dict=labels_dict
     )
 
     fig, ax = plt.subplots(figsize=(12, 7))
@@ -67,7 +66,7 @@ if __name__ == "__main__":
     df_sorted = sort_by_downtime(df)
 
     # plot load duration
-    plot_stacked_load_duration(ax, df_sorted, colors_dict=plots.default_colors_odict)
+    plot_stacked_load_duration(ax, df_sorted, colors_dict=colors_odict)
 
     # Shrink current axis's height by 10% on the bottom
     box = ax.get_position()
