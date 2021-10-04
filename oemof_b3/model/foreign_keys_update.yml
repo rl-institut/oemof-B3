@@ -1,0 +1,12 @@
+'bus': [
+    'ch4-demand',
+]
+
+'profile': [
+    'ch4-demand',
+]
+
+'from_to_bus': [
+    'electricity-electrolyzer',
+    'h2-gt',
+]
