@@ -104,7 +104,6 @@ def calculate_potential_pv(
     output_file,
     secondary_output_dir,
     filename_kreise,
-    filename_assumptions,
 ):
     r"""
     Calculates the area and power potential of photovoltaics.
@@ -174,7 +173,7 @@ def calculate_potential_pv(
     filename = os.path.join(
         secondary_output_dir, "area_potential_single_areas_pv_raw.csv"
     )
-    areas_pv.to_csv(filename)
+    areas_pv.to_csv(filename, sep=";")
 
     # read parameters for calculatons like minimum required area and degree of agreement from
     # `filename_assumptions`
@@ -340,7 +339,9 @@ def calculate_area_potential(
         # reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra
         # column
         areas["area_before_reduction_by_overleap"] = areas["area"]
-        areas["area"] = areas["area"] * (1 - reduction_by_wind_overleap)
+        areas["area"] = areas["area"] - (
+            areas["overleap_wind_area"] * reduction_by_wind_overleap
+        )
     elif type == "wind":
         pass
     else:
@@ -351,7 +352,7 @@ def calculate_area_potential(
         secondary_output_dir,
         f"area_potential_single_areas_{type}.csv",
     )
-    areas.to_csv(filename_single_areas)
+    areas.to_csv(filename_single_areas, sep=";")
 
     return filename_single_areas
 
@@ -403,7 +404,7 @@ def calculate_power_potential(
 
     """
     # read area potential
-    potentials = pd.read_csv(input_file, header=0)
+    potentials = pd.read_csv(input_file, header=0, sep=";")
 
     # calculate power potential with required specific area
     potentials["power_potential"] = potentials["area"] * required_specific_area
@@ -452,15 +453,15 @@ def calculate_power_potential(
         df=potentials_kreise, filename_kreise=filename_kreise
     )
 
-    # save power potential in MW of NUTS3 (Landkreise) todo use SI units?
-    potentials_kreise.to_csv(output_file)
+    # save power potential in MW of NUTS3 (Landkreise)
+    potentials_kreise.to_csv(output_file, sep=";")
 
     # additionally save power potential of single areas in MW
     filename_single_areas = os.path.join(
         secondary_output_dir,
         f"power_potential_single_areas_{type}.csv",
     )
-    potentials.to_csv(filename_single_areas)
+    potentials.to_csv(filename_single_areas, sep=";")
 
 
 if __name__ == "__main__":
