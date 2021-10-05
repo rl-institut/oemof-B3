@@ -51,7 +51,7 @@ if __name__ == "__main__":
             df["carrier"] = "solar"
             df["tech"] = "pv"
             df["comment"] = (
-                "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv, "
+                "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv "
                 "2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
             )
         else:

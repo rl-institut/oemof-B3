@@ -70,31 +70,31 @@ rule prepare_pv_potential:
         filename_agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
         filename_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         filename_kreise="raw/lookup_table_brandenburg_kreise.csv",
-        regional_assumptions="raw/regional.csv",
+        filename_assumptions="raw/scalars.csv",
         script="scripts/prepare_re_potential.py"
     output:
         filename_kreise="results/_resources/power_potential_pv_kreise.csv",
         secondary_output_dir=directory("results/_resources/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py {input.filename_agriculture} {input.filename_road_railway} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
+        "python scripts/prepare_re_potential.py {input.filename_agriculture} {input.filename_road_railway} {input.filename_kreise} {input.filename_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule prepare_wind_potential:
     input:
         filename_wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         filename_kreise="raw/lookup_table_brandenburg_kreise.csv",
-        regional_assumptions="raw/regional.csv",
+        filename_assumptions="raw/scalars.csv",
         script="scripts/prepare_re_potential.py"
     output:
         filename_kreise="results/_resources/power_potential_wind_kreise.csv",
         secondary_output_dir=directory("results/_resources/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py  {input.filename_wind} {input.filename_kreise} {input.regional_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
+        "python scripts/prepare_re_potential.py  {input.filename_wind} {input.filename_kreise} {input.filename_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule process_re_potential:
     input:
         filename_wind="results/_resources/power_potential_wind_kreise.csv",
         filename_pv="results/_resources/power_potential_pv_kreise.csv",
-        scalar_template="results/_resources/_scalar_template.csv",
+        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/process_re_potential.py"
     output:
         filename_scalars="results/_resources/wind_pv_scalar.csv",
