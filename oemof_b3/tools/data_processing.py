@@ -1,11 +1,272 @@
+import os
+import ast
 import pandas as pd
 import numpy as np
+
+
+here = os.path.dirname(__file__)
+
+template_dir = os.path.join(here, "..", "schema")
+
+HEADER_B3_SCAL = pd.read_csv(
+    os.path.join(template_dir, "scalars.csv"), delimiter=";"
+).columns
+
+HEADER_B3_TS = pd.read_csv(
+    os.path.join(template_dir, "timeseries.csv"), delimiter=";"
+).columns
+
+
+def get_list_diff(list_a, list_b):
+    r"""
+    Returns all items of list_a that are not in list_b.
+
+    Parameters
+    ----------
+    list_a : list
+        First list
+    list_b : list
+        Second list
+    Returns
+    -------
+    list_a_diff_b : list
+        List of all items in list_a that are not in list_b.
+    """
+    return list(set(list_a).difference(set(list_b)))
+
+
+def format_header(df, header, index_name):
+    r"""
+    Formats columns of a DataFrame according to a specified header and index name.
+    Fills missing columns with NaN. In case there are columns that are not in header,
+    an error is raised.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to format
+    header : list
+        List of columns
+    index_name : str
+        Name of the index
+
+    Returns
+    -------
+    df_formatted : pd.DataFrame
+    """
+    extra_colums = get_list_diff(df.columns, header)
+
+    if extra_colums:
+        raise ValueError(f"There are extra columns {extra_colums}")
+
+    missing_columns = get_list_diff(header, df.columns)
+
+    for col in missing_columns:
+        df[col] = np.nan
+
+    try:
+        df_formatted = df[header]
+
+    except KeyError:
+        raise KeyError("Failed to format data according to specified header.")
+
+    df_formatted.set_index(index_name, inplace=True)
+
+    if index_name in missing_columns:
+        df_formatted.reset_index(inplace=True, drop=True)
+        df_formatted.index.name = index_name
+
+    return df_formatted
+
+
+def load_b3_scalars(path):
+    """
+    This function loads scalars from a csv file.
+
+    Parameters
+    ----------
+    path : str
+        path of input file of csv format
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame with loaded scalars
+    """
+    # Read data
+    df = pd.read_csv(path)
+
+    df = format_header(df, HEADER_B3_SCAL, "id_scal")
+
+    return df
+
+
+def load_b3_timeseries(path):
+    """
+    This function loads a stacked time series from a csv file.
+
+    Parameters
+    ----------
+    path : str
+        path of input file of csv format
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame with loaded time series
+    """
+    # Read data
+    df = pd.read_csv(path)
+
+    df = format_header(df, HEADER_B3_TS, "id_ts")
+
+    df.loc[:, "series"] = df.loc[:, "series"].apply(lambda x: ast.literal_eval(x), 1)
+
+    return df
+
+
+def save_df(df, path):
+    """
+    This function saves data to a csv file.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to be saved
+
+    path : str
+        Path to save the csv file
+    """
+    # Save scalars to csv file
+    df.to_csv(path, index=True)
+
+    # Print user info
+    print(f"User info: The DataFrame has been saved to: {path}.")
+
+
+def filter_df(df, column_name, values):
+    """
+    This function filters a DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame
+    column_name : string
+        The column's name to filter.
+    values : str/numeric/list
+        String, number or list of strings or numbers to filter by.
+
+    Returns
+    -------
+    df_filtered : pd.DataFrame
+        Filtered data.
+    """
+    _df = df.copy()
+
+    if isinstance(values, list):
+        df_filtered = _df.loc[df[column_name].isin(values)]
+
+    else:
+        df_filtered = _df.loc[df[column_name] == values]
+
+    return df_filtered
+
+
+def isnull_any(df):
+    return df.isna().any().any()
+
+
+def aggregate_units(units):
+    r"""
+    This function checks if units that should be aggregated are unique.
+    If they are not, it raises an error. If they are, it returns the unique unit.
+
+    Parameters
+    ----------
+    units:
+        pd.Series of units
+
+    Returns
+    -------
+    unique_unit : str
+        Unique unit
+    """
+    unique_units = units.unique()
+
+    if len(unique_units) > 1:
+        raise ValueError("Units are not consistent!")
+    else:
+        return unique_units[0]
+
+
+def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
+    r"""
+    This functions aggregates scalar data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame in oemof-B3-resources format.
+    columns_to_aggregate : string or list
+        The columns to sum together ('region', 'carrier', 'tech' or 'type).
+    agg_method : dict
+        Dictionary to specify aggregation method.
+
+    Returns
+    -------
+    df_aggregated : pd.DataFrame
+        Aggregated data.
+    """
+    _df = df.copy()
+
+    if not isinstance(columns_to_aggregate, list):
+        columns_to_aggregate = [columns_to_aggregate]
+
+    # Define the columns that are split and thus not aggregated
+    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name"]
+
+    groupby = list(set(groupby).difference(set(columns_to_aggregate)))
+
+    # Define how to aggregate if
+    if not agg_method:
+        agg_method = {
+            "var_value": sum,
+            "name": lambda x: "None",
+            "var_unit": aggregate_units,
+        }
+
+    # When any of the groupby columns has empty entries, print a warning
+    _df_groupby = _df[groupby]
+    if isnull_any(_df_groupby):
+        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
+        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
+
+        for item in columns_with_nan:
+            groupby.remove(item)
+        _df.drop(columns_with_nan, axis=1)
+
+        print("Removed the columns containing NaN from the DataFrame.")
+
+    # Groupby and aggregate
+    df_aggregated = _df.groupby(groupby, sort=False).agg(agg_method)
+
+    # Assign "ALL" to the columns that where aggregated.
+    for col in columns_to_aggregate:
+        df_aggregated[col] = "All"
+
+    # Reset the index
+    df_aggregated.reset_index(inplace=True)
+
+    df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
+
+    return df_aggregated
 
 
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
-    for all time steps
+    for all time steps.
 
     Parameters
     ----------
@@ -18,7 +279,6 @@ def check_consistency_timeindex(df, index):
     -------
     value : string
         Single value of the series of duplicates
-
     """
     if index == "timeindex_start":
         name = "start date"
@@ -45,7 +305,7 @@ def check_consistency_timeindex(df, index):
 
 def stack_timeseries(df):
     """
-    This function stacks a Dataframe in a form where one series resides in one row
+    This function stacks a Dataframe in a form where one series resides in one row.
 
     Parameters
     ----------
@@ -56,7 +316,6 @@ def stack_timeseries(df):
     -------
     df_stacked : pandas.DataFrame
         Stacked DataFrame
-
     """
     _df = df.copy()
 
@@ -101,7 +360,7 @@ def stack_timeseries(df):
     for column in df.columns:
         var_name = column
         timeindex_resolution = _df[column].index.freqstr
-        series = [pd.Series(_df[column].values)]
+        series = [list(_df[column].values)]
 
         column_data = [
             var_name,
@@ -124,7 +383,7 @@ def stack_timeseries(df):
 
 def unstack_timeseries(df):
     """
-    This function unstacks a Dataframe so that there is a row for each value
+    This function unstacks a Dataframe so that there is a row for each value.
 
     Parameters
     ----------
@@ -135,7 +394,6 @@ def unstack_timeseries(df):
     -------
     df_unstacked : pandas.DataFrame
         Unstacked DataFrame
-
     """
     _df = df.copy()
 
@@ -144,10 +402,20 @@ def unstack_timeseries(df):
     timeindex_start = check_consistency_timeindex(_df, "timeindex_start")
     timeindex_stop = check_consistency_timeindex(_df, "timeindex_stop")
 
+    # Warn user if "source" or "comment" in columns of stacked DataFrame
+    # These two columns will be lost once unstacked
+    lost_columns = ["source", "comment"]
+    for col in lost_columns:
+        if col in list(df.columns):
+            print(
+                f"User warning: Caution any remarks in column '{col}' are lost after "
+                f"unstacking."
+            )
+
     # Process values of series
     values_series = []
-    for index, row in _df.iterrows():
-        values_series.append(row["series"].values)
+    for row in _df.iterrows():
+        values_series.append(row[1]["series"])
 
     values_array = np.array(values_series).transpose()
 
