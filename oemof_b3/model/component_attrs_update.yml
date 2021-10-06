@@ -106,3 +106,12 @@ ch4-bpchp:
     fuel_bus: ch4
     electricity_bus: electricity
     heat_bus: heat_central
+
+h2-bpchp:
+  carrier: h2
+  tech: bpchp
+  type: backpressure
+  foreign_keys:
+    fuel_bus: h2
+    electricity_bus: electricity
+    heat_bus: heat_central
