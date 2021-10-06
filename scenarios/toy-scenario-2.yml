@@ -16,7 +16,8 @@ busses:
   - ch4
   - electricity
   - h2
-  - heat
+  - heat_central
+  - heat_decentral
   - biomass
 
 components:
@@ -34,10 +35,14 @@ components:
   - electricity-pth
   - electricity-shortage
   - h2-gt
-  - heat-demand
-  - heat-excess
-  - heat-shortage
-  - heat-storage
+  - heat_central-demand
+  - heat_central-excess
+  - heat_central-shortage
+  - heat_central-storage
+  - heat_decentral-demand
+  - heat_decentral-excess
+  - heat_decentral-shortage
+  - heat_decentral-storage
   - hydro-ror
   - solar-pv
   - wind-onshore

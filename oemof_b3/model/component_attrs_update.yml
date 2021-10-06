@@ -15,3 +15,94 @@ electricity-electrolyzer:
     to_bus: h2
   defaults:
     output_parameters: "{}"
+
+heat_central-demand:
+  carrier: heat_central
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: heat_central
+    profile: heat_central-demand-profile
+
+heat_central-excess:
+  carrier: heat_central
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: heat_central
+  defaults:
+    marginal_cost: 0
+
+heat_central-shortage:
+  carrier: heat_central
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+heat_central-storage:
+  carrier: heat_central
+  tech: storage
+  type: storage
+  foreign_keys:
+    bus: heat_central
+  defaults:
+    input_parameters: "{}"
+    output_parameters: "{}"
+
+heat_decentral-demand:
+  carrier: heat_decentral
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: heat_decentral
+    profile: heat_decentral-demand-profile
+
+heat_decentral-excess:
+  carrier: heat_decentral
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: heat_decentral
+  defaults:
+    marginal_cost: 0
+
+heat_decentral-shortage:
+  carrier: heat_decentral
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: heat_decentral
+  defaults:
+    output_parameters: "{}"
+
+heat_decentral-storage:
+  carrier: heat_decentral
+  tech: storage
+  type: storage
+  foreign_keys:
+    bus: heat_decentral
+  defaults:
+    input_parameters: "{}"
+    output_parameters: "{}"
+
+ch4-boiler:
+  carrier: ch4
+  tech: boiler
+  type: conversion
+  foreign_keys:
+    from_bus: ch4
+    to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+ch4-bpchp:
+  carrier: ch4
+  tech: bpchp
+  type: backpressure
+  foreign_keys:
+    fuel_bus: ch4
+    electricity_bus: electricity
+    heat_bus: heat_central
