@@ -1,7 +1,7 @@
 import os
 import sys
 
-from oemof.solph import EnergySystem, Model
+from oemof.solph import EnergySystem, Model, constraints
 from oemof.outputlib import processing
 
 # DONT REMOVE THIS LINE!
@@ -9,6 +9,9 @@ from oemof.outputlib import processing
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
 
+# TODO: Decide if this information can be stored together with the
+# TODO: preprocessed tabular energysystem or is read from the scenario.yml.
+emission_limit = 1000
 
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
@@ -28,6 +31,9 @@ if __name__ == "__main__":
 
     # create model from energy system (this is just oemof.solph)
     m = Model(es)
+
+    # Add an emission constraint
+    constraints.emission_limit(m, limit=emission_limit)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
