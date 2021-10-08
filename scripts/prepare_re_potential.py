@@ -46,6 +46,8 @@ import os
 import sys
 import pandas as pd
 
+from oemof_b3.tools import data_processing
+
 # global variables
 DROP_COLS = [
     "ADE",
@@ -102,6 +104,7 @@ def calculate_potential_pv(
     output_file,
     secondary_output_dir,
     filename_kreise,
+    filename_assumptions,
 ):
     r"""
     Calculates the area and power potential of photovoltaics.
@@ -134,6 +137,8 @@ def calculate_potential_pv(
         Directory where secondary outputs are saved.
     filename_kreise: str
         File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
+    filename_assumptions: str
+        File name including path to csv containing assumptions (scalars) for wind and pv potential.
 
     Returns
     -------
@@ -172,19 +177,19 @@ def calculate_potential_pv(
     areas_pv.to_csv(filename, sep=";")
 
     # read parameters for calculatons like minimum required area and degree of agreement from
-    # 'xyz.csv' todo
-    (
-        minimum_area,
-        degree_of_agreement,
-        required_specific_area,
-        reduction_by_wind_overleap,
-    ) = (
-        1e4,  # 1 ha --> 1e4 m²
-        1.0,
-        125 / 1e6,  # 125 MW/km² --> 125/1e6 MW/m²
-        1.0,
+    # `filename_assumptions`
+    df = data_processing.load_b3_scalars(filename_assumptions)
+    pv_assumptions = df.loc[df["carrier"] == "solar"].set_index("var_name")
+    # get parameters
+    minimum_area = pv_assumptions.at["minimum_area", "var_value"]
+    degree_of_agreement = pv_assumptions.at["degree_of_agreement", "var_value"]
+    required_specific_area = (
+        pv_assumptions.at["required_specific_area", "var_value"] / 1e6
     )
-    # todo required_specific_area / 1e6
+    reduction_by_wind_overleap = pv_assumptions.at[
+        "reduction_by_wind_overleap", "var_value"
+    ]
+
     # calculate area potential
     filename_single_areas = calculate_area_potential(
         area_data=areas_pv,
@@ -207,7 +212,11 @@ def calculate_potential_pv(
 
 
 def calculate_potential_wind(
-    filename_wind, output_file, secondary_output_dir, filename_kreise
+    filename_wind,
+    output_file,
+    secondary_output_dir,
+    filename_kreise,
+    filename_assumptions,
 ):
     r"""
     Calculates the area and power potential of wind energy.
@@ -233,6 +242,8 @@ def calculate_potential_wind(
         Directory where secondary outputs are saved.
     filename_kreise: str
         File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
+    filename_assumptions: str
+        File name including path to csv containing assumptions (scalars) for wind and pv potential.
 
     Returns
     -------
@@ -250,13 +261,16 @@ def calculate_potential_wind(
         os.mkdir(secondary_output_dir)
 
     # read parameters for calculatons like minimum required area and degree of agreement from
-    # 'xyz.csv' todo
-    (minimum_area, degree_of_agreement, required_specific_area,) = (
-        485,  # m²
-        1.0,
-        21 / 1e6,  # 21 MW/km² --> 21/1e6 MW/m²
+    # `filename_assumptions`
+    df = data_processing.load_b3_scalars(filename_assumptions)
+    wind_assumptions = df.loc[df["carrier"] == "wind"].set_index("var_name")
+    # get parameters
+    minimum_area = wind_assumptions.at["minimum_area", "var_value"]
+    degree_of_agreement = wind_assumptions.at["degree_of_agreement", "var_value"]
+    required_specific_area = (
+        wind_assumptions.at["required_specific_area", "var_value"] / 1e6
     )
-    # todo required_specific_area / 1e6
+
     # calculate area potential
     filename_single_areas = calculate_area_potential(
         area_data=areas,
@@ -471,6 +485,7 @@ if __name__ == "__main__":
             output_file=output_file,
             secondary_output_dir=secondary_output_dir,
             filename_kreise=filename_kreise,
+            filename_assumptions=filename_assumptions,
         )
     elif type == "wind":
         filename_wind = sys.argv[1]
@@ -482,6 +497,7 @@ if __name__ == "__main__":
             output_file=output_file,
             secondary_output_dir=secondary_output_dir,
             filename_kreise=filename_kreise,
+            filename_assumptions=filename_assumptions,
         )
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
