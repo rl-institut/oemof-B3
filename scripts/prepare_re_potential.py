@@ -104,6 +104,7 @@ def calculate_potential_pv(
     output_file,
     secondary_output_dir,
     filename_kreise,
+    filename_assumptions,
 ):
     r"""
     Calculates the area and power potential of photovoltaics.
@@ -177,7 +178,7 @@ def calculate_potential_pv(
 
     # read parameters for calculatons like minimum required area and degree of agreement from
     # `filename_assumptions`
-    df = data_processing.load_scalars(filename_assumptions)
+    df = data_processing.load_b3_scalars(filename_assumptions)
     pv_assumptions = df.loc[df["carrier"] == "solar"].set_index("var_name")
     # get parameters
     minimum_area = pv_assumptions.at["minimum_area", "var_value"]
@@ -261,7 +262,7 @@ def calculate_potential_wind(
 
     # read parameters for calculatons like minimum required area and degree of agreement from
     # `filename_assumptions`
-    df = data_processing.load_scalars(filename_assumptions)
+    df = data_processing.load_b3_scalars(filename_assumptions)
     wind_assumptions = df.loc[df["carrier"] == "wind"].set_index("var_name")
     # get parameters
     minimum_area = wind_assumptions.at["minimum_area", "var_value"]
