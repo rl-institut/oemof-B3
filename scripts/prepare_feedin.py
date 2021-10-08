@@ -1,11 +1,9 @@
-
-
-
 # ROR could be included here
 import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
+
 
 def prepare_time_series(filename_ts, filename_template, year, type):
     r"""
@@ -31,7 +29,9 @@ def prepare_time_series(filename_ts, filename_template, year, type):
     # for one specific `year`
     time_series = ts_raw[ts_raw.index.year == year]
     # get time series for B and BB only
-    time_series = time_series[["DE30", "DE40"]].rename(columns={"DE30": "B", "DE40": "BB"})
+    time_series = time_series[["DE30", "DE40"]].rename(
+        columns={"DE30": "B", "DE40": "BB"}
+    )
 
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
 
@@ -47,19 +47,24 @@ def prepare_time_series(filename_ts, filename_template, year, type):
 
     return ts_prepared
 
+
 if __name__ == "__main__":
     filename_wind = sys.argv[1]
     filename_pv = sys.argv[2]
     template = sys.argv[3]
     output_file = sys.argv[4]
 
-    year = 2012 # todo read from scalars
+    year = 2012  # todo read from scalars
 
     # prepare wind time series
-    wind_ts = prepare_time_series(filename_ts=filename_wind, filename_template=template, year=year, type="wind")
+    wind_ts = prepare_time_series(
+        filename_ts=filename_wind, filename_template=template, year=year, type="wind"
+    )
 
     # pepare pv time series
-    pv_ts = prepare_time_series(filename_ts=filename_pv, filename_template=template, year=year, type="wind")
+    pv_ts = prepare_time_series(
+        filename_ts=filename_pv, filename_template=template, year=year, type="wind"
+    )
 
     # join time series and save to `output_file`
     time_series = pd.concat([wind_ts, pv_ts], axis=0)
