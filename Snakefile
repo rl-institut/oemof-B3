@@ -140,3 +140,11 @@ rule join_scenario_results:
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
+rule prepare_ror_timeseries:
+    input:
+        template="oemof_b3/schema/timeseries.csv",
+        ror="raw/time_series/DIW_Hydro_availability.csv"
+    output:
+        "raw/time_series/timeseries_hydro.csv"
+    shell:
+        " python scripts/prepare_ror_timeseries.py {input.template} {input.ror} {output}"
