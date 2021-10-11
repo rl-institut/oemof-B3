@@ -21,7 +21,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import oemoflex.tools.plots as plots
-from oemoflex.tools.plots import colors_odict
+from oemof_b3 import labels_dict, colors_odict
+
 
 # User input
 regions = ["BB", "BE"]  # BE_BB
@@ -31,13 +32,13 @@ var_names = ["capacity", "flow_out_electricity"]
 unit_dict = {"capacity": "W", "flow_out_electricity": "Wh"}
 
 
-def prepare_scalar_data(df, colors_odict, conv_number=conv_number):
+def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region"], columns="name", values="var_value"
     )
     # rename and aggregate duplicated columns
-    df_pivot = plots.map_labels(df_pivot)
+    df_pivot = plots.map_labels(df_pivot, labels_dict)
     df_pivot = df_pivot.groupby(level=0, axis=1).sum()
     # define ordering and use concrete_order as keys for colors_odict in plot_scalars()
     order = list(colors_odict)
@@ -119,7 +120,7 @@ def plot_scalars(df, var_name, color_keys, unit_dict=unit_dict, fontsize=14):
         # that except for the first subplot, only the right tick mark is drawn to avoid
         # duplicate overlapping lines so that when an alpha different from 1 is chosen
         # (like in this example) all the lines look the same
-        if ax.get_subplotspec().is_first_col():
+        if ax == axes[0]:
             ax.set_xticks([*ax.get_xlim()], minor=True)
         else:
             ax.set_xticks([ax.get_xlim()[1]], minor=True)
@@ -166,6 +167,8 @@ if __name__ == "__main__":
         prepared_scalar_data, colors = prepare_scalar_data(
             df=selected_scalar_data,
             colors_odict=colors_odict,
+            labels_dict=labels_dict,
+            conv_number=conv_number,
         )
         # plot data
         plot_scalars(
