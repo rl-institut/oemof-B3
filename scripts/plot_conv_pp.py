@@ -2,19 +2,19 @@ r"""
 Inputs
 -------
 resources : str
-    path of input file with data in scalar resources template format as .csv
+    path of input file with data of prepared conventional power plant data as .csv
 target : str
-    path of output file with prepared data as .csv
+    path of output file with plot
 
 Outputs
 ---------
 matplotlib.figure.Figure
-    plotted scalar resources
+    plotted conventional power plant data
 
 Description
 -------------
-The script takes data in the format of the scalar resources template, prepares the
-data and plots the data.
+The script takes prepared data of conventional power plants from OPS, prepares the
+data further and plots the data.
 """
 import sys
 import os
