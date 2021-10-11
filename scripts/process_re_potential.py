@@ -46,7 +46,7 @@ if __name__ == "__main__":
     potentials = pd.DataFrame()
     for type in ["pv", "wind"]:
         data = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
-        df = data[["region", "power_potential_agreed"]]
+        df = data.loc[:, ["region", "power_potential_agreed"]]
         if type == "pv":
             df["carrier"] = "solar"
             df["tech"] = "pv"
