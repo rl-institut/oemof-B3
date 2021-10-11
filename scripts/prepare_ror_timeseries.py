@@ -20,7 +20,6 @@ if __name__ == "__main__":
     ror_raw = sys.argv[2]
     target = sys.argv[3]
 
-
     template = pd.read_csv(ts, index_col=0, delimiter=";")
     df_hydro = pd.read_csv(ror_raw, index_col=0, skiprows=3, delimiter=";")
 
@@ -32,16 +31,24 @@ if __name__ == "__main__":
         df_hydro_stacked["var_name"] = "hydro-ror-profile"
         df_hydro_stacked["scenario"] = "all"
 
-        df_hydro_stacked = df_hydro_stacked[["scenario","region", "var_name", "timeindex_start", "timeindex_stop", "timeindex_resolution", "series"]]
+        df_hydro_stacked = df_hydro_stacked[
+            [
+                "scenario",
+                "region",
+                "var_name",
+                "timeindex_start",
+                "timeindex_stop",
+                "timeindex_resolution",
+                "series",
+            ]
+        ]
 
-        df_hydro_stacked["var_unit"] =""
+        df_hydro_stacked["var_unit"] = ""
         df_hydro_stacked["source"] = "https://zenodo.org/record/1044463"
         df_hydro_stacked["comment"] = ""
 
-        template = pd.concat([template,df_hydro_stacked])
+        template = pd.concat([template, df_hydro_stacked])
 
     template.reset_index(drop=True, inplace=True)
     template.index.name = "id_ts"
     dp.save_df(template, target)
-
-
