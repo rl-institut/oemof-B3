@@ -71,7 +71,7 @@ def prepare_time_series(filename_ts, filename_template, year, type):
     ts_prepared["id_ts"] = [0, 1]
     ts_prepared["var_name"] = f"{type}-profile"
     ts_prepared["source"] = "https://www.renewables.ninja/"
-    ts_prepared["comment"] = "navigate to country, Germany"
+    ts_prepared["comment"] = "navigate to country Germany"
     ts_prepared["scenario"] = "all"
     # set 'id_ts' column as index
     ts_prepared.set_index("id_ts", inplace=True)
