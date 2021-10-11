@@ -105,4 +105,4 @@ if __name__ == "__main__":
     output_dir = "/".join(output_file.split("/")[0:-1])
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    time_series.to_csv(output_file, sep=";")
+    dp.save_df(time_series, output_file)
