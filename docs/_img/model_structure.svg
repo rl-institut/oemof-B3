@@ -40,8 +40,6 @@
       <path d="M956.8736 -15.0657 L962.8736 -27.0657 L950.8736 -27.0657 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path fill="none" d="M774.68 81.1341 L774.68 3.6312" clip-path="url(#clipPath2)"/>
       <path d="M774.68 -7.3688 L768.68 4.6312 L780.68 4.6312 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <path fill="none" d="M890.2798 492.5446 L890.2798 3.6455" clip-path="url(#clipPath2)"/>
-      <path d="M890.2798 -7.3545 L884.2798 4.6455 L896.2798 4.6455 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path fill="none" d="M529.3771 684.8016 L529.3771 710.4578" clip-path="url(#clipPath2)"/>
       <path d="M529.3771 721.4578 L535.3771 709.4578 L523.3771 709.4578 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path fill="none" d="M1067.0514 744.5405 L1010.1512 729.1624" clip-path="url(#clipPath2)"/>
@@ -73,7 +71,7 @@
       <path d="M760.4672 186.1789 L766.4672 174.1789 L754.4672 174.1789 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path fill="none" d="M853.3221 64.3384 L853.3221 175.1438" clip-path="url(#clipPath2)"/>
       <path d="M853.3221 186.1438 L859.3221 174.1438 L847.3221 174.1438 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <path fill="none" d="M834.8672 721.4651 L834.8672 75.3341" clip-path="url(#clipPath2)"/>
+      <path fill="none" d="M834.8672 492.5598 L834.8672 75.3341" clip-path="url(#clipPath2)"/>
       <path d="M834.8672 64.3341 L828.8672 76.3341 L840.8672 76.3341 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path fill="none" d="M651.0736 -7.357 L651.0736 114.2443" clip-path="url(#clipPath2)"/>
       <path d="M651.0736 125.2443 L657.0736 113.2443 L645.0736 113.2443 Z" clip-path="url(#clipPath2)" stroke="none"/>
@@ -103,8 +101,8 @@
       <path fill="none" d="M651.2055 511.255 L651.2055 525.1489" clip-path="url(#clipPath2)"/>
       <path d="M651.2055 500.255 L645.2055 512.255 L657.2055 512.255 Z" clip-path="url(#clipPath2)" stroke="none"/>
       <path d="M651.2055 536.1489 L657.2055 524.1489 L645.2055 524.1489 Z" clip-path="url(#clipPath2)" stroke="none"/>
-      <path fill="none" d="M806.34 721.4813 L806.34 126.6228" clip-path="url(#clipPath2)"/>
-      <path d="M806.34 115.6228 L800.34 127.6228 L812.34 127.6228 Z" clip-path="url(#clipPath2)" stroke="none"/>
+      <path fill="none" d="M788.5 719.5 L788.5 126.6475" clip-path="url(#clipPath2)"/>
+      <path d="M788.5 115.6475 L782.5 127.6475 L794.5 127.6475 Z" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g fill="silver" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-348,145)" stroke="silver">
       <rect x="471.6672" width="86.8064" height="34.5056" y="414.1128" clip-path="url(#clipPath2)" stroke="none"/>
