@@ -28,8 +28,8 @@ Saves the following data for "Landkreise":
     - power potential in column 'power_potential'
     - power potential after reducing by degree of agreement in column 'power_potential_agreed'
     - area potential in column 'area'
-    - percentage of overleap between the areas in columns 'overleap_pv_agriculture_percent',
-      'overleap_pv_road_railway_percent', only for pv: 'overleap_wind_percent'
+    - percentage of overlap between the areas in columns 'overlap_pv_agriculture_percent',
+      'overlap_pv_road_railway_percent', only for pv: 'overlap_wind_percent'
     - all values for Brandenburg in row 'Brandenburg'
 
 Additonally saves the following data in "../results/RE_potential":
@@ -160,10 +160,10 @@ def calculate_potential_pv(
         .rename(columns={"area": "area_pv_raw"})
     )
 
-    # substract overleaping areas from road_railway and merge data frames
+    # substract overlaping areas from road_railway and merge data frames
     areas_agriculture["area"] = (
         areas_agriculture["area_pv_raw"]
-        - areas_agriculture["overleap_pv_road_railway_area"]
+        - areas_agriculture["overlap_pv_road_railway_area"]
     )
     areas_road_railway["area"] = areas_road_railway["area_pv_raw"]
     areas_pv = pd.concat([areas_road_railway, areas_agriculture], axis=0, sort=True)
@@ -186,8 +186,8 @@ def calculate_potential_pv(
     required_specific_area = (
         pv_assumptions.at["required_specific_area", "var_value"] / 1e6
     )
-    reduction_by_wind_overleap = pv_assumptions.at[
-        "reduction_by_wind_overleap", "var_value"
+    reduction_by_wind_overlap = pv_assumptions.at[
+        "reduction_by_wind_overlap", "var_value"
     ]
 
     # calculate area potential
@@ -196,7 +196,7 @@ def calculate_potential_pv(
         type="pv",
         minimum_area=minimum_area,
         secondary_output_dir=secondary_output_dir,
-        reduction_by_wind_overleap=reduction_by_wind_overleap,
+        reduction_by_wind_overlap=reduction_by_wind_overlap,
     )
 
     # calcualte power potential
@@ -296,7 +296,7 @@ def calculate_area_potential(
     type,
     minimum_area,
     secondary_output_dir,
-    reduction_by_wind_overleap=None,
+    reduction_by_wind_overlap=None,
 ):
     r"""
     Calculates area potential for wind or pv for areas in `area_data` and saves results to csvs.
@@ -304,7 +304,7 @@ def calculate_area_potential(
     Potential areas in `area_data` are processed in the following way:
     - areas smaller than `minimum_area` are excluded
     - if `type` is "pv", area is reduced by a certain percentage
-      (`reduction_by_wind_overleap`) in case there is overleapping with wind potential area in sum.
+      (`reduction_by_wind_overlap`) in case there is overlapping with wind potential area in sum.
 
     The following data is saved in `secondary_output_dir`:
     - Area potential of single areas in column 'area' in
@@ -320,8 +320,8 @@ def calculate_area_potential(
         Minimum required area for considering area as potential for installing plants of `type`.
     secondary_output_dir: str
         Directory where intermediate outputs are saved.
-    reduction_by_wind_overleap: float or None
-        Reduction of area if `type` is "pv" in case there is overleapping with wind
+    reduction_by_wind_overlap: float or None
+        Reduction of area if `type` is "pv" in case there is overlapping with wind
         potential area in sum.
         Default: None.
 
@@ -335,14 +335,14 @@ def calculate_area_potential(
     areas = area_data.copy()
     areas = areas.loc[area_data["area"] >= minimum_area]
 
-    # take pv area potential overleap with wind area potential into account; not necessary for wind
+    # take pv area potential overlap with wind area potential into account; not necessary for wind
     # as wind has priority
     if type == "pv":
         # reduce areas by a small percentage: adapt in "area_agreed" and save old value in extra
         # column
-        areas["area_before_reduction_by_overleap"] = areas["area"]
+        areas["area_before_reduction_by_overlap"] = areas["area"]
         areas["area"] = areas["area"] - (
-            areas["overleap_wind_area"] * reduction_by_wind_overleap
+            areas["overlap_wind_area"] * reduction_by_wind_overlap
         )
     elif type == "wind":
         pass
@@ -375,8 +375,8 @@ def calculate_power_potential(
     - power potential in column 'power_potential'
     - power potential after reducing by degree of agreement in column 'power_potential_agreed'
     - area potential in column 'area'
-    - percentage of overleap between the areas in columns 'overleap_pv_agriculture_percent',
-      'overleap_pv_road_railway_percent', 'overleap_wind_percent'
+    - percentage of overlap between the areas in columns 'overlap_pv_agriculture_percent',
+      'overlap_pv_road_railway_percent', 'overlap_wind_percent'
     - all values for Brandenburg in row 'Brandenburg'
 
     Parameters
@@ -421,8 +421,8 @@ def calculate_power_potential(
     if type == "wind":
         keep_cols = [
             "area",
-            "overleap_pv_agriculture_area",
-            "overleap_pv_road_railway_area",
+            "overlap_pv_agriculture_area",
+            "overlap_pv_road_railway_area",
             "power_potential",
             "power_potential_agreed",
         ]
@@ -430,9 +430,9 @@ def calculate_power_potential(
     elif type == "pv":
         keep_cols = [
             "area",
-            "overleap_pv_agriculture_area",
-            "overleap_pv_road_railway_area",
-            "overleap_wind_area",
+            "overlap_pv_agriculture_area",
+            "overlap_pv_road_railway_area",
+            "overlap_wind_area",
             "power_potential",
             "power_potential_agreed",
         ]
