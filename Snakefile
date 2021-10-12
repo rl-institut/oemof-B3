@@ -88,7 +88,7 @@ rule prepare_wind_potential:
         filename_kreise="results/_resources/power_potential_wind_kreise.csv",
         secondary_output_dir=directory("results/_resources/RE_potential/")
     shell:
-        "python scripts/prepare_re_potential.py  {input.filename_wind} {input.filename_kreise} {input.filename_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
+        "python {input.script} {input.filename_wind} {input.filename_kreise} {input.filename_assumptions} {output.filename_kreise} {output.secondary_output_dir}"
 
 rule process_re_potential:
     input:
@@ -100,7 +100,7 @@ rule process_re_potential:
         filename_scalars="results/_resources/wind_pv_scalar.csv",
         filename_table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
-        "python scripts/process_re_potential.py  {input.filename_wind} {input.filename_pv} {input.scalar_template} {output.filename_scalars} {output.filename_table}"
+        "python {input.script} {input.filename_wind} {input.filename_pv} {input.scalar_template} {output.filename_scalars} {output.filename_table}"
 
 rule optimize:
     input:
