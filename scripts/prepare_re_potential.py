@@ -166,7 +166,7 @@ def calculate_potential_pv(
         - areas_agriculture["overleap_pv_road_railway_area"]
     )
     areas_road_railway["area"] = areas_road_railway["area_pv_raw"]
-    areas_pv = pd.concat([areas_road_railway, areas_agriculture], axis=0)
+    areas_pv = pd.concat([areas_road_railway, areas_agriculture], axis=0, sort=True)
 
     # save total pv area potential
     if not os.path.exists(secondary_output_dir):
