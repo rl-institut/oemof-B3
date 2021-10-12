@@ -332,7 +332,7 @@ def calculate_area_potential(
 
     """
     # remove areas smaller minimum required area
-    areas = area_data.loc[area_data["area"] >= minimum_area]
+    areas = area_data.copy().loc[area_data["area"] >= minimum_area]
 
     # take pv area potential overleap with wind area potential into account; not necessary for wind
     # as wind has priority
