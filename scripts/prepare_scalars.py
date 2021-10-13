@@ -31,36 +31,64 @@ from oemof_b3.tools.data_processing import (
 )
 
 
+def is_correct_header(df):
+    return True
+
+
 def unstack_var_name(df):
-    # TODO: to dataprocessing
+    r"""
+    Given a DataFrame in oemof_b3 scalars format, this function will unstack
+    the variables. The returned DataFrame will have one column for each var_name.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Stacked scalar data.
+    Returns
+    -------
+    unstacked : pd.DataFrame
+        Unstacked scalar data.
+    """
+    assert is_correct_header(df)
+
     _df = df.copy()
 
     _df = _df.set_index(
         ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
     )
 
-    _df = _df.unstack("var_name")
+    unstacked = _df.unstack("var_name")
 
-    return _df
+    return unstacked
 
 
-def stack_var_name(df, var_name):
-    # TODO: to dataprocessing
+def stack_var_name(df):
+    r"""
+    Given a DataFrame, this function will stack the variables.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with one column per variable
+
+    Returns
+    -------
+    stacked : pd.DataFrame
+        DataFrame with a column "var_name" and "var_value"
+    """
+    assert isinstance(df, pd.DataFrame)
+
     _df = df.copy()
-
-    _df.columns = [var_name]
 
     _df.columns.name = "var_name"
 
-    _df = _df.stack("var_name")
+    stacked = _df.stack("var_name")
 
-    _df.name = "var_value"
+    stacked.name = "var_value"
 
-    _df = pd.DataFrame(_df).reset_index()
+    stacked = pd.DataFrame(_df).reset_index()
 
-    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
-
-    return _df
+    return stacked
 
 
 class ScalarProcessor:
@@ -89,7 +117,9 @@ class ScalarProcessor:
 
             _df = pd.DataFrame(_df)
 
-        _df = stack_var_name(_df, var_name)
+        _df = stack_var_name(_df)
+
+        _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
         self.scalars = self.scalars.append(_df)
 
