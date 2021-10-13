@@ -490,11 +490,27 @@ def stack_var_name(df):
 
 
 class ScalarProcessor:
+    r"""
+    This class allows to filter and unstack scalar data in a way that makes processing simpler.
+    """
+
     def __init__(self, scalars):
         self.scalars = scalars
 
     def get_unstacked_var(self, var_name):
+        r"""
+        Filters the scalars for the given var_name and returns the data in unstacked form.
 
+        Parameters
+        ----------
+        var_name : str
+            Name of the variable
+
+        Returns
+        -------
+        result : pd.DataFrame
+            Data in unstacked form.
+        """
         _df = filter_df(self.scalars, "var_name", var_name)
 
         if _df.empty:
@@ -502,12 +518,25 @@ class ScalarProcessor:
 
         _df = unstack_var_name(_df)
 
-        _df = _df.loc[:, "var_value"]
+        result = _df.loc[:, "var_value"]
 
-        return _df
+        return result
 
     def append(self, var_name, data):
+        r"""
+        Accepts a Series or DataFrame in unstacked form and appends it to the scalars.
 
+        Parameters
+        ----------
+        var_name : str
+            Name of the data to append
+        data : pd.Series or pd.DataFrame
+            Data to append
+
+        Returns
+        -------
+        None
+        """
         _df = data.copy()
 
         if isinstance(_df, pd.Series):
