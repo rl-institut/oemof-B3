@@ -18,12 +18,17 @@ The script performs the following steps to prepare scalar data for parametrizati
 
 * Calculate annualized investment cost from overnight cost, lifetime and wacc.
 """
+import pandas as pd
 import sys
 
 from oemof.tools.economics import annuity
 
 import oemof_b3.tools.data_processing as dp
-from oemof_b3.tools.data_processing import load_b3_scalars
+from oemof_b3.tools.data_processing import (
+    load_b3_scalars,
+    format_header,
+    HEADER_B3_SCAL,
+)
 
 
 def unstack_var_name(df):
@@ -39,22 +44,34 @@ def unstack_var_name(df):
     return _df
 
 
-def stack_var_name(df):
+def stack_var_name(df, var_name):
     # TODO: to dataprocessing
-
     _df = df.copy()
 
+    _df.columns = [var_name]
+
+    _df.columns.name = "var_name"
+
     _df = _df.stack("var_name")
+
+    _df.name = "var_value"
+
+    _df = pd.DataFrame(_df).reset_index()
+
+    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
     return _df
 
 
-def filter_unstack(df, var_name):
+def unstack_filter(df, var_name):
     # TODO: to dataprocessing
 
     _df = df.copy()
 
     _df = dp.filter_df(_df, "var_name", var_name)
+
+    if _df.empty:
+        raise ValueError(f"No entries for {var_name} in df.")
 
     _df = unstack_var_name(_df)
 
@@ -63,44 +80,45 @@ def filter_unstack(df, var_name):
     return _df
 
 
-def prepare_annuity(df):
-    _df = df.copy()
+class ScalarCalculator:
+    def __init__(self, scalars):
+        self.scalars = scalars
 
-    def calculate_annuized_capacity_cost(on_cost, on1_cost):
+    def unstack_filter(self, var_name):
+        return unstack_filter(self.scalars, var_name)
 
-        annuized_capacity_cost = annuity(on_cost, 2, 0.05)
+    def append(self, var_name, data):
 
-        annuized_capacity_cost.columns = ["capacity_cost"]
+        _df = data.copy()
 
-        annuized_capacity_cost.columns.name = "var_name"
+        if isinstance(_df, pd.Series):
+            _df.name = "var_name"
 
-        return annuized_capacity_cost
+            _df = pd.DataFrame(_df)
 
-    # filter and unstack
-    on_cost = filter_unstack(_df, "overnight_cost")
+        _df = stack_var_name(_df, var_name)
 
-    on_cost = filter_unstack(_df, "overnight_cost")
-
-    # func
-    capacity_cost = calculate_annuized_capacity_cost(on_cost, on_cost)
-
-    # stack and append
-    capacity_cost = stack_var_name(capacity_cost)
-
-    return _df
+        self.scalars = self.scalars.append(_df)
 
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # path to raw scalar data
     out_path = sys.argv[2]  # path to destination
 
-    prepare_funcs = [
-        prepare_annuity,
-    ]
-
     df = load_b3_scalars(in_path)
 
-    for func in prepare_funcs:
-        df.append(func(df))
+    sc = ScalarCalculator(df)
 
-    df.to_csv(out_path, index=False)
+    invest_data = sc.unstack_filter(["overnight_cost", "lifetime"])
+
+    wacc = sc.unstack_filter("wacc").iloc[0]
+
+    invest_data["wacc"] = wacc
+
+    annuised_investment_cost = invest_data.apply(
+        lambda x: annuity(x["overnight_cost"], x["lifetime"], x["wacc"]), 1
+    )
+
+    sc.append("annunity", annuised_investment_cost)
+
+    sc.scalars.to_csv(out_path, index=False)
