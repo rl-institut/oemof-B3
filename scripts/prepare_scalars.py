@@ -31,10 +31,6 @@ from oemof_b3.tools.data_processing import (
 )
 
 
-def is_correct_header(df):
-    return True
-
-
 def unstack_var_name(df):
     r"""
     Given a DataFrame in oemof_b3 scalars format, this function will unstack
@@ -49,9 +45,9 @@ def unstack_var_name(df):
     unstacked : pd.DataFrame
         Unstacked scalar data.
     """
-    assert is_correct_header(df)
-
     _df = df.copy()
+
+    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
     _df = _df.set_index(
         ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
