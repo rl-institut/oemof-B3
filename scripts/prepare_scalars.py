@@ -111,7 +111,9 @@ if __name__ == "__main__":
 
     invest_data = sc.unstack_filter(["overnight_cost", "lifetime"])
 
-    wacc = sc.unstack_filter("wacc").iloc[0]
+    wacc = sc.unstack_filter("wacc").iloc[0, 0]
+
+    assert isinstance(wacc, float)
 
     invest_data["wacc"] = wacc
 
@@ -119,6 +121,6 @@ if __name__ == "__main__":
         lambda x: annuity(x["overnight_cost"], x["lifetime"], x["wacc"]), 1
     )
 
-    sc.append("annunity", annuised_investment_cost)
+    sc.append("annuity", annuised_investment_cost)
 
     sc.scalars.to_csv(out_path, index=False)
