@@ -431,3 +431,92 @@ def unstack_timeseries(df):
     df_unstacked.index.name = _df["timeindex_start"].index.name
 
     return df_unstacked
+
+
+def unstack_var_name(df):
+    r"""
+    Given a DataFrame in oemof_b3 scalars format, this function will unstack
+    the variables. The returned DataFrame will have one column for each var_name.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Stacked scalar data.
+    Returns
+    -------
+    unstacked : pd.DataFrame
+        Unstacked scalar data.
+    """
+    _df = df.copy()
+
+    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
+
+    _df = _df.set_index(
+        ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
+    )
+
+    unstacked = _df.unstack("var_name")
+
+    return unstacked
+
+
+def stack_var_name(df):
+    r"""
+    Given a DataFrame, this function will stack the variables.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with one column per variable
+
+    Returns
+    -------
+    stacked : pd.DataFrame
+        DataFrame with a column "var_name" and "var_value"
+    """
+    assert isinstance(df, pd.DataFrame)
+
+    _df = df.copy()
+
+    _df.columns.name = "var_name"
+
+    stacked = _df.stack("var_name")
+
+    stacked.name = "var_value"
+
+    stacked = pd.DataFrame(stacked).reset_index()
+
+    return stacked
+
+
+class ScalarProcessor:
+    def __init__(self, scalars):
+        self.scalars = scalars
+
+    def get_unstacked_var(self, var_name):
+
+        _df = filter_df(self.scalars, "var_name", var_name)
+
+        if _df.empty:
+            raise ValueError(f"No entries for {var_name} in df.")
+
+        _df = unstack_var_name(_df)
+
+        _df = _df.loc[:, "var_value"]
+
+        return _df
+
+    def append(self, var_name, data):
+
+        _df = data.copy()
+
+        if isinstance(_df, pd.Series):
+            _df.name = var_name
+
+            _df = pd.DataFrame(_df)
+
+        _df = stack_var_name(_df)
+
+        _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
+
+        self.scalars = self.scalars.append(_df)
