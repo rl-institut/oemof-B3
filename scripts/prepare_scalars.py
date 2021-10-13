@@ -63,29 +63,22 @@ def stack_var_name(df, var_name):
     return _df
 
 
-def unstack_filter(df, var_name):
-    # TODO: to dataprocessing
-
-    _df = df.copy()
-
-    _df = dp.filter_df(_df, "var_name", var_name)
-
-    if _df.empty:
-        raise ValueError(f"No entries for {var_name} in df.")
-
-    _df = unstack_var_name(_df)
-
-    _df = _df.loc[:, "var_value"]
-
-    return _df
-
-
-class ScalarCalculator:
+class ScalarProcessor:
     def __init__(self, scalars):
         self.scalars = scalars
 
-    def unstack_filter(self, var_name):
-        return unstack_filter(self.scalars, var_name)
+    def get_unstacked_var(self, var_name):
+
+        _df = dp.filter_df(self.scalars, "var_name", var_name)
+
+        if _df.empty:
+            raise ValueError(f"No entries for {var_name} in df.")
+
+        _df = unstack_var_name(_df)
+
+        _df = _df.loc[:, "var_value"]
+
+        return _df
 
     def append(self, var_name, data):
 
@@ -107,11 +100,11 @@ if __name__ == "__main__":
 
     df = load_b3_scalars(in_path)
 
-    sc = ScalarCalculator(df)
+    sc = ScalarProcessor(df)
 
-    invest_data = sc.unstack_filter(["overnight_cost", "lifetime"])
+    invest_data = sc.get_unstacked_var(["overnight_cost", "lifetime"])
 
-    wacc = sc.unstack_filter("wacc").iloc[0, 0]
+    wacc = sc.get_unstacked_var("wacc").iloc[0, 0]
 
     assert isinstance(wacc, float)
 
