@@ -57,7 +57,7 @@ rule prepare_conv_pp:
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {input.scalar_template} {output}"
 
-rule prepares_scalars:
+rule prepare_scalars:
     input:
         raw_scalars="raw/scalars.csv",
         script="scripts/prepare_scalars.py"
