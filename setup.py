@@ -20,6 +20,7 @@ setup(
         "pyyaml",
         "snakemake",
         "oemoflex @ git+https://git@github.com/rl-institut/oemoflex@dev#egg=oemoflex",
+        "demandlib",
     ],
     extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
 )
