@@ -86,7 +86,7 @@ def stack_var_name(df):
 
     stacked.name = "var_value"
 
-    stacked = pd.DataFrame(_df).reset_index()
+    stacked = pd.DataFrame(stacked).reset_index()
 
     return stacked
 
@@ -113,7 +113,7 @@ class ScalarProcessor:
         _df = data.copy()
 
         if isinstance(_df, pd.Series):
-            _df.name = "var_name"
+            _df.name = var_name
 
             _df = pd.DataFrame(_df)
 
