@@ -60,32 +60,6 @@ def format_input_scalars(df):
     return _df
 
 
-def expand_regions(scalars, regions, where="ALL"):
-
-    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
-
-    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
-
-    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
-
-    for region in regions:
-        regionalized = sc_wo_region.copy()
-
-        regionalized["name"] = regionalized.apply(
-            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-        )
-
-        regionalized["region"] = region
-
-        sc_with_region = sc_with_region.append(regionalized)
-
-    sc_with_region = sc_with_region.reset_index(drop=True)
-
-    sc_with_region.index.name = "id_scal"
-
-    return sc_with_region
-
-
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 

@@ -31,7 +31,38 @@ from oemof_b3.tools.data_processing import (
     load_b3_scalars,
     load_b3_timeseries,
     unstack_timeseries,
+    format_header,
+    HEADER_B3_SCAL,
 )
+
+
+def expand_regions(scalars, regions, where="ALL"):
+
+    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
+
+    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
+
+    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
+
+    if sc_wo_region.empty:
+        return sc_with_region
+
+    for region in regions:
+        regionalized = sc_wo_region.copy()
+
+        regionalized["name"] = regionalized.apply(
+            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+        )
+
+        regionalized["region"] = region
+
+        sc_with_region = sc_with_region.append(regionalized)
+
+    sc_with_region = sc_with_region.reset_index(drop=True)
+
+    sc_with_region.index.name = "id_scal"
+
+    return sc_with_region
 
 
 def update_with_checks(old, new):
@@ -169,6 +200,8 @@ if __name__ == "__main__":
     path_scalars = scenario_specs["path_scalars"]
 
     scalars = load_b3_scalars(path_scalars)
+
+    scalars = expand_regions(scalars, scenario_specs["regions"])
 
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 
