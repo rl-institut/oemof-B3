@@ -54,6 +54,8 @@ def format_input_scalars(df):
 
     _df = _df.reset_index(drop=True)
 
+    _df.index.name = "id_scal"
+
     # set scenario name
     _df.loc[:, "scenario"] = "toy-scenario"
 
