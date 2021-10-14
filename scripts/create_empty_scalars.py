@@ -71,11 +71,17 @@ def expand_regions(scalars, regions, where="ALL"):
     for region in regions:
         regionalized = sc_wo_region.copy()
 
+        regionalized["name"] = regionalized.apply(
+            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+        )
+
         regionalized["region"] = region
 
         sc_with_region = sc_with_region.append(regionalized)
 
     sc_with_region = sc_with_region.reset_index(drop=True)
+
+    sc_with_region.index.name = "id_scal"
 
     return sc_with_region
 
