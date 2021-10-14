@@ -52,10 +52,32 @@ def format_input_scalars(df):
 
     _df.drop_duplicates(inplace=True)
 
+    _df = _df.reset_index(drop=True)
+
     # set scenario name
     _df.loc[:, "scenario"] = "toy-scenario"
 
     return _df
+
+
+def expand_regions(scalars, regions, where="ALL"):
+
+    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
+
+    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
+
+    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
+
+    for region in regions:
+        regionalized = sc_wo_region.copy()
+
+        regionalized["region"] = region
+
+        sc_with_region = sc_with_region.append(regionalized)
+
+    sc_with_region = sc_with_region.reset_index(drop=True)
+
+    return sc_with_region
 
 
 if __name__ == "__main__":
