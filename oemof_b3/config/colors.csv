@@ -26,6 +26,7 @@ Curtailment,#7f7f7f
 
 El. demand,#000000
 
+H2 Backpressure CHP,magenta
 CH4 Backpressure CHP,brown
 CH4 Extraction CHP,darkred
 
