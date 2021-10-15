@@ -86,7 +86,7 @@ def plot_scalars(df, var_name, color_keys, unit_dict=unit_dict, fontsize=14):
         # scenario.
         df_scenario = df.xs(scenario)
         # apply EngFormatter
-        ax = plots.eng_format(ax, unit_dict[var_name])
+        ax = plots._eng_format(ax, unit_dict[var_name])
 
         # Create bar chart with grid lines and no spines except bottom one
         df_scenario.plot.bar(
