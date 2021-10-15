@@ -121,7 +121,13 @@ def plot_scalars(df, var_name, color_keys, unit_dict=unit_dict, fontsize=14):
         ax.tick_params(which="minor", length=55, width=0.8, color=[0, 0, 0, alpha])
 
     # Add legend using the labels and handles from the last subplot
-    fig.legend(*ax.get_legend_handles_labels(), frameon=True, framealpha=1)
+    fig.legend(
+        *ax.get_legend_handles_labels(),
+        frameon=True,
+        framealpha=1,
+        loc="center left",
+        bbox_to_anchor=(1.0, 0.5),
+    )
 
     # plt.ylabel(ylabel=ylabel)
 
