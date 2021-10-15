@@ -82,7 +82,7 @@ def update_with_checks(old, new):
     """
     # Check if some data would get lost
     if not new.index.isin(old.index).all():
-        raise Warning("Index of new data is not in the index of old data.")
+        print("Index of new data is not in the index of old data.")
 
     try:
         # Check if it overwrites by setting errors = 'raise'
