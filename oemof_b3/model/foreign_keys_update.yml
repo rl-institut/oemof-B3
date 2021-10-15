@@ -12,7 +12,7 @@
 
 'profile': [
     'ch4-demand',
-    'heat_decentral-demand',
+    'heat_central-demand',
     'heat_decentral-demand',
 ]
 
@@ -21,6 +21,11 @@
     'h2-gt',
     'electricity-heatpump_large',
     'electricity-heatpump_small',
+    'electricity-pth',
+]
+
+'chp': [
+    'h2-bpchp',
 ]
 
 'efficiency': [

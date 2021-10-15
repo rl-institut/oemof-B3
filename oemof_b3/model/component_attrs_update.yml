@@ -115,3 +115,14 @@ h2-bpchp:
     fuel_bus: h2
     electricity_bus: electricity
     heat_bus: heat_central
+
+electricity-pth:
+  carrier: electricity
+  tech: pth
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+

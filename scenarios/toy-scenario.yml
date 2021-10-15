@@ -26,7 +26,6 @@ components:
   - ch4-bpchp
   - ch4-demand
   - ch4-excess
-  - ch4-extchp
   - ch4-gt
   - electricity-demand
   - electricity-electrolyzer
