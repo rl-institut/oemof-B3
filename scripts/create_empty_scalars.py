@@ -59,6 +59,8 @@ def format_input_scalars(df):
     # set scenario name
     _df.loc[:, "scenario"] = "toy-scenario"
 
+    _df.sort_values(by=["name", "var_name", "scenario"])
+
     return _df
 
 
