@@ -40,7 +40,7 @@ sc_cols_list = [
     "type",
     "var_value",
     "var_unit",
-    "reference",
+    "source",
     "comment",
 ]
 

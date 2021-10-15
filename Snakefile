@@ -53,7 +53,7 @@ rule prepare_conv_pp:
         opsd="raw/conventional_power_plants_DE.csv",
         gpkg="raw/boundaries_germany_nuts3.gpkg",
         b3_regions="raw/b3_regions.yaml",
-        scalar_template="results/_resources/_scalar_template.csv",
+        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/conv_pp_scalar.csv"
