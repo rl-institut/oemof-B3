@@ -23,12 +23,6 @@ import numpy as np
 import oemoflex.tools.plots as plots
 from oemof_b3 import labels_dict, colors_odict
 
-
-# User input
-regions = ["BB", "BE"]  # BE_BB
-conv_number = 1000
-var_names = ["capacity", "flow_out_electricity"]
-
 unit_dict = {"capacity": "W", "flow_out_electricity": "Wh"}
 
 
@@ -144,6 +138,11 @@ if __name__ == "__main__":
     scalars_path = sys.argv[1]
 
     target = sys.argv[2]
+
+    # User input
+    regions = ["BB", "BE"]  # BE_BB
+    conv_number = 1000
+    var_names = ["capacity", "flow_out_electricity"]
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
