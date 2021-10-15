@@ -59,9 +59,33 @@ def format_input_scalars(df):
     # set scenario name
     _df.loc[:, "scenario"] = "toy-scenario"
 
-    _df.sort_values(by=["name", "var_name", "scenario"])
+    _df = _df.sort_values(by=["carrier", "tech", "var_name", "scenario"])
 
     return _df
+
+
+def expand_annuisation(df):
+    _df = df.copy()
+
+    _df_cc = _df.loc[df["var_name"] == "capacity_cost"].copy()
+
+    _df_wo_cc = _df.loc[df["var_name"] != "capacity_cost"].copy()
+
+    for var in ["overnight_cost", "lifetime", "fixom_cost"]:
+
+        d = _df_cc.copy()
+
+        d["var_name"] = var
+
+        _df_wo_cc = _df_wo_cc.append(d)
+
+    _df_wo_cc.reset_index(inplace=True, drop=True)
+
+    _df_wo_cc.index.name = "id_scal"
+
+    _df_wo_cc = _df_wo_cc.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+
+    return _df_wo_cc
 
 
 if __name__ == "__main__":
@@ -92,5 +116,7 @@ if __name__ == "__main__":
     components = edp.data["component"].reset_index()
 
     empty_scalars = format_input_scalars(components)
+
+    empty_scalars = expand_annuisation(empty_scalars)
 
     empty_scalars.to_csv(destination)
