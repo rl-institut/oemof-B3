@@ -102,7 +102,7 @@ if __name__ == "__main__":
     time_series.index = [0, 1, 2, 3]
 
     # create output directory in case it does not exist, yet and save data to `output_file`
-    output_dir = "/".join(output_file.split("/")[0:-1])
+    output_dir = os.path.dirname(output_file)
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
     dp.save_df(time_series, output_file)
