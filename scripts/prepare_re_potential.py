@@ -469,10 +469,10 @@ def calculate_power_potential(
 if __name__ == "__main__":
     try:
         output_file = sys.argv[4]
-        type = output_file.split("_")[3]
+        type = os.path.basename(output_file).split("_")[2]
     except IndexError:
         output_file = sys.argv[5]
-        type = output_file.split("_")[3]
+        type = os.path.basename(output_file).split("_")[2]
 
     if type == "pv":
         filename_agriculture = sys.argv[1]
