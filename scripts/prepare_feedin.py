@@ -29,6 +29,15 @@ import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
 
+# global variables
+NUTS_DE30 = "DE30"
+NUTS_DE40 = "DE40"
+RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
+TS_VAR_UNIT = "None"
+TS_SOURCE = "https://www.renewables.ninja/"
+TS_COMMENT = "navigate to country Germany"
+TS_SCENARIO = "all"
+
 
 def prepare_time_series(filename_ts, filename_template, year, type):
     r"""
@@ -57,20 +66,20 @@ def prepare_time_series(filename_ts, filename_template, year, type):
     # extract one specific `year`
     time_series = ts_raw[ts_raw.index.year == year]
     # get time series for B and BB only
-    time_series = time_series[["DE30", "DE40"]].rename(
-        columns={"DE30": "B", "DE40": "BB"}
-    )
+    time_series = time_series[[NUTS_DE30, NUTS_DE40]].rename(columns=RENAME_NUTS)
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
-    ts_prepared = dp.format_header(df=ts_stacked, header=template.columns, index_name="id_ts")
+    ts_prepared = dp.format_header(
+        df=ts_stacked, header=template.columns, index_name="id_ts"
+    )
 
     # add addtional information as required by template
-    ts_prepared["var_unit"] = "None"
-    ts_prepared["var_name"] = f"{type}-profile"
-    ts_prepared["source"] = "https://www.renewables.ninja/"
-    ts_prepared["comment"] = "navigate to country Germany"
-    ts_prepared["scenario"] = "all"
+    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_prepared.loc[:, "var_name"] = f"{type}-profile"
+    ts_prepared.loc[:, "source"] = TS_SOURCE
+    ts_prepared.loc[:, "comment"] = TS_COMMENT
+    ts_prepared.loc[:, "scenario"] = TS_SCENARIO
 
     return ts_prepared
 
