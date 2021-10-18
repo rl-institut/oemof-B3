@@ -61,20 +61,16 @@ def prepare_time_series(filename_ts, filename_template, year, type):
         columns={"DE30": "B", "DE40": "BB"}
     )
 
-    # bring time series to oemof-B3 format with `stack_timeseries()`
+    # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
-    ts_prepared = template
+    ts_prepared = dp.format_header(df=ts_stacked, header=template.columns, index_name="id_ts")
 
     # add addtional information as required by template
-    ts_prepared[ts_stacked.columns] = ts_stacked
     ts_prepared["var_unit"] = "None"
-    ts_prepared["id_ts"] = [0, 1]
     ts_prepared["var_name"] = f"{type}-profile"
     ts_prepared["source"] = "https://www.renewables.ninja/"
     ts_prepared["comment"] = "navigate to country Germany"
     ts_prepared["scenario"] = "all"
-    # set 'id_ts' column as index
-    ts_prepared.set_index("id_ts", inplace=True)
 
     return ts_prepared
 
