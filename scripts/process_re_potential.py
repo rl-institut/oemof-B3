@@ -19,10 +19,13 @@ output_tables : str
 Description
 -------------
 Processes the area and power potential of pv and wind energy resulting from script
-'prepare_re_potential.py' and saves results for "Landkreise" and total values for Brandenburg in
-`output_scalars` for energy system model and in `output_tables` for results documentation.
+'prepare_re_potential.py'. Reformats the power potential of pv and wind energy as input for the
+energy system model and joins results of both pv and wind.
+Saves results for "Landkreise" and total values for Brandenburg in `output_scalars` (only power
+potential) in format as required by `filename_scalar_template` and in `output_tables` (power and
+area potential) for results documentation.
 
-Saves the following data for "Landkreise" and aggregated values for Brandenburg `output_tables`:
+Saves the following data for "Landkreise" and aggregated values for Brandenburg in `output_tables`:
     - power potential in GW for wind and pv in columns 'Leistung Wind [GW]' and 'Leistung PV [GW]'
     - area potential in km² for wind and pv in columns 'Fläche Wind [km2]' and 'Fläche PV [km2]'
 

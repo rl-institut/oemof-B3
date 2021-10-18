@@ -17,6 +17,8 @@ Outputs
 ---------
 output_file : str
     Path incl. file name to output: power potential wind/pv of "Landkreise"
+secondary_output_dir : str
+    Path to secondary output directory where data of single areas is saved (see "Description")
 
 Description
 -------------
