@@ -34,6 +34,8 @@ Saves the following data for "Landkreise" and aggregated values for Brandenburg 
 import pandas as pd
 import sys
 
+from oemof_b3.tools import data_processing as dp
+
 if __name__ == "__main__":
     filename_wind = sys.argv[1]
     filename_pv = sys.argv[2]
@@ -48,43 +50,46 @@ if __name__ == "__main__":
     # prepare wind and pv potential
     potentials = pd.DataFrame()
     for type in ["pv", "wind"]:
-        data = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
-        df = data.loc[:, ["region", "power_potential_agreed"]]
         if type == "pv":
-            df["carrier"] = "solar"
-            df["tech"] = "pv"
-            df["comment"] = (
+            data = pd.read_csv(filename_pv, sep=";").set_index("NUTS")
+            data["carrier"] = "solar"
+            data["tech"] = "pv"
+            data["comment"] = (
                 "filenames: 2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv "
                 "2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
             )
         else:
-            df["carrier"] = "wind"
-            df["tech"] = "onshore"
-            df["comment"] = "filename: 2021-05-18_wind_brandenburg_kreise_epsg32633.csv"
+            data = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
+            data["carrier"] = "wind"
+            data["tech"] = "onshore"
+            data[
+                "comment"
+            ] = "filename: 2021-05-18_wind_brandenburg_kreise_epsg32633.csv"
 
+        # prepare df with certain columns
+        df = data.loc[
+            :, ["region", "power_potential_agreed", "carrier", "tech", "comment"]
+        ]
+        df.rename(columns={"power_potential_agreed": "var_value"}, inplace=True)
         potentials = pd.concat([potentials, df], axis=0)
-        potentials.index = range(0, len(potentials))
+
+    # read template and format header of `potentials`
+    template = pd.read_csv(filename_scalar_template, delimiter=";")
+    scalar_df = dp.format_header(
+        df=potentials, header=template.columns, index_name="id_scal"
+    )
 
     # prepare scalars according to template
-    scalar_df = pd.read_csv(filename_scalar_template, delimiter=";")
-    scalar_df["id_scal"] = potentials.index
-    scalar_df["scenario"] = ""
-    scalar_df["name"] = "None"
-    scalar_df["var_name"] = "capacity"
-    scalar_df["carrier"] = potentials["carrier"]
-    scalar_df["region"] = potentials["region"]
-    scalar_df["tech"] = potentials["tech"]
-    scalar_df["type"] = "volatile"
-    scalar_df["var_value"] = potentials["power_potential_agreed"]
-    scalar_df["var_unit"] = "MW"
-    scalar_df[
-        "reference"
+    scalar_df.loc[:, "scenario"] = ""
+    scalar_df.loc[:, "name"] = "None"
+    scalar_df.loc[:, "var_name"] = "capacity"
+    scalar_df.loc[:, "type"] = "volatile"
+    scalar_df.loc[:, "var_unit"] = "MW"
+    scalar_df.loc[
+        :, "source"
     ] = "area potentials - https://sandbox.zenodo.org/record/746695/"
-    scalar_df["comment"] = potentials["comment"]
-    # set index
-    scalar_df.set_index("id_scal", inplace=True)
 
-    scalar_df.to_csv(output_scalars, sep=";")
+    dp.save_df(df=scalar_df, path=output_scalars)
 
     ##################################
     # prepare potentials for _tables #
