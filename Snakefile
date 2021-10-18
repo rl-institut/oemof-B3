@@ -64,7 +64,7 @@ rule prepare_feedin:
         time_series_template="oemof_b3/schema/timeseries.csv",
         script="scripts/prepare_feedin.py"
     output:
-        "results/_resources/time_series.csv"
+        "results/_resources/feedin_time_series.csv"
     shell:
         "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.time_series_template} {output}"
 
