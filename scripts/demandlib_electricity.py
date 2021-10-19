@@ -4,10 +4,26 @@ import demandlib.particular_profiles as profiles
 from datetime import time as settime
 from workalendar.europe import Germany
 import matplotlib.pyplot as plt
+import pandas as pd
 
 
 cal = Germany()
 holidays = dict(cal.holidays(2015))
+
+
+entsoe_50Hz = pd.read_excel(r"\\FS01\RL-Institut\04_Projekte\305_UMAS_Gasspeicher\09-Stud_Ordner\Julius\Strombedarf_ENTSOE.xlsx",
+                            sheet_name="2015-Profil", header=1, engine='openpyxl', usecols=[1])
+entsoe_50Hz.dropna(inplace=True)
+entsoe_50Hz.index=pd.date_range(start="2015-01-01 00:00:00", end="2015-12-31 23:45:00", freq="15T", tz="Europe/Berlin")
+
+entsoe_50Hz_H = entsoe_50Hz.resample('H').mean()
+
+entsoe_LDC = entsoe_50Hz_H.sort_values(by="Actual Total Load [MW] - CTA|DE(50Hertz)",
+                                       axis="index", ascending=True,)
+entsoe_LDC.reset_index(drop=True, inplace=True)
+# normalize by max demand
+entsoe_LDC["Actual Total Load [MW] - CTA|DE(50Hertz)"] = entsoe_LDC["Actual Total Load [MW] - CTA|DE(50Hertz)"] / entsoe_LDC["Actual Total Load [MW] - CTA|DE(50Hertz)"].sum()
+entsoe_LDC.plot()
 
 
 def power_example(
@@ -53,7 +69,8 @@ def power_example(
         elec_demand = elec_demand.resample('H').mean()
         print(elec_demand.sum())
 
-        if plt is not None:
+        plot=None
+        if plot is not None:
             # Plot demand
             ax = elec_demand.plot()
             ax.set_xlabel("Date")
@@ -65,4 +82,24 @@ def power_example(
 
 
 if __name__ == '__main__':
-    print(power_example())
+    ts = power_example()
+    print(ts)
+    print(ts.max())
+
+    ts["sum"] = ts.sum(axis=1)
+    #ts.drop(columns=["g0", "h0", "i0"], inplace=True)
+    ts["g0"] = ts["g0"] / ts["g0"].sum()
+    ts["h0"] = ts["h0"] / ts["h0"].sum()
+    ts["i0"] = ts["i0"] / ts["i0"].sum()
+    ts["sum"] = ts["sum"] / ts["sum"].sum()
+    ts_LDC = ts.apply(sorted,0)
+    ts_LDC.reset_index(drop=True, inplace=True)
+    print(ts_LDC)
+    ts_LDC.plot()
+
+    ax1 = entsoe_LDC.plot()
+    ts_LDC.plot(ax=ax1)
+
+
+    plt.show()
+
