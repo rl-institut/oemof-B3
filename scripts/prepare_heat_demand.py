@@ -5,9 +5,30 @@ import pandas as pd
 
 
 def calculate_heat_load(year, temperature, region, scenario):
+    """
+    This function calculates a heat load profile of Industry, trade,
+    service (ghd: Gewerbe, Handel, Dienstleistung) and Household (hh: Haushalt)
+    sectors
 
-    all_holidays = pd.read_csv(os.path.join(raw_data, "holidays.csv"))
+    Parameters
+    ----------
+    year : int
+        Year of the heat load
+    temperature : pd.DataFrame
+         DataFrame that contains series of temperatures in a column name
+         temp_air
+    region : str
+        Region the heat load is investigated for
+    scenario : str
+        Scenario the heat load is investigated for
 
+    Returns
+    -------
+    heat_load_total : pd.DataFrame
+         DataFrame that contains the calculated total heat load
+
+    """
+    # Get all holidays of the region in examined year
     holidays = {}
 
     for row in all_holidays.iterrows():
@@ -15,8 +36,10 @@ def calculate_heat_load(year, temperature, region, scenario):
             holidays[
                 datetime.date(row[1]["year"], row[1]["month"], row[1]["day"])
             ] = row[1]["holiday"]
+    # TODO: Build a check for year
 
     sc = pd.read_csv(os.path.join(raw_data, "scalars.csv"))
+    # Get heat demands of ghd and hh sectors in the region
 
     for row in sc.iterrows():
         if row[1]["scenario"] == scenario and row[1]["region"] == region:
@@ -32,6 +55,9 @@ def calculate_heat_load(year, temperature, region, scenario):
     distribution_households = pd.read_csv(
         os.path.join(raw_data, "distribution_households.csv")
     )
+    # Apply distribution for hh sector in order to calculate single family house
+    # (sfh / efh: Einfamilienhaus) and multi family house (mfh: Mehrfamilienhaus)
+    # demands
     for row in distribution_households.iterrows():
         if region in row[1]["region"]:
             share_efh = row[1]["sfh"] / (row[1]["sfh"] + row[1]["mfh"])
@@ -41,7 +67,7 @@ def calculate_heat_load(year, temperature, region, scenario):
         index=pd.date_range(datetime.datetime(year, 1, 1, 0), periods=8760, freq="H")
     )
 
-    # Single family house (efh: Einfamilienhaus)
+    # Calcualate sfh (efh: Einfamilienhaus) heat load
     demand["efh"] = bdew.HeatBuilding(
         demand.index,
         holidays=holidays,
@@ -54,7 +80,7 @@ def calculate_heat_load(year, temperature, region, scenario):
         ww_incl=True,
     ).get_bdew_profile()
 
-    # Multi family house (mfh: Mehrfamilienhaus)
+    # Calculate mfh (mfh: Mehrfamilienhaus) heat load
     demand["mfh"] = bdew.HeatBuilding(
         demand.index,
         holidays=holidays,
@@ -67,7 +93,8 @@ def calculate_heat_load(year, temperature, region, scenario):
         ww_incl=True,
     ).get_bdew_profile()
 
-    # Industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
+    # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
+    # heat load
     demand["ghd"] = bdew.HeatBuilding(
         demand.index,
         holidays=holidays,
