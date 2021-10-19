@@ -30,13 +30,15 @@ import os
 import oemof_b3.tools.data_processing as dp
 
 # global variables
+RE_NINJA_YEARS = list(
+    range(2010, 2020)
+)  # re ninja wind+pv time series are prepared for these years
 NUTS_DE30 = "DE30"
 NUTS_DE40 = "DE40"
 RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
 TS_VAR_UNIT = "None"
 TS_SOURCE = "https://www.renewables.ninja/"
 TS_COMMENT = "navigate to country Germany"
-TS_SCENARIO = "all"
 
 
 def prepare_time_series(filename_ts, filename_template, year, type):
@@ -74,12 +76,12 @@ def prepare_time_series(filename_ts, filename_template, year, type):
         df=ts_stacked, header=template.columns, index_name="id_ts"
     )
 
-    # add addtional information as required by template
+    # add additional information as required by template
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario"] = TS_SCENARIO
+    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
 
     return ts_prepared
 
@@ -90,24 +92,32 @@ if __name__ == "__main__":
     template = sys.argv[3]
     output_file = sys.argv[4]
 
-    year = 2012  # todo read from scalars
+    # initialize data frame
+    time_series_df = pd.DataFrame()
 
-    # prepare wind time series
-    wind_ts = prepare_time_series(
-        filename_ts=filename_wind, filename_template=template, year=year, type="wind"
-    )
+    # prepare time series for each year
+    for year in RE_NINJA_YEARS:
+        # prepare wind time series
+        wind_ts = prepare_time_series(
+            filename_ts=filename_wind,
+            filename_template=template,
+            year=year,
+            type="wind",
+        )
 
-    # pepare pv time series
-    pv_ts = prepare_time_series(
-        filename_ts=filename_pv, filename_template=template, year=year, type="pv"
-    )
+        # prepare pv time series
+        pv_ts = prepare_time_series(
+            filename_ts=filename_pv, filename_template=template, year=year, type="pv"
+        )
 
-    # join time series and save to `output_file`
-    time_series = pd.concat([wind_ts, pv_ts], axis=0)
-    time_series.index = [0, 1, 2, 3]
+        # add time series to `time_series_df`
+        time_series_df = pd.concat([time_series_df, wind_ts, pv_ts], axis=0)
+
+    # set index
+    time_series_df.index = range(0, len(time_series_df))
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
-    dp.save_df(time_series, output_file)
+    dp.save_df(time_series_df, output_file)
