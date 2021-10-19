@@ -1,5 +1,5 @@
+import sys
 import datetime
-import os
 from demandlib import bdew
 import pandas as pd
 
@@ -29,6 +29,7 @@ def calculate_heat_load(year, temperature, region, scenario):
 
     """
     # Get all holidays of the region in examined year
+    all_holidays = pd.read_csv(in_path2)
     holidays = {}
 
     for row in all_holidays.iterrows():
@@ -38,8 +39,8 @@ def calculate_heat_load(year, temperature, region, scenario):
             ] = row[1]["holiday"]
     # TODO: Build a check for year
 
-    sc = pd.read_csv(os.path.join(raw_data, "scalars.csv"))
     # Get heat demands of ghd and hh sectors in the region
+    sc = pd.read_csv(in_path3)
 
     for row in sc.iterrows():
         if row[1]["scenario"] == scenario and row[1]["region"] == region:
@@ -52,12 +53,11 @@ def calculate_heat_load(year, temperature, region, scenario):
             ):
                 total_demand_hh = row[1]["var_value"]
 
-    distribution_households = pd.read_csv(
-        os.path.join(raw_data, "distribution_households.csv")
-    )
     # Apply distribution for hh sector in order to calculate single family house
     # (sfh / efh: Einfamilienhaus) and multi family house (mfh: Mehrfamilienhaus)
     # demands
+    distribution_households = pd.read_csv(in_path1)
+
     for row in distribution_households.iterrows():
         if region in row[1]["region"]:
             share_efh = row[1]["sfh"] / (row[1]["sfh"] + row[1]["mfh"])
@@ -108,22 +108,23 @@ def calculate_heat_load(year, temperature, region, scenario):
 
     # Calculate total heat load
     heat_load_total = pd.DataFrame(data={"heat load in GWh": demand.sum(axis=1)})
+
     return heat_load_total
 
 
 if __name__ == "__main__":
-    path_this_file = os.path.realpath(__file__)
-    raw_data = os.path.abspath(
-        os.path.join(path_this_file, os.pardir, os.pardir, "raw")
-    )
+    in_path1 = sys.argv[1]  # path to household distributions data
+    in_path2 = sys.argv[2]  # path to holidays
+    in_path3 = sys.argv[3]  # path to b3 schema scalars.csv
+    in_path4 = sys.argv[4]  # path to weather data
+    out_path = sys.argv[5]
 
-    temperature_BE_2017 = pd.read_csv(
-        os.path.join(raw_data, "weatherdata_52.52437_13.41053_2017.csv"),
-        usecols=[4],
-        header=0,
-    )
+    temperature_BE_2018 = pd.read_csv(in_path4, usecols=[4], header=0)
     year_base = 2018  # TODO: Hardcoded in function instead? Decision wanted.
-    region = "BE"
-    scenario = "base"
+    region_BE = "BE"
+    scenario_base = "base"
 
-    heat_load = calculate_heat_load(year_base, temperature_BE_2017, region, scenario)
+    heat_load = calculate_heat_load(
+        year_base, temperature_BE_2018, region_BE, scenario_base
+    )
+    heat_load.to_csv(out_path)

@@ -57,6 +57,20 @@ rule prepare_conv_pp:
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {input.scalar_template} {output}"
 
+
+rule prepare_heat_demand:
+    input:
+        dishh="raw/distribution_households.csv",
+        hl="raw/holidays.csv",
+        scalars="oemof_b3/schema/scalars.csv",
+        wth="raw/weatherdata.csv",
+        script="scripts/prepare_heat_demand.py"
+    output:
+        "results/_resources/heat_load.csv"
+    shell:
+        "python scripts/prepare_heat_demand.py {input.dishh} {input.hl} {input.scalars} {input.wth} {output}"
+
+
 rule build_datapackage:
     input:
         "scenarios/{scenario}.yml"
