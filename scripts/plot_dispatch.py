@@ -67,7 +67,7 @@ if __name__ == "__main__":
             data,
             bus_name=bus_name,
             demand_name="demand",
-            general_labels_dict=labels_dict,
+            labels_dict=labels_dict,
         )
 
         # interactive plotly dispatch plot
