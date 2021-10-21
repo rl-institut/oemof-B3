@@ -79,7 +79,7 @@ def format_header(df, header, index_name):
     return df_formatted
 
 
-def load_b3_scalars(path):
+def load_b3_scalars(path, sep=","):
     """
     This function loads scalars from a csv file.
 
@@ -87,20 +87,23 @@ def load_b3_scalars(path):
     ----------
     path : str
         path of input file of csv format
+    sep : str
+        column separator
+
     Returns
     -------
     df : pd.DataFrame
         DataFrame with loaded scalars
     """
     # Read data
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, sep=sep)
 
     df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
     return df
 
 
-def load_b3_timeseries(path):
+def load_b3_timeseries(path, sep=","):
     """
     This function loads a stacked time series from a csv file.
 
@@ -108,6 +111,8 @@ def load_b3_timeseries(path):
     ----------
     path : str
         path of input file of csv format
+    sep : str
+        column separator
 
     Returns
     -------
@@ -115,7 +120,7 @@ def load_b3_timeseries(path):
         DataFrame with loaded time series
     """
     # Read data
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, sep=sep)
 
     df = format_header(df, HEADER_B3_TS, "id_ts")
 

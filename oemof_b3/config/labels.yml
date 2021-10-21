@@ -16,3 +16,6 @@ heat-demand: Heat demand
 hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
+ch4-excess: CH4 Excess
+heat-excess: Heat Excess
+heat-storage: Heat Storage
