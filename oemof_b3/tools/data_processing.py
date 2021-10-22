@@ -9,11 +9,11 @@ here = os.path.dirname(__file__)
 template_dir = os.path.join(here, "..", "schema")
 
 HEADER_B3_SCAL = pd.read_csv(
-    os.path.join(template_dir, "scalars.csv"), delimiter=";"
+    os.path.join(template_dir, "scalars.csv"), index_col=0, delimiter=";"
 ).columns
 
 HEADER_B3_TS = pd.read_csv(
-    os.path.join(template_dir, "timeseries.csv"), delimiter=";"
+    os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
 ).columns
 
 
@@ -56,6 +56,12 @@ def format_header(df, header, index_name):
     """
     extra_colums = get_list_diff(df.columns, header)
 
+    if index_name in extra_colums:
+        df = df.set_index(index_name, drop=True)
+        extra_colums = get_list_diff(df.columns, header)
+    else:
+        df.index.name = index_name
+
     if extra_colums:
         raise ValueError(f"There are extra columns {extra_colums}")
 
@@ -69,12 +75,6 @@ def format_header(df, header, index_name):
 
     except KeyError:
         raise KeyError("Failed to format data according to specified header.")
-
-    df_formatted.set_index(index_name, inplace=True)
-
-    if index_name in missing_columns:
-        df_formatted.reset_index(inplace=True, drop=True)
-        df_formatted.index.name = index_name
 
     return df_formatted
 
