@@ -54,24 +54,26 @@ def format_header(df, header, index_name):
     -------
     df_formatted : pd.DataFrame
     """
-    extra_colums = get_list_diff(df.columns, header)
+    _df = df.copy()
+
+    extra_colums = get_list_diff(_df.columns, header)
 
     if index_name in extra_colums:
-        df = df.set_index(index_name, drop=True)
-        extra_colums = get_list_diff(df.columns, header)
+        _df = _df.set_index(index_name, drop=True)
+        extra_colums = get_list_diff(_df.columns, header)
     else:
-        df.index.name = index_name
+        _df.index.name = index_name
 
     if extra_colums:
         raise ValueError(f"There are extra columns {extra_colums}")
 
-    missing_columns = get_list_diff(header, df.columns)
+    missing_columns = get_list_diff(header, _df.columns)
 
     for col in missing_columns:
-        df[col] = np.nan
+        _df[col] = np.nan
 
     try:
-        df_formatted = df[header]
+        df_formatted = _df[header]
 
     except KeyError:
         raise KeyError("Failed to format data according to specified header.")
