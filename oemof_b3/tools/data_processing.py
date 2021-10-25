@@ -62,10 +62,11 @@ def format_header(df, header, index_name):
     missing_columns = get_list_diff(header, df.columns)
 
     for col in missing_columns:
-        df[col] = np.nan
+        df.loc[:, col] = np.nan
 
     try:
-        df_formatted = df[header]
+        _df = df.copy()
+        df_formatted = _df[header]
 
     except KeyError:
         raise KeyError("Failed to format data according to specified header.")
@@ -381,7 +382,7 @@ def stack_timeseries(df):
 
     # Save name of the index in the unstacked DataFrame as name of the index of "timeindex_start"
     # column of stacked DataFrame, so that it can be extracted from it when unstacked again.
-    df_stacked["timeindex_start"].index.name = _df.index.name
+    df_stacked.loc[:, "timeindex_start"].index.name = _df.index.name
 
     return df_stacked
 
