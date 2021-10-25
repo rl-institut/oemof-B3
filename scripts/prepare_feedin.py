@@ -62,8 +62,9 @@ def prepare_time_series(filename_ts, filename_template, year, type):
         Contains time series in the format of template in `filename_template`
 
     """
-    # load raw time series
+    # load raw time series and copy data frame
     ts_raw = pd.read_csv(filename_ts, header=2, index_col=0, parse_dates=True)
+    time_series = ts_raw.copy()
 
     # extract one specific `year`
     time_series = ts_raw[ts_raw.index.year == year]
