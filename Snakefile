@@ -65,10 +65,11 @@ rule prepare_heat_demand:
         scalars="oemof_b3/schema/scalars.csv",
         wth="raw/weatherdata.csv",
         script="scripts/prepare_heat_demand.py"
+        tstemp="oemof_b3/schema/timeseries.csv"
     output:
         "results/_resources/heat_load.csv"
     shell:
-        "python scripts/prepare_heat_demand.py {input.dishh} {input.hl} {input.scalars} {input.wth} {output}"
+        "python scripts/prepare_heat_demand.py {input.dishh} {input.hl} {input.scalars} {input.wth} {input.tstemp} {output}"
 
 
 rule build_datapackage:
