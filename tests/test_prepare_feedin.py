@@ -15,9 +15,6 @@ filename_wind = os.path.join(
 filename_pv = os.path.join(
     test_dir, "_files", "ninja_pv_country_DE_merra-2_nuts-2_corrected_test_data.csv"
 )
-filename_template = os.path.join(
-    test_dir, os.pardir, "oemof_b3", "schema", "timeseries.csv"
-)
 filename_results = os.path.join(
     test_dir, "_files", "oemof_b3_resources_timeseries_feedin.csv"
 )
@@ -26,7 +23,6 @@ filename_results = os.path.join(
 def test_prepare_time_series_wind():
     df = prepare_time_series(
         filename_ts=filename_wind,
-        filename_template=filename_template,
         year=2012,  # in the test files only years 2010, 2012 and 2013 are included
         type="wind",
     )
@@ -53,7 +49,6 @@ def test_prepare_time_series_wind():
 def test_prepare_time_series_pv():
     df = prepare_time_series(
         filename_ts=filename_pv,
-        filename_template=filename_template,
         year=2012,  # in the test files only years 2010, 2012 and 2013 are included
         type="pv",
     )

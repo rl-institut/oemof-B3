@@ -6,8 +6,6 @@ filename_wind : str
     Path incl. file name to wind feed-in time series of renewables ninja
 filename_pv : str
     Path incl. file name to pv feed-in time series of renewables ninja
-template : str
-    Path incl. file name to time series template of oemof-B3
 
 Outputs
 ---------
@@ -41,16 +39,14 @@ TS_SOURCE = "https://www.renewables.ninja/"
 TS_COMMENT = "navigate to country Germany"
 
 
-def prepare_time_series(filename_ts, filename_template, year, type):
+def prepare_time_series(filename_ts, year, type):
     r"""
     Prepares and formats time series of `type` 'wind' or 'pv' for region 'B' and 'BB'.
 
     Parameters
     ----------
     filename_ts : str
-        Path including file name to
-    filename_template : str
-        Path including file name to template of time series format
+        Path including file name to wind and pv time series of renewables ninja for NUTS2 regions
     year : int
         Year for which time series is extracted from raw data in `filename_ts`
     type : str
@@ -94,8 +90,7 @@ def prepare_time_series(filename_ts, filename_template, year, type):
 if __name__ == "__main__":
     filename_wind = sys.argv[1]
     filename_pv = sys.argv[2]
-    template = sys.argv[3]
-    output_file = sys.argv[4]
+    output_file = sys.argv[3]
 
     # initialize data frame
     time_series_df = pd.DataFrame()
@@ -105,15 +100,12 @@ if __name__ == "__main__":
         # prepare wind time series
         wind_ts = prepare_time_series(
             filename_ts=filename_wind,
-            filename_template=template,
             year=year,
             type="wind",
         )
 
         # prepare pv time series
-        pv_ts = prepare_time_series(
-            filename_ts=filename_pv, filename_template=template, year=year, type="pv"
-        )
+        pv_ts = prepare_time_series(filename_ts=filename_pv, year=year, type="pv")
 
         # add time series to `time_series_df`
         time_series_df = pd.concat([time_series_df, wind_ts, pv_ts], axis=0)
