@@ -74,7 +74,7 @@ if __name__ == "__main__":
         potentials = pd.concat([potentials, df], axis=0)
 
     # read template and format header of `potentials`
-    template = pd.read_csv(filename_scalar_template, delimiter=";")
+    template = dp.load_b3_scalars(filename_scalar_template, sep=";")
     scalar_df = dp.format_header(
         df=potentials, header=template.columns, index_name="id_scal"
     )
