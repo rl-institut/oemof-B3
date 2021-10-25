@@ -62,9 +62,9 @@ def prepare_time_series(filename_ts, filename_template, year, type):
         Contains time series in the format of template in `filename_template`
 
     """
-    # read time series (raw) and time series template of oemof-B3
+    # load raw time series
     ts_raw = pd.read_csv(filename_ts, header=2, index_col=0, parse_dates=True)
-    template = dp.load_b3_timeseries(filename_template, sep=";")
+
     # extract one specific `year`
     time_series = ts_raw[ts_raw.index.year == year]
     # get time series for B and BB only
@@ -73,7 +73,7 @@ def prepare_time_series(filename_ts, filename_template, year, type):
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=template.columns, index_name="id_ts"
+        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
     )
 
     # add additional information as required by template
