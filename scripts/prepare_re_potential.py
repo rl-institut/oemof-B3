@@ -113,7 +113,7 @@ def calculate_potential_pv(
 
     - Merges area potential of agricultural areas (file `filename_agriculture`) and areas along
       roads and railways (file `filename_road_railway`)
-    - Overleaping areas are substracted from agricultural areas
+    - Overlapping areas are subtracted from agricultural areas
     - Calculates pv area potential for each area and Landkreis, methods see
       :py:func:`~.calculate_area_potential`
     - Calculates pv power potential for each area and Landkreis, methods see
@@ -162,7 +162,7 @@ def calculate_potential_pv(
         .rename(columns={"area": "area_pv_raw"})
     )
 
-    # substract overlaping areas from road_railway and merge data frames
+    # subtract overlapping areas from road_railway and merge data frames
     areas_agriculture["area"] = (
         areas_agriculture["area_pv_raw"]
         - areas_agriculture["overlap_pv_road_railway_area"]
@@ -178,7 +178,7 @@ def calculate_potential_pv(
     )
     areas_pv.to_csv(filename, sep=";")
 
-    # read parameters for calculatons like minimum required area and degree of agreement from
+    # read parameters for calculations like minimum required area and degree of agreement from
     # `filename_assumptions`
     df = dp.load_b3_scalars(filename_assumptions)
     pv_assumptions = df.loc[df["carrier"] == "solar"].set_index("var_name")
@@ -201,7 +201,7 @@ def calculate_potential_pv(
         reduction_by_wind_overlap=reduction_by_wind_overlap,
     )
 
-    # calcualte power potential
+    # calculate power potential
     calculate_power_potential(
         type="pv",
         input_file=filename_single_areas,
@@ -229,7 +229,7 @@ def calculate_potential_wind(
       :py:func:`~.calculate_power_potential`
 
     The following data is saved:
-    - wind area potential of single areas in [m²] incolumn 'area' in
+    - wind area potential of single areas in [m²] in column 'area' in
       "area_potential_single_areas_wind.csv" in `secondary_output_dir`
     - wind power [MW] and area [m²] potential of "Landkreise" in columns 'area' and
       'power_potential' in `output_file`
@@ -262,7 +262,7 @@ def calculate_potential_wind(
     if not os.path.exists(secondary_output_dir):
         os.mkdir(secondary_output_dir)
 
-    # read parameters for calculatons like minimum required area and degree of agreement from
+    # read parameters for calculations like minimum required area and degree of agreement from
     # `filename_assumptions`
     df = dp.load_b3_scalars(filename_assumptions)
     wind_assumptions = df.loc[df["carrier"] == "wind"].set_index("var_name")
@@ -281,7 +281,7 @@ def calculate_potential_wind(
         secondary_output_dir=secondary_output_dir,
     )
 
-    # calcualte power potential
+    # calculate power potential
     calculate_power_potential(
         type="wind",
         input_file=filename_single_areas,
