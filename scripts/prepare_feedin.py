@@ -65,7 +65,6 @@ def prepare_time_series(filename_ts, filename_template, year, type):
     # read time series (raw) and time series template of oemof-B3
     ts_raw = pd.read_csv(filename_ts, header=2, index_col=0, parse_dates=True)
     template = dp.load_b3_timeseries(filename_template, sep=";")
-    template.reset_index(inplace=True)
     # extract one specific `year`
     time_series = ts_raw[ts_raw.index.year == year]
     # get time series for B and BB only
