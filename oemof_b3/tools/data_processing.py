@@ -70,7 +70,7 @@ def format_header(df, header, index_name):
     missing_columns = get_list_diff(header, _df.columns)
 
     for col in missing_columns:
-        _df[col] = np.nan
+        _df.loc[:, col] = np.nan
 
     try:
         df_formatted = _df[header]
