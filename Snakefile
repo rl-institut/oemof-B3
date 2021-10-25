@@ -97,13 +97,12 @@ rule process_re_potential:
     input:
         filename_wind="results/_resources/power_potential_wind_kreise.csv",
         filename_pv="results/_resources/power_potential_pv_kreise.csv",
-        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/process_re_potential.py"
     output:
         filename_scalars="results/_resources/wind_pv_scalar.csv",
         filename_table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
-        "python {input.script} {input.filename_wind} {input.filename_pv} {input.scalar_template} {output.filename_scalars} {output.filename_table}"
+        "python {input.script} {input.filename_wind} {input.filename_pv} {output.filename_scalars} {output.filename_table}"
 
 rule optimize:
     input:

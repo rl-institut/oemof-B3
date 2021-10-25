@@ -34,7 +34,7 @@ Saves the following data for "Landkreise":
       'overlap_pv_road_railway_percent', only for pv: 'overlap_wind_percent'
     - all values for Brandenburg in row 'Brandenburg'
 
-Additonally saves the following data in "../results/RE_potential":
+Additionally, saves the following data in "../results/RE_potential":
     - joined pv area potential of single areas in column 'area_raw' in
       "area_potential_single_areas_pv_raw.csv"
     - area potential of single areas in column 'area' in

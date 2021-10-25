@@ -6,8 +6,6 @@ filename_wind : str
     Path incl. file name to area and power potential of wind energy
 filename_pv : str
     Path incl. file name to area and power potential of pv
-filename_scalar_template : str
-    Path incl. file name to template for scalar data
 
 Outputs
 ---------
@@ -22,7 +20,7 @@ Processes the area and power potential of pv and wind energy resulting from scri
 'prepare_re_potential.py'. Reformats the power potential of pv and wind energy as input for the
 energy system model and joins results of both pv and wind.
 Saves results for "Landkreise" and total values for Brandenburg in `output_scalars` (only power
-potential) in format as required by `filename_scalar_template` and in `output_tables` (power and
+potential) in format as required by template and in `output_tables` (power and
 area potential) for results documentation.
 
 Saves the following data for "Landkreise" and aggregated values for Brandenburg in `output_tables`:
@@ -39,9 +37,8 @@ from oemof_b3.tools import data_processing as dp
 if __name__ == "__main__":
     filename_wind = sys.argv[1]
     filename_pv = sys.argv[2]
-    filename_scalar_template = sys.argv[3]
-    output_scalars = sys.argv[4]
-    output_tables = sys.argv[5]
+    output_scalars = sys.argv[3]
+    output_tables = sys.argv[4]
 
     ############################################
     # prepare potentials for scalar _resources #
@@ -73,13 +70,12 @@ if __name__ == "__main__":
         df.rename(columns={"power_potential_agreed": "var_value"}, inplace=True)
         potentials = pd.concat([potentials, df], axis=0)
 
-    # read template and format header of `potentials`
-    template = dp.load_b3_scalars(filename_scalar_template, sep=";")
+    # format header of `potentials` according to template
     scalar_df = dp.format_header(
-        df=potentials, header=template.columns, index_name="id_scal"
+        df=potentials, header=dp.HEADER_B3_SCAL, index_name="id_scal"
     )
 
-    # prepare scalars according to template
+    # add additional information as required by template
     scalar_df.loc[:, "scenario"] = ""
     scalar_df.loc[:, "name"] = "None"
     scalar_df.loc[:, "var_name"] = "capacity"
