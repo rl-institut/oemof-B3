@@ -67,12 +67,12 @@ def prepare_time_series(filename_ts, filename_template, year, type):
     time_series = ts_raw.copy()
 
     # extract one specific `year`
-    time_series = ts_raw[ts_raw.index.year == year]
+    time_series = time_series[time_series.index.year == year]
     # get time series for B and BB only
-    time_series = time_series[[NUTS_DE30, NUTS_DE40]].rename(columns=RENAME_NUTS)
+    time_series_regions = time_series.loc[:, [NUTS_DE30, NUTS_DE40]].rename(columns=RENAME_NUTS)
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
-    ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
+    ts_stacked = dp.stack_timeseries(time_series_regions).rename(columns={"var_name": "region"})
     ts_prepared = dp.format_header(
         df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
     )
