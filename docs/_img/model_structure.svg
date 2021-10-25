@@ -181,7 +181,7 @@
       <rect x="470.9739" width="116.8064" height="34.5056" y="650.296" clip-path="url(#clipPath2)" stroke="none"/>
     </g>
     <g font-size="14px" stroke-linecap="butt" transform="matrix(1,0,0,1,-348,145)" text-rendering="geometricPrecision" font-family="'Roboto'" shape-rendering="geometricPrecision" font-weight="bold" stroke-miterlimit="1.45">
-      <text x="479.7687" xml:space="preserve" y="672.334" clip-path="url(#clipPath2)" stroke="none">Methanisation</text>
+      <text x="485.8492" xml:space="preserve" y="672.334" clip-path="url(#clipPath2)" stroke="none">Methanation</text>
     </g>
     <g fill="gray" text-rendering="geometricPrecision" shape-rendering="geometricPrecision" transform="matrix(1,0,0,1,-348,145)" stroke="gray">
       <rect x="463.4672" y="614.64" clip-path="url(#clipPath2)" width="594" rx="4" ry="4" height="7.6752" stroke="none"/>
