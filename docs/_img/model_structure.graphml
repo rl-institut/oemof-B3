@@ -145,7 +145,7 @@
           <y:Geometry height="34.505600000000015" width="86.80639999999983" x="791.464" y="29.82846200000023"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle hasColor="false" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="41.40319999999997" y="15.252800000000008">
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="41.403199999999856" y="15.252800000000008">
             <y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -153,7 +153,7 @@
               <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
             </y:ModelParameter>
           </y:NodeLabel>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="20.40625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="57.8671875" x="14.46960624999997" y="7.049675000000008">H2 CHP<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="20.40625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="57.8671875" x="14.469606249999856" y="7.049675000000008">H2 CHP<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -228,7 +228,7 @@
               <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
             </y:ModelParameter>
           </y:NodeLabel>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="36.8125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="100.537109375" x="-0.06535468750007567" y="-1.1534499999999923">Heat
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="36.8125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="100.537109375" x="-0.06535468750007567" y="-1.1534500000000207">Heat
 Storage, large<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -329,7 +329,7 @@ Storage, large<y:LabelModel>
               <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
             </y:ModelParameter>
           </y:NodeLabel>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="20.40625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="103.216796875" x="6.794801562499913" y="7.049674999999979">Methanisation<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="20.40625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="91.0556640625" x="12.875367968749913" y="7.049674999999979">Methanation<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -496,7 +496,7 @@ Storage, large<y:LabelModel>
           <y:Geometry height="34.505600000000015" width="118.02239999999904" x="927.4448000000011" y="72.94479999999999"/>
           <y:Fill color="#C0C0C0" transparent="false"/>
           <y:BorderStyle hasColor="false" raised="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="57.011199999999576" y="15.252800000000008">
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="57.01119999999946" y="15.252800000000008">
             <y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
@@ -504,7 +504,7 @@ Storage, large<y:LabelModel>
               <y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/>
             </y:ModelParameter>
           </y:NodeLabel>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="20.40625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="115.890625" x="1.065887499999576" y="7.049675000000008">CH4 Powerplant<y:LabelModel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Roboto" fontSize="14" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="20.40625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="115.890625" x="1.0658874999994623" y="7.049675000000008">CH4 Powerplant<y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
             <y:ModelParameter>
@@ -974,10 +974,10 @@ Storage, small<y:LabelModel>
         </y:BezierEdge>
       </data>
     </edge>
-    <edge id="e12" source="n3" target="n1">
+    <edge id="e12" source="n3" target="n5">
       <data key="d10">
         <y:BezierEdge>
-          <y:Path sx="129.81258125038607" sy="-3.849230344783109" tx="129.81258125038607" ty="3.854595999999958"/>
+          <y:Path sx="74.40000000000009" sy="-3.807908500000167" tx="0.0" ty="17.252800000000008"/>
           <y:LineStyle color="#808080" type="line" width="1.0"/>
           <y:Arrows source="none" target="delta"/>
         </y:BezierEdge>
@@ -1427,14 +1427,13 @@ Storage, small<y:LabelModel>
     <edge id="e62" source="n2" target="n33">
       <data key="d10">
         <y:BezierEdge>
-          <y:Path sx="45.87280000000021" sy="-3.852350000000115" tx="31.659999999999968" ty="1.4131379999999183"/>
+          <y:Path sx="28.03280000000018" sy="-5.83360000000016" tx="13.819999999999936" ty="-2.8868620000002068"/>
           <y:LineStyle color="#808080" type="line" width="1.0"/>
           <y:Arrows source="none" target="delta"/>
         </y:BezierEdge>
       </data>
     </edge>
     <edge id="e63" source="n5" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:BezierEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="12.718737999999831"/>
@@ -1444,20 +1443,9 @@ Storage, small<y:LabelModel>
       </data>
     </edge>
     <edge id="e64" source="n5" target="n4">
-      <data key="d9"/>
       <data key="d10">
         <y:BezierEdge>
           <y:Path sx="18.45493217101614" sy="-3.281262000000112" tx="92.85493217101623" ty="-3.848404000000073"/>
-          <y:LineStyle color="#808080" type="line" width="1.0"/>
-          <y:Arrows source="none" target="delta"/>
-        </y:BezierEdge>
-      </data>
-    </edge>
-    <edge id="e65" source="n2" target="n5">
-      <data key="d9"/>
-      <data key="d10">
-        <y:BezierEdge>
-          <y:Path sx="74.40000000000009" sy="-3.827350000000024" tx="0.0" ty="0.0"/>
           <y:LineStyle color="#808080" type="line" width="1.0"/>
           <y:Arrows source="none" target="delta"/>
         </y:BezierEdge>
