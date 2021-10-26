@@ -34,3 +34,13 @@ Postprocessing
 .. toctree::
    :maxdepth: 1
    :glob:
+
+
+Plotting
+==============
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   plotting/*
