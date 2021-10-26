@@ -127,9 +127,11 @@ def parametrize_sequences(edp, ts, filters):
     # Group timeseries and parametrize EnergyDatapackage
     ts_groups = _ts.groupby("var_name")
 
-    for name, data in ts_groups:
+    for name, group in ts_groups:
 
-        data["var_name"] = data["region"] + "-" + data["var_name"]
+        data = group.copy()  # avoid pandas SettingWithCopyWarning
+
+        data.loc[:, "var_name"] = data.loc[:, "region"] + "-" + data.loc[:, "var_name"]
 
         data_unstacked = unstack_timeseries(data)
 

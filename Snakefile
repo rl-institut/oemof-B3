@@ -4,15 +4,20 @@ examples = [
     'more_renewables_less_fossil'
 ]
 
+scenario_list_example = ['examples']
+
 resources = ['conv_pp_scalar']
 
 scenarios = ["toy-scenario", "toy-scenario-2"]
 
 # Target rules
+rule plot_grouped_scenarios:
+    input:
+        expand("results/joined_scenarios/{scenario_list}/joined_plotted/", scenario_list=scenario_list_example)
 
 rule plot_all_scenarios:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenarios)
+        expand("results/{scenario}/plotted/", scenario=examples)
 
 rule run_all_examples:
     input:
@@ -56,12 +61,22 @@ rule prepare_conv_pp:
         opsd="raw/conventional_power_plants_DE.csv",
         gpkg="raw/boundaries_germany_nuts3.gpkg",
         b3_regions="raw/b3_regions.yaml",
-        scalar_template="results/_resources/_scalar_template.csv",
+        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/conv_pp_scalar.csv"
     shell:
         "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {input.scalar_template} {output}"
+
+rule prepare_feedin:
+    input:
+        wind_feedin="raw/time_series/ninja_wind_country_DE_current_merra-2_nuts-2_corrected.csv",
+        pv_feedin="raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv",
+        script="scripts/prepare_feedin.py"
+    output:
+        "results/_resources/feedin_time_series.csv"
+    shell:
+        "python {input.script} {input.wind_feedin} {input.pv_feedin} {output}"
 
 rule build_datapackage:
     input:
@@ -151,7 +166,14 @@ rule join_scenario_results:
     input:
         "scenario_groups/{scenario_list}.yml"
     output:
-        "results/joined_scenarios/{scenario_list}/postprocessed/scalars.csv"
+        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
+rule plot_joined_scalars:
+    input:
+        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+    output:
+        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+    shell:
+        "python scripts/plot_joined_scalars.py {input} {output}"

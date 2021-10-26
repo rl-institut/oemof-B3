@@ -1,4 +1,4 @@
-id_scal,scenario,name,var_name,carrier,region,tech,type,var_value,var_unit,reference,comment
+id_scal,scenario,name,var_name,carrier,region,tech,type,var_value,var_unit,source,comment
 0,base,None,capacity,biomass,All,gt,conversion,400000.0,,,
 1,base,None,flow_in_biomass,biomass,All,gt,conversion,2692790078.846871,,,
 2,base,None,flow_out_electricity,biomass,All,gt,conversion,1023260209.6668,,,
