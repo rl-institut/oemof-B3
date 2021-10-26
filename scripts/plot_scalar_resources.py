@@ -102,7 +102,7 @@ def plot_scalar_resources(df, color_keys, color_dict, unit_dict):
     fig, ax = plt.subplots(figsize=(12, 6))
     # apply EngFormatter if power is plotted
     if unit_dict[var_name] == "W":
-        ax = plots.eng_format(ax, "W")
+        ax = plots._eng_format(ax, "W")
     df.plot.bar(
         ax=ax,
         color=[color_dict[key] for key in color_keys],
