@@ -37,6 +37,11 @@ RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
 TS_VAR_UNIT = "None"
 TS_SOURCE = "https://www.renewables.ninja/"
 TS_COMMENT = "navigate to country Germany"
+# Specific to ror time series
+REGIONS = ["BB", "B"]
+TS_SOURCE_ROR = "https://zenodo.org/record/1044463"
+TS_COMMENT_ROR = "Isolated ror availability time series from DIW data"
+YEAR_ROR = 2017
 
 
 def prepare_time_series(filename_ts, year, type):
@@ -87,10 +92,36 @@ def prepare_time_series(filename_ts, year, type):
     return ts_prepared
 
 
+def prepare_ror_time_series(filename_ts, type, year, region):
+    # load raw time series and copy data frame
+    ts_raw = pd.read_csv(filename_ts, index_col=0, skiprows=3, delimiter=";")
+    time_series = ts_raw.copy()
+
+    time_series.index = pd.date_range(
+        "2019-01-01 00:00:00", "2019-12-31 23:00:00", 8760
+    )
+    # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
+    ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
+    ts_prepared = dp.format_header(
+        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+    )
+
+    # add additional information as required by template
+    ts_prepared.loc[:, "region"] = region
+    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_prepared.loc[:, "var_name"] = f"{type}-profile"
+    ts_prepared.loc[:, "source"] = TS_SOURCE_ROR
+    ts_prepared.loc[:, "comment"] = TS_COMMENT_ROR
+    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+
+    return ts_prepared
+
+
 if __name__ == "__main__":
     filename_wind = sys.argv[1]
     filename_pv = sys.argv[2]
-    output_file = sys.argv[3]
+    filename_ror = sys.argv[3]
+    output_file = sys.argv[4]
 
     # initialize data frame
     time_series_df = pd.DataFrame()
@@ -109,6 +140,15 @@ if __name__ == "__main__":
 
         # add time series to `time_series_df`
         time_series_df = pd.concat([time_series_df, wind_ts, pv_ts], axis=0)
+
+    # prepare ror time series
+    for region in REGIONS:
+        ror_ts = prepare_ror_time_series(
+            filename_ts=filename_ror, year=YEAR_ROR, type="ror", region=region
+        )
+
+        # add time series to `time_series_df`
+        time_series_df = pd.concat([time_series_df, ror_ts], axis=0)
 
     # set index
     time_series_df.index = range(0, len(time_series_df))
