@@ -21,7 +21,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
-from oemoflex.tools.plots import colors_odict
+from oemof_b3 import colors_odict
 
 
 # User input
