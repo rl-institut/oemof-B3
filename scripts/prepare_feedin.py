@@ -92,7 +92,7 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     return ts_prepared
 
 
-def prepare_ror_time_series(filename_ts, type, year, region):
+def prepare_ror_time_series(filename_ts, region):
     r"""
     Prepares and formats time series of `type` 'ror' for region 'B' and 'BB'.
 
@@ -100,10 +100,8 @@ def prepare_ror_time_series(filename_ts, type, year, region):
     ----------
     filename_ts : str
         Path including file name to ror time series of DIW Data Documentation 92
-    year : int
-        Year for which time series is extracted from raw data in `filename_ts`
-    type : str
-        Type of time series like 'ror'; used for column 'var_name' in output
+    region : str
+        Region of time series; used for column 'region' in output
 
     Returns
     -------
@@ -116,7 +114,7 @@ def prepare_ror_time_series(filename_ts, type, year, region):
     time_series = ts_raw.copy()
 
     time_series.index = pd.date_range(
-        "2017-01-01 00:00:00", "2017-12-31 23:00:00", 8760
+        str(YEAR_ROR)+"-01-01 00:00:00", str(YEAR_ROR)+"-12-31 23:00:00", 8760
     )
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
@@ -127,10 +125,10 @@ def prepare_ror_time_series(filename_ts, type, year, region):
     # add additional information as required by template
     ts_prepared.loc[:, "region"] = region
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = f"{type}-profile"
+    ts_prepared.loc[:, "var_name"] = "ror-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE_ROR
     ts_prepared.loc[:, "comment"] = TS_COMMENT_ROR
-    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+    ts_prepared.loc[:, "scenario"] = f"ts_{YEAR_ROR}"
 
     return ts_prepared
 
@@ -164,7 +162,7 @@ if __name__ == "__main__":
     # prepare ror time series
     for region in REGIONS:
         ror_ts = prepare_ror_time_series(
-            filename_ts=filename_ror, year=YEAR_ROR, type="ror", region=region
+            filename_ts=filename_ror, region=region
         )
 
         # add time series to `time_series_df`
