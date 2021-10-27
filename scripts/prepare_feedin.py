@@ -93,6 +93,24 @@ def prepare_time_series(filename_ts, year, type):
 
 
 def prepare_ror_time_series(filename_ts, type, year, region):
+    r"""
+    Prepares and formats time series of `type` 'ror' for region 'B' and 'BB'.
+
+    Parameters
+    ----------
+    filename_ts : str
+        Path including file name to ror time series of DIW Data Documentation 92
+    year : int
+        Year for which time series is extracted from raw data in `filename_ts`
+    type : str
+        Type of time series like 'ror'; used for column 'var_name' in output
+
+    Returns
+    -------
+    ts_prepared : pd.DataFrame
+        Contains time series in the format of template in `filename_template`
+
+    """
     # load raw time series and copy data frame
     ts_raw = pd.read_csv(filename_ts, index_col=0, skiprows=3, delimiter=";")
     time_series = ts_raw.copy()
