@@ -14,13 +14,12 @@ output_file : str
 
 Description
 -------------
-This script prepares wind and pv feed-in time series for the regions Berlin and Brandenburg. Raw
-data is read from csvs from https://www.renewables.ninja/ and then formatted to fit the time series
-template for oemof-B3.
+This script prepares wind, pv and run-of-the-river (ror) feed-in time series for the regions Berlin
+and Brandenburg. Raw data is read from csvs from https://www.renewables.ninja/ (wind+pv) and
+https://zenodo.org/record/1044463 (ror) and is then formatted to fit the time series template of
+oemof-B3 (`schema/timeseries.csv`).
 
 """
-
-# todo  ROR could be included here
 
 import sys
 import pandas as pd
@@ -28,6 +27,7 @@ import os
 import oemof_b3.tools.data_processing as dp
 
 # global variables
+# specific to wind and pv time series
 RE_NINJA_YEARS = list(
     range(2010, 2020)
 )  # re ninja wind+pv time series are prepared for these years
@@ -37,14 +37,14 @@ RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
 TS_VAR_UNIT = "None"
 TS_SOURCE = "https://www.renewables.ninja/"
 TS_COMMENT = "navigate to country Germany"
-# Specific to ror time series
+# specific to ror time series
 REGIONS = ["BB", "B"]
 TS_SOURCE_ROR = "https://zenodo.org/record/1044463"
 TS_COMMENT_ROR = "Isolated ror availability time series from DIW data"
 YEAR_ROR = 2017
 
 
-def prepare_time_series(filename_ts, year, type):
+def prepare_wind_and_pv_time_series(filename_ts, year, type):
     r"""
     Prepares and formats time series of `type` 'wind' or 'pv' for region 'B' and 'BB'.
 
@@ -60,7 +60,7 @@ def prepare_time_series(filename_ts, year, type):
     Returns
     -------
     ts_prepared : pd.DataFrame
-        Contains time series in the format of template in `filename_template`
+        Contains time series in the format of time series template of oemof-B3
 
     """
     # load raw time series and copy data frame
@@ -108,7 +108,7 @@ def prepare_ror_time_series(filename_ts, type, year, region):
     Returns
     -------
     ts_prepared : pd.DataFrame
-        Contains time series in the format of template in `filename_template`
+        Contains time series in the format of time series template of oemof-B3
 
     """
     # load raw time series and copy data frame
@@ -147,14 +147,16 @@ if __name__ == "__main__":
     # prepare time series for each year
     for year in RE_NINJA_YEARS:
         # prepare wind time series
-        wind_ts = prepare_time_series(
+        wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
             year=year,
             type="wind",
         )
 
         # prepare pv time series
-        pv_ts = prepare_time_series(filename_ts=filename_pv, year=year, type="pv")
+        pv_ts = prepare_wind_and_pv_time_series(
+            filename_ts=filename_pv, year=year, type="pv"
+        )
 
         # add time series to `time_series_df`
         time_series_df = pd.concat([time_series_df, wind_ts, pv_ts], axis=0)

@@ -1,7 +1,7 @@
 import os
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from scripts.prepare_feedin import prepare_time_series
+from scripts.prepare_feedin import prepare_wind_and_pv_time_series
 from oemof_b3.tools.data_processing import load_b3_timeseries, save_df
 
 # Paths
@@ -20,8 +20,8 @@ filename_results = os.path.join(
 )
 
 
-def test_prepare_time_series_wind():
-    df = prepare_time_series(
+def test_prepare_wind_and_pv_time_series_wind():
+    df = prepare_wind_and_pv_time_series(
         filename_ts=filename_wind,
         year=2012,  # in the test files only years 2010, 2012 and 2013 are included
         type="wind",
@@ -46,8 +46,8 @@ def test_prepare_time_series_wind():
     os.remove(temp_filename)
 
 
-def test_prepare_time_series_pv():
-    df = prepare_time_series(
+def test_prepare_wind_and_pv_time_series_pv():
+    df = prepare_wind_and_pv_time_series(
         filename_ts=filename_pv,
         year=2012,  # in the test files only years 2010, 2012 and 2013 are included
         type="pv",
