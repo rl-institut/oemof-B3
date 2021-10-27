@@ -23,6 +23,7 @@ import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
 import pandas as pd
 
+import oemof_b3.tools.data_processing as dp
 from oemof_b3 import colors_odict
 
 # User input
@@ -138,12 +139,8 @@ if __name__ == "__main__":
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
-    def load_scalars(path):
-        df = pd.read_csv(path, sep=",", index_col=0)
-        return df
-
     # Load scalar data
-    scalars = load_scalars(resources)
+    scalars = dp.load_b3_scalars(resources)
 
     df_pivot, color_keys, color_dict = prepare_conv_pp_scalars(
         var_name=var_name, conv_number=conv_number
