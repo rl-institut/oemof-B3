@@ -116,7 +116,7 @@ def prepare_ror_time_series(filename_ts, type, year, region):
     time_series = ts_raw.copy()
 
     time_series.index = pd.date_range(
-        "2019-01-01 00:00:00", "2019-12-31 23:00:00", 8760
+        "2017-01-01 00:00:00", "2017-12-31 23:00:00", 8760
     )
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
