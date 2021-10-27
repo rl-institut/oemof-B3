@@ -16,13 +16,14 @@ Description
 The script takes prepared data of conventional power plants from OPS, prepares the
 data further and plots the data.
 """
-import sys
 import os
-import pandas as pd
+import sys
+
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
-from oemof_b3 import colors_odict
+import pandas as pd
 
+from oemof_b3 import colors_odict
 
 # User input
 var_name = "capacity_net_el"
