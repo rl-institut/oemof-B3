@@ -64,11 +64,12 @@ rule prepare_feedin:
     input:
         wind_feedin="raw/time_series/ninja_wind_country_DE_current_merra-2_nuts-2_corrected.csv",
         pv_feedin="raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv",
+        ror_feedin="raw/time_series/DIW_Hydro_availability.csv",
         script="scripts/prepare_feedin.py"
     output:
         "results/_resources/feedin_time_series.csv"
     shell:
-        "python {input.script} {input.wind_feedin} {input.pv_feedin} {output}"
+        "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
 
 rule build_datapackage:
     input:
