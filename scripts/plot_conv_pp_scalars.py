@@ -54,19 +54,38 @@ german_labels = {
 }
 
 
-def prepare_conv_pp_scalars(var_name, conv_number, carrier_dict=carrier_dict):
+def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, carrier_dict=carrier_dict):
+    r"""
+    This function prepares the scalar data file of the conventional power plants in
+
+    Parameters
+    ----------
+    df_conv_pp_scalars: pd.DataFrame
+        contains all conventional power plants in Berlin and Brandenburg
+    var_name: string
+        indicates the var_name which shall be plotted
+    conv_number: int
+         converts the value to SI unit, i.e. W
+    carrier_dict: dict
+         capitalizes carrier names
+    Returns
+    -------
+    df_pivot : pandas.DataFrame
+        Unique unit
+    color_keys: pandas.Index
+        determines order of carriers in plot
+    color_dict: dict
+        contains colors for different carriers for plotting
+    """
     # select var_name to be plotted
-    selected_df = scalars[scalars["var_name"] == var_name].copy()
+    selected_df = df_conv_pp_scalars[df_conv_pp_scalars["var_name"] == var_name].copy()
 
     # CONV_PP specific
     selected_df.loc[(selected_df["region"] != "Berlin"), "region"] = "Brandenburg"
     # capitalize carrier names
     selected_df["carrier"].replace(carrier_dict, inplace=True)
     # aggregate carriers in regions
-    selected_df_agg = selected_df.groupby(
-        ["scenario", "region", "carrier", "var_name"]
-    ).sum()
-    selected_df_agg.reset_index(inplace=True)
+    selected_df_agg = dp.aggregate_scalars(df=selected_df, columns_to_aggregate=["tech"])
 
     # apply pivot table
     df_pivot = pd.pivot_table(
@@ -140,9 +159,9 @@ if __name__ == "__main__":
         os.makedirs(target_dir)
 
     # Load scalar data
-    scalars = dp.load_b3_scalars(resources)
+    df_conv_pp_scalars = dp.load_b3_scalars(resources)
 
     df_pivot, color_keys, color_dict = prepare_conv_pp_scalars(
-        var_name=var_name, conv_number=conv_number
+        df_conv_pp_scalars=df_conv_pp_scalars, var_name=var_name, conv_number=conv_number
     )
     plot_scalar_resources(df_pivot, color_keys, color_dict, unit_dict)

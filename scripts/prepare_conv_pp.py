@@ -128,7 +128,7 @@ if __name__ == "__main__":
     scalar_template["tech"] = conv_scalars["technology"]
     scalar_template["type"] = "None"
     scalar_template["var_value"] = conv_scalars["value"]
-    scalar_template["reference"] = "OPSD_conv_pp_DE"
+    scalar_template["source"] = "OPSD_conv_pp_DE"
     scalar_template[
         "comment"
     ] = "filename: conventional_power_plants_DE.csv, aggregated based on NUTS3 region"
