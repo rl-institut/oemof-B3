@@ -2,9 +2,9 @@
 r"""
 Inputs
 -------
-filename_agriculture : str
+filename_pv_agriculture : str
     Path incl. file name to area potential agriculture pv csv
-filename_road_railway : str
+filename_pv_road_railway : str
     Path incl. file name to area potential roads and railway pv csv
 filename_wind : str
     Path incl. file name to area potential wind csv
@@ -15,8 +15,10 @@ filename_assumptions : str
 
 Outputs
 ---------
-output_file : str
-    Path incl. file name to output: power potential wind/pv of "Landkreise"
+output_pv : str
+    Path incl. file name to output: pv power potential of "Landkreise"
+output_wind : str
+    Path incl. file name to output: wind power potential of "Landkreise"
 secondary_output_dir : str
     Path to secondary output directory where data of single areas is saved (see "Description")
 
@@ -469,38 +471,30 @@ def calculate_power_potential(
 
 
 if __name__ == "__main__":
-    try:
-        output_file = sys.argv[4]
-        type = os.path.basename(output_file).split("_")[2]
-    except IndexError:
-        output_file = sys.argv[5]
-        type = os.path.basename(output_file).split("_")[2]
+    filename_pv_agriculture = sys.argv[1]
+    filename_pv_road_railway = sys.argv[2]
+    filename_wind = sys.argv[3]
+    filename_kreise = sys.argv[4]
+    filename_assumptions = sys.argv[5]
+    output_pv = sys.argv[6]
+    output_wind = sys.argv[7]
+    secondary_output_dir = sys.argv[8]
 
-    if type == "pv":
-        filename_agriculture = sys.argv[1]
-        filename_road_railway = sys.argv[2]
-        filename_kreise = sys.argv[3]
-        filename_assumptions = sys.argv[4]
-        secondary_output_dir = sys.argv[6]
-        calculate_potential_pv(
-            filename_agriculture=filename_agriculture,
-            filename_road_railway=filename_road_railway,
-            output_file=output_file,
-            secondary_output_dir=secondary_output_dir,
-            filename_kreise=filename_kreise,
-            filename_assumptions=filename_assumptions,
-        )
-    elif type == "wind":
-        filename_wind = sys.argv[1]
-        filename_kreise = sys.argv[2]
-        filename_assumptions = sys.argv[3]
-        secondary_output_dir = sys.argv[5]
-        calculate_potential_wind(
-            filename_wind=filename_wind,
-            output_file=output_file,
-            secondary_output_dir=secondary_output_dir,
-            filename_kreise=filename_kreise,
-            filename_assumptions=filename_assumptions,
-        )
-    else:
-        raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
+    # calculate pv potential
+    calculate_potential_pv(
+        filename_agriculture=filename_pv_agriculture,
+        filename_road_railway=filename_pv_road_railway,
+        output_file=output_pv,
+        secondary_output_dir=secondary_output_dir,
+        filename_kreise=filename_kreise,
+        filename_assumptions=filename_assumptions,
+    )
+
+    # calculate wind potential
+    calculate_potential_wind(
+        filename_wind=filename_wind,
+        output_file=output_wind,
+        secondary_output_dir=secondary_output_dir,
+        filename_kreise=filename_kreise,
+        filename_assumptions=filename_assumptions,
+    )
