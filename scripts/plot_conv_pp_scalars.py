@@ -54,7 +54,9 @@ german_labels = {
 }
 
 
-def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, carrier_dict=carrier_dict):
+def prepare_conv_pp_scalars(
+    df_conv_pp_scalars, var_name, conv_number, carrier_dict=carrier_dict
+):
     r"""
     This function prepares the scalar data file of the conventional power plants in
     Berlin and Brandenburg. It aggregates power plants with the same carrier in a
@@ -88,7 +90,9 @@ def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, carrier_d
     # capitalize carrier names
     selected_df["carrier"].replace(carrier_dict, inplace=True)
     # aggregate carriers in regions
-    selected_df_agg = dp.aggregate_scalars(df=selected_df, columns_to_aggregate=["tech"])
+    selected_df_agg = dp.aggregate_scalars(
+        df=selected_df, columns_to_aggregate=["tech"]
+    )
 
     # apply pivot table
     df_pivot = pd.pivot_table(
@@ -181,6 +185,8 @@ if __name__ == "__main__":
     df_conv_pp_scalars = dp.load_b3_scalars(resources)
 
     df_pivot, color_keys, color_dict = prepare_conv_pp_scalars(
-        df_conv_pp_scalars=df_conv_pp_scalars, var_name=var_name, conv_number=conv_number
+        df_conv_pp_scalars=df_conv_pp_scalars,
+        var_name=var_name,
+        conv_number=conv_number,
     )
     plot_conv_pp_scalars(df_pivot, color_keys, color_dict, unit_dict)
