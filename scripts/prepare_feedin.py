@@ -94,7 +94,7 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
 
 def prepare_ror_time_series(filename_ts, region):
     r"""
-    Prepares and formats time series of `type` 'ror' for region 'B' and 'BB'.
+    Prepares and formats run-of-the-river (ror) time series for region 'B' and 'BB'.
 
     Parameters
     ----------
