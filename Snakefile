@@ -79,6 +79,32 @@ rule build_datapackage:
     shell:
         "python scripts/build_datapackage.py {input} {output}"
 
+rule prepare_re_potential:
+    input:
+        pv_agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
+        pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
+        wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
+        kreise="raw/lookup_table_brandenburg_kreise.csv",
+        assumptions="raw/scalars.csv",
+        script="scripts/prepare_re_potential.py"
+    output:
+        pv_potential="results/_resources/power_potential_pv_kreise.csv",
+        wind_potential="results/_resources/power_potential_wind_kreise.csv",
+        secondary_output_dir=directory("results/_resources/RE_potential/")
+    shell:
+        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output.pv_potential} {output.wind_potential} {output.secondary_output_dir}"
+
+rule process_re_potential:
+    input:
+        wind="results/_resources/power_potential_wind_kreise.csv",
+        pv="results/_resources/power_potential_pv_kreise.csv",
+        script="scripts/process_re_potential.py"
+    output:
+        scalars="results/_resources/wind_pv_scalar.csv",
+        table="results/_tables/potential_wind_pv_kreise.csv",
+    shell:
+        "python {input.script} {input.wind} {input.pv} {output.scalars} {output.table}"
+
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
