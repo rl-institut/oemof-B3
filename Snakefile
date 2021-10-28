@@ -110,10 +110,10 @@ rule plot_dispatch:
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
-rule plot_scalar_resources:
+rule plot_conv_pp_scalars:
     input:
         data="results/_resources/{resource}.csv",
-        script="scripts/plot_scalar_resources.py"
+        script="scripts/plot_conv_pp_scalars.py"
     output:
         "results/_resources/plots/{resource}.png"
     shell:
