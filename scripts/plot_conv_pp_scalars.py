@@ -13,7 +13,7 @@ matplotlib.figure.Figure
 
 Description
 -------------
-The script takes prepared data of conventional power plants from OPS, prepares the
+The script takes prepared data of conventional power plants from OPSD, prepares the
 data further and plots the data.
 """
 import os
@@ -57,6 +57,9 @@ german_labels = {
 def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, carrier_dict=carrier_dict):
     r"""
     This function prepares the scalar data file of the conventional power plants in
+    Berlin and Brandenburg. It aggregates power plants with the same carrier in a
+    region and puts the data in a pivot table to allow to plot a grouped
+    bar plot.
 
     Parameters
     ----------
@@ -115,7 +118,23 @@ def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, carrier_d
     return df_pivot, color_keys, color_dict
 
 
-def plot_scalar_resources(df, color_keys, color_dict, unit_dict):
+def plot_conv_pp_scalars(df, color_keys, color_dict, unit_dict):
+    r"""
+    This function plots the net installed capacity of conventional power plants
+    in Berlin and Brandenburg in a grouped bar plot.
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+        pivot table with aggregated net installed capacity based on carrier
+        of conventional power plants in Berlin and Brandenburg
+    color_keys: pandas.Index
+        determines order of carriers in plot
+    color_dict: dict
+        contains colors for different carriers for plotting
+    unit_dict: dict
+        contains units to var_name which is plotted
+    """
     alpha = 0.3
     fontsize = 14
     plt.rcParams.update({"font.size": fontsize})
@@ -164,4 +183,4 @@ if __name__ == "__main__":
     df_pivot, color_keys, color_dict = prepare_conv_pp_scalars(
         df_conv_pp_scalars=df_conv_pp_scalars, var_name=var_name, conv_number=conv_number
     )
-    plot_scalar_resources(df_pivot, color_keys, color_dict, unit_dict)
+    plot_conv_pp_scalars(df_pivot, color_keys, color_dict, unit_dict)
