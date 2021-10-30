@@ -1,3 +1,25 @@
+r"""
+Inputs
+-------
+url_opsd : str
+    url of raw opsd data of electricty load as .csv
+output_file : str
+    path of output file with prepared data as .csv
+
+Outputs
+---------
+pandas.DataFrame
+    with normalized load data of 50 Hertz region in Germany from the years 2015, 2016, 2017, 2018
+    and 2019. The data is normalized with the total electricity demand of the corresponding year.
+
+Description
+-------------
+The script downloads the 60 min timeseries data from OPSD and filters for the load data
+of the 50 Hertz region in Germany. The load data is normalized with the total electricity
+demand of the corresponding year and put into the timeseries template format. The years
+2015 to 2019 (including) are available.
+"""
+
 import sys
 import pandas as pd
 import os
@@ -15,9 +37,9 @@ TS_COMMENT = "DE_50hertz actual load data"
 LOAD_DATA = "DE_50hertz_load_actual_entsoe_transparency"
 
 
-def prepare_load_profile_time_series(ts_raw, year, type, region):
+def prepare_load_profile_time_series(ts_raw, year, region):
     r"""
-    Prepares and formats time series of `type` 'load' for region 'B' and 'BB'.
+    Prepares and formats time series of load for region 'B' and 'BB'.
     The load profile is normalized with the total energy demand of a year.
 
     Parameters
@@ -26,13 +48,13 @@ def prepare_load_profile_time_series(ts_raw, year, type, region):
         Contains actual load data from 50hertz region from opsd load data
     year : int
         Year for which time series is extracted from raw data in `ts_raw`
-    type : str
-        Type of time series like 'load'; used for column 'var_name' in output
+    region : str
+        Region of time series; used for column 'region' in output
 
     Returns
     -------
     ts_prepared : pd.DataFrame
-        Contains time series in the format of template in `filename_template`
+        Contains time series in the format of timeseries template.
 
     """
     # copy data frame
@@ -53,10 +75,10 @@ def prepare_load_profile_time_series(ts_raw, year, type, region):
     # add additional information as required by template
     ts_prepared.loc[:, "region"] = region
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = f"{type}-profile"
+    ts_prepared.loc[:, "var_name"] = "load-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+    ts_prepared.loc[:, "scenario"] = "ts_load"
 
     return ts_prepared
 
@@ -79,7 +101,7 @@ if __name__ == "__main__":
         for region in REGIONS:
             # prepare opsd 50hertz actual load time series
             load_ts = prepare_load_profile_time_series(
-                ts_raw=ts_raw, year=year, type="load", region=region
+                ts_raw=ts_raw, year=year, region=region
             )
 
             # add time series to `time_series_df`
