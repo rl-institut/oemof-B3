@@ -73,7 +73,7 @@ rule prepare_feedin:
     shell:
         "python {input.script} {input.wind_feedin} {input.pv_feedin} {output}"
 
-rule prepare_load_profile:
+rule prepare_electricity_demand:
     input:
         opsd_url=HTTP.remote("https://data.open-power-system-data.org/time_series/2020-10-06/time_series_60min_singleindex.csv"),
         script="scripts/prepare_electricity_demand.py"
