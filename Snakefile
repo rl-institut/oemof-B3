@@ -61,12 +61,11 @@ rule prepare_conv_pp:
         opsd="raw/conventional_power_plants_DE.csv",
         gpkg="raw/boundaries_germany_nuts3.gpkg",
         b3_regions="raw/b3_regions.yaml",
-        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/conv_pp_scalar.csv"
     shell:
-        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {input.scalar_template} {output}"
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
 rule prepare_feedin:
     input:
