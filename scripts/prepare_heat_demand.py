@@ -29,10 +29,11 @@ The script...
 """
 import sys
 import datetime
+import os
 from demandlib import bdew
 import pandas as pd
 import numpy as np
-import os
+
 
 import oemof_b3.tools.data_processing as dp
 
@@ -70,6 +71,32 @@ def get_holidays(path, year, region):
     return holidays
 
 
+def check_central_decentral(demands, value, consumer, type):
+    """
+    This function checks whether
+    Parameters
+    ----------
+    demands : pd.DataFrame
+         DataFrame that contains yearly demands
+    value : float
+         Value of the yearly demand
+    consumer : str
+         Name of the consumer (eg.: ghd, efh, mfh)
+    type : str
+         Specification of heat demand: central or decentral
+
+    Returns
+    -------
+    demands : pd.DataFrame
+         Updated DataFrame that contains yearly demands
+    """
+    if consumer + "_" + type in demands.columns:
+        demands[consumer + "_" + type] = np.sum(demands[consumer + "_" + type], [value])
+    else:
+        demands[consumer + "_" + type] = [value]
+    return demands
+
+
 def get_heat_demand(path, region, scenario):
     """
     This function returns ghd and hh demands together with their unit of a given region and a
@@ -96,64 +123,38 @@ def get_heat_demand(path, region, scenario):
     """
     # Read state heat demands of ghd and hh sectors
     sc = dp.load_b3_scalars(path)  # TODO: Add ', sep=";"' if from schema
+    consumers = ["ghd", "efh", "mfh"]
+    types = ["central", "decentral"]
+    demands = pd.DataFrame()
+    units = []
 
     for row in sc.iterrows():
         # Get heat demands in region
         if (
-            "heat" in row[1]["name"]
-            and "demand" in row[1]["name"]
+            "heat" in row[1]["carrier"]
+            and "demand" in row[1]["tech"]
             and row[1]["scenario"] == scenario
             and row[1]["region"] == region
         ):
-            # Get heat demand of ghd in region
-            if "ghd" in row[1]["name"] or "GHD" in row[1]["name"]:
-                demand_ghd = row[1]["var_value"]
-                demand_ghd_unit = row[1]["var_unit"]
-            # Get heat demand of hh in region
-            elif (
-                "hh" in row[1]["name"]
-                or "HH" in row[1]["name"]
-                or "household" in row[1]["name"]
-            ):
-                demand_hh = row[1]["var_value"]
-                demand_hh_unit = row[1]["var_unit"]
+            for consumer in consumers:
+                for type in types:
+                    if (
+                        consumer in row[1]["name"]
+                        and type in row[1]["name"]
+                        and "de" + type not in row[1]["name"]
+                    ):
+                        check_central_decentral(
+                            demands, row[1]["var_value"], consumer, type
+                        )
+                        units.append(row[1]["var_unit"])
 
-    if demand_ghd_unit != demand_hh_unit:
+    if len(list(set(units))) != 1:
         raise ValueError(
             f"Unit mismatch in scalar data of heat demands. "
             f"Please make sure units match in {path}."
         )
 
-    return demand_ghd, demand_hh, demand_ghd_unit
-
-
-def get_distribution_hh(path, region):
-    """
-    This function applies distribution for hh sector in order to calculate single family house
-    (sfh / efh: Einfamilienhaus) and multi family house (mfh: Mehrfamilienhaus) demands
-
-    Parameters
-    ----------
-    path : str
-        input path
-    region : str
-        region e.g. BB as Brandenburg
-
-    Returns
-    -------
-    share_efh : float
-        share of sfh
-    share_mfh : float
-        share of mfh
-    """
-    distribution_households = pd.read_csv(path)
-
-    for row in distribution_households.iterrows():
-        if region in row[1]["region"]:
-            share_efh = row[1]["sfh"] / (row[1]["sfh"] + row[1]["mfh"])
-            share_mfh = row[1]["mfh"] / (row[1]["sfh"] + row[1]["mfh"])
-
-    return share_efh, share_mfh
+    return demands, list(set(units))
 
 
 def calculate_heat_load(region, scenario):
@@ -176,7 +177,7 @@ def calculate_heat_load(region, scenario):
 
     """
     # Set examined years
-    years = np.arange(2010, 2019)
+    years = np.arange(2010, 2020)
 
     # Read time series template
     ts_template = dp.load_b3_timeseries(in_path5, sep=";")
@@ -195,12 +196,9 @@ def calculate_heat_load(region, scenario):
         temperature = pd.read_csv(path_weather_data, usecols=["temp_air"], header=0)
 
         # Get heat demand in region and scenario
-        sc_demand_ghd, sc_demand_hh, sc_demand_unit = get_heat_demand(
-            in_path4, region, scenario
-        )
+        yearly_demands, sc_demand_unit = get_heat_demand(in_path4, region, scenario)
 
-        # Get share of sfh and mfh
-        share_efh, share_mfh = get_distribution_hh(in_path2, region)
+        types = ["central", "decentral"]
 
         # Add DataFrame time index for demands
         demand = pd.DataFrame(
@@ -209,44 +207,45 @@ def calculate_heat_load(region, scenario):
             )
         )
 
-        # Calculate sfh (efh: Einfamilienhaus) heat load
-        demand["efh"] = bdew.HeatBuilding(
-            demand.index,
-            holidays=holidays,
-            temperature=temperature,
-            shlp_type="EFH",
-            building_class=1,
-            wind_class=1,
-            annual_heat_demand=share_efh * sc_demand_hh,
-            name="EFH",
-            ww_incl=True,
-        ).get_bdew_profile()
+        for type in types:
+            # Calculate sfh (efh: Einfamilienhaus) heat load
+            demand["efh" + "_" + type] = bdew.HeatBuilding(
+                demand.index,
+                holidays=holidays,
+                temperature=temperature,
+                shlp_type="EFH",
+                building_class=6,
+                wind_class=0,
+                annual_heat_demand=yearly_demands["efh" + "_" + type],
+                name="EFH",
+                ww_incl=True,
+            ).get_bdew_profile()
 
-        # Calculate mfh (mfh: Mehrfamilienhaus) heat load
-        demand["mfh"] = bdew.HeatBuilding(
-            demand.index,
-            holidays=holidays,
-            temperature=temperature,
-            shlp_type="MFH",
-            building_class=2,
-            wind_class=0,
-            annual_heat_demand=share_mfh * sc_demand_hh,
-            name="MFH",
-            ww_incl=True,
-        ).get_bdew_profile()
+            # Calculate mfh (mfh: Mehrfamilienhaus) heat load
+            demand["mfh" + "_" + type] = bdew.HeatBuilding(
+                demand.index,
+                holidays=holidays,
+                temperature=temperature,
+                shlp_type="MFH",
+                building_class=2,
+                wind_class=0,
+                annual_heat_demand=yearly_demands["mfh" + "_" + type],
+                name="MFH",
+                ww_incl=True,
+            ).get_bdew_profile()
 
-        # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
-        # heat load
-        demand["ghd"] = bdew.HeatBuilding(
-            demand.index,
-            holidays=holidays,
-            temperature=temperature,
-            shlp_type="ghd",
-            wind_class=0,
-            annual_heat_demand=sc_demand_ghd,
-            name="ghd",
-            ww_incl=True,
-        ).get_bdew_profile()
+            # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
+            # heat load
+            demand["ghd" + "_" + type] = bdew.HeatBuilding(
+                demand.index,
+                holidays=holidays,
+                temperature=temperature,
+                shlp_type="ghd",
+                wind_class=0,
+                annual_heat_demand=yearly_demands["ghd" + "_" + type],
+                name="ghd",
+                ww_incl=True,
+            ).get_bdew_profile()
 
         # Calculate total heat load in year
         heat_load_year = pd.DataFrame(
@@ -288,7 +287,7 @@ if __name__ == "__main__":
     #     raw_data, "distribution_households.csv"
     # )  # path to household distributions data
     # in_path3 = os.path.join(raw_data, "holidays.csv")  # path to holidays
-    # in_path4 = os.path.join(schema, "scalars.csv")  # path to b3 schema scalars.csv
+    # in_path4 = os.path.join(raw_data, "scalars.csv")  # path to b3 schema scalars.csv
     # in_path5 = os.path.join(schema, "timeseries.csv")
     # out_path = os.path.join(raw_data, "heat_load.csv")
 
@@ -299,8 +298,8 @@ if __name__ == "__main__":
     in_path5 = sys.argv[5]  # path to template of times series format
     out_path = sys.argv[6]
 
-    region_BE = "BB"
-    scenario_base = "base"
+    REGION = "BB"
+    SCENARIO = "base"
 
-    heat_load = calculate_heat_load(region_BE, scenario_base)
+    heat_load = calculate_heat_load(REGION, SCENARIO)
     heat_load.to_csv(out_path)
