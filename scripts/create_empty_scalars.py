@@ -131,7 +131,7 @@ if __name__ == "__main__":
         empty_scalars = expand_scalars(
             empty_scalars,
             column="var_name",
-            where="capacity_cost",
+            where="storage_capacity_cost",
             expand=["storage_capacity_cost_overnight", "lifetime", "fixom_cost"],
         )
 
