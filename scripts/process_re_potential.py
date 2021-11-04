@@ -3,9 +3,9 @@ r"""
 Inputs
 -------
 filename_wind : str
-    Path incl. file name to area and power potential of wind energy
+    ''results/_resources/power_potential_wind_kreise.csv'': Path incl. file name to area and power potential of wind energy
 filename_pv : str
-    Path incl. file name to area and power potential of pv
+    ''results/_resources/power_potential_pv_kreise.csv'': Path incl. file name to area and power potential of pv
 
 Outputs
 ---------

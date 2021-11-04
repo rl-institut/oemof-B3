@@ -1,3 +1,20 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+optimized : str
+    ''results/{scenario}/optimized''
+scenario_name : str
+    '' ''
+destination : str
+    ''results/{scenario}/preprocessed''
+Outputs
+---------
+
+Description
+-------------
+
+"""
 import sys
 
 from oemof.solph import EnergySystem
