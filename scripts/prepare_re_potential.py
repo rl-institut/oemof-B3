@@ -12,38 +12,37 @@ filename_kreise : str
     Path incl. file name to lookup table Kreise and NUTS of Brandenburg
 filename_assumptions : str
     Path incl. file name to assumptions csv
+output_dir : str
+    Path to output directory where power and area potential of single areas and of "Landkreise" is
+    saved
 
 Outputs
 ---------
-output_pv : str
-    Path incl. file name to output: pv power potential of "Landkreise"
-output_wind : str
-    Path incl. file name to output: wind power potential of "Landkreise"
-secondary_output_dir : str
-    Path to secondary output directory where data of single areas is saved (see "Description")
+pd.DataFrame
+    Multiple data frames with power and area potential for single areas and aggregated to
+    "Landkreise". For details see 'Description' below.
+
 
 Description
 -------------
-Calculates the area and power potential of photovoltaics or wind energy depending on
-`type`. The area of single areas are retrieved from csv files and processed. The
-resulting area and power potential is saved in `output_file`
-
-Saves the following data for "Landkreise":
+Calculates the area and power potential of photovoltaics and wind energy. The area of single areas
+are retrieved from csv files and processed. The resulting area and power potential for "Landkreise"
+is saved in `output_dir/power_potential_wind_kreise.csv` for wind and in
+`output_dir/power_potential_pv_kreise.csv` for pv:
     - power potential in column 'power_potential'
     - power potential after reducing by degree of agreement in column 'power_potential_agreed'
     - area potential in column 'area'
     - percentage of overlap between the areas in columns 'overlap_pv_agriculture_percent',
       'overlap_pv_road_railway_percent', only for pv: 'overlap_wind_percent'
-    - all values for Brandenburg in row 'Brandenburg'
 
-Additionally, saves the following data in "../results/RE_potential":
-    - joined pv area potential of single areas in column 'area_raw' in
-      "area_potential_single_areas_pv_raw.csv"
+Additionally, saves the following data in `output_dir`:
+    - joined pv area potential from `filename_pv_agriculture` and `filename_pv_road_railway` of
+      single areas in column 'area_raw' in "area_potential_single_areas_pv_raw.csv"
     - area potential of single areas in column 'area' in
-      f"area_potential_single_areas_{type}.csv" for `type`
+      f"area_potential_single_areas_{type}.csv" for type in ['wind', 'pv']
     - power potential of single areas in column 'power_potential' and reduced power potential (by
       degree of agreement) in column 'power_potential_agreed' in
-      f"power_potential_single_areas_{type}.csv" for `type`
+      f"power_potential_single_areas_{type}.csv" for type in ['wind', 'pv']
 
 """
 import os
@@ -105,8 +104,7 @@ def add_names_of_kreise(df, filename_kreise):
 def calculate_potential_pv(
     filename_agriculture,
     filename_road_railway,
-    output_file,
-    secondary_output_dir,
+    output_dir,
     filename_kreise,
     filename_assumptions,
 ):
@@ -123,11 +121,11 @@ def calculate_potential_pv(
 
     The following data is saved:
     - "raw" pv area potential of single areas in column 'area_raw' in
-      "area_potential_single_areas_pv_raw.csv" in `secondary_output_dir`
+      "area_potential_single_areas_pv_raw.csv" in `output_dir`
     - pv area potential of single areas after processing with :py:func:`~.calculate_area_potential`
-      in column 'area_agreed' in "area_potential_single_areas_pv.csv" in `secondary_output_dir`
+      in column 'area_agreed' in "area_potential_single_areas_pv.csv" in `output_dir`
     - pv power [MW] and area [m²] potential of "Landkreise" in columns 'area_agreed' and
-      'power_potential' in `output_file`
+      'power_potential' in `output_dir/power_potential_pv_kreise.csv`
 
     Parameters
     ----------
@@ -135,10 +133,8 @@ def calculate_potential_pv(
         Path including file name to raw area potentials of pv on agricultural areas
     filename_road_railway: str
         Path including file name to raw area potentials of pv along roads and railways
-    output_file: str
-        File name including path to output of power potential of pv for "Landkreise"
-    secondary_output_dir: str
-        Directory where secondary outputs are saved.
+    output_dir: str
+        Directory where outputs are saved.
     filename_kreise: str
         File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
     filename_assumptions: str
@@ -173,11 +169,9 @@ def calculate_potential_pv(
     areas_pv = pd.concat([areas_road_railway, areas_agriculture], axis=0, sort=True)
 
     # save total pv area potential
-    if not os.path.exists(secondary_output_dir):
-        os.mkdir(secondary_output_dir)
-    filename = os.path.join(
-        secondary_output_dir, "area_potential_single_areas_pv_raw.csv"
-    )
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    filename = os.path.join(output_dir, "area_potential_single_areas_pv_raw.csv")
     areas_pv.to_csv(filename, sep=";")
 
     # read parameters for calculations like minimum required area and degree of agreement from
@@ -199,7 +193,7 @@ def calculate_potential_pv(
         area_data=areas_pv,
         type="pv",
         minimum_area=minimum_area,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         reduction_by_wind_overlap=reduction_by_wind_overlap,
     )
 
@@ -209,16 +203,14 @@ def calculate_potential_pv(
         input_file=filename_single_areas,
         required_specific_area=required_specific_area,
         degree_of_agreement=degree_of_agreement,
-        output_file=output_file,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
     )
 
 
 def calculate_potential_wind(
     filename_wind,
-    output_file,
-    secondary_output_dir,
+    output_dir,
     filename_kreise,
     filename_assumptions,
 ):
@@ -232,18 +224,16 @@ def calculate_potential_wind(
 
     The following data is saved:
     - wind area potential of single areas in [m²] in column 'area' in
-      "area_potential_single_areas_wind.csv" in `secondary_output_dir`
+      "area_potential_single_areas_wind.csv" in `output_dir`
     - wind power [MW] and area [m²] potential of "Landkreise" in columns 'area' and
-      'power_potential' in `output_file`
+      'power_potential' in `output_dir/power_potential_wind_kreise.csv`
 
     Parameters
     ----------
     filename_wind: str
         Path including file name to raw area potentials for wind energy
-    output_file: str
-        File name including path to output of power potential of wind for "Landkreise"
-    secondary_output_dir: str
-        Directory where secondary outputs are saved.
+    output_dir: str
+        Directory where outputs are saved.
     filename_kreise: str
         File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
     filename_assumptions: str
@@ -261,8 +251,8 @@ def calculate_potential_wind(
 
     # create directory for intermediate results if not existent
     # save total wind area potential
-    if not os.path.exists(secondary_output_dir):
-        os.mkdir(secondary_output_dir)
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
     # read parameters for calculations like minimum required area and degree of agreement from
     # `filename_assumptions`
@@ -280,7 +270,7 @@ def calculate_potential_wind(
         area_data=areas,
         type="wind",
         minimum_area=minimum_area,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
     )
 
     # calculate power potential
@@ -288,9 +278,8 @@ def calculate_potential_wind(
         type="wind",
         input_file=filename_single_areas,
         required_specific_area=required_specific_area,
-        output_file=output_file,
         degree_of_agreement=degree_of_agreement,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
     )
 
@@ -299,7 +288,7 @@ def calculate_area_potential(
     area_data,
     type,
     minimum_area,
-    secondary_output_dir,
+    output_dir,
     reduction_by_wind_overlap=None,
 ):
     r"""
@@ -310,9 +299,9 @@ def calculate_area_potential(
     - if `type` is "pv", area is reduced by a certain percentage
       (`reduction_by_wind_overlap`) in case there is overlapping with wind potential area in sum.
 
-    The following data is saved in `secondary_output_dir`:
+    The following data is saved in `output_dir`:
     - Area potential of single areas in column 'area' in
-      f"area_potential_single_areas_{type}.csv"
+      f"output_dir/area_potential_single_areas_{type}.csv"
 
     Parameters
     ----------
@@ -322,8 +311,8 @@ def calculate_area_potential(
         Type of area potential "pv" or "wind".
     minimum_area: float
         Minimum required area for considering area as potential for installing plants of `type`.
-    secondary_output_dir: str
-        Directory where intermediate outputs are saved.
+    output_dir: str
+        Directory where outputs are saved.
     reduction_by_wind_overlap: float or None
         Reduction of area if `type` is "pv" in case there is overlapping with wind
         potential area in sum.
@@ -353,9 +342,9 @@ def calculate_area_potential(
     else:
         raise ValueError(f"Parameter `type` needs to be 'pv' or 'wind' but is {type}.")
 
-    # save area potential of single areas in m² (needed for further calculations of wind potential)
+    # save area potential of single areas in m²
     filename_single_areas = os.path.join(
-        secondary_output_dir,
+        output_dir,
         f"area_potential_single_areas_{type}.csv",
     )
     areas.to_csv(filename_single_areas, sep=";")
@@ -366,22 +355,20 @@ def calculate_area_potential(
 def calculate_power_potential(
     type,
     input_file,
-    output_file,
     required_specific_area,
     degree_of_agreement,
-    secondary_output_dir,
+    output_dir,
     filename_kreise,
 ):
     r"""
     Calculates wind or pv power potential for each area and Landkreis and saves results to csv.
 
-    Saves the following data for "Landkreise" in `output_file`.
+    Saves the following data for "Landkreise" in `output_dir/power_potential_{type}_kreise.csv`:
     - power potential in column 'power_potential'
     - power potential after reducing by degree of agreement in column 'power_potential_agreed'
     - area potential in column 'area'
     - percentage of overlap between the areas in columns 'overlap_pv_agriculture_percent',
       'overlap_pv_road_railway_percent', 'overlap_wind_percent'
-    - all values for Brandenburg in row 'Brandenburg'
 
     Parameters
     ----------
@@ -389,8 +376,6 @@ def calculate_power_potential(
         Type of area potential "pv" or "wind"
     input_file: str
         Filename including path to file containing area potential
-    output_file: str
-        File name including path to output of power potential of pv for "Landkreise"
     required_specific_area: float
         Specific area required per wind turbine or per installed capacity pv.
     degree_of_agreement: float or None
@@ -399,8 +384,8 @@ def calculate_power_potential(
         different parties and the calculated available area potential.
         If None, `degree_of_agreement` is set to 1
         Default: None.
-    secondary_output_dir: str
-        Directory where secondary outputs are saved.
+    output_dir: str
+        Directory where outputs are saved.
     filename_kreise: str
         File name including path to csv containing lookup table for Kreise and NUTS in Brandenburg
 
@@ -460,11 +445,15 @@ def calculate_power_potential(
     )
 
     # save power potential in MW of NUTS3 (Landkreise)
-    potentials_kreise.to_csv(output_file, sep=";")
+    filename_nuts3 = os.path.join(
+        output_dir,
+        f"power_potential_{type}_kreise.csv",
+    )
+    potentials_kreise.to_csv(filename_nuts3, sep=";")
 
     # additionally save power potential of single areas in MW
     filename_single_areas = os.path.join(
-        secondary_output_dir,
+        output_dir,
         f"power_potential_single_areas_{type}.csv",
     )
     potentials.to_csv(filename_single_areas, sep=";")
@@ -476,16 +465,13 @@ if __name__ == "__main__":
     filename_wind = sys.argv[3]
     filename_kreise = sys.argv[4]
     filename_assumptions = sys.argv[5]
-    output_pv = sys.argv[6]
-    output_wind = sys.argv[7]
-    secondary_output_dir = sys.argv[8]
+    output_dir = sys.argv[6]
 
     # calculate pv potential
     calculate_potential_pv(
         filename_agriculture=filename_pv_agriculture,
         filename_road_railway=filename_pv_road_railway,
-        output_file=output_pv,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
         filename_assumptions=filename_assumptions,
     )
@@ -493,8 +479,7 @@ if __name__ == "__main__":
     # calculate wind potential
     calculate_potential_wind(
         filename_wind=filename_wind,
-        output_file=output_wind,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
         filename_assumptions=filename_assumptions,
     )
