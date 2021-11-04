@@ -25,6 +25,7 @@ components:
   - ch4-boiler
   - ch4-bpchp
   - ch4-demand
+  - ch4-shortage
   - ch4-excess
   - ch4-gt
   - electricity-demand

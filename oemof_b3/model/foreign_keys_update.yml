@@ -1,5 +1,6 @@
 'bus': [
     'ch4-demand',
+    'ch4-shortage',
     'heat_central-shortage',
     'heat_central-excess',
     'heat_central-demand',
