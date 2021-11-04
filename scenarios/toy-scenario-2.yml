@@ -48,7 +48,6 @@ components:
   - wind-onshore
 
 # parametrize
-# paths to input data files
 
 path_scalars: raw/toy-scenario.csv
 
@@ -65,10 +64,3 @@ paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 filter_timeseries:
   scenario:
     toy-scenario-update
-
-# optimize
-
-# solver: "cbc"
-# debug: "False"
-# receive_duals: "False"
-# dump params: "True"
