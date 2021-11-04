@@ -9,11 +9,11 @@ here = os.path.dirname(__file__)
 template_dir = os.path.join(here, "..", "schema")
 
 HEADER_B3_SCAL = pd.read_csv(
-    os.path.join(template_dir, "scalars.csv"), delimiter=";"
+    os.path.join(template_dir, "scalars.csv"), index_col=0, delimiter=";"
 ).columns
 
 HEADER_B3_TS = pd.read_csv(
-    os.path.join(template_dir, "timeseries.csv"), delimiter=";"
+    os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
 ).columns
 
 
@@ -54,32 +54,34 @@ def format_header(df, header, index_name):
     -------
     df_formatted : pd.DataFrame
     """
-    extra_colums = get_list_diff(df.columns, header)
+    _df = df.copy()
+
+    extra_colums = get_list_diff(_df.columns, header)
+
+    if index_name in extra_colums:
+        _df = _df.set_index(index_name, drop=True)
+        extra_colums = get_list_diff(_df.columns, header)
+    else:
+        _df.index.name = index_name
 
     if extra_colums:
         raise ValueError(f"There are extra columns {extra_colums}")
 
-    missing_columns = get_list_diff(header, df.columns)
+    missing_columns = get_list_diff(header, _df.columns)
 
     for col in missing_columns:
-        df[col] = np.nan
+        _df.loc[:, col] = np.nan
 
     try:
-        df_formatted = df[header]
+        df_formatted = _df[header]
 
     except KeyError:
         raise KeyError("Failed to format data according to specified header.")
 
-    df_formatted.set_index(index_name, inplace=True)
-
-    if index_name in missing_columns:
-        df_formatted.reset_index(inplace=True, drop=True)
-        df_formatted.index.name = index_name
-
     return df_formatted
 
 
-def load_b3_scalars(path):
+def load_b3_scalars(path, sep=","):
     """
     This function loads scalars from a csv file.
 
@@ -87,20 +89,23 @@ def load_b3_scalars(path):
     ----------
     path : str
         path of input file of csv format
+    sep : str
+        column separator
+
     Returns
     -------
     df : pd.DataFrame
         DataFrame with loaded scalars
     """
     # Read data
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, sep=sep)
 
     df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
     return df
 
 
-def load_b3_timeseries(path):
+def load_b3_timeseries(path, sep=","):
     """
     This function loads a stacked time series from a csv file.
 
@@ -108,6 +113,8 @@ def load_b3_timeseries(path):
     ----------
     path : str
         path of input file of csv format
+    sep : str
+        column separator
 
     Returns
     -------
@@ -115,7 +122,7 @@ def load_b3_timeseries(path):
         DataFrame with loaded time series
     """
     # Read data
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, sep=sep)
 
     df = format_header(df, HEADER_B3_TS, "id_ts")
 
