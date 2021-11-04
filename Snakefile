@@ -114,9 +114,9 @@ rule plot_conv_pp_scalars:
         data="results/_resources/{resource}.csv",
         script="scripts/plot_conv_pp_scalars.py"
     output:
-        "results/_resources/plots/{resource}.png"
+        "results/_resources/plots/{resource}_var_{var_name}.png"
     shell:
-        "python {input.script} {input.data} {output}"
+        "python {input.script} {input.data} {wildcards.var_name} {output}"
 
 rule report:
     input:

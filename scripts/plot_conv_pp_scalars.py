@@ -27,7 +27,6 @@ import oemof_b3.tools.data_processing as dp
 from oemof_b3 import colors_odict, labels_to_german
 
 # User input
-var_name = "capacity_net_el"
 # converting from MW to W
 conv_number = 1e6
 german_translation = True
@@ -78,6 +77,8 @@ def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, label_map
     """
     # select var_name to be plotted
     selected_df = df_conv_pp_scalars[df_conv_pp_scalars["var_name"] == var_name].copy()
+
+    assert not selected_df.empty, f"Variable name '{var_name}' not found in data."
 
     # CONV_PP specific
     selected_df.loc[(selected_df["region"] != "Berlin"), "region"] = "Brandenburg"
@@ -156,7 +157,9 @@ def plot_grouped_bar(ax, df, color_dict, unit):
 if __name__ == "__main__":
     resources = sys.argv[1]
 
-    target = sys.argv[2]
+    var_name = sys.argv[2]
+
+    target = sys.argv[3]
 
     target_dir = os.path.dirname(target)
 
