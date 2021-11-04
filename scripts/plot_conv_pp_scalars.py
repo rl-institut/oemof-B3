@@ -122,22 +122,23 @@ def prepare_conv_pp_scalars(
     return df_pivot, color_keys, color_dict
 
 
-def plot_conv_pp_scalars(df, color_keys, color_dict, unit_dict):
+def plot_grouped_bar(df, color_keys, color_dict, unit_dict):
     r"""
-    This function plots the net installed capacity of conventional power plants
-    in Berlin and Brandenburg in a grouped bar plot.
+    This function plots scalar data as grouped bar plot. The index of the DataFrame
+    will be interpreted as groups (e.g. regions), the columns as different categories (e.g. energy
+    carriers) within the groups which will be plotted in different colors.
 
     Parameters
     ----------
     df: pd.DataFrame
-        pivot table with aggregated net installed capacity based on carrier
-        of conventional power plants in Berlin and Brandenburg
-    color_keys: pandas.Index
-        determines order of carriers in plot
+        DataFrame with an index defining the groups and columns defining the bars of different color
+        with in the group.
+    color_keys: list or pd.Index
+        List defining the order of categories
     color_dict: dict
-        contains colors for different carriers for plotting
+        Dictionary defining colors of the categories
     unit_dict: dict
-        contains units to var_name which is plotted
+        Dictionary defining units of the variables
     """
     alpha = 0.3
     fontsize = 14
@@ -189,4 +190,4 @@ if __name__ == "__main__":
         var_name=var_name,
         conv_number=conv_number,
     )
-    plot_conv_pp_scalars(df_pivot, color_keys, color_dict, unit_dict)
+    plot_grouped_bar(df_pivot, color_keys, color_dict, unit_dict)
