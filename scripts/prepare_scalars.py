@@ -80,7 +80,7 @@ def annuise_investment_cost(sc):
             lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"]), 1
         )
 
-        sc.append("capacity_cost", annuised_investment_cost)
+        sc.append(var_name_cost.replace("_overnight", ""), annuised_investment_cost)
 
 
 if __name__ == "__main__":
