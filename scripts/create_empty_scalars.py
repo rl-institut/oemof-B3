@@ -64,7 +64,7 @@ def format_input_scalars(df):
     return _df
 
 
-def expand_annuisation(df):
+def reverse_annuisation(df):
     _df = df.copy()
 
     _df_cc = _df.loc[df["var_name"] == "capacity_cost"].copy()
@@ -117,6 +117,6 @@ if __name__ == "__main__":
 
     empty_scalars = format_input_scalars(components)
 
-    empty_scalars = expand_annuisation(empty_scalars)
+    empty_scalars = reverse_annuisation(empty_scalars)
 
     empty_scalars.to_csv(destination)
