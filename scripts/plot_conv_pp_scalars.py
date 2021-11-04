@@ -47,9 +47,7 @@ c_to_cl = {
 cl_to_gcl = labels_to_german
 
 
-def prepare_conv_pp_scalars(
-    df_conv_pp_scalars, var_name, conv_number, carrier_dict=c_to_cl
-):
+def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, label_mapping):
     r"""
     This function converts scalar data in oeomof-b3 format to a format that can be passed to
     `plot_grouped_bar` .
@@ -64,8 +62,7 @@ def prepare_conv_pp_scalars(
         indicates the var_name which shall be plotted
     conv_number: int
          converts the value to SI unit, i.e. W
-    carrier_dict: dict
-         capitalizes carrier names
+
     Returns
     -------
     df_pivot : pandas.DataFrame
@@ -88,24 +85,6 @@ def prepare_conv_pp_scalars(
     if conv_number:
         selected_df_agg.loc[:, "var_value"] *= conv_number
 
-    # Map the carrier names to carrier labels
-    if german_translation:
-        c_to_gcl = {carrier: cl_to_gcl[cl] for carrier, cl in c_to_cl.items()}
-
-        # translate the color dictionary
-        color_dict = {
-            cl_to_gcl[cl]: color
-            for cl, color in colors_odict.items()
-            if cl in cl_to_gcl
-        }
-
-        label_mapping = c_to_gcl
-
-    else:
-        label_mapping = c_to_cl
-
-        color_dict = colors_odict
-
     selected_df_agg["carrier"].replace(label_mapping, inplace=True)
 
     # apply pivot table
@@ -116,7 +95,7 @@ def prepare_conv_pp_scalars(
         values="var_value",
     )
 
-    return df_pivot, color_dict
+    return df_pivot
 
 
 def plot_grouped_bar(ax, df, color_dict, unit):
@@ -182,10 +161,28 @@ if __name__ == "__main__":
     # Load scalar data
     df_conv_pp_scalars = dp.load_b3_scalars(resources)
 
-    df_pivot, color_dict = prepare_conv_pp_scalars(
+    if german_translation:
+        # Map the carrier names to carrier labels
+        c_to_gcl = {carrier: cl_to_gcl[cl] for carrier, cl in c_to_cl.items()}
+
+        # translate the color dictionary
+        color_dict = {
+            cl_to_gcl[cl]: color
+            for cl, color in colors_odict.items()
+            if cl in cl_to_gcl
+        }
+
+        label_mapping = c_to_gcl
+    else:
+        label_mapping = c_to_cl
+
+        color_dict = colors_odict
+
+    df_pivot = prepare_conv_pp_scalars(
         df_conv_pp_scalars=df_conv_pp_scalars,
         var_name=var_name,
         conv_number=conv_number,
+        label_mapping=label_mapping,
     )
 
     fig, ax = plt.subplots(figsize=(12, 6))
