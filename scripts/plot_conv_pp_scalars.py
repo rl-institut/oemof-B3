@@ -35,7 +35,7 @@ unit = "W"
 
 
 # GENERAL
-carrier_dict = {
+c_to_cl = {
     "biomass": "Biomass",
     "ch4": "CH4",
     "hard coal": "Hard coal",
@@ -44,18 +44,32 @@ carrier_dict = {
     "other": "Other",
 }
 
-german_labels = {
+cl_to_gcl = {
     "Biomass": "Biomasse",
     "CH4": "Erdgas",
     "Hard coal": "Steinkohle",
     "Oil": "Öl",
     "Lignite": "Braunkohle",
     "Other": "Andere",
+    "PV": "PV",
+    "Wind on": "Wind on",
+    "Wind off": "Wind off",
+    "Biomass ST": "Biomass ST",
+    "Biomass GT": "Biomass GT",
+    "Hydro reservoir": "Reservoir",
+    "Hydro ROR": "ROR",
+    "H2 GT": "H2 GT",
+    "CH4 GT": "CH4 GT",
+    "Nuclear ST": "Nuclear ST",
+    "Battery": "Batterie",
+    "Battery out": "Batterie out",
+    "Battery in": "Batterie in",
+    "El. in": "Batterie in",
 }
 
 
 def prepare_conv_pp_scalars(
-    df_conv_pp_scalars, var_name, conv_number, carrier_dict=carrier_dict
+    df_conv_pp_scalars, var_name, conv_number, carrier_dict=c_to_cl
 ):
     r"""
     This function converts scalar data in oeomof-b3 format to a format that can be passed to
@@ -91,14 +105,29 @@ def prepare_conv_pp_scalars(
         df=selected_df, columns_to_aggregate=["tech"]
     )
 
-    # capitalize carrier names
-    selected_df_agg["carrier"].replace(carrier_dict, inplace=True)
-
     # convert to SI unit:
     if conv_number:
         selected_df_agg.loc[:, "var_value"] *= conv_number
 
-    # Translate to German
+    # Map the carrier names to carrier labels
+    if german_translation:
+        c_to_gcl = {carrier: cl_to_gcl[cl] for carrier, cl in c_to_cl.items()}
+
+        # translate the color dictionary
+        color_dict = {
+            cl_to_gcl[cl]: color
+            for cl, color in colors_odict.items()
+            if cl in cl_to_gcl
+        }
+
+        label_mapping = c_to_gcl
+
+    else:
+        label_mapping = c_to_cl
+
+        color_dict = colors_odict
+
+    selected_df_agg["carrier"].replace(label_mapping, inplace=True)
 
     # apply pivot table
     df_pivot = pd.pivot_table(
@@ -107,16 +136,6 @@ def prepare_conv_pp_scalars(
         columns="carrier",
         values="var_value",
     )
-
-    # colors
-    if german_translation:
-        german_color_dict = {}
-        for key in df_pivot.columns:
-            german_color_dict[german_labels[key]] = colors_odict[key]
-        color_dict = german_color_dict
-        df_pivot.rename(columns=german_labels, inplace=True)
-    else:
-        color_dict = colors_odict
 
     return df_pivot, color_dict
 
@@ -162,7 +181,7 @@ def plot_grouped_bar(ax, df, color_dict, unit):
 
     ax.grid(axis="y", zorder=1, color="black", alpha=alpha)
     ax.set_xlabel(xlabel=None)
-    ax.legend(labels=german_labels)
+    ax.legend()
     plt.legend(title=None, frameon=True, framealpha=1)
 
     plt.tight_layout()
