@@ -3,9 +3,9 @@ r"""
 Inputs
 -------
 in_path1 : str
-    path of input file with raw scalar data as .csv
+    path incl. file name of input file with raw scalar data as .csv
 out_path : str
-    path of output file with prepared scalar data as .csv
+    path incl. file name of output file with prepared scalar data as .csv
 
 Outputs
 ---------
