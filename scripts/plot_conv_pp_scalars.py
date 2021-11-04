@@ -46,6 +46,12 @@ c_to_cl = {
 
 cl_to_gcl = labels_to_german
 
+c_to_gcl = {carrier: cl_to_gcl[cl] for carrier, cl in c_to_cl.items()}
+
+colors_odict_german = {
+    cl_to_gcl[cl]: color for cl, color in colors_odict.items() if cl in cl_to_gcl
+}
+
 
 def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, label_mapping):
     r"""
@@ -162,20 +168,10 @@ if __name__ == "__main__":
     df_conv_pp_scalars = dp.load_b3_scalars(resources)
 
     if german_translation:
-        # Map the carrier names to carrier labels
-        c_to_gcl = {carrier: cl_to_gcl[cl] for carrier, cl in c_to_cl.items()}
-
-        # translate the color dictionary
-        color_dict = {
-            cl_to_gcl[cl]: color
-            for cl, color in colors_odict.items()
-            if cl in cl_to_gcl
-        }
-
         label_mapping = c_to_gcl
+        color_dict = colors_odict_german
     else:
         label_mapping = c_to_cl
-
         color_dict = colors_odict
 
     df_pivot = prepare_conv_pp_scalars(
