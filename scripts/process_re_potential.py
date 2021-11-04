@@ -2,30 +2,29 @@
 r"""
 Inputs
 -------
-filename_wind : str
-    Path incl. file name to area and power potential of wind energy
-filename_pv : str
-    Path incl. file name to area and power potential of pv
-
-Outputs
----------
+input_dir : str
+    Path to input directory of renewable potential
 output_scalars : str
     Path incl. file name to scalar output as input to energy system model
 output_tables : str
     Path incl. file name to output for results documentation
+
+Outputs
+---------
+pd.DataFrame
+    Power potential for "Landkreise" and total values for Brandenburg in `output_scalars` in format
+    as required by scalars template
+pd.DataFrame
+    Power and area potential for "Landkreise" and aggregated values for Brandenburg in
+    `output_tables` for results documentation:
+    - power potential in GW for wind and pv in columns 'Leistung Wind [GW]' and 'Leistung PV [GW]'
+    - area potential in km² for wind and pv in columns 'Fläche Wind [km2]' and 'Fläche PV [km2]'
 
 Description
 -------------
 Processes the area and power potential of pv and wind energy resulting from script
 'prepare_re_potential.py'. Reformats the power potential of pv and wind energy as input for the
 energy system model and joins results of both pv and wind.
-Saves results for "Landkreise" and total values for Brandenburg in `output_scalars` (only power
-potential) in format as required by template and in `output_tables` (power and
-area potential) for results documentation.
-
-Saves the following data for "Landkreise" and aggregated values for Brandenburg in `output_tables`:
-    - power potential in GW for wind and pv in columns 'Leistung Wind [GW]' and 'Leistung PV [GW]'
-    - area potential in km² for wind and pv in columns 'Fläche Wind [km2]' and 'Fläche PV [km2]'
 
 """
 
@@ -40,9 +39,9 @@ if __name__ == "__main__":
     output_scalars = sys.argv[2]
     output_tables = sys.argv[3]
 
-    ############################################
-    # prepare potentials for scalar _resources #
-    ############################################
+    ###########################################
+    # prepare potentials for scalar_resources #
+    ###########################################
 
     # prepare wind and pv potential
     potentials = pd.DataFrame()
