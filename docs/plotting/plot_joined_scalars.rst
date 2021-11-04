@@ -3,4 +3,4 @@
 plot_joined
 ===========
 
-.. automodule:: plot_joined
+.. automodule:: plot_joined_scalars
