@@ -56,26 +56,23 @@ def format_input_scalars(df):
 
     _df.index.name = "id_scal"
 
-    # set scenario name
-    _df.loc[:, "scenario"] = "toy-scenario"
-
     _df = _df.sort_values(by=["carrier", "tech", "var_name", "scenario"])
 
     return _df
 
 
-def reverse_annuisation(df):
+def expand_scalars(df, column, where, expand):
     _df = df.copy()
 
-    _df_cc = _df.loc[df["var_name"] == "capacity_cost"].copy()
+    _df_cc = _df.loc[df[column] == where].copy()
 
-    _df_wo_cc = _df.loc[df["var_name"] != "capacity_cost"].copy()
+    _df_wo_cc = _df.loc[df[column] != where].copy()
 
-    for var in ["overnight_cost", "lifetime", "fixom_cost"]:
+    for var in expand:
 
         d = _df_cc.copy()
 
-        d["var_name"] = var
+        d[column] = var
 
         _df_wo_cc = _df_wo_cc.append(d)
 
@@ -117,6 +114,21 @@ if __name__ == "__main__":
 
     empty_scalars = format_input_scalars(components)
 
-    empty_scalars = reverse_annuisation(empty_scalars)
+    # set scenario name
+    empty_scalars.loc[:, "scenario"] = "toy-scenario"
+
+    empty_scalars = expand_scalars(
+        empty_scalars,
+        column="var_name",
+        where="capacity_cost",
+        expand=["capacity_cost_overnight", "lifetime", "fixom_cost"],
+    )
+
+    empty_scalars = expand_scalars(
+        empty_scalars,
+        column="var_name",
+        where="capacity_cost",
+        expand=["storage_capacity_cost_overnight", "lifetime", "fixom_cost"],
+    )
 
     empty_scalars.to_csv(destination)
