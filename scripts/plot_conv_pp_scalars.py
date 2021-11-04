@@ -77,8 +77,6 @@ def prepare_conv_pp_scalars(
     -------
     df_pivot : pandas.DataFrame
         Unique unit
-    color_keys: pandas.Index
-        determines order of carriers in plot
     color_dict: dict
         contains colors for different carriers for plotting
     """
@@ -104,22 +102,18 @@ def prepare_conv_pp_scalars(
 
     # colors
     if german_translation:
-        color_keys = df_pivot.columns
         german_color_dict = {}
-        for key in color_keys:
+        for key in df_pivot.columns:
             german_color_dict[german_labels[key]] = colors_odict[key]
         df_pivot.rename(columns=german_labels, inplace=True)
-        german_color_keys = df_pivot.columns
-        color_keys = german_color_keys
         color_dict = german_color_dict
     else:
-        color_keys = df_pivot.columns
         color_dict = colors_odict
     # convert to SI unit:
     if conv_number:
         df_pivot *= conv_number
 
-    return df_pivot, color_keys, color_dict
+    return df_pivot, color_dict
 
 
 def plot_grouped_bar(ax, df, color_dict, unit):
@@ -185,7 +179,7 @@ if __name__ == "__main__":
     # Load scalar data
     df_conv_pp_scalars = dp.load_b3_scalars(resources)
 
-    df_pivot, color_keys, color_dict = prepare_conv_pp_scalars(
+    df_pivot, color_dict = prepare_conv_pp_scalars(
         df_conv_pp_scalars=df_conv_pp_scalars,
         var_name=var_name,
         conv_number=conv_number,
