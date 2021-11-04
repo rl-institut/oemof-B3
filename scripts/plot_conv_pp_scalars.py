@@ -122,7 +122,7 @@ def prepare_conv_pp_scalars(
     return df_pivot, color_keys, color_dict
 
 
-def plot_grouped_bar(df, color_dict, unit):
+def plot_grouped_bar(ax, df, color_dict, unit):
     r"""
     This function plots scalar data as grouped bar plot. The index of the DataFrame
     will be interpreted as groups (e.g. regions), the columns as different categories (e.g. energy
@@ -130,6 +130,8 @@ def plot_grouped_bar(df, color_dict, unit):
 
     Parameters
     ----------
+    ax: matplotlib Axes object
+        Axes to draw the plot.
     df: pd.DataFrame
         DataFrame with an index defining the groups and columns defining the bars of different color
         with in the group.
@@ -142,7 +144,6 @@ def plot_grouped_bar(df, color_dict, unit):
     fontsize = 14
     plt.rcParams.update({"font.size": fontsize})
 
-    fig, ax = plt.subplots(figsize=(12, 6))
     # apply EngFormatter if power is plotted
     ax = plots._eng_format(ax, unit)
 
@@ -166,7 +167,8 @@ def plot_grouped_bar(df, color_dict, unit):
     plt.legend(title=None, frameon=True, framealpha=1)
 
     plt.tight_layout()
-    plt.savefig(target, bbox_inches="tight")
+
+    return ax
 
 
 if __name__ == "__main__":
@@ -189,4 +191,8 @@ if __name__ == "__main__":
         conv_number=conv_number,
     )
 
-    plot_grouped_bar(df_pivot, color_dict, unit)
+    fig, ax = plt.subplots(figsize=(12, 6))
+    print(type(ax))
+    plot_grouped_bar(ax, df_pivot, color_dict, unit)
+
+    plt.savefig(target, bbox_inches="tight")
