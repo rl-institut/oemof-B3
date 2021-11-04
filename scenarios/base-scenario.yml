@@ -56,7 +56,7 @@ filter_scalars:
     scenario:
       None
 
-paths_timeseries: raw/time_series/toy-scenario-timeseries_new_PR#69.csv
+paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 
 filter_timeseries:
   scenario:
