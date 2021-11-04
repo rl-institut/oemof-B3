@@ -31,10 +31,10 @@ var_name = "capacity_net_el"
 # converting from MW to W
 conv_number = 1e6
 german_translation = True
+unit = "W"
 
 
 # GENERAL
-unit_dict = {"capacity_net_el": "W"}
 carrier_dict = {
     "biomass": "Biomass",
     "ch4": "CH4",
@@ -122,7 +122,7 @@ def prepare_conv_pp_scalars(
     return df_pivot, color_keys, color_dict
 
 
-def plot_grouped_bar(df, color_dict, unit_dict):
+def plot_grouped_bar(df, color_dict, unit):
     r"""
     This function plots scalar data as grouped bar plot. The index of the DataFrame
     will be interpreted as groups (e.g. regions), the columns as different categories (e.g. energy
@@ -135,8 +135,8 @@ def plot_grouped_bar(df, color_dict, unit_dict):
         with in the group.
     color_dict: dict
         Dictionary defining colors of the categories
-    unit_dict: dict
-        Dictionary defining units of the variables
+    unit: str
+        Unit of the variables
     """
     alpha = 0.3
     fontsize = 14
@@ -144,8 +144,8 @@ def plot_grouped_bar(df, color_dict, unit_dict):
 
     fig, ax = plt.subplots(figsize=(12, 6))
     # apply EngFormatter if power is plotted
-    if unit_dict[var_name] == "W":
-        ax = plots._eng_format(ax, "W")
+    ax = plots._eng_format(ax, unit)
+
     df.plot.bar(
         ax=ax,
         color=[color_dict[key] for key in df.columns],
@@ -188,4 +188,5 @@ if __name__ == "__main__":
         var_name=var_name,
         conv_number=conv_number,
     )
-    plot_grouped_bar(df_pivot, color_dict, unit_dict)
+
+    plot_grouped_bar(df_pivot, color_dict, unit)
