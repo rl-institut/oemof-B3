@@ -61,6 +61,28 @@ def fill_na(df):
     return df_fill_na
 
 
+def annuise_investment_cost(sc):
+
+    for var_name_cost in ["capacity_cost_overnight", "storage_capacity_cost_overnight"]:
+
+        invest_data = sc.get_unstacked_var([var_name_cost, "lifetime"])
+
+        # if some value is None in some scenario key, use the values from Base scenario to fill NaNs
+        invest_data = fill_na(invest_data)
+
+        wacc = sc.get_unstacked_var("wacc").iloc[0, 0]
+
+        assert isinstance(wacc, float)
+
+        invest_data["wacc"] = wacc
+
+        annuised_investment_cost = invest_data.apply(
+            lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"]), 1
+        )
+
+        sc.append("capacity_cost", annuised_investment_cost)
+
+
 if __name__ == "__main__":
     in_path = sys.argv[1]  # path to raw scalar data
     out_path = sys.argv[2]  # path to destination
@@ -69,21 +91,6 @@ if __name__ == "__main__":
 
     sc = ScalarProcessor(df)
 
-    invest_data = sc.get_unstacked_var(["overnight_cost", "lifetime"])
-
-    # if some value is None in some scenario key, use the values from Base scenario to fill NaNs
-    invest_data = fill_na(invest_data)
-
-    wacc = sc.get_unstacked_var("wacc").iloc[0, 0]
-
-    assert isinstance(wacc, float)
-
-    invest_data["wacc"] = wacc
-
-    annuised_investment_cost = invest_data.apply(
-        lambda x: annuity(x["overnight_cost"], x["lifetime"], x["wacc"]), 1
-    )
-
-    sc.append("annuity", annuised_investment_cost)
+    annuise_investment_cost(sc)
 
     sc.scalars.to_csv(out_path, index=False)
