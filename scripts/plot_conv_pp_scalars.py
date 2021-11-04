@@ -58,10 +58,10 @@ def prepare_conv_pp_scalars(
     df_conv_pp_scalars, var_name, conv_number, carrier_dict=carrier_dict
 ):
     r"""
-    This function prepares the scalar data file of the conventional power plants in
-    Berlin and Brandenburg. It aggregates power plants with the same carrier in a
-    region and puts the data in a pivot table to allow to plot a grouped
-    bar plot.
+    This function converts scalar data in oeomof-b3 format to a format that can be passed to
+    `plot_grouped_bar` .
+
+    It aggregates power plants with the same carrier.
 
     Parameters
     ----------
@@ -85,12 +85,20 @@ def prepare_conv_pp_scalars(
 
     # CONV_PP specific
     selected_df.loc[(selected_df["region"] != "Berlin"), "region"] = "Brandenburg"
-    # capitalize carrier names
-    selected_df["carrier"].replace(carrier_dict, inplace=True)
+
     # aggregate carriers in regions
     selected_df_agg = dp.aggregate_scalars(
         df=selected_df, columns_to_aggregate=["tech"]
     )
+
+    # capitalize carrier names
+    selected_df_agg["carrier"].replace(carrier_dict, inplace=True)
+
+    # convert to SI unit:
+    if conv_number:
+        selected_df_agg.loc[:, "var_value"] *= conv_number
+
+    # Translate to German
 
     # apply pivot table
     df_pivot = pd.pivot_table(
@@ -105,13 +113,10 @@ def prepare_conv_pp_scalars(
         german_color_dict = {}
         for key in df_pivot.columns:
             german_color_dict[german_labels[key]] = colors_odict[key]
-        df_pivot.rename(columns=german_labels, inplace=True)
         color_dict = german_color_dict
+        df_pivot.rename(columns=german_labels, inplace=True)
     else:
         color_dict = colors_odict
-    # convert to SI unit:
-    if conv_number:
-        df_pivot *= conv_number
 
     return df_pivot, color_dict
 
