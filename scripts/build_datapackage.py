@@ -37,7 +37,24 @@ from oemof_b3.tools.data_processing import (
 
 
 def expand_regions(scalars, regions, where="ALL"):
+    r"""
+    Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
+    Returns scalars with new rows included for each region in those places where region equals
+    `where`.
 
+    Parameters
+    ----------
+    scalars : pd.DataFrame
+        Data in oemof_b3 format to expand
+    regions : list
+        List of regions
+    where : str
+        Key that should be expanded
+    Returns
+    -------
+    sc_with_region : pd.DataFrame
+        Data with expanded regions in oemof_b3 format
+    """
     _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
 
     sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
@@ -201,6 +218,7 @@ if __name__ == "__main__":
 
     scalars = load_b3_scalars(path_scalars)
 
+    # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])
 
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
