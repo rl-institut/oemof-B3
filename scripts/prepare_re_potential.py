@@ -105,8 +105,7 @@ def add_names_of_kreise(df, filename_kreise):
 def calculate_potential_pv(
     filename_agriculture,
     filename_road_railway,
-    output_file,
-    secondary_output_dir,
+    output_dir,
     filename_kreise,
     filename_assumptions,
 ):
@@ -173,11 +172,9 @@ def calculate_potential_pv(
     areas_pv = pd.concat([areas_road_railway, areas_agriculture], axis=0, sort=True)
 
     # save total pv area potential
-    if not os.path.exists(secondary_output_dir):
-        os.mkdir(secondary_output_dir)
-    filename = os.path.join(
-        secondary_output_dir, "area_potential_single_areas_pv_raw.csv"
-    )
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    filename = os.path.join(output_dir, "area_potential_single_areas_pv_raw.csv")
     areas_pv.to_csv(filename, sep=";")
 
     # read parameters for calculations like minimum required area and degree of agreement from
@@ -199,7 +196,7 @@ def calculate_potential_pv(
         area_data=areas_pv,
         type="pv",
         minimum_area=minimum_area,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         reduction_by_wind_overlap=reduction_by_wind_overlap,
     )
 
@@ -209,16 +206,14 @@ def calculate_potential_pv(
         input_file=filename_single_areas,
         required_specific_area=required_specific_area,
         degree_of_agreement=degree_of_agreement,
-        output_file=output_file,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
     )
 
 
 def calculate_potential_wind(
     filename_wind,
-    output_file,
-    secondary_output_dir,
+    output_dir,
     filename_kreise,
     filename_assumptions,
 ):
@@ -261,8 +256,8 @@ def calculate_potential_wind(
 
     # create directory for intermediate results if not existent
     # save total wind area potential
-    if not os.path.exists(secondary_output_dir):
-        os.mkdir(secondary_output_dir)
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
 
     # read parameters for calculations like minimum required area and degree of agreement from
     # `filename_assumptions`
@@ -280,7 +275,7 @@ def calculate_potential_wind(
         area_data=areas,
         type="wind",
         minimum_area=minimum_area,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
     )
 
     # calculate power potential
@@ -288,9 +283,8 @@ def calculate_potential_wind(
         type="wind",
         input_file=filename_single_areas,
         required_specific_area=required_specific_area,
-        output_file=output_file,
         degree_of_agreement=degree_of_agreement,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
     )
 
@@ -299,7 +293,7 @@ def calculate_area_potential(
     area_data,
     type,
     minimum_area,
-    secondary_output_dir,
+    output_dir,
     reduction_by_wind_overlap=None,
 ):
     r"""
@@ -355,7 +349,7 @@ def calculate_area_potential(
 
     # save area potential of single areas in m² (needed for further calculations of wind potential)
     filename_single_areas = os.path.join(
-        secondary_output_dir,
+        output_dir,
         f"area_potential_single_areas_{type}.csv",
     )
     areas.to_csv(filename_single_areas, sep=";")
@@ -366,10 +360,9 @@ def calculate_area_potential(
 def calculate_power_potential(
     type,
     input_file,
-    output_file,
     required_specific_area,
     degree_of_agreement,
-    secondary_output_dir,
+    output_dir,
     filename_kreise,
 ):
     r"""
@@ -460,11 +453,15 @@ def calculate_power_potential(
     )
 
     # save power potential in MW of NUTS3 (Landkreise)
-    potentials_kreise.to_csv(output_file, sep=";")
+    filename_nuts3 = os.path.join(
+        output_dir,
+        f"power_potential_{type}_kreise.csv",
+    )
+    potentials_kreise.to_csv(filename_nuts3, sep=";")
 
     # additionally save power potential of single areas in MW
     filename_single_areas = os.path.join(
-        secondary_output_dir,
+        output_dir,
         f"power_potential_single_areas_{type}.csv",
     )
     potentials.to_csv(filename_single_areas, sep=";")
@@ -476,16 +473,13 @@ if __name__ == "__main__":
     filename_wind = sys.argv[3]
     filename_kreise = sys.argv[4]
     filename_assumptions = sys.argv[5]
-    output_pv = sys.argv[6]
-    output_wind = sys.argv[7]
-    secondary_output_dir = sys.argv[8]
+    output_dir = sys.argv[6]
 
     # calculate pv potential
     calculate_potential_pv(
         filename_agriculture=filename_pv_agriculture,
         filename_road_railway=filename_pv_road_railway,
-        output_file=output_pv,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
         filename_assumptions=filename_assumptions,
     )
@@ -493,8 +487,7 @@ if __name__ == "__main__":
     # calculate wind potential
     calculate_potential_wind(
         filename_wind=filename_wind,
-        output_file=output_wind,
-        secondary_output_dir=secondary_output_dir,
+        output_dir=output_dir,
         filename_kreise=filename_kreise,
         filename_assumptions=filename_assumptions,
     )

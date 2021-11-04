@@ -31,14 +31,14 @@ Saves the following data for "Landkreise" and aggregated values for Brandenburg 
 
 import pandas as pd
 import sys
+import os
 
 from oemof_b3.tools import data_processing as dp
 
 if __name__ == "__main__":
-    filename_wind = sys.argv[1]
-    filename_pv = sys.argv[2]
-    output_scalars = sys.argv[3]
-    output_tables = sys.argv[4]
+    input_dir = sys.argv[1]
+    output_scalars = sys.argv[2]
+    output_tables = sys.argv[3]
 
     ############################################
     # prepare potentials for scalar _resources #
@@ -47,8 +47,9 @@ if __name__ == "__main__":
     # prepare wind and pv potential
     potentials = pd.DataFrame()
     for type in ["pv", "wind"]:
+        filename = os.path.join(input_dir, f"power_potential_{type}_kreise.csv")
         if type == "pv":
-            data = pd.read_csv(filename_pv, sep=";").set_index("NUTS")
+            data = pd.read_csv(filename, sep=";").set_index("NUTS")
             data["carrier"] = "solar"
             data["tech"] = "pv"
             data["comment"] = (
@@ -56,7 +57,7 @@ if __name__ == "__main__":
                 "2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv"
             )
         else:
-            data = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
+            data = pd.read_csv(filename, sep=";").set_index("NUTS")
             data["carrier"] = "wind"
             data["tech"] = "onshore"
             data[
@@ -90,39 +91,32 @@ if __name__ == "__main__":
     ##################################
     # prepare potentials for _tables #
     ##################################
+    potentials_table = pd.DataFrame()
+    for type in ["pv", "wind"]:
+        filename = os.path.join(input_dir, f"power_potential_{type}_kreise.csv")
+        df = pd.read_csv(filename, sep=";").set_index("NUTS")
+        df["power_potential"] = df["power_potential"] / 1000
+        df["area"] = df["area"] / 1e6
+        df_prepared = df[["region", "area", "power_potential"]].rename(
+            columns={
+                "area": f"Fläche {type.title()} [km2]",
+                "power_potential": f"Leistung {type.title()} [GW]",
+                "region": "Kreis",
+            }
+        )
+        if type == "wind":
+            df_prepared.drop("Kreis", axis=1, inplace=True)
+        potentials_table = pd.concat([potentials_table, df_prepared], axis=1)
 
-    # prepare wind pot
-    wind_pot = pd.read_csv(filename_wind, sep=";").set_index("NUTS")
-    wind_pot["power_potential"] = wind_pot["power_potential"] / 1000
-    wind_pot["area"] = wind_pot["area"] / 1e6
-    wind_pot_prepared = wind_pot[["region", "area", "power_potential"]].rename(
-        columns={
-            "area": "Fläche Wind [km2]",
-            "power_potential": "Leistung Wind [GW]",
-            "region": "Kreis",
-        }
-    )
-
-    # prepare pv pot
-    pv_pot = pd.read_csv(filename_pv, sep=";").set_index("NUTS")
-    pv_pot["power_potential"] = pv_pot["power_potential"] / 1000
-    pv_pot["area"] = pv_pot["area"] / 1e6
-    pv_pot_prepared = pv_pot[["area", "power_potential"]].rename(
-        columns={
-            "area": "Fläche PV [km2]",
-            "power_potential": "Leistung PV [GW]",
-            "region": "Kreis",
-        }
-    )
-
-    potentials = pd.concat([wind_pot_prepared, pv_pot_prepared], axis=1)
-    potentials = potentials.round(1)
+    potentials_table = potentials_table.round(1)
 
     # sum up area and power potential of Brandenburg
     potential_bb = (
-        pd.DataFrame(potentials.sum(axis=0)).transpose().rename({0: "Brandenburg"})
+        pd.DataFrame(potentials_table.sum(axis=0))
+        .transpose()
+        .rename({0: "Brandenburg"})
     )
     potential_bb["Kreis"] = "Summe Brandenburg"
-    potentials = pd.concat([potentials, potential_bb], axis=0)
+    potentials_table = pd.concat([potentials_table, potential_bb], axis=0)
 
-    potentials.to_csv(output_tables, sep=";")
+    dp.save_df(df=potentials_table, path=output_tables)
