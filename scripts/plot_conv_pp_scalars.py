@@ -24,7 +24,7 @@ import oemoflex.tools.plots as plots
 import pandas as pd
 
 import oemof_b3.tools.data_processing as dp
-from oemof_b3 import colors_odict
+from oemof_b3 import colors_odict, labels_to_german
 
 # User input
 var_name = "capacity_net_el"
@@ -44,28 +44,7 @@ c_to_cl = {
     "other": "Other",
 }
 
-cl_to_gcl = {
-    "Biomass": "Biomasse",
-    "CH4": "Erdgas",
-    "Hard coal": "Steinkohle",
-    "Oil": "Öl",
-    "Lignite": "Braunkohle",
-    "Other": "Andere",
-    "PV": "PV",
-    "Wind on": "Wind on",
-    "Wind off": "Wind off",
-    "Biomass ST": "Biomass ST",
-    "Biomass GT": "Biomass GT",
-    "Hydro reservoir": "Reservoir",
-    "Hydro ROR": "ROR",
-    "H2 GT": "H2 GT",
-    "CH4 GT": "CH4 GT",
-    "Nuclear ST": "Nuclear ST",
-    "Battery": "Batterie",
-    "Battery out": "Batterie out",
-    "Battery in": "Batterie in",
-    "El. in": "Batterie in",
-}
+cl_to_gcl = labels_to_german
 
 
 def prepare_conv_pp_scalars(
