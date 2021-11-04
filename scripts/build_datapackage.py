@@ -36,6 +36,32 @@ from oemof_b3.tools.data_processing import (
 )
 
 
+def multi_load(paths, load_func):
+    if isinstance(paths, list):
+        pass
+    elif isinstance(paths, str):
+        return load_func(paths)
+    else:
+        raise ValueError(f"{paths} has to be either list of paths or path.")
+
+    dfs = []
+    for path in paths:
+        df = load_func(path)
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+
+    return result
+
+
+def multi_load_b3_scalars(paths):
+    return multi_load(paths, load_b3_scalars)
+
+
+def multi_load_b3_timeseries(paths):
+    return multi_load(paths, load_b3_timeseries)
+
+
 def expand_regions(scalars, regions, where="ALL"):
     r"""
     Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
@@ -216,7 +242,7 @@ if __name__ == "__main__":
     # parametrize scalars
     path_scalars = scenario_specs["path_scalars"]
 
-    scalars = load_b3_scalars(path_scalars)
+    scalars = multi_load_b3_scalars(path_scalars)
 
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])
@@ -228,7 +254,7 @@ if __name__ == "__main__":
     # parametrize timeseries
     paths_timeseries = scenario_specs["paths_timeseries"]
 
-    ts = load_b3_timeseries(paths_timeseries)
+    ts = multi_load_b3_timeseries(paths_timeseries)
 
     filters = scenario_specs["filter_timeseries"]
 
