@@ -8,6 +8,7 @@ scenario_name : str
     '' ''
 destination : str
     ''results/{scenario}/preprocessed''
+
 Outputs
 ---------
 
