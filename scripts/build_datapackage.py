@@ -3,7 +3,7 @@ r"""
 Inputs
 -------
 scenario_specs : str
-    ``scenarios/{scenario}.ymlpath of input file (.yml)``: containing scenario specifications
+    ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
 
