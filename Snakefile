@@ -88,22 +88,19 @@ rule prepare_re_potential:
         assumptions="raw/scalars.csv",
         script="scripts/prepare_re_potential.py"
     output:
-        pv_potential="results/_resources/power_potential_pv_kreise.csv",
-        wind_potential="results/_resources/power_potential_wind_kreise.csv",
-        secondary_output_dir=directory("results/_resources/RE_potential/")
+        directory("results/_resources/RE_potential/")
     shell:
-        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output.pv_potential} {output.wind_potential} {output.secondary_output_dir}"
+        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output}"
 
 rule process_re_potential:
     input:
-        wind="results/_resources/power_potential_wind_kreise.csv",
-        pv="results/_resources/power_potential_pv_kreise.csv",
+        input_dir=directory("results/_resources/RE_potential/"),
         script="scripts/process_re_potential.py"
     output:
         scalars="results/_resources/wind_pv_scalar.csv",
         table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
-        "python {input.script} {input.wind} {input.pv} {output.scalars} {output.table}"
+        "python {input.script} {input.input_dir} {output.scalars} {output.table}"
 
 rule optimize:
     input:
