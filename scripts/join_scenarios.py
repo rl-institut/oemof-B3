@@ -5,7 +5,8 @@ Inputs
 list_scenarios : path
     ''scenario_groups/{scenario_list}.yml'': Path to yaml-file containing a list of scenarios.
 destination : path
-    ''results/joined_scenarios/{scenario_list}/joined/scalars.csv'': Path of output file to store joined scalar results.
+    ''results/joined_scenarios/{scenario_list}/joined/scalars.csv'': Path of output file to store
+    joined scalar results.
 
 Outputs
 ---------

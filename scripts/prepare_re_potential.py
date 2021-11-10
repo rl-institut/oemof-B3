@@ -3,13 +3,17 @@ r"""
 Inputs
 -------
 filename_pv_agriculture : str
-    ''raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv'': Path incl. file name to area potential agriculture pv csv
+    ''raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv'': Path incl.
+    file name to area potential agriculture pv csv
 filename_pv_road_railway : str
-    ''raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv'': Path incl. file name to area potential roads and railway pv csv
+    ''raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv'': Path incl.
+    file name to area potential roads and railway pv csv
 filename_wind : str
-    ''raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv'': Path incl. file name to area potential wind csv
+    ''raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv'': Path incl. file name
+    to area potential wind csv
 filename_kreise : str
-    ''raw/lookup_table_brandenburg_kreise.csv'': Path incl. file name to lookup table Kreise and NUTS of Brandenburg
+    ''raw/lookup_table_brandenburg_kreise.csv'': Path incl. file name to lookup table Kreise and
+    NUTS of Brandenburg
 filename_assumptions : str
     ''raw/scalars.csv'': Path incl. file name to assumptions csv
 output_dir : str
