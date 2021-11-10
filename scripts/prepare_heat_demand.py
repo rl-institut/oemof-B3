@@ -3,9 +3,9 @@ r"""
 Inputs
 -------
 preprocessed : str
-    ''results/{scenario}/preprocessed''
+    ``results/{scenario}/preprocessed``
 optimized : str
-    ''results/{scenario}/optimized/''
+    ``results/{scenario}/optimized/``
 
 Outputs
 ---------

@@ -3,11 +3,11 @@ r"""
 Inputs
 -------
 optimized : str
-    ''results/{scenario}/optimized''
+    ``results/{scenario}/optimized``
 scenario_name : str
-    '' ''
+    `` ``
 destination : str
-    ''results/{scenario}/preprocessed''
+    ``results/{scenario}/preprocessed``
 
 Outputs
 ---------

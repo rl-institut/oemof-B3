@@ -3,9 +3,9 @@ r"""
 Inputs
 -------
 scalars_path : str
-    ''results/joined_scenarios/{scenario_list}/joined/scalars.csv'': path to csv with scalar data.
+    ``results/joined_scenarios/{scenario_list}/joined/scalars.csv``: path to csv with scalar data.
 target : str
-    ''results/joined_scenarios/{scenario_list}/joined_plotted/'': path where a new directory is
+    ``results/joined_scenarios/{scenario_list}/joined_plotted/``: path where a new directory is
     created and the plots are saved.
 
 Outputs

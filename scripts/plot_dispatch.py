@@ -3,10 +3,10 @@ r"""
 Inputs
 -------
 postprocessed : str
-    ''results/{scenario}/postprocessed/'': path to directory which contains the input data which
+    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
     can be plotted
 plotted : str
-    ''results/{scenario}/plotted/'': path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/``: path where a new directory is created and the plots are saved
 
 Outputs
 ---------
