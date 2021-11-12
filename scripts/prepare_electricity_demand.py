@@ -4,7 +4,7 @@ Inputs
 url_opsd : str
     url of raw opsd data of electricty load as .csv
 output_file : str
-    path of output file with prepared data as .csv
+    ``results/_resources/load_profile_electricity.csv``: path of output file with prepared data as .csv
 
 Outputs
 ---------
