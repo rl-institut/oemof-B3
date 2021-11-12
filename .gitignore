@@ -9,4 +9,5 @@ docs/_build
 *.egg-info
 dist
 build
+gurobi.log
 data.open-power-system-data.org/
