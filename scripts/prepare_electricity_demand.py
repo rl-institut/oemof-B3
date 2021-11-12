@@ -34,7 +34,7 @@ REGIONS = ["BB", "B"]
 TS_VAR_UNIT = "None"
 TS_SOURCE = "https://data.open-power-system-data.org/time_series/2020-10-06"
 TS_COMMENT = "DE_50hertz actual load data"
-LOAD_DATA = "DE_50hertz_load_actual_entsoe_transparency"
+COL_SELECT = "DE_50hertz_load_actual_entsoe_transparency"
 
 
 def prepare_load_profile_time_series(ts_raw, year, region):
