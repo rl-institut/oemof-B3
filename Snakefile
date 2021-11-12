@@ -78,7 +78,7 @@ rule prepare_electricity_demand:
         opsd_url=HTTP.remote("https://data.open-power-system-data.org/time_series/2020-10-06/time_series_60min_singleindex.csv"),
         script="scripts/prepare_electricity_demand.py"
     output:
-        "results/_resources/load_profile_time_series.csv"
+        "results/_resources/load_profile_electricity.csv"
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
