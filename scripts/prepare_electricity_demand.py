@@ -1,10 +1,11 @@
 r"""
 Inputs
 -------
-url_opsd : str
-    url of raw opsd data of electricty load as .csv
+opsd_ts_data : str
+    raw opsd timeseries data including electricty load as .csv
 output_file : str
-    ``results/_resources/load_profile_electricity.csv``: path of output file with prepared data as .csv
+    ``results/_resources/load_profile_electricity.csv``: path of output file with prepared
+    data as .csv
 
 Outputs
 ---------
@@ -14,10 +15,11 @@ pandas.DataFrame
 
 Description
 -------------
-The script downloads the 60 min timeseries data from OPSD and filters for the load data
-of the 50 Hertz region in Germany. The load data is normalized with the total electricity
-demand of the corresponding year and put into the timeseries template format. The years
-2015 to 2019 (including) are available.
+The corresponding snakemake rule of the preparation of the electricity demand profile
+downloads the 60 min timeseries data from OPSD and keeps it locally.
+The script takes this data and filters for the load data of the 50 Hertz region in Germany.
+The load data is normalized with the total electricity demand of the corresponding year and put
+into the timeseries template format. The years 2015 to 2019 (including) are available.
 """
 
 import sys
@@ -84,14 +86,14 @@ def prepare_load_profile_time_series(ts_raw, year, region):
 
 
 if __name__ == "__main__":
-    url_opsd = sys.argv[1]
+    opsd_ts_data = sys.argv[1]
     output_file = sys.argv[2]
 
     # initialize data frame
     time_series_df = pd.DataFrame()
 
     # download raw time series from OPSD
-    ts_raw = pd.read_csv(url_opsd, index_col=0)
+    ts_raw = pd.read_csv(opsd_ts_data, index_col=0)
     ts_raw.index = pd.to_datetime(ts_raw.index, utc=True)
     # filter for 50hertz actual load
     ts_raw = ts_raw[[LOAD_DATA]]
