@@ -67,11 +67,12 @@ rule prepare_feedin:
     input:
         wind_feedin="raw/time_series/ninja_wind_country_DE_current_merra-2_nuts-2_corrected.csv",
         pv_feedin="raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv",
+        ror_feedin="raw/time_series/DIW_Hydro_availability.csv",
         script="scripts/prepare_feedin.py"
     output:
         "results/_resources/feedin_time_series.csv"
     shell:
-        "python {input.script} {input.wind_feedin} {input.pv_feedin} {output}"
+        "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
 
 rule prepare_electricity_demand:
     input:
@@ -90,6 +91,29 @@ rule build_datapackage:
         directory("results/{scenario}/preprocessed")
     shell:
         "python scripts/build_datapackage.py {input} {output}"
+
+rule prepare_re_potential:
+    input:
+        pv_agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
+        pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
+        wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
+        kreise="raw/lookup_table_brandenburg_kreise.csv",
+        assumptions="raw/scalars.csv",
+        script="scripts/prepare_re_potential.py"
+    output:
+        directory("results/_resources/RE_potential/")
+    shell:
+        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output}"
+
+rule process_re_potential:
+    input:
+        input_dir=directory("results/_resources/RE_potential/"),
+        script="scripts/process_re_potential.py"
+    output:
+        scalars="results/_resources/wind_pv_scalar.csv",
+        table="results/_tables/potential_wind_pv_kreise.csv",
+    shell:
+        "python {input.script} {input.input_dir} {output.scalars} {output.table}"
 
 rule optimize:
     input:
