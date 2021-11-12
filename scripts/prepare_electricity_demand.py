@@ -96,7 +96,7 @@ if __name__ == "__main__":
     ts_raw = pd.read_csv(opsd_ts_data, index_col=0)
     ts_raw.index = pd.to_datetime(ts_raw.index, utc=True)
     # filter for 50hertz actual load
-    ts_raw = ts_raw[[LOAD_DATA]]
+    ts_raw = ts_raw[[COL_SELECT]]
 
     # prepare time series for each year and region
     for year in OPSD_YEARS:
