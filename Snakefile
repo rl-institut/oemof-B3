@@ -1,3 +1,6 @@
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+HTTP = HTTPRemoteProvider()
+
 examples = [
     'base',
     'more_renewables',
@@ -70,6 +73,16 @@ rule prepare_feedin:
         "results/_resources/feedin_time_series.csv"
     shell:
         "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
+
+rule prepare_electricity_demand:
+    input:
+        opsd_url=HTTP.remote("https://data.open-power-system-data.org/time_series/2020-10-06/time_series_60min_singleindex.csv",
+                            keep_local=True),
+        script="scripts/prepare_electricity_demand.py"
+    output:
+        "results/_resources/load_profile_electricity.csv"
+    shell:
+        "python {input.script} {input.opsd_url} {output}"
 
 rule build_datapackage:
     input:
