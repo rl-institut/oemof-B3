@@ -9,10 +9,14 @@ optimized : str
 
 Outputs
 ---------
+es.dump
+    oemof.solph.EnergySystem with results, meta-results and parameters
 
 Description
 -------------
-
+Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and an
+oemof.solph.Model, which is optimized. The EnergySystem with results, meta-results and parameters
+is saved.
 """
 import os
 import sys
@@ -53,6 +57,5 @@ if __name__ == "__main__":
     es.results = processing.results(m)
     es.params = processing.parameter_as_dict(es)
 
-    # now we use the write results method to write the results in oemoftabular
-    # format
+    # dump the EnergySystem
     es.dump(optimized)
