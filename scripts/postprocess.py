@@ -11,10 +11,12 @@ destination : str
 
 Outputs
 ---------
+oemoflex.ResultsDatapackage
+    ResultsDatapackage
 
 Description
 -------------
-
+Postprocess the results of an optimization.
 """
 import sys
 
