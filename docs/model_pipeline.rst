@@ -27,6 +27,8 @@ Optimization
    :maxdepth: 1
    :glob:
 
+   optimization/*
+
 
 Postprocessing
 ==============
@@ -34,3 +36,15 @@ Postprocessing
 .. toctree::
    :maxdepth: 1
    :glob:
+
+   postprocessing/*
+
+
+Plotting
+==============
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   plotting/*

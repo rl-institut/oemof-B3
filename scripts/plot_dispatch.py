@@ -1,10 +1,12 @@
+# coding: utf-8
 r"""
 Inputs
 -------
 postprocessed : str
-    path to directory which contains the input data which can be plotted
+    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
+    can be plotted
 plotted : str
-    path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/``: path where a new directory is created and the plots are saved
 
 Outputs
 ---------

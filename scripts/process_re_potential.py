@@ -3,11 +3,13 @@ r"""
 Inputs
 -------
 input_dir : str
-    Path to input directory of renewable potential
+    ``results/_resources/RE_potential/``: Path to input directory of renewable potential
 output_scalars : str
-    Path incl. file name to scalar output as input to energy system model
+    ``results/_resources/wind_pv_scalar.csv``: Path incl. file name to scalar output as input to
+    energy system model
 output_tables : str
-    Path incl. file name to output for results documentation
+    ``results/_tables/potential_wind_pv_kreise.csv``: Path incl. file name to output for results
+    documentation
 
 Outputs
 ---------

@@ -3,15 +3,17 @@ r"""
 Inputs
 -------
 in_path1 : str
-    path of input file with raw opsd data as .csv
+    ``raw/conventional_power_plants_DE.csv``: path of input file with raw opsd data as .csv
 in_path2 : str
-    path of input file with geodata of regions in Germany as .gpgk
+    ``raw/boundaries_germany_nuts3.gpkg``: path of input file with geodata of regions in Germany
+    as .gpgk
 in_path3 : str
-    path of input file with names of regions in Berlin and Brandenburg as .yaml
+    ``raw/b3_regions.yaml``: path of input file with names of regions in Berlin and Brandenburg
+    as .yaml
 in_path4 : str
-    path of template for scalar data as .csv
+    ``oemof_b3/schema/scalars.csv``: path of template for scalar data as .csv
 out_path : str
-    path of output file with prepared data as .csv
+    ``results/_resources/conv_pp_scalar.csv``: path of output file with prepared data as .csv
 
 Outputs
 ---------
