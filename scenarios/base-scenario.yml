@@ -49,12 +49,12 @@ components:
 
 # parametrize
 
-path_scalars: results/_resources/scalars.csv
+path_scalars: results/_resources/base-scenario.csv
 
 filter_scalars:
   1:
     scenario:
-      None
+      base-scenario
 
 paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 
