@@ -17,8 +17,8 @@ filename_kreise : str
 filename_assumptions : str
     ``raw/scalars.csv``: Path incl. file name to assumptions csv
 output_dir : str
-    Path to output directory where power and area potential of single areas and of "Landkreise" is
-    saved
+    ``results/_resources/RE_potential/``: Path to output directory where power and area potential of
+    single areas and of "Landkreise" is saved
 
 Outputs
 ---------
