@@ -31,7 +31,81 @@ from oemof_b3.tools.data_processing import (
     load_b3_scalars,
     load_b3_timeseries,
     unstack_timeseries,
+    format_header,
+    HEADER_B3_SCAL,
 )
+
+
+def multi_load(paths, load_func):
+    if isinstance(paths, list):
+        pass
+    elif isinstance(paths, str):
+        return load_func(paths)
+    else:
+        raise ValueError(f"{paths} has to be either list of paths or path.")
+
+    dfs = []
+    for path in paths:
+        df = load_func(path)
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+
+    return result
+
+
+def multi_load_b3_scalars(paths):
+    return multi_load(paths, load_b3_scalars)
+
+
+def multi_load_b3_timeseries(paths):
+    return multi_load(paths, load_b3_timeseries)
+
+
+def expand_regions(scalars, regions, where="ALL"):
+    r"""
+    Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
+    Returns scalars with new rows included for each region in those places where region equals
+    `where`.
+
+    Parameters
+    ----------
+    scalars : pd.DataFrame
+        Data in oemof_b3 format to expand
+    regions : list
+        List of regions
+    where : str
+        Key that should be expanded
+    Returns
+    -------
+    sc_with_region : pd.DataFrame
+        Data with expanded regions in oemof_b3 format
+    """
+    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
+
+    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
+
+    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
+
+    if sc_wo_region.empty:
+        return sc_with_region
+
+    for region in regions:
+        regionalized = sc_wo_region.copy()
+
+        regionalized["name"] = regionalized.apply(
+            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+        )
+
+        regionalized["region"] = region
+
+        sc_with_region = sc_with_region.append(regionalized)
+
+    sc_with_region = sc_with_region.reset_index(drop=True)
+
+    sc_with_region.index.name = "id_scal"
+
+    return sc_with_region
 
 
 def update_with_checks(old, new):
@@ -51,7 +125,7 @@ def update_with_checks(old, new):
     """
     # Check if some data would get lost
     if not new.index.isin(old.index).all():
-        raise Warning("Index of new data is not in the index of old data.")
+        print("Index of new data is not in the index of old data.")
 
     try:
         # Check if it overwrites by setting errors = 'raise'
@@ -168,7 +242,10 @@ if __name__ == "__main__":
     # parametrize scalars
     path_scalars = scenario_specs["path_scalars"]
 
-    scalars = load_b3_scalars(path_scalars)
+    scalars = multi_load_b3_scalars(path_scalars)
+
+    # Replace 'ALL' in the column regions by the actual regions
+    scalars = expand_regions(scalars, scenario_specs["regions"])
 
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 
@@ -177,7 +254,7 @@ if __name__ == "__main__":
     # parametrize timeseries
     paths_timeseries = scenario_specs["paths_timeseries"]
 
-    ts = load_b3_timeseries(paths_timeseries)
+    ts = multi_load_b3_timeseries(paths_timeseries)
 
     filters = scenario_specs["filter_timeseries"]
 

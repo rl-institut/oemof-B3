@@ -16,7 +16,8 @@ busses:
   - ch4
   - electricity
   - h2
-  - heat
+  - heat_central
+  - heat_decentral
   - biomass
 
 components:
@@ -24,8 +25,8 @@ components:
   - ch4-boiler
   - ch4-bpchp
   - ch4-demand
+  - ch4-shortage
   - ch4-excess
-  - ch4-extchp
   - ch4-gt
   - electricity-demand
   - electricity-electrolyzer
@@ -34,16 +35,20 @@ components:
   - electricity-pth
   - electricity-shortage
   - h2-gt
-  - heat-demand
-  - heat-excess
-  - heat-shortage
-  - heat-storage
+  - h2-bpchp
+  - heat_central-demand
+  - heat_central-excess
+  - heat_central-shortage
+  - heat_central-storage
+  - heat_decentral-demand
+  - heat_decentral-excess
+  - heat_decentral-shortage
+  - heat_decentral-storage
   - hydro-ror
   - solar-pv
   - wind-onshore
 
 # parametrize
-# paths to input data files
 
 path_scalars: raw/toy-scenario.csv
 
@@ -60,10 +65,3 @@ paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 filter_timeseries:
   scenario:
     toy-scenario-update
-
-# optimize
-
-# solver: "cbc"
-# debug: "False"
-# receive_duals: "False"
-# dump params: "True"
