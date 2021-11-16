@@ -108,4 +108,6 @@ if __name__ == "__main__":
 
     sc.scalars.reset_index(inplace=True, drop=True)
 
+    sc.scalars.index.name = "id_scal"
+
     sc.scalars.to_csv(out_path)
