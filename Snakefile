@@ -84,6 +84,15 @@ rule prepare_electricity_demand:
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
+rule prepare_scalars:
+    input:
+        raw_scalars="raw/base-scenario.csv",
+        script="scripts/prepare_scalars.py",
+    output:
+        "results/_resources/base-scenario.csv"
+    shell:
+        "python {input.script} {input.raw_scalars} {output}"
+
 rule build_datapackage:
     input:
         "scenarios/{scenario}.yml"
