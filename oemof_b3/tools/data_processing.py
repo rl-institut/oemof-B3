@@ -150,7 +150,7 @@ def save_df(df, path):
     print(f"User info: The DataFrame has been saved to: {path}.")
 
 
-def filter_df(df, column_name, values):
+def filter_df(df, column_name, values, inverse=False):
     """
     This function filters a DataFrame.
 
@@ -162,6 +162,9 @@ def filter_df(df, column_name, values):
         The column's name to filter.
     values : str/numeric/list
         String, number or list of strings or numbers to filter by.
+    inverse : Boolean
+        If True, the entries for `column_name` and `values` are dropped
+        and the rest of the DataFrame be retained.
 
     Returns
     -------
@@ -171,10 +174,15 @@ def filter_df(df, column_name, values):
     _df = df.copy()
 
     if isinstance(values, list):
-        df_filtered = _df.loc[df[column_name].isin(values)]
+        where = _df[column_name].isin(values)
 
     else:
-        df_filtered = _df.loc[df[column_name] == values]
+        where = _df[column_name] == values
+
+    if inverse:
+        where = ~where
+
+    df_filtered = _df.loc[where]
 
     return df_filtered
 
@@ -528,6 +536,10 @@ class ScalarProcessor:
         result = _df.loc[:, "var_value"]
 
         return result
+
+    def drop(self, var_name):
+
+        self.scalars = filter_df(self.scalars, "var_name", var_name, inverse=True)
 
     def append(self, var_name, data):
         r"""
