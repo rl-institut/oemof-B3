@@ -82,6 +82,17 @@ def annuise_investment_cost(sc):
 
         sc.append(var_name_cost.replace("_overnight", ""), annuised_investment_cost)
 
+    sc.drop(
+        [
+            "wacc",
+            "lifetime",
+            "capacity_cost_overnight",
+            "storage_capacity_cost_overnight",
+            "fixom_cost",
+            "storage_fixom_cost",
+        ]
+    )
+
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # path to raw scalar data
@@ -93,4 +104,8 @@ if __name__ == "__main__":
 
     annuise_investment_cost(sc)
 
-    sc.scalars.to_csv(out_path, index=False)
+    sc.scalars = sc.scalars.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+
+    sc.scalars.reset_index(inplace=True, drop=True)
+
+    sc.scalars.to_csv(out_path)
