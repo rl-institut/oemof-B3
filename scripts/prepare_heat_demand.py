@@ -3,17 +3,17 @@ r"""
 Inputs
 -------
 in_path1 : str
-    path of input directory with raw data
+    ``raw/weatherdata``: path of input directory with weather data
 in_path2 : str
-    path of input file with household distributions data as .csv
+    ``raw/distribution_households.csv``: path of input file with household distributions data as .csv
 in_path3 : str
-    path of input file with holidays of all states in Germany as .csv
+    ``raw/holidays.csv``: path of input file with holidays of all states in Germany as .csv
 in_path4 : str
-    path of template for scalar data as .csv
+    ``raw/scalars.csv``: path of template for scalar data as .csv
 in_path5 : str
-    path of input file with times series format as .csv
+    ``oemof_b3/schema/timeseries.csv``: path of input file with times series format as .csv
 out_path : str
-    path of output file with prepared data as .csv
+    ``results/_resources/load_profile_heat.csv``: path of output file with prepared data as .csv
 
 Outputs
 ---------
