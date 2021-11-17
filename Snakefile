@@ -63,16 +63,16 @@ rule prepare_conv_pp:
 
 rule prepare_heat_demand:
     input:
-        raw="raw/",
-        dishh="raw/distribution_households.csv",
-        hl="raw/holidays.csv",
+        weather="raw/weatherdata",
+        distribution_hh="raw/distribution_households.csv",
+        holidays="raw/holidays.csv",
         script="scripts/prepare_heat_demand.py",
         sc="raw/scalars.csv",
         tstemp="oemof_b3/schema/timeseries.csv"
     output:
-        "results/_resources/heat_load.csv"
+        "results/_resources/load_profile_heat.csv"
     shell:
-        "python scripts/prepare_heat_demand.py {input.raw} {input.dishh} {input.hl} {input.sc} {input.tstemp} {output}"
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.sc} {input.tstemp} {output}"
 
 
 rule build_datapackage:
