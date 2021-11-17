@@ -281,17 +281,20 @@ if __name__ == "__main__":
     # schema = os.path.abspath(
     #     os.path.join(path_this_file, os.pardir, os.pardir, "oemof_b3", "schema")
     # )
+    # results = os.path.abspath(
+    #     os.path.join(path_this_file, os.pardir, os.pardir, "results", "_resources")
+    # )
     #
-    # in_path1 = os.path.join(raw_data)  # path to raw data
+    # in_path1 = os.path.join(raw_data, "weatherdata")  # path to weather data
     # in_path2 = os.path.join(
     #     raw_data, "distribution_households.csv"
     # )  # path to household distributions data
     # in_path3 = os.path.join(raw_data, "holidays.csv")  # path to holidays
     # in_path4 = os.path.join(raw_data, "scalars.csv")  # path to b3 schema scalars.csv
     # in_path5 = os.path.join(schema, "timeseries.csv")
-    # out_path = os.path.join(raw_data, "heat_load.csv")
+    # out_path = os.path.join(results, "load_profile_heat.csv")
 
-    in_path1 = sys.argv[1]  # path to raw data
+    in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
     in_path3 = sys.argv[3]  # path to holidays
     in_path4 = sys.argv[4]  # path to b3 scalars.csv
