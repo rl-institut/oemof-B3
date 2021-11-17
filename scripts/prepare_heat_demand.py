@@ -216,7 +216,7 @@ def calculate_heat_load(region, scenario):
                 shlp_type="EFH",
                 building_class=6,
                 wind_class=0,
-                annual_heat_demand=yearly_demands["efh" + "_" + type],
+                annual_heat_demand=yearly_demands["efh" + "_" + type][0],
                 name="EFH",
                 ww_incl=True,
             ).get_bdew_profile()
@@ -229,7 +229,7 @@ def calculate_heat_load(region, scenario):
                 shlp_type="MFH",
                 building_class=2,
                 wind_class=0,
-                annual_heat_demand=yearly_demands["mfh" + "_" + type],
+                annual_heat_demand=yearly_demands["mfh" + "_" + type][0],
                 name="MFH",
                 ww_incl=True,
             ).get_bdew_profile()
@@ -242,7 +242,7 @@ def calculate_heat_load(region, scenario):
                 temperature=temperature,
                 shlp_type="ghd",
                 wind_class=0,
-                annual_heat_demand=yearly_demands["ghd" + "_" + type],
+                annual_heat_demand=yearly_demands["ghd" + "_" + type][0],
                 name="ghd",
                 ww_incl=True,
             ).get_bdew_profile()
