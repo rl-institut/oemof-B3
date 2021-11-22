@@ -247,6 +247,9 @@ if __name__ == "__main__":
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])
 
+    # Drop those scalars that do not belong to a specific component
+    scalars = scalars.loc[~scalars["name"].isna()]
+
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 
     edp = parametrize_scalars(edp, scalars, filters)
