@@ -1,10 +1,12 @@
+# coding: utf-8
 r"""
 Inputs
 -------
 scalars_path : str
-    path to csv with scalar data.
+    ``results/joined_scenarios/{scenario_list}/joined/scalars.csv``: path to csv with scalar data.
 target : str
-    path where a new directory is created and the plots are saved.
+    ``results/joined_scenarios/{scenario_list}/joined_plotted/``: path where a new directory is
+    created and the plots are saved.
 
 Outputs
 ---------
