@@ -180,10 +180,10 @@ def calculate_heat_load(region, scenario):
     years = np.arange(2010, 2020)
 
     # Read time series template
-    ts_template = dp.load_b3_timeseries(in_path5, sep=";")
+    ts_header = dp.HEADER_B3_TS
 
     # Add empty data frame for results / output
-    heat_load = pd.DataFrame(columns=ts_template.columns)
+    heat_load = pd.DataFrame(columns=ts_header)
 
     for index, year in enumerate(years):
         # Get holidays
@@ -264,7 +264,7 @@ def calculate_heat_load(region, scenario):
 
         # Rearrange stacked time series
         heat_load_year_stacked = dp.format_header(
-            df=heat_load_year_stacked, header=ts_template.columns, index_name="id_ts"
+            df=heat_load_year_stacked, header=ts_header, index_name="id_ts"
         )
 
         # Append stacked heat load of year to stacked time series with total heat loads
@@ -291,15 +291,13 @@ if __name__ == "__main__":
     # )  # path to household distributions data
     # in_path3 = os.path.join(raw_data, "holidays.csv")  # path to holidays
     # in_path4 = os.path.join(raw_data, "scalars.csv")  # path to b3 schema scalars.csv
-    # in_path5 = os.path.join(schema, "timeseries.csv")
     # out_path = os.path.join(results, "load_profile_heat.csv")
 
     in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
     in_path3 = sys.argv[3]  # path to holidays
     in_path4 = sys.argv[4]  # path to b3 scalars.csv
-    in_path5 = sys.argv[5]  # path to template of times series format
-    out_path = sys.argv[6]
+    out_path = sys.argv[5]
 
     REGION = "BB"
     SCENARIO = "base"

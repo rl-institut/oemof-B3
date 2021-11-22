@@ -68,11 +68,10 @@ rule prepare_heat_demand:
         holidays="raw/holidays.csv",
         script="scripts/prepare_heat_demand.py",
         sc="raw/scalars.csv",
-        tstemp="oemof_b3/schema/timeseries.csv"
     output:
         "results/_resources/load_profile_heat.csv"
     shell:
-        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.sc} {input.tstemp} {output}"
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.sc} {output}"
 
 
 rule build_datapackage:
