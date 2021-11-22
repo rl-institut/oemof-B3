@@ -50,9 +50,11 @@ if __name__ == "__main__":
     ]
 
     # select carrier
-    carrier = "electricity"
+    carriers = ["electricity", "heat_central", "heat_decentral"]
 
-    selected_bus_files = [file for file in bus_files if carrier in file]
+    selected_bus_files = [
+        file for file in bus_files for carrier in carriers if carrier in file
+    ]
 
     for bus_file in selected_bus_files:
 
