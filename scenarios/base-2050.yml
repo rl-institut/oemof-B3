@@ -56,8 +56,10 @@ filter_scalars:
     scenario:
       "Base 2050"
 
-paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
+paths_timeseries:
+  - results/_resources/feedin_time_series.csv
+  - results/_resources/load_profile_electricity.csv
 
 filter_timeseries:
   scenario:
-    toy-scenario
+    ts_2015
