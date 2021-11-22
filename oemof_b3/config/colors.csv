@@ -30,12 +30,18 @@ H2 Backpressure CHP,magenta
 CH4 Backpressure CHP,brown
 CH4 Extraction CHP,darkred
 
-Heat demand,#000000
-Heat excess,#7f7f7f
-Heat shortage,#7f7f7f
-Heat storage,#9467bd
+Heat cen. demand,#000000
+Heat cen. excess,#7f7f7f
+Heat cen. shortage,#7f7f7f
+Heat cen. storage in,#9467bd
+Heat cen. storage out,#9467bd
+Heat dec. demand,#000000
+Heat dec. excess,#7f7f7f
+Heat dec. shortage,#7f7f7f
+Heat dec. storage out,#9467bd
+Heat dec. storage in,#9467bd
 
-CH4 boiler,#d62728
+CH4 Boiler,#d62728
 Heatpump,#2ca02c
 res. PtH,#ff7f0e
 
