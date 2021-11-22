@@ -38,6 +38,35 @@ import numpy as np
 import oemof_b3.tools.data_processing as dp
 
 
+def get_years(region, weather_data):
+    """
+    This function returns years from available weather data
+
+    Parameters
+    ----------
+    region : str
+        region e.g. BB as Brandenburg
+    weather_data : list
+        List with file names of all weather data in directory
+
+    Returns
+    -------
+    years : list
+        List of years
+    """
+    years_array = np.arange(1990, 2050)
+    years = []
+
+    for weather_data_file_name in weather_data:
+        if region in weather_data_file_name:
+            for year_in_array in years_array:
+                if str(year_in_array) in weather_data_file_name:
+                    years.append(year_in_array)
+
+    years = sorted(years)
+    return years
+
+
 def get_holidays(path, year, region):
     """
     This function determines all holidays of a given region in a given year
@@ -157,7 +186,7 @@ def get_heat_demand(path, region, scenario):
     return demands, list(set(units))
 
 
-def calculate_heat_load(region, scenario):
+def calculate_heat_load(years, region, scenario):
     """
     This function calculates a heat load profile of Industry, trade,
     service (ghd: Gewerbe, Handel, Dienstleistung) and Household (hh: Haushalt)
@@ -165,6 +194,8 @@ def calculate_heat_load(region, scenario):
 
     Parameters
     ----------
+    years : list
+        List of years
     region : str
         region e.g. BB as Brandenburg
     scenario : str
@@ -176,9 +207,6 @@ def calculate_heat_load(region, scenario):
          DataFrame that contains the calculated total heat load
 
     """
-    # Set examined years
-    years = np.arange(2010, 2020)
-
     # Read time series template
     ts_header = dp.HEADER_B3_TS
 
@@ -302,5 +330,9 @@ if __name__ == "__main__":
     REGION = "BB"
     SCENARIO = "base"
 
-    heat_load = calculate_heat_load(REGION, SCENARIO)
+    weather_data = os.listdir(in_path1)
+    years = get_years(REGION, weather_data)
+
+    heat_load = calculate_heat_load(years, REGION, SCENARIO)
+
     heat_load.to_csv(out_path)
