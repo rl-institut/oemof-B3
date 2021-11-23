@@ -5,7 +5,8 @@ Inputs
 in_path1 : str
     ``raw/weatherdata``: path of input directory with weather data
 in_path2 : str
-    ``raw/distribution_households.csv``: path of input file with household distributions data as .csv
+    ``raw/distribution_households.csv``: path of input file with household distributions data
+     as .csv
 in_path3 : str
     ``raw/holidays.csv``: path of input file with holidays of all states in Germany as .csv
 in_path4 : str
@@ -32,24 +33,27 @@ import os
 import sys
 
 import numpy as np
-import oemof_b3.tools.data_processing as dp
 import pandas as pd
 from demandlib import bdew
 
+import oemof_b3.tools.data_processing as dp
 
-def prepare_weather_data():
+
+def find_regional_weather_data(path):
     """
     This function returns a list with weather data to region
 
     Parameters
     ----------
+    path : str
+        Path to all weather data
 
     Returns
     -------
     weather_data_region : list
         List of weather data file names of region
     """
-    weather_data_all = os.listdir(in_path1)
+    weather_data_all = os.listdir(path)
     weather_data_region = weather_data_all.copy()
 
     for weather_data_file in weather_data_all:
@@ -60,28 +64,30 @@ def prepare_weather_data():
     return weather_data_region
 
 
-def get_years():
+def get_years(file_list):
     """
     This function returns years from available weather data
 
     Parameters
     ----------
+    file_list : list
+        List of file names with year
 
     Returns
     -------
-    years : list
+    years_list : list
         List of years
     """
     years_array = np.arange(1990, 2050)
-    years = []
+    years_list = []
 
-    for weather_data_file in weather_data:
+    for file in file_list:
         for year_in_array in years_array:
-            if str(year_in_array) in weather_data_file:
-                years.append(year_in_array)
+            if str(year_in_array) in file:
+                years_list.append(year_in_array)
 
-    years = sorted(years)
-    return years
+    years_list = sorted(years_list)
+    return years_list
 
 
 def get_holidays(path):
@@ -94,22 +100,22 @@ def get_holidays(path):
         input path
     Returns
     -------
-    holidays : dict
+    holidays_dict : dict
         dictionary with holidays
 
     """
     # Read all national holidays per state
     all_holidays = pd.read_csv(path)
-    holidays = {}
+    holidays_dict = {}
 
     # Get holidays in region
     for row in all_holidays.iterrows():
         if year == row[1]["year"] and region in row[1]["region"]:
-            holidays[
+            holidays_dict[
                 datetime.date(row[1]["year"], row[1]["month"], row[1]["day"])
             ] = row[1]["holiday"]
 
-    return holidays
+    return holidays_dict
 
 
 def check_central_decentral(demands, value, consumer, heat_type):
@@ -320,16 +326,13 @@ if __name__ == "__main__":
     SCENARIO = "base"
     CARRIERS = ["heat_central", "heat_decentral"]
 
-    # Read time series template
-    ts_header = dp.HEADER_B3_TS
-
     # Add empty data frame for results / output
-    heat_load = pd.DataFrame(columns=ts_header)
+    heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
     for region in REGION:
 
-        weather_data = prepare_weather_data()
-        years = get_years()
+        weather_data = find_regional_weather_data(in_path1)
+        years = get_years(weather_data)
 
         for index, year in enumerate(years):
             # Get holidays
