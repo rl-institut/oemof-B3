@@ -56,6 +56,9 @@ def find_regional_weather_data(path):
     weather_data_region = [file for file in os.listdir(path) if region in file]
     weather_data_region = sorted(weather_data_region)
 
+    if len(weather_data_region) == 0:
+        raise FileNotFoundError(f"No weather data of region {region} could be found in directory: {path}.")
+
     return weather_data_region
 
 
@@ -77,9 +80,13 @@ def get_years(file_list):
     years_list = []
 
     for file in file_list:
-        years_list.append(
-            [year_array for year_array in years_array if str(year_array) in file][0]
-        )
+        year_in_file = [year_array for year_array in years_array if str(year_array) in file]
+        if len(year_in_file) == 1:
+            years_list.append(year_in_file[0])
+        else:
+            raise ValueError(f"Your file {file} is missing a year or has multiple years "
+                             f"in its name. Please provide weather data for a single year "
+                             f"with that year in the file name.")
 
     years_list = sorted(years_list)
     return years_list
