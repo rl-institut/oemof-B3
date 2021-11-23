@@ -92,7 +92,7 @@ def get_years(file_list):
     return years_list
 
 
-def get_holidays(path):
+def get_holidays(path, year):
     """
     This function determines all holidays of a given region in a given year
 
@@ -100,6 +100,8 @@ def get_holidays(path):
     ----------
     path : str
         input path
+    year : int
+        year
     Returns
     -------
     holidays_dict : dict
@@ -111,11 +113,15 @@ def get_holidays(path):
     holidays_dict = {}
 
     # Get holidays in region
-    for row in all_holidays.iterrows():
-        if year == row[1]["year"] and region in row[1]["region"]:
-            holidays_dict[
-                datetime.date(row[1]["year"], row[1]["month"], row[1]["day"])
-            ] = row[1]["holiday"]
+    holidays_filtered = all_holidays.loc[all_holidays["year"] == year]
+    holidays_filtered = holidays_filtered[
+        holidays_filtered["region"].str.contains(region)
+    ]
+
+    for row in holidays_filtered.iterrows():
+        holidays_dict[
+            datetime.date(row[1]["year"], row[1]["month"], row[1]["day"])
+        ] = row[1]["holiday"]
 
     return holidays_dict
 
@@ -338,7 +344,7 @@ if __name__ == "__main__":
 
         for index, year in enumerate(years):
             # Get holidays
-            holidays = get_holidays(in_path3)
+            holidays = get_holidays(in_path3, year)
 
             # Read temperature from weather data
             path_weather_data = os.path.join(in_path1, weather_data[index])
