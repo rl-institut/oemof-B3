@@ -53,12 +53,7 @@ def find_regional_weather_data(path):
     weather_data_region : list
         List of weather data file names of region
     """
-    weather_data_all = os.listdir(path)
-    weather_data_region = weather_data_all.copy()
-
-    for weather_data_file in weather_data_all:
-        if region not in weather_data_file:
-            weather_data_region.remove(weather_data_file)
+    weather_data_region = [file for file in os.listdir(path) if region in file]
     weather_data_region = sorted(weather_data_region)
 
     return weather_data_region
@@ -78,13 +73,13 @@ def get_years(file_list):
     years_list : list
         List of years
     """
-    years_array = np.arange(1990, 2050)
+    years_array = np.arange(1990, 2051)
     years_list = []
 
     for file in file_list:
-        for year_in_array in years_array:
-            if str(year_in_array) in file:
-                years_list.append(year_in_array)
+        years_list.append(
+            [year_array for year_array in years_array if str(year_array) in file][0]
+        )
 
     years_list = sorted(years_list)
     return years_list
