@@ -39,7 +39,7 @@ from demandlib import bdew
 import oemof_b3.tools.data_processing as dp
 
 
-def find_regional_weather_data(path):
+def find_regional_weather_data(path, region):
     """
     This function returns a list with weather data to region
 
@@ -47,6 +47,9 @@ def find_regional_weather_data(path):
     ----------
     path : str
         Path to all weather data
+
+    region : str
+        Region (eg. Brandenburg)
 
     Returns
     -------
@@ -80,6 +83,7 @@ def get_years(file_list):
     """
     years_array = np.arange(1990, 2051)
     years_list = []
+    newline = "\n"
 
     for file in file_list:
         year_in_file = [
@@ -90,8 +94,10 @@ def get_years(file_list):
         else:
             raise ValueError(
                 f"Your file {file} is missing a year or has multiple years "
-                f"in its name. Please provide weather data for a single year "
-                f"with that year in the file name."
+                f"in its name."
+                + newline
+                + "Please provide weather data for a single year "
+                  "with that year in the file name."
             )
 
     years_list = sorted(years_list)
@@ -132,9 +138,11 @@ def get_holidays(path, year):
     return holidays_dict
 
 
-def check_central_decentral(demands, value, consumer, heat_type):
+def check_central_decentral(demands, value, consumer, carrier):
     """
-    This function checks whether
+    This function checks whether the kind of heat is central or decentral adds it
+    to demands DataFrame to value if it exists and otherwise to a new column
+
     Parameters
     ----------
     demands : pd.DataFrame
@@ -143,24 +151,24 @@ def check_central_decentral(demands, value, consumer, heat_type):
          Value of the yearly demand
     consumer : str
          Name of the consumer (eg.: ghd, efh, mfh)
-    heat_type : str
-         Name of heat type (eg.: central, decentral)
+    carrier : str
+         Name of carrier (eg.: heat_central, heat_decentral)
 
     Returns
     -------
     demands : pd.DataFrame
          Updated DataFrame that contains yearly demands
     """
-    if consumer + "_heat_" + heat_type in demands.columns:
-        demands[consumer + "_heat_" + heat_type] = np.sum(
-            demands[consumer + "_heat_" + heat_type], [value]
+    if consumer + "_" + carrier in demands.columns:
+        demands[consumer + "_" + carrier].values[0] = np.add(
+            demands[consumer + "_" + carrier].values[0], value
         )
     else:
-        demands[consumer + "_heat_" + heat_type] = [value]
+        demands[consumer + "_" + carrier] = [value]
     return demands
 
 
-def get_heat_demand(path, scenario):
+def get_heat_demand(path, scenario, carrier):
     """
     This function returns ghd and hh demands together with their unit of a given region and a
     given scenario
@@ -171,6 +179,8 @@ def get_heat_demand(path, scenario):
         input path
     scenario : str
         scenario e.g. "base"
+    carrier : str
+         Name of carrier (eg.: heat_central, heat_decentral)
 
     Returns
     -------
@@ -184,37 +194,37 @@ def get_heat_demand(path, scenario):
     # Read state heat demands of ghd and hh sectors
     sc = dp.load_b3_scalars(path)  # TODO: Add ', sep=";"' if from schema
     consumers = ["ghd", "efh", "mfh"]
-    heat_types = ["central", "decentral"]
     demands = pd.DataFrame()
-    units = []
+    newline = "\n"
 
-    for row in sc.iterrows():
-        # Get heat demands in region
-        if (
-            "heat" in row[1]["carrier"]
-            and "demand" in row[1]["tech"]
-            and row[1]["scenario"] == scenario
-            and row[1]["region"] == region
-        ):
-            for consumer in consumers:
-                for heat_type in heat_types:
-                    if (
-                        consumer in row[1]["name"]
-                        and heat_type in row[1]["carrier"]
-                        and "de" + heat_type not in row[1]["carrier"]
-                    ):
-                        check_central_decentral(
-                            demands, row[1]["var_value"], consumer, heat_type
-                        )
-                        units.append(row[1]["var_unit"])
+    sc_filtered = dp.filter_df(sc, "tech", "demand")
+    sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
+    sc_filtered = dp.filter_df(sc_filtered, "region", region)
+    sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
 
-    if len(list(set(units))) != 1:
+    if not (sc_filtered["var_unit"].values[0] == sc_filtered["var_unit"].values).all():
         raise ValueError(
             f"Unit mismatch in scalar data of heat demands. "
             f"Please make sure units match in {path}."
         )
 
-    demand_unit = list(set(units))
+    demand_unit = list(set(sc_filtered["var_unit"]))
+
+    for consumer in consumers:
+        sc_filtered_consumer = sc_filtered[sc_filtered["name"].str.contains(consumer)]
+
+        if len(sc_filtered_consumer) > 1:
+            print(
+                f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
+                f"'{consumer}', region '{region}' and scenario '{scenario}' in {path}."
+                + newline
+                + f"The demand is going to be summed up. "
+                "Otherwise you have to rerun the calculation and provide only one demand of the "
+                "same carrier, consumer, region and scenario."
+            )
+
+        for demand_value in sc_filtered_consumer["var_value"].values:
+            check_central_decentral(demands, demand_value, consumer, carrier)
 
     return demands, demand_unit
 
@@ -345,7 +355,7 @@ if __name__ == "__main__":
 
     for region in REGION:
 
-        weather_data = find_regional_weather_data(in_path1)
+        weather_data = find_regional_weather_data(in_path1, region)
         years = get_years(weather_data)
 
         for index, year in enumerate(years):
@@ -356,9 +366,6 @@ if __name__ == "__main__":
             path_weather_data = os.path.join(in_path1, weather_data[index])
             temperature = pd.read_csv(path_weather_data, usecols=["temp_air"], header=0)
 
-            # Get heat demand in region and scenario
-            yearly_demands, sc_demand_unit = get_heat_demand(in_path4, SCENARIO)
-
             # Add DataFrame time index for demands
             demand = pd.DataFrame(
                 index=pd.date_range(
@@ -367,8 +374,12 @@ if __name__ == "__main__":
             )
 
             heat_load_year = pd.DataFrame()
-
             for carrier in CARRIERS:
+                # Get heat demand in region and scenario
+                yearly_demands, sc_demand_unit = get_heat_demand(
+                    in_path4, SCENARIO, carrier
+                )
+
                 heat_load_year = calculate_heat_load()
 
             heat_load = postprocess_data(heat_load)
