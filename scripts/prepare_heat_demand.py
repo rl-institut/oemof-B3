@@ -363,4 +363,4 @@ if __name__ == "__main__":
         header=heat_load.columns,
         index_name="id_ts",
     )
-    heat_load.to_csv(out_path)
+    dp.save_df(heat_load, out_path)
