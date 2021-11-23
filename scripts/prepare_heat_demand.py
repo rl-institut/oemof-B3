@@ -27,15 +27,14 @@ Description
 The script...
 
 """
-import sys
 import datetime
 import os
-from demandlib import bdew
-import pandas as pd
+import sys
+
 import numpy as np
-
-
 import oemof_b3.tools.data_processing as dp
+import pandas as pd
+from demandlib import bdew
 
 
 def prepare_weather_data():
