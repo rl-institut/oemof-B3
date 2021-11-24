@@ -9,6 +9,10 @@ examples = [
 
 scenario_list_example = ['examples']
 
+resources = ['conv_pp_scalar']
+
+scenarios = ["toy-scenario", "toy-scenario-2"]
+
 # Target rules
 rule plot_grouped_scenarios:
     input:
@@ -29,6 +33,10 @@ rule plot_all_examples:
 rule report_all_examples:
     input:
         expand("results/{scenario}/report/", scenario=examples)
+
+rule plot_all_resources:
+    input:
+        expand("results/_resources/plots/{resource}.png", resource=resources)
 
 rule clean:
     shell:
@@ -56,12 +64,11 @@ rule prepare_conv_pp:
         opsd="raw/conventional_power_plants_DE.csv",
         gpkg="raw/boundaries_germany_nuts3.gpkg",
         b3_regions="raw/b3_regions.yaml",
-        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/conv_pp_scalar.csv"
     shell:
-        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {input.scalar_template} {output}"
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
 rule prepare_feedin:
     input:
@@ -147,6 +154,15 @@ rule plot_dispatch:
         directory("results/{scenario}/plotted/")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
+
+rule plot_conv_pp_scalars:
+    input:
+        data="results/_resources/{resource}.csv",
+        script="scripts/plot_conv_pp_scalars.py"
+    output:
+        "results/_resources/plots/{resource}_var_{var_name}.png"
+    shell:
+        "python {input.script} {input.data} {wildcards.var_name} {output}"
 
 rule report:
     input:

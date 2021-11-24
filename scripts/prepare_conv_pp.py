@@ -35,13 +35,13 @@ import pandas as pd
 import yaml
 
 import oemof_b3.tools.geo as geo
+import oemof_b3.tools.data_processing as dp
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
     in_path2 = sys.argv[2]  # path to geopackage of german regions
     in_path3 = sys.argv[3]  # path to b3_regions.yaml
-    in_path4 = sys.argv[4]  # path to b3 schema scalars.csv
-    out_path = sys.argv[5]
+    out_path = sys.argv[4]
 
     pp_opsd_de = pd.read_csv(in_path1)
     pp_opsd_b3 = pp_opsd_de[pp_opsd_de.state.isin(["Brandenburg", "Berlin"])]
@@ -116,33 +116,39 @@ if __name__ == "__main__":
 
     b3_agg.drop(columns=["chp"], inplace=True)
 
-    # change data format to _scalar_template
+    # change data format to oemof-B3 _scalar_template format
     conv_scalars = b3_agg.melt(id_vars=["region", "energy_source", "technology"])
+    conv_scalars.rename(
+        columns={
+            "technology": "tech",
+            "variable": "var_name",
+            "value": "var_value",
+            "energy_source": "carrier",
+        },
+        inplace=True,
+    )
+    conv_scalars_prepared = dp.format_header(
+        df=conv_scalars, header=dp.HEADER_B3_SCAL, index_name="id_scal"
+    )
 
-    scalar_template = pd.read_csv(in_path4, delimiter=";")
-
-    scalar_template["id_scal"] = conv_scalars.index
-    scalar_template["scenario"] = "Status quo"
-    scalar_template["name"] = "None"
-    scalar_template["var_name"] = conv_scalars["variable"]
-    scalar_template["carrier"] = conv_scalars["energy_source"]
-    scalar_template["region"] = conv_scalars["region"]
-    scalar_template["tech"] = conv_scalars["technology"]
-    scalar_template["type"] = "None"
-    scalar_template["var_value"] = conv_scalars["value"]
-    scalar_template["reference"] = "OPSD_conv_pp_DE"
-    scalar_template[
-        "comment"
+    # add additional information as required by template
+    conv_scalars_prepared.loc[:, "source"] = "OPSD_conv_pp_DE"
+    conv_scalars_prepared.loc[
+        :, "comment"
     ] = "filename: conventional_power_plants_DE.csv, aggregated based on NUTS3 region"
+    conv_scalars_prepared.loc[:, "scenario"] = "Status quo"
+    conv_scalars_prepared.loc[:, "type"] = "None"
 
+    # Set units
     unit_dict = {"capacity_net_el": "MW", "efficiency_estimate": "None"}
 
     def set_unit(df, unit_dict):
         for key, value in unit_dict.items():
             df.loc[df["var_name"] == key, "var_unit"] = value
 
-    set_unit(scalar_template, unit_dict)
+    set_unit(conv_scalars_prepared, unit_dict)
 
+    # Rename carriers
     carrier_dict = {
         "Biomass and biogas": "biomass",
         "Hard coal": "hard coal",
@@ -151,7 +157,7 @@ if __name__ == "__main__":
         "Lignite": "lignite",
         "Other fuels": "other",
     }
-    scalar_template.replace(carrier_dict, inplace=True)
+    conv_scalars_prepared.replace(carrier_dict, inplace=True)
 
     # export prepared conventional power plant data
-    scalar_template.to_csv(out_path, index=False)
+    conv_scalars_prepared.to_csv(out_path, index=False)
