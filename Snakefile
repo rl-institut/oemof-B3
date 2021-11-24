@@ -151,7 +151,7 @@ rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/")
+        directory("results/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
