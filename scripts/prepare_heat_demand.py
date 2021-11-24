@@ -59,7 +59,7 @@ def find_regional_weather_data(path, region):
     weather_data_region = [file for file in os.listdir(path) if region in file]
     weather_data_region = sorted(weather_data_region)
 
-    if len(weather_data_region) == 0:
+    if not weather_data_region:
         raise FileNotFoundError(
             f"No weather data of region {region} could be found in directory: {path}."
         )
@@ -310,9 +310,9 @@ def postprocess_data(heat_load):
     # Stack time series with total heat load in year
     heat_load_year_stacked = dp.stack_timeseries(heat_load_year)
 
-    heat_load_year_stacked["region"] = [region] * len(CARRIERS)
-    heat_load_year_stacked["scenario"] = [SCENARIO] * len(CARRIERS)
-    heat_load_year_stacked["var_unit"] = [sc_demand_unit] * len(CARRIERS)
+    heat_load_year_stacked["region"] = region
+    heat_load_year_stacked["scenario"] = SCENARIO
+    heat_load_year_stacked["var_unit"] = sc_demand_unit
 
     # Append stacked heat load of year to stacked time series with total heat loads
     heat_load = pd.concat([heat_load, heat_load_year_stacked], ignore_index=True)
