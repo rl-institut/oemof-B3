@@ -105,7 +105,7 @@ def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, label_map
     return df_pivot
 
 
-def plot_grouped_bar(ax, df, color_dict, unit):
+def plot_grouped_bar(ax, df, color_dict, unit, stacked=False):
     r"""
     This function plots scalar data as grouped bar plot. The index of the DataFrame
     will be interpreted as groups (e.g. regions), the columns as different categories (e.g. energy
@@ -122,6 +122,8 @@ def plot_grouped_bar(ax, df, color_dict, unit):
         Dictionary defining colors of the categories
     unit: str
         Unit of the variables
+    stacked : boolean
+        Stack bars of a group. False by default.
     """
     alpha = 0.3
     fontsize = 14
@@ -135,7 +137,7 @@ def plot_grouped_bar(ax, df, color_dict, unit):
         color=[color_dict[key] for key in df.columns],
         width=0.8,
         zorder=2,
-        stacked=False,
+        stacked=stacked,
         rot=0,
     )
 
