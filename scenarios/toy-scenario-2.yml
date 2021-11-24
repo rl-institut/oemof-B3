@@ -1,0 +1,67 @@
+# This scenario config file contains information for several steps in the model pipeline, i.e.
+# build_datapackage, parametrize, optimize and potentially also postprocess or plot.
+
+# build_datapackage
+
+name: toy-scenario-2
+
+regions:
+  - BB
+  - B
+
+links:
+  - BB-B
+
+busses:
+  - ch4
+  - electricity
+  - h2
+  - heat_central
+  - heat_decentral
+  - biomass
+
+components:
+  - biomass-gt
+  - ch4-boiler
+  - ch4-bpchp
+  - ch4-demand
+  - ch4-shortage
+  - ch4-excess
+  - ch4-gt
+  - electricity-demand
+  - electricity-electrolyzer
+  - electricity-curtailment
+  - electricity-liion_battery
+  - electricity-pth
+  - electricity-shortage
+  - h2-gt
+  - h2-bpchp
+  - heat_central-demand
+  - heat_central-excess
+  - heat_central-shortage
+  - heat_central-storage
+  - heat_decentral-demand
+  - heat_decentral-excess
+  - heat_decentral-shortage
+  - heat_decentral-storage
+  - hydro-ror
+  - solar-pv
+  - wind-onshore
+
+# parametrize
+
+path_scalars: raw/toy-scenario.csv
+
+filter_scalars:
+  1:
+    scenario:
+      toy-scenario
+  2:
+    scenario:
+      toy-scenario-high
+
+paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
+
+filter_timeseries:
+  scenario:
+    toy-scenario-update

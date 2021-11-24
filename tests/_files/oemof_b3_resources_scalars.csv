@@ -1,0 +1,15 @@
+scenario,name,var_name,carrier,region,tech,type,var_value
+base,BE-biomass-st,capacity,biomass,BE,gt,conversion,0
+base,BB-biomass-st,capacity,biomass,BB,gt,conversion,400000
+base,BB-biomass-st,flow_in_biomass,biomass,BB,gt,conversion,2692790078.846871
+base,BE-biomass-st,flow_in_biomass,biomass,BE,gt,conversion,0.0
+base,BB-biomass-st,flow_out_electricity,biomass,BB,gt,conversion,1023260209.6668
+base,BE-biomass-st,flow_out_electricity,biomass,BE,gt,conversion,0.0
+base,BB-biomass-st,summed_variable_costs_in_biomass,biomass,BB,gt,conversion,110404393.23272172
+base,BE-biomass-st,summed_variable_costs_in_biomass,biomass,BE,gt,conversion,0.0
+base,BB-biomass-st,summed_variable_costs_out_electricity,biomass,BB,gt,conversion,1432564.29353352
+base,BE-biomass-st,summed_variable_costs_out_electricity,biomass,BE,gt,conversion,0.0
+base,BB-electricity-curtailment,flow_in_electricity,electricity,BB,curtailment,excess,6595963426.319804
+base,BE-electricity-curtailment,flow_in_electricity,electricity,BE,curtailment,excess,70154039.41996899
+base,BB-electricity-demand,flow_in_electricity,electricity,BB,demand,load,20327319999.999977
+base,BE-electricity-demand,flow_in_electricity,electricity,BE,demand,load,13399999999.9999526871
