@@ -29,6 +29,7 @@ The script...
 
 """
 import datetime
+import itertools
 import os
 import sys
 
@@ -39,85 +40,83 @@ from demandlib import bdew
 import oemof_b3.tools.data_processing as dp
 
 
-def find_regional_weather_data(path, region):
+def find_regional_files(path, region):
     """
-    This function returns a list with weather data to region
+    This function returns a list with file names to region
 
     Parameters
     ----------
     path : str
-        Path to all weather data
+        Path to data
 
     region : str
         Region (eg. Brandenburg)
 
     Returns
     -------
-    weather_data_region : list
-        List of weather data file names of region
+    files_region : list
+        List of file names of region
     """
-    weather_data_region = [file for file in os.listdir(path) if region in file]
-    weather_data_region = sorted(weather_data_region)
+    files_region = [file for file in os.listdir(path) if region in file]
+    files_region = sorted(files_region)
 
-    if not weather_data_region:
+    if not files_region:
         raise FileNotFoundError(
-            f"No weather data of region {region} could be found in directory: {path}."
+            f"No data of region {region} could be found in directory: {path}."
         )
 
-    return weather_data_region
+    return files_region
 
 
-def get_years(file_list):
+def get_year(file_name):
     """
-    This function returns years from available weather data
+    This function returns a year from file name
 
     Parameters
     ----------
-    file_list : list
-        List of file names with year
+    file_name : str
+        Name of file with year in it
 
     Returns
     -------
-    years_list : list
-        List of years
+    year : int
+        Year
     """
-    years_array = np.arange(1990, 2051)
-    years_list = []
+    # Add array with years to be searched for in file name
+    years_search_array = np.arange(1990, 2051)
     newline = "\n"
 
-    for file in file_list:
-        year_in_file = [
-            year_array for year_array in years_array if str(year_array) in file
-        ]
-        if len(year_in_file) == 1:
-            years_list.append(year_in_file[0])
-        else:
-            raise ValueError(
-                f"Your file {file} is missing a year or has multiple years "
-                f"in its name."
-                + newline
-                + "Please provide weather data for a single year "
-                  "with that year in the file name."
-            )
+    year_in_file = [
+        year_searched
+        for year_searched in years_search_array
+        if str(year_searched) in file_name
+    ]
+    if len(year_in_file) == 1:
+        year = year_in_file[0]
+    else:
+        raise ValueError(
+            f"Your file {file_name} is missing a year or has multiple years "
+            f"in its name." + newline + "Please provide data for a single year "
+            "with that year in the file name."
+        )
 
-    years_list = sorted(years_list)
-    return years_list
+    return year
 
 
-def get_holidays(path, year):
+def get_holidays(path, year, region):
     """
     This function determines all holidays of a given region in a given year
 
     Parameters
     ----------
     path : str
-        input path
+        Input path
     year : int
-        year
+        Year
     Returns
     -------
     holidays_dict : dict
-        dictionary with holidays
+        Dictionary with holidays
 
     """
     # Read all national holidays per state
@@ -141,7 +140,7 @@ def get_holidays(path, year):
 def check_central_decentral(demands, value, consumer, carrier):
     """
     This function checks whether the kind of heat is central or decentral adds it
-    to demands DataFrame to value if it exists and otherwise to a new column
+    to yearly demands if it exists and otherwise to a new column in Dataframe
 
     Parameters
     ----------
@@ -168,7 +167,7 @@ def check_central_decentral(demands, value, consumer, carrier):
     return demands
 
 
-def get_heat_demand(path, scenario, carrier):
+def get_heat_demand(path, scenario, carrier, region):
     """
     This function returns ghd and hh demands together with their unit of a given region and a
     given scenario
@@ -176,19 +175,21 @@ def get_heat_demand(path, scenario, carrier):
     Parameters
     ----------
     path : str
-        input path
+        Input path
     scenario : str
-        scenario e.g. "base"
+        Scenario e.g. "base"
     carrier : str
          Name of carrier (eg.: heat_central, heat_decentral)
+    region : str
+        Region (eg. Brandenburg)
 
     Returns
     -------
-    demand : DataFrame
+    demands : DataFrame
         Dataframe with total yearly demand of central and decentral heat per consumer
         (eg.: ghd, efh, mfh)
     demand_unit : str
-        unit of total demands
+        Unit of total demands (eg. GWh)
 
     """
     # Read state heat demands of ghd and hh sectors
@@ -218,7 +219,7 @@ def get_heat_demand(path, scenario, carrier):
                 f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
                 f"'{consumer}', region '{region}' and scenario '{scenario}' in {path}."
                 + newline
-                + f"The demand is going to be summed up. "
+                + "The demand is going to be summed up. "
                 "Otherwise you have to rerun the calculation and provide only one demand of the "
                 "same carrier, consumer, region and scenario."
             )
@@ -229,7 +230,7 @@ def get_heat_demand(path, scenario, carrier):
     return demands, demand_unit
 
 
-def calculate_heat_load():
+def calculate_heat_load(carrier, holidays, temperature, yearly_demands):
     """
     This function calculates a heat load profile of Industry, trade,
     service (ghd: Gewerbe, Handel, Dienstleistung) and Household (hh: Haushalt)
@@ -237,18 +238,35 @@ def calculate_heat_load():
 
     Parameters
     ----------
+    carrier : str
+         Name of carrier (eg.: heat_central, heat_decentral)
+    holidays : dict
+        Dictionary with holidays
+    temperature : DataFrame
+         DataFrame with temperatures
+    yearly_demands: DataFrame
+         DataFrame with yearly demands per consumer
 
     Returns
     -------
     heat_load_total : pd.DataFrame
-         DataFrame with total yearly heat load aggretated by consumers
+         DataFrame with total normalized heat load in year aggretated by consumers
          (eg.: ghd, efh, mfh)
 
     """
+    # Add empty DataFrame for yearly heat loads
+    heat_load_total = pd.DataFrame()
+
+    # Add DataFrame time index for consumers heat loads
+    heat_load_consumer = pd.DataFrame(
+        index=pd.date_range(
+            datetime.datetime(year, 1, 1, 0), periods=len(temperature), freq="H"
+        )
+    )
 
     # Calculate sfh (efh: Einfamilienhaus) heat load
-    demand["efh" + "_" + carrier] = bdew.HeatBuilding(
-        demand.index,
+    heat_load_consumer["efh" + "_" + carrier] = bdew.HeatBuilding(
+        heat_load_consumer.index,
         holidays=holidays,
         temperature=temperature,
         shlp_type="EFH",
@@ -260,8 +278,8 @@ def calculate_heat_load():
     ).get_bdew_profile()
 
     # Calculate mfh (mfh: Mehrfamilienhaus) heat load
-    demand["mfh" + "_" + carrier] = bdew.HeatBuilding(
-        demand.index,
+    heat_load_consumer["mfh" + "_" + carrier] = bdew.HeatBuilding(
+        heat_load_consumer.index,
         holidays=holidays,
         temperature=temperature,
         shlp_type="MFH",
@@ -274,8 +292,8 @@ def calculate_heat_load():
 
     # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
     # heat load
-    demand["ghd" + "_" + carrier] = bdew.HeatBuilding(
-        demand.index,
+    heat_load_consumer["ghd" + "_" + carrier] = bdew.HeatBuilding(
+        heat_load_consumer.index,
         holidays=holidays,
         temperature=temperature,
         shlp_type="ghd",
@@ -286,60 +304,56 @@ def calculate_heat_load():
     ).get_bdew_profile()
 
     # Calculate total heat load in year
-    heat_load_year[carrier + "-load-profile"] = demand.sum(axis=1)
-    # TODO: Normalize heat load profile
+    heat_load_total[carrier + "-load-profile"] = heat_load_consumer.sum(axis=1)
 
-    return heat_load_year
+    # Normalize heat load profile
+    heat_load_total[carrier + "-load-profile"] = np.divide(
+        heat_load_total[carrier + "-load-profile"],
+        heat_load_total[carrier + "-load-profile"].sum(),
+    )
+
+    return heat_load_total
 
 
-def postprocess_data(heat_load):
+def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, unit):
     """
     This function stacks time series of heat load profile and addes it to result DataFrame
 
     Parameters
     ----------
-    heat_load : pd.Dataframe
+    heat_load_postprocessed : pd.Dataframe
         Empty Dataframe as result DataFrame
+    heat_load_year : pd.Dataframe
+        DataFrame with total normalized heat load in year to be processed
+    region : str
+        Region (eg. Brandenburg)
+    scenario : str
+        Scenario e.g. "base
+    unit : str
+        Unit of total demands (eg. GWh)
 
     Returns
     -------
-    heat_load : pd.DataFrame
-         DataFrame that contains the stacked heat load profile
+    heat_load_postprocessed : pd.DataFrame
+         DataFrame that contains stacked heat load profile
 
     """
     # Stack time series with total heat load in year
     heat_load_year_stacked = dp.stack_timeseries(heat_load_year)
 
     heat_load_year_stacked["region"] = region
-    heat_load_year_stacked["scenario"] = SCENARIO
-    heat_load_year_stacked["var_unit"] = sc_demand_unit
+    heat_load_year_stacked["scenario"] = scenario
+    heat_load_year_stacked["var_unit"] = unit[0]
 
     # Append stacked heat load of year to stacked time series with total heat loads
-    heat_load = pd.concat([heat_load, heat_load_year_stacked], ignore_index=True)
+    heat_load_postprocessed = pd.concat(
+        [heat_load_postprocessed, heat_load_year_stacked], ignore_index=True
+    )
 
-    return heat_load
+    return heat_load_postprocessed
 
 
 if __name__ == "__main__":
-    # path_this_file = os.path.realpath(__file__)
-    # raw_data = os.path.abspath(
-    #     os.path.join(path_this_file, os.pardir, os.pardir, "raw")
-    # )
-    # schema = os.path.abspath(
-    #     os.path.join(path_this_file, os.pardir, os.pardir, "oemof_b3", "schema")
-    # )
-    # results = os.path.abspath(
-    #     os.path.join(path_this_file, os.pardir, os.pardir, "results", "_resources")
-    # )
-    #
-    # in_path1 = os.path.join(raw_data, "weatherdata")  # path to weather data
-    # in_path2 = os.path.join(
-    #     raw_data, "distribution_households.csv"
-    # )  # path to household distributions data
-    # in_path3 = os.path.join(raw_data, "holidays.csv")  # path to holidays
-    # in_path4 = os.path.join(raw_data, "scalars.csv")  # path to b3 schema scalars.csv
-    # out_path = os.path.join(results, "load_profile_heat.csv")
-
     in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
     in_path3 = sys.argv[3]  # path to holidays
@@ -351,44 +365,41 @@ if __name__ == "__main__":
     CARRIERS = ["heat_central", "heat_decentral"]
 
     # Add empty data frame for results / output
-    heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
+    total_heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
     for region in REGION:
+        weather_file_names = find_regional_files(in_path1, region)
 
-        weather_data = find_regional_weather_data(in_path1, region)
-        years = get_years(weather_data)
+        for weather_file_name, carrier in itertools.product(
+            weather_file_names, CARRIERS
+        ):
+            # Read year from weather file name
+            year = get_year(weather_file_name)
 
-        for index, year in enumerate(years):
             # Get holidays
-            holidays = get_holidays(in_path3, year)
+            holidays = get_holidays(in_path3, year, region)
 
             # Read temperature from weather data
-            path_weather_data = os.path.join(in_path1, weather_data[index])
+            path_weather_data = os.path.join(in_path1, weather_file_name)
             temperature = pd.read_csv(path_weather_data, usecols=["temp_air"], header=0)
 
-            # Add DataFrame time index for demands
-            demand = pd.DataFrame(
-                index=pd.date_range(
-                    datetime.datetime(year, 1, 1, 0), periods=len(temperature), freq="H"
-                )
+            # Get heat demand in region and scenario
+            yearly_demands, sc_demand_unit = get_heat_demand(
+                in_path4, SCENARIO, carrier, region
             )
 
-            heat_load_year = pd.DataFrame()
-            for carrier in CARRIERS:
-                # Get heat demand in region and scenario
-                yearly_demands, sc_demand_unit = get_heat_demand(
-                    in_path4, SCENARIO, carrier
-                )
-
-                heat_load_year = calculate_heat_load()
-
-            heat_load = postprocess_data(heat_load)
+            heat_load_year = calculate_heat_load(
+                carrier, holidays, temperature, yearly_demands
+            )
+            total_heat_load = postprocess_data(
+                total_heat_load, heat_load_year, region, SCENARIO, sc_demand_unit
+            )
 
     # Rearrange stacked time series
-    heat_load["id_ts"] = heat_load.index
+    total_heat_load["id_ts"] = total_heat_load.index
     head_load = dp.format_header(
-        df=heat_load,
-        header=heat_load.columns,
+        df=total_heat_load,
+        header=total_heat_load.columns,
         index_name="id_ts",
     )
-    dp.save_df(heat_load, out_path)
+    dp.save_df(total_heat_load, out_path)
