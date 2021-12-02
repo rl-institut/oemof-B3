@@ -1,10 +1,12 @@
+# coding: utf-8
 r"""
 Inputs
 -------
 postprocessed : str
-    path to directory which contains the input data which can be plotted
+    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
+    can be plotted
 plotted : str
-    path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/``: path where a new directory is created and the plots are saved
 
 Outputs
 ---------
@@ -48,9 +50,11 @@ if __name__ == "__main__":
     ]
 
     # select carrier
-    carrier = "electricity"
+    carriers = ["electricity", "heat_central", "heat_decentral"]
 
-    selected_bus_files = [file for file in bus_files if carrier in file]
+    selected_bus_files = [
+        file for file in bus_files for carrier in carriers if carrier in file
+    ]
 
     for bus_file in selected_bus_files:
 

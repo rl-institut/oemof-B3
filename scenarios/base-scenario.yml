@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: toy-scenario
+name: base-scenario
 
 regions:
   - BB
@@ -25,7 +25,6 @@ components:
   - ch4-boiler
   - ch4-bpchp
   - ch4-demand
-  - ch4-shortage
   - ch4-excess
   - ch4-gt
   - electricity-demand
@@ -50,12 +49,12 @@ components:
 
 # parametrize
 
-path_scalars: raw/toy-scenario.csv
+path_scalars: results/_resources/base-scenario.csv
 
 filter_scalars:
   1:
     scenario:
-      toy-scenario
+      base-scenario
 
 paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 
