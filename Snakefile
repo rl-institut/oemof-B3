@@ -77,7 +77,7 @@ rule prepare_feedin:
         ror_feedin="raw/time_series/DIW_Hydro_availability.csv",
         script="scripts/prepare_feedin.py"
     output:
-        "results/_resources/feedin_time_series.csv"
+        "results/_resources/ts_feedin.csv"
     shell:
         "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
 
