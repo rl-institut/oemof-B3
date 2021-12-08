@@ -93,10 +93,10 @@ rule prepare_electricity_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/base-scenario.csv",
+        raw_scalars="raw/scal_base-scenario.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/base-scenario.csv"
+        "results/_resources/scal_base-scenario.csv"
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
