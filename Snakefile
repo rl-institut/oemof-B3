@@ -66,12 +66,12 @@ rule prepare_heat_demand:
         weather="raw/weatherdata",
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
+        scalars="raw/scalars.csv",
         script="scripts/prepare_heat_demand.py",
-        sc="raw/scalars.csv",
     output:
         "results/_resources/load_profile_heat.csv"
     shell:
-        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.sc} {output}"
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.scalars} {output}"
 
 
 rule build_datapackage:
