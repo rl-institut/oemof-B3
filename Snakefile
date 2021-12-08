@@ -118,7 +118,7 @@ rule process_re_potential:
         input_dir=directory("results/_resources/RE_potential/"),
         script="scripts/process_re_potential.py"
     output:
-        scalars="results/_resources/wind_pv_scalar.csv",
+        scalars="results/_resources/scal_power_potential_wind_pv.csv",
         table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
         "python {input.script} {input.input_dir} {output.scalars} {output.table}"
