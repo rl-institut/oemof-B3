@@ -5,7 +5,7 @@ Inputs
 opsd_ts_data : str
     raw opsd timeseries data including electricty load as .csv
 output_file : str
-    ``results/_resources/load_profile_electricity.csv``: path of output file with prepared
+    ``results/_resources/ts_load_electricity.csv``: path of output file with prepared
     data as .csv
 
 Outputs

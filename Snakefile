@@ -87,7 +87,7 @@ rule prepare_electricity_demand:
                             keep_local=True),
         script="scripts/prepare_electricity_demand.py"
     output:
-        "results/_resources/load_profile_electricity.csv"
+        "results/_resources/ts_load_electricity.csv"
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
