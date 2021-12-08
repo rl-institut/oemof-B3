@@ -100,14 +100,6 @@ rule prepare_scalars:
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
-rule build_datapackage:
-    input:
-        "scenarios/{scenario}.yml"
-    output:
-        directory("results/{scenario}/preprocessed")
-    shell:
-        "python scripts/build_datapackage.py {input} {output}"
-
 rule prepare_re_potential:
     input:
         pv_agriculture="raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv",
@@ -130,6 +122,14 @@ rule process_re_potential:
         table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
         "python {input.script} {input.input_dir} {output.scalars} {output.table}"
+
+rule build_datapackage:
+    input:
+        "scenarios/{scenario}.yml"
+    output:
+        directory("results/{scenario}/preprocessed")
+    shell:
+        "python scripts/build_datapackage.py {input} {output}"
 
 rule optimize:
     input:
