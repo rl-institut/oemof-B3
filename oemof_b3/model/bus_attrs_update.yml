@@ -1,3 +1,11 @@
 h2:
   balanced:
     False
+
+heat_central:
+  balanced:
+    True
+
+heat_decentral:
+  balanced:
+    True
