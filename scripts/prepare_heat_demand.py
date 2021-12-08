@@ -14,7 +14,7 @@ in_path4 : str
 in_path5 : str
     ``oemof_b3/schema/timeseries.csv``: path of input file with times series format as .csv
 out_path : str
-    ``results/_resources/load_profile_heat.csv``: path of output file with prepared data as .csv
+    ``results/_resources/ts_load_heat.csv``: path of output file with prepared data as .csv
 
 Outputs
 ---------

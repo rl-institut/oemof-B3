@@ -69,7 +69,7 @@ rule prepare_heat_demand:
         scalars="raw/scalars.csv",
         script="scripts/prepare_heat_demand.py",
     output:
-        "results/_resources/load_profile_heat.csv"
+        "results/_resources/ts_load_heat.csv"
     shell:
         "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.scalars} {output}"
 
