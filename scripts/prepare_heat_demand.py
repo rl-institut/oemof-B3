@@ -396,10 +396,9 @@ if __name__ == "__main__":
             )
 
     # Rearrange stacked time series
-    total_heat_load["id_ts"] = total_heat_load.index
     head_load = dp.format_header(
         df=total_heat_load,
-        header=total_heat_load.columns,
+        header=dp.HEADER_B3_TS,
         index_name="id_ts",
     )
-    dp.save_df(total_heat_load, out_path)
+    dp.save_df(head_load, out_path)
