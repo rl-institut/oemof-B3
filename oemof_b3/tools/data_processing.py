@@ -98,13 +98,13 @@ def load_b3_scalars(path, sep=","):
         DataFrame with loaded scalars
     """
     # Read data
-    df = pd.read_csv(path, sep=sep, dtype={"var_value": str})
+    df = pd.read_csv(path, sep=sep)
+
+    df["var_value"] = pd.to_numeric(df["var_value"], errors="coerce").fillna(
+        df["var_value"]
+    )
 
     df = format_header(df, HEADER_B3_SCAL, "id_scal")
-
-    df.loc[:, "var_value"] = df.loc[:, "var_value"].apply(
-        lambda x: ast.literal_eval(x), 1
-    )
 
     return df
 
