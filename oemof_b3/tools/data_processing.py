@@ -98,7 +98,7 @@ def load_b3_scalars(path, sep=","):
         DataFrame with loaded scalars
     """
     # Read data
-    df = pd.read_csv(path, sep=sep)
+    df = pd.read_csv(path, sep=sep, dtype={"var_value": str})
 
     df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
