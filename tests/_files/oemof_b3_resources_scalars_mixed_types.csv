@@ -1,0 +1,6 @@
+scenario,name,var_name,carrier,region,tech,type,var_value,comment
+base,BE-biomass-st,capacity,biomass,BE,gt,conversion,1,int
+base,BB-biomass-st,capacity,biomass,BB,gt,conversion,1.,float
+base,BB-biomass-st,flow_in_biomass,biomass,BB,gt,conversion,True,bool
+base,BE-biomass-st,flow_in_biomass,biomass,BE,gt,conversion,profile,str
+base,BB-biomass-st,flow_out_electricity,biomass,BB,gt,conversion,{"extra_argument": 1},dict
