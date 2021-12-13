@@ -131,7 +131,7 @@ def prepare_ror_time_series(filename_ts, region):
     # add additional information as required by template
     ts_prepared.loc[:, "region"] = region
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "ror-profile"
+    ts_prepared.loc[:, "var_name"] = "hydro-ror-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE_ROR
     ts_prepared.loc[:, "comment"] = TS_COMMENT_ROR
     ts_prepared.loc[:, "scenario"] = f"ts_{YEAR_ROR}"
