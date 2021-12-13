@@ -211,6 +211,8 @@ def parametrize_sequences(edp, ts, filters):
 
         edp.data[name] = data_unstacked
 
+        edp.data[name].index.name = "timeindex"
+
     print(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
 
     return edp
