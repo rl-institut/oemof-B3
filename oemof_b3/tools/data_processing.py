@@ -106,10 +106,6 @@ def load_b3_scalars(path, sep=","):
 
     df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
-    df.loc[:, "var_value"] = df.loc[:, "var_value"].apply(
-        lambda x: ast.literal_eval(x), 1
-    )
-
     return df
 
 
