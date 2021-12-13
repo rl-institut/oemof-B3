@@ -96,6 +96,8 @@ if __name__ == "__main__":
 
         # plot data
         fig, ax = plt.subplots()
-        plot_grouped_bar(ax, prepared_scalar_data, colors_odict, unit="MW")
+        plot_grouped_bar(
+            ax, prepared_scalar_data, colors_odict, unit=unit_dict[var_name]
+        )
         ax.set_title(var_name)
         plt.savefig(os.path.join(target, var_name + ".png"), bbox_inches="tight")
