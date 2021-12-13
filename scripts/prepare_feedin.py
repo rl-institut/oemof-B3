@@ -154,12 +154,12 @@ if __name__ == "__main__":
         wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
             year=year,
-            type="wind",
+            type="wind-onshore",
         )
 
         # prepare pv time series
         pv_ts = prepare_wind_and_pv_time_series(
-            filename_ts=filename_pv, year=year, type="pv"
+            filename_ts=filename_pv, year=year, type="solar-pv"
         )
 
         # add time series to `time_series_df`
