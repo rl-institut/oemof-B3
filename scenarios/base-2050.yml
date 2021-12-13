@@ -57,10 +57,11 @@ filter_scalars:
       "Base 2050"
 
 paths_timeseries:
+  - raw/time_series/ts_load_ch4.csv
   - results/_resources/ts_feedin.csv
   - results/_resources/ts_load_electricity.csv
   - results/_resources/ts_load_heat.csv
 
 filter_timeseries:
   scenario:
-    ts_2015
+    ts_2017
