@@ -304,12 +304,12 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands):
     ).get_bdew_profile()
 
     # Calculate total heat load in year
-    heat_load_total[carrier + "-load-profile"] = heat_load_consumer.sum(axis=1)
+    heat_load_total[carrier + "-demand-profile"] = heat_load_consumer.sum(axis=1)
 
     # Normalize heat load profile
-    heat_load_total[carrier + "-load-profile"] = np.divide(
-        heat_load_total[carrier + "-load-profile"],
-        heat_load_total[carrier + "-load-profile"].sum(),
+    heat_load_total[carrier + "-demand-profile"] = np.divide(
+        heat_load_total[carrier + "-demand-profile"],
+        heat_load_total[carrier + "-demand-profile"].sum(),
     )
 
     return heat_load_total
@@ -392,7 +392,7 @@ if __name__ == "__main__":
                 carrier, holidays, temperature, yearly_demands
             )
             total_heat_load = postprocess_data(
-                total_heat_load, heat_load_year, region, SCENARIO, sc_demand_unit
+                total_heat_load, heat_load_year, region, f"ts_{year}", sc_demand_unit
             )
 
     # Rearrange stacked time series
