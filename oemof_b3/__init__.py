@@ -8,6 +8,8 @@ dir_name = os.path.abspath(os.path.dirname(__file__))
 
 labels_dict = load_yaml(os.path.join(dir_name, "config", "labels.yml"))
 
+labels_to_german = load_yaml(os.path.join(dir_name, "config", "labels_to_german.yml"))
+
 colors_csv = pd.read_csv(
     os.path.join(dir_name, "config", "colors.csv"), header=[0], index_col=[0]
 )

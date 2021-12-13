@@ -9,6 +9,10 @@ examples = [
 
 scenario_list_example = ['examples']
 
+resources = ['scal_conv_pp']
+
+scenarios = ["toy-scenario", "toy-scenario-2"]
+
 # Target rules
 rule plot_grouped_scenarios:
     input:
@@ -29,6 +33,10 @@ rule plot_all_examples:
 rule report_all_examples:
     input:
         expand("results/{scenario}/report/", scenario=examples)
+
+rule plot_all_resources:
+    input:
+        expand("results/_resources/plots/{resource}.png", resource=resources)
 
 rule clean:
     shell:
@@ -56,12 +64,11 @@ rule prepare_conv_pp:
         opsd="raw/conventional_power_plants_DE.csv",
         gpkg="raw/boundaries_germany_nuts3.gpkg",
         b3_regions="raw/b3_regions.yaml",
-        scalar_template="oemof_b3/schema/scalars.csv",
         script="scripts/prepare_conv_pp.py"
     output:
-        "results/_resources/conv_pp_scalar.csv"
+        "results/_resources/scal_conv_pp.csv"
     shell:
-        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {input.scalar_template} {output}"
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
 rule prepare_feedin:
     input:
@@ -70,7 +77,7 @@ rule prepare_feedin:
         ror_feedin="raw/time_series/DIW_Hydro_availability.csv",
         script="scripts/prepare_feedin.py"
     output:
-        "results/_resources/feedin_time_series.csv"
+        "results/_resources/ts_feedin.csv"
     shell:
         "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
 
@@ -80,26 +87,18 @@ rule prepare_electricity_demand:
                             keep_local=True),
         script="scripts/prepare_electricity_demand.py"
     output:
-        "results/_resources/load_profile_electricity.csv"
+        "results/_resources/ts_load_electricity.csv"
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/{scalars}.csv",
+        raw_scalars="raw/base-scenario.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/{scalars}.csv"
+        "results/_resources/scal_base-scenario.csv"
     shell:
         "python {input.script} {input.raw_scalars} {output}"
-
-rule build_datapackage:
-    input:
-        "scenarios/{scenario}.yml"
-    output:
-        directory("results/{scenario}/preprocessed")
-    shell:
-        "python scripts/build_datapackage.py {input} {output}"
 
 rule prepare_re_potential:
     input:
@@ -119,10 +118,18 @@ rule process_re_potential:
         input_dir=directory("results/_resources/RE_potential/"),
         script="scripts/process_re_potential.py"
     output:
-        scalars="results/_resources/wind_pv_scalar.csv",
+        scalars="results/_resources/scal_power_potential_wind_pv.csv",
         table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
         "python {input.script} {input.input_dir} {output.scalars} {output.table}"
+
+rule build_datapackage:
+    input:
+        "scenarios/{scenario}.yml"
+    output:
+        directory("results/{scenario}/preprocessed")
+    shell:
+        "python scripts/build_datapackage.py {input} {output}"
 
 rule optimize:
     input:
@@ -147,6 +154,15 @@ rule plot_dispatch:
         directory("results/{scenario}/plotted/")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
+
+rule plot_conv_pp_scalars:
+    input:
+        data="results/_resources/{resource}.csv",
+        script="scripts/plot_conv_pp_scalars.py"
+    output:
+        "results/_resources/plots/{resource}_var_{var_name}.png"
+    shell:
+        "python {input.script} {input.data} {wildcards.var_name} {output}"
 
 rule report:
     input:
