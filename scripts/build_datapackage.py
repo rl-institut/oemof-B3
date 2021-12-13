@@ -209,7 +209,7 @@ def parametrize_sequences(edp, ts, filters):
 
         data_unstacked = unstack_timeseries(data)
 
-        edp.data[name].update(data_unstacked)
+        edp.data[name] = data_unstacked
 
     print(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
 
