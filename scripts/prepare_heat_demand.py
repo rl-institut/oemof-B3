@@ -360,7 +360,7 @@ if __name__ == "__main__":
     in_path4 = sys.argv[4]  # path to b3 scalars.csv
     out_path = sys.argv[5]
 
-    REGION = ["BB", "BE"]
+    REGION = ["BB", "B"]
     SCENARIO = "base"
     CARRIERS = ["heat_central", "heat_decentral"]
 
