@@ -207,7 +207,7 @@ rule report:
         """
         pandoc --resource-path={output}/../plotted \
         --metadata title="Results for scenario {wildcards.scenario}" \
-        --self-contained -s --include-in-header=report/report.css \
+        --self-contained --include-in-header=report/report.css \
         {output}/report.md -o {output}/report.html
         """
         )
@@ -216,7 +216,7 @@ rule report:
         """
         pandoc --resource-path={output}/../plotted \
         --metadata title="Results for scenario {wildcards.scenario}" \
-        --self-contained -s --include-in-header=report/report.css \
+        --self-contained --include-in-header=report/report.css \
         {output}/report_interactive.md -o {output}/report_interactive.html
         """
         )
