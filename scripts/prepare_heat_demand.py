@@ -10,6 +10,9 @@ in_path2 : str
 in_path3 : str
     ``raw/holidays.csv``: path of input file with holidays of all states in Germany as .csv
 in_path4 : str
+    ``raw/building_class.csv``: path of input file with building classes of all states in Germany
+    as .csv
+in_path5 : str
     ``raw/scalars.csv``: path of template for scalar data as .csv
 in_path5 : str
     ``oemof_b3/schema/timeseries.csv``: path of input file with times series format as .csv
@@ -137,6 +140,34 @@ def get_holidays(path, year, region):
     return holidays_dict
 
 
+def get_building_class(region, path):
+    """
+    This function reads building classes of German states from input path
+    and returns the building class of given region
+
+    Parameters
+    ----------
+    path : str
+        Input path
+    region : str
+        Region (eg. Brandenburg)
+
+    Returns
+    -------
+    building_class : str
+         Building class (German: Baualtersklasse) can assume values in range 1-11
+         eg. 5 in case of BB and 3 in case of B
+    """
+    # Read all national holidays per state
+    all_building_classes = pd.read_csv(path)
+    building_class_df = all_building_classes.loc[
+        all_building_classes["region"] == region
+    ]
+    building_class = building_class_df["building_class"].values[0]
+
+    return building_class
+
+
 def check_central_decentral(demands, value, consumer, carrier):
     """
     This function checks whether the kind of heat is central or decentral adds it
@@ -230,7 +261,7 @@ def get_heat_demand(path, scenario, carrier, region):
     return demands, demand_unit
 
 
-def calculate_heat_load(carrier, holidays, temperature, yearly_demands):
+def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building_class):
     """
     This function calculates a heat load profile of Industry, trade,
     service (ghd: Gewerbe, Handel, Dienstleistung) and Household (hh: Haushalt)
@@ -246,6 +277,9 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands):
          DataFrame with temperatures
     yearly_demands: DataFrame
          DataFrame with yearly demands per consumer
+    building_class : str
+         Building class (German: Baualtersklasse) can assume values in range 1-11
+         eg. 5 in case of BB and 3 in case of B
 
     Returns
     -------
@@ -270,7 +304,7 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands):
         holidays=holidays,
         temperature=temperature,
         shlp_type="EFH",
-        building_class=6,
+        building_class=building_class,
         wind_class=0,
         annual_heat_demand=yearly_demands["efh" + "_" + carrier][0],
         name="EFH",
@@ -283,7 +317,7 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands):
         holidays=holidays,
         temperature=temperature,
         shlp_type="MFH",
-        building_class=2,
+        building_class=building_class,
         wind_class=0,
         annual_heat_demand=yearly_demands["mfh" + "_" + carrier][0],
         name="MFH",
@@ -357,8 +391,9 @@ if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
     in_path3 = sys.argv[3]  # path to holidays
-    in_path4 = sys.argv[4]  # path to b3 scalars.csv
-    out_path = sys.argv[5]
+    in_path4 = sys.argv[4]  # path to building class
+    in_path5 = sys.argv[5]  # path to b3 scalars.csv
+    out_path = sys.argv[6]
 
     REGION = ["BB", "B"]
     SCENARIO = "base"
@@ -383,13 +418,16 @@ if __name__ == "__main__":
             path_weather_data = os.path.join(in_path1, weather_file_name)
             temperature = pd.read_csv(path_weather_data, usecols=["temp_air"], header=0)
 
+            # Get building class
+            building_class = get_building_class(region, in_path4)
+
             # Get heat demand in region and scenario
             yearly_demands, sc_demand_unit = get_heat_demand(
-                in_path4, SCENARIO, carrier, region
+                in_path5, SCENARIO, carrier, region
             )
 
             heat_load_year = calculate_heat_load(
-                carrier, holidays, temperature, yearly_demands
+                carrier, holidays, temperature, yearly_demands, building_class
             )
             total_heat_load = postprocess_data(
                 total_heat_load, heat_load_year, region, f"ts_{year}", sc_demand_unit
