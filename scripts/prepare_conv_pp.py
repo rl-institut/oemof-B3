@@ -34,6 +34,14 @@ import sys
 import pandas as pd
 import yaml
 
+try:
+    import geopandas as gpd
+
+except ImportError:
+    print(
+        "No module named 'geopandas'. You need to install 'geopandas' in order to use this script."
+    )
+
 import oemof_b3.tools.geo as geo
 import oemof_b3.tools.data_processing as dp
 
