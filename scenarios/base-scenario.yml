@@ -49,7 +49,7 @@ components:
 
 # parametrize
 
-path_scalars: results/_resources/base-scenario.csv
+path_scalars: results/_resources/scal_base-scenario.csv
 
 filter_scalars:
   1:
