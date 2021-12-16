@@ -11,7 +11,7 @@ filename_pv : str
 filename_for : str
     ``raw/time_series/DIW_Hydro_availability.csv``:
 output_file : str
-    ``results/_resources/feedin_time_series.csv``:
+    ``results/_resources/ts_feedin.csv``:
 
 Outputs
 ---------
@@ -173,7 +173,8 @@ if __name__ == "__main__":
         time_series_df = pd.concat([time_series_df, ror_ts], axis=0)
 
     # set index
-    time_series_df.index = range(0, len(time_series_df))
+    time_series_df.reset_index(drop=True, inplace=True)
+    time_series_df.index.name = "id_ts"
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

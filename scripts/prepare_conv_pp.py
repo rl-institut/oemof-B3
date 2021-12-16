@@ -13,7 +13,7 @@ in_path3 : str
 in_path4 : str
     ``oemof_b3/schema/scalars.csv``: path of template for scalar data as .csv
 out_path : str
-    ``results/_resources/conv_pp_scalar.csv``: path of output file with prepared data as .csv
+    ``results/_resources/scal_conv_pp.csv``: path of output file with prepared data as .csv
 
 Outputs
 ---------
