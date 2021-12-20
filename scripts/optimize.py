@@ -28,10 +28,14 @@ from oemof.outputlib import processing
 # pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
+from oemof_b3.tools import data_processing as dp
 
-# TODO: Decide if this information can be stored together with the
-# TODO: preprocessed tabular energysystem or is read from the scenario.yml.
-emission_limit = 1000
+path_scalars = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), os.pardir, "raw", "base-scenario_emissions_PR70.csv")
+)  # todo note: this file name should be taken from a central place
+scalars = dp.load_b3_scalars(path_scalars)
+emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
+emission_limit = emission_scalars.at["emission_limit", "var_value"]
 
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
