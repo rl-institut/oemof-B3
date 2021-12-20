@@ -35,6 +35,8 @@ components:
   - electricity-shortage
   - h2-gt
   - h2-bpchp
+  - h2-excess
+  - h2-shortage
   - heat_central-demand
   - heat_central-excess
   - heat_central-shortage

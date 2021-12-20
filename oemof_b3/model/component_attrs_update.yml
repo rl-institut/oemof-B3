@@ -15,6 +15,25 @@ ch4-shortage:
   defaults:
     output_parameters: "{}"
 
+h2-shortage:
+  carrier: h2
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: h2
+  defaults:
+    output_parameters: "{}"
+
+h2-excess:
+  carrier: h2
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: h2
+  defaults:
+    marginal_cost: 0
+    output_parameters: "{}"
+
 electricity-electrolyzer:
   carrier: electricity
   tech: electrolyzer
