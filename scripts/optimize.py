@@ -32,12 +32,16 @@ from oemof_b3.tools import data_processing as dp
 
 path_scalars = os.path.normpath(
     os.path.join(
-        os.path.dirname(__file__), os.pardir, "raw", "base-scenario_emissions_PR70_without_ch4_import.csv"
+        os.path.dirname(__file__),
+        os.pardir,
+        "raw",
+        "base-scenario_emissions_PR70_without_ch4_import.csv",
     )
 )  # todo note: this file name should be taken from a central place
 scalars = dp.load_b3_scalars(path_scalars)
 emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
 emission_limit = emission_scalars.at["emission_limit", "var_value"]
+print(f"################### emission limit {emission_limit} ##############")
 
 if __name__ == "__main__":
     preprocessed = sys.argv[1]

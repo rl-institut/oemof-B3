@@ -107,7 +107,8 @@ def load_b3_scalars(path, sep=","):
 
     # strings to dict; example in csv: {'emission_factor': 2}
     df.loc[:, "var_value"] = pd.DataFrame(df.loc[:, "var_value"])["var_value"].apply(
-        lambda x: ast.literal_eval(x) if (isinstance(x, str) and "{" in x) else x)
+        lambda x: ast.literal_eval(x) if (isinstance(x, str) and "{" in x) else x
+    )
 
     df = format_header(df, HEADER_B3_SCAL, "id_scal")
 
