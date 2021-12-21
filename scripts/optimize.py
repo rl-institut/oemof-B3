@@ -32,7 +32,7 @@ from oemof_b3.tools import data_processing as dp
 
 path_scalars = os.path.normpath(
     os.path.join(
-        os.path.dirname(__file__), os.pardir, "raw", "base-scenario_emissions_PR70.csv"
+        os.path.dirname(__file__), os.pardir, "raw", "base-scenario_emissions_PR70_without_ch4_import.csv"
     )
 )  # todo note: this file name should be taken from a central place
 scalars = dp.load_b3_scalars(path_scalars)
@@ -58,13 +58,13 @@ if __name__ == "__main__":
     # create model from energy system (this is just oemof.solph)
     m = Model(es)
 
-    # Add an emission constraint
+    # add constraints
     constraints.emission_limit(m, limit=emission_limit)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
 
-    # get the results from the the solved model(still oemof.solph)
+    # get results from the solved model(still oemof.solph)
     es.meta_results = processing.meta_results(m)
     es.results = processing.results(m)
     es.params = processing.parameter_as_dict(es)
