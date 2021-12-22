@@ -21,13 +21,63 @@ is saved.
 import os
 import sys
 
-from oemof.solph import EnergySystem, Model
+from oemof.solph import EnergySystem, Model, constraints
 from oemof.outputlib import processing
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
+
+
+def add_gas_power_relation_constraints(model, energysystem):
+    r"""
+
+    Parameters
+    ----------
+    model:
+    energysystem:
+
+    Returns
+    -------
+
+    """
+    # loop through busses
+    bus_names = ["B-heat_central", "BB-heat_central", "B-heat_decentral", "BB-heat_decentral"]
+    busses = [es.groups[x] for x in bus_names]
+
+    # todo define factor (varies for central/decentral, also for B/BB?)
+
+    for bus in busses:
+        region = bus.label.split("-")[0]
+        # get gas and electricity powered components depending on bus
+        if "decentral" in bus.label:
+            heat_pump = energysystem.groups[f"{region}-electricity-heat_pump"]  # todo note: hps missing
+            boiler = energysystem.groups[f"{region}-ch4-boiler"]
+
+            # add constraint
+            constraints.equate_variables(
+                model=model,
+                var1=model.InvestmentFlow.invest[heat_pump, bus],
+                var2=model.InvestmentFlow.invest[boiler, bus],
+                factor1=factor,
+            )
+        else:
+            # electricity components
+            heat_pump = energysystem.groups[f"{region}-electricity-heat_pump"]
+            res_pth = energysystem.groups[f"{region}-electricity-pth"]
+            # gas components
+            boiler = energysystem.groups[f"{region}-ch4-boiler"]
+            ch4_chp = energysystem.groups[f"{region}-ch4-bpchp"]
+            h2_chp = energysystem.groups[f"{region}-h2-bpchp"]
+
+            # add constraint
+            constraints.equate_variables(
+                model=model,
+                var1=model.InvestmentFlow.invest[line12, bus], # todo adding up investment flows
+                var2=model.InvestmentFlow.invest[line21, bus],
+                factor1=factor,
+            )
 
 
 if __name__ == "__main__":
@@ -48,6 +98,9 @@ if __name__ == "__main__":
 
     # create model from energy system (this is just oemof.solph)
     m = Model(es)
+
+    # add constraints
+    add_gas_power_relation_constraints(model=m, energysystem=es)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
