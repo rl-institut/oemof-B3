@@ -21,6 +21,9 @@ downloads the 60 min timeseries data from OPSD and keeps it locally.
 The script takes this data and filters for the load data of the 50 Hertz region in Germany.
 The load data is normalized with the total electricity demand of the corresponding year and put
 into the timeseries template format. The years 2015 to 2019 (including) are available.
+Note: the electricity demand profile for electric vehicle charging is prepared in
+`prepare_vehicle_electricity_demand.py`.
+
 """
 
 import sys

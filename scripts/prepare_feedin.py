@@ -8,10 +8,11 @@ filename_wind : str
 filename_pv : str
     ``raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv``: Path incl. file name to pv
     feed-in time series of renewables ninja
-filename_for : str
-    ``raw/time_series/DIW_Hydro_availability.csv``:
+filename_ror : str
+    ``raw/time_series/DIW_Hydro_availability.csv``: Path incl. file name to feed-in time series of
+    run-of-river power plants
 output_file : str
-    ``results/_resources/ts_feedin.csv``:
+    ``results/_resources/ts_feedin.csv``: Path incl. file name to prepared time series
 
 Outputs
 ---------
