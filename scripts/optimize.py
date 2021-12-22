@@ -43,10 +43,10 @@ def add_gas_power_relation_constraints(model, energysystem):
 
     """
     # loop through busses
-    bus_names = ["B-heat_central", "BB-heat_central", "B-heat_decentral", "BB-heat_decentral"]
+    bus_names = ["B-heat_central", "BB-heat_central", "B-heat_decentral", "BB-heat_decentral"]  # todo automate by regions and busses in .yml
     busses = [es.groups[x] for x in bus_names]
 
-    # todo define factor (varies for central/decentral, also for B/BB?)
+    # todo get factor (varies for central/decentral, also for B/BB?)
 
     for bus in busses:
         region = bus.label.split("-")[0]
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     # create model from energy system (this is just oemof.solph)
     m = Model(es)
 
-    # add constraints
+    # add constraints # todo only to be added if factor is given in data
     add_gas_power_relation_constraints(model=m, energysystem=es)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
