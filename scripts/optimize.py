@@ -41,7 +41,6 @@ path_scalars = os.path.normpath(
 scalars = dp.load_b3_scalars(path_scalars)
 emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
 emission_limit = emission_scalars.at["emission_limit", "var_value"]
-print(f"################### emission limit {emission_limit} ##############")
 
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
