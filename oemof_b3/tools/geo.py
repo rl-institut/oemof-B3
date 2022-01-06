@@ -5,7 +5,7 @@ try:
     from shapely.geometry import Point
 
 except ImportError:
-    print(
+    raise ImportError(
         "No module named 'geopandas'. You need to install 'geopandas' in order to use this script."
     )
 
