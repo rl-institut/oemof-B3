@@ -34,16 +34,8 @@ import sys
 import pandas as pd
 import yaml
 
-try:
-    import geopandas as gpd
-
-except ImportError:
-    print(
-        "No module named 'geopandas'. You need to install 'geopandas' in order to use this script."
-    )
-
-import oemof_b3.tools.geo as geo
 import oemof_b3.tools.data_processing as dp
+import oemof_b3.tools.geo as geo
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
