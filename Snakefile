@@ -7,38 +7,29 @@ scenario_groups = {
     "toy-scenarios": ["toy-scenario","toy-scenario-2"],
 }
 
-examples = [
-    'base',
-    'more_renewables',
-    'more_renewables_less_fossil'
-]
-
-scenario_list_example = ['examples']
-
 resources = ['scal_conv_pp']
 
-scenarios = ["toy-scenario", "toy-scenario-2"]
 
 # Target rules
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_lists}/joined_plotted/", scenario_list=scenario_list_example)
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["examples"])
 
 rule plot_all_scenarios:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenarios)
+        expand("results/{scenario}/plotted/", scenario=scenario_groups["toy-scenarios"])
 
 rule run_all_examples:
     input:
-        expand("results/{scenario}/postprocessed", scenario=examples)
+        expand("results/{scenario}/postprocessed", scenario=scenario_groups["examples"])
 
 rule plot_all_examples:
     input:
-        expand("results/{scenario}/plotted/", scenario=examples)
+        expand("results/{scenario}/plotted/", scenario=scenario_groups["examples"])
 
 rule report_all_examples:
     input:
-        expand("results/{scenario}/report/", scenario=examples)
+        expand("results/{scenario}/report/", scenario=scenario_groups["examples"])
 
 rule plot_all_resources:
     input:
@@ -60,7 +51,7 @@ rule prepare_example:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
-        scenario="|".join(examples)
+        scenario="|".join(scenario_groups["examples"])
     run:
         import shutil
         shutil.copytree(src=input[0], dst=output[0])
