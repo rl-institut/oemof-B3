@@ -115,7 +115,7 @@ rule prepare_re_potential:
 
 rule process_re_potential:
     input:
-        input_dir=directory("results/_resources/RE_potential/"),
+        input_dir="results/_resources/RE_potential/",
         script="scripts/process_re_potential.py"
     output:
         scalars="results/_resources/scal_power_potential_wind_pv.csv",
