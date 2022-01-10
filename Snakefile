@@ -168,7 +168,7 @@ rule plot_conv_pp_scalars:
 rule report:
     input:
         template="report/report.md",
-	template_interactive="report/report_interactive.md",
+        template_interactive="report/report_interactive.md",
         plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
