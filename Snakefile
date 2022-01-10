@@ -1,6 +1,12 @@
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 HTTP = HTTPRemoteProvider()
 
+
+scenario_groups = {
+    "examples": ["base", "more_renewables", "more_renewables_less_fossil"],
+    "toy-scenarios": ["toy-scenario","toy-scenario-2"],
+}
+
 examples = [
     'base',
     'more_renewables',
@@ -16,7 +22,7 @@ scenarios = ["toy-scenario", "toy-scenario-2"]
 # Target rules
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_list}/joined_plotted/", scenario_list=scenario_list_example)
+        expand("results/joined_scenarios/{scenario_lists}/joined_plotted/", scenario_list=scenario_list_example)
 
 rule plot_all_scenarios:
     input:
@@ -211,18 +217,23 @@ rule report:
         os.remove(os.path.join(output[0], "report.md"))
         os.remove(os.path.join(output[0], "report_interactive.md"))
 
+
+def get_scenarios_in_group(wildcards):
+    return [os.path.join("results", scenario, "postprocessed") for scenario in scenario_groups[wildcards.scenario_group]]
+
+
 rule join_scenario_results:
     input:
-        "scenario_groups/{scenario_list}.yml"
+        get_scenarios_in_group
     output:
-        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     output:
-        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
     shell:
         "python scripts/plot_joined_scalars.py {input} {output}"
