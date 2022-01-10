@@ -125,11 +125,15 @@ rule process_re_potential:
 
 rule build_datapackage:
     input:
-        "scenarios/{scenario}.yml"
+        scalars = "results/_resources/scal_base-scenario.csv",
+        power_potential_re="results/_resources/scal_power_potential_wind_pv.csv",
+        feedin="results/_resources/ts_feedin.csv",
+        load_electricity="results/_resources/ts_load_electricity.csv",
+        scenario="scenarios/{scenario}.yml",
     output:
         directory("results/{scenario}/preprocessed")
     shell:
-        "python scripts/build_datapackage.py {input} {output}"
+        "python scripts/build_datapackage.py {input.scenario} {output}"
 
 rule optimize:
     input:
