@@ -32,7 +32,7 @@ h2-excess:
     bus: h2
   defaults:
     marginal_cost: 0
-    output_parameters: "{}"
+    input_parameters: "{}"
 
 electricity-electrolyzer:
   carrier: electricity
