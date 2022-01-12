@@ -99,6 +99,7 @@ rule prepare_vehicle_electricity_demand:
         "results/_resources/ts_load_electricity_vehicles.csv"
     shell:
         "python {input.script} {input.input_dir} {output}"
+
 rule prepare_scalars:
     input:
         raw_scalars="raw/base-scenario.csv",

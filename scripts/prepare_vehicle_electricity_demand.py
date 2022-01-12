@@ -66,8 +66,7 @@ def prepare_vehicle_time_series(input_dir):
         ts_raw = pd.read_csv(
             path, index_col=1, sep=";", decimal=",", parse_dates=True
         ).drop(columns=["Unnamed: 0"], axis=1)
-        ts = ts_raw.copy()
-        ts = ts[ts.index.year == year]
+        ts = ts_raw[ts_raw.index.year == year]
 
         # resample (15 min to hourly)
         hourly_ts = ts.resample("H").sum()
