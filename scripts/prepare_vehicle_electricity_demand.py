@@ -88,7 +88,8 @@ def prepare_vehicle_time_series(input_dir):
         df = pd.concat([df, ts_stacked], axis=0)
 
     # prepare index
-    df.index = range(0, len(df))
+    df.reset_index(inplace=True, drop=True)
+    df.index.name = "id_ts"
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_prepared = dp.format_header(df=df, header=dp.HEADER_B3_TS, index_name="id_ts")
