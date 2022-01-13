@@ -1,10 +1,12 @@
+# coding: utf-8
 r"""
 Inputs
 -------
 postprocessed : str
-    path to directory which contains the input data which can be plotted
+    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
+    can be plotted
 plotted : str
-    path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/``: path where a new directory is created and the plots are saved
 
 Outputs
 ---------
@@ -28,6 +30,9 @@ import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
+from oemof_b3 import labels_dict, colors_odict
+
+
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
@@ -45,9 +50,11 @@ if __name__ == "__main__":
     ]
 
     # select carrier
-    carrier = "electricity"
+    carriers = ["electricity", "heat_central", "heat_decentral"]
 
-    selected_bus_files = [file for file in bus_files if carrier in file]
+    selected_bus_files = [
+        file for file in bus_files for carrier in carriers if carrier in file
+    ]
 
     for bus_file in selected_bus_files:
 
@@ -61,14 +68,15 @@ if __name__ == "__main__":
         conv_number = 1000
         data = data * conv_number
         df, df_demand = plots.prepare_dispatch_data(
-            data, bus_name=bus_name, demand_name="demand"
+            data,
+            bus_name=bus_name,
+            demand_name="demand",
+            labels_dict=labels_dict,
         )
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
-            df=df,
-            df_demand=df_demand,
-            unit="W",
+            df=df, df_demand=df_demand, unit="W", colors_odict=colors_odict
         )
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
@@ -94,7 +102,11 @@ if __name__ == "__main__":
             )
             # plot time filtered data
             plots.plot_dispatch(
-                ax=ax, df=df_time_filtered, df_demand=df_demand_time_filtered, unit="W"
+                ax=ax,
+                df=df_time_filtered,
+                df_demand=df_demand_time_filtered,
+                unit="W",
+                colors_odict=colors_odict,
             )
 
             plt.grid()

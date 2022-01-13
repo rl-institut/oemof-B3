@@ -20,6 +20,9 @@ setup(
         "pyyaml",
         "snakemake",
         "oemoflex @ git+https://git@github.com/rl-institut/oemoflex@dev#egg=oemoflex",
+        "sphinx-rtd-theme>=0.5.1",
     ],
-    extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
+    extras_require={
+        "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas"]
+    },
 )
