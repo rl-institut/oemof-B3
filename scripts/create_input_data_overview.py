@@ -15,7 +15,7 @@ that it can be included in a TeX-document.
 """
 import sys
 
-import pandas as pd
+from oemof_b3.tools.data_processing import load_b3_scalars
 
 scenario = "all"
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     in_path1 = sys.argv[1]  # input data
     out_path = sys.argv[2]
 
-    df = pd.read_csv(in_path1)
+    df = load_b3_scalars(in_path1)
 
     # filter for data within the scenario defined above
     df = df.loc[df["scenario"] == scenario]
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     df = df.loc[df["var_name"].isin(var_names)]
 
     # keep only columns of interest
-    df = df[["name", "var_name", "var_value", "var_unit", "reference"]]
+    df = df[["name", "var_name", "var_value", "var_unit", "source"]]
 
     # unstack
     df = df.set_index(["name", "var_name"]).unstack("var_name")
