@@ -18,6 +18,8 @@
 ]
 
 'from_to_bus': [
+    'ch4-boiler_large',
+    'ch4-boiler_small',
     'electricity-electrolyzer',
     'h2-gt',
     'electricity-heatpump_large',

@@ -25,6 +25,27 @@ electricity-electrolyzer:
   defaults:
     output_parameters: "{}"
 
+electricity-heatpump_large:
+  carrier: electricity
+  tech: heatpump_large
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+electricity-heatpump_small:
+  carrier: electricity
+  tech: heatpump_small
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: heat_decentral
+    efficiency: cop-profile
+  defaults:
+    output_parameters: "{}"
+
 heat_central-demand:
   carrier: heat_central
   tech: demand
@@ -97,13 +118,23 @@ heat_decentral-storage:
     input_parameters: "{}"
     output_parameters: "{}"
 
-ch4-boiler:
+ch4-boiler_large:
   carrier: ch4
-  tech: boiler
+  tech: boiler_large
   type: conversion
   foreign_keys:
     from_bus: ch4
     to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+ch4-boiler_small:
+  carrier: ch4
+  tech: boiler_small
+  type: conversion
+  foreign_keys:
+    from_bus: ch4
+    to_bus: heat_decentral
   defaults:
     output_parameters: "{}"
 
