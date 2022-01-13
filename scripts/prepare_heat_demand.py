@@ -379,7 +379,7 @@ def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, 
 
     # Append stacked heat load of year to stacked time series with total heat loads
     heat_load_postprocessed = pd.concat(
-        [heat_load_postprocessed, heat_load_year_stacked], ignore_index=True
+        [heat_load_postprocessed, heat_load_year_stacked], ignore_index=True, sort=False
     )
 
     return heat_load_postprocessed
