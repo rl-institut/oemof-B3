@@ -7,7 +7,7 @@ scenario_groups = {
     "toy-scenarios": ["toy-scenario","toy-scenario-2"],
 }
 
-resources = ['scal_conv_pp']
+resource_plots = ['scal_conv_pp-capacity_net_el']
 
 
 # Target rules
@@ -33,7 +33,7 @@ rule report_all_examples:
 
 rule plot_all_resources:
     input:
-        expand("results/_resources/plots/{resource}.png", resource=resources)
+        expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
 
 rule clean:
     shell:
@@ -161,7 +161,7 @@ rule plot_conv_pp_scalars:
         data="results/_resources/{resource}.csv",
         script="scripts/plot_conv_pp_scalars.py"
     output:
-        "results/_resources/plots/{resource}_var_{var_name}.png"
+        "results/_resources/plots/{resource}-{var_name}.png"
     shell:
         "python {input.script} {input.data} {wildcards.var_name} {output}"
 
