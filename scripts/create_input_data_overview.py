@@ -40,6 +40,12 @@ if __name__ == "__main__":
     # filter for the variables defined above
     df = df.loc[df["var_name"].isin(VAR_NAMES)]
 
+    # Raise error if DataFrame is empty
+    if df.empty:
+        raise ValueError(
+            f"No data in {in_path1} for scenario {SCENARIO} and variables {VAR_NAMES}."
+        )
+
     # unstack
     df = df.set_index(INDEX).unstack("var_name")
 
