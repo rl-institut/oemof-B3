@@ -17,9 +17,10 @@ import sys
 
 from oemof_b3.tools.data_processing import load_b3_scalars
 
-scenario = "all"
-
-var_names = [
+SCENARIO = "Base 2050"
+REGION = "ALL"
+INDEX = ["carrier", "tech", "var_name"]
+VAR_NAMES = [
     "overnight_cost",
     "lifetime",
     "FOM",
@@ -34,25 +35,22 @@ if __name__ == "__main__":
     df = load_b3_scalars(in_path1)
 
     # filter for data within the scenario defined above
-    df = df.loc[df["scenario"] == scenario]
+    df = df.loc[df["scenario"] == SCENARIO]
 
     # filter for the variables defined above
-    df = df.loc[df["var_name"].isin(var_names)]
-
-    # keep only columns of interest
-    df = df[["name", "var_name", "var_value", "var_unit", "source"]]
+    df = df.loc[df["var_name"].isin(VAR_NAMES)]
 
     # unstack
-    df = df.set_index(["name", "var_name"]).unstack("var_name")
+    df = df.set_index(INDEX).unstack("var_name")
 
     # bring table into correct end format
     df = df.loc[:, "var_value"]
 
-    for var_name in var_names:
+    for var_name in VAR_NAMES:
         if var_name not in df.columns:
             df[var_name] = ""
 
-    df = df[var_names]
+    df = df[VAR_NAMES]
 
     # TODO: map names
 
