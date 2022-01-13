@@ -22,13 +22,16 @@ busses:
 
 components:
   - biomass-gt
-  - ch4-boiler
+  - ch4-boiler_large
+  - ch4-boiler_small
   - ch4-bpchp
   - ch4-demand
   - ch4-excess
   - ch4-gt
   - electricity-demand
   - electricity-electrolyzer
+  - electricity-heatpump_large
+  - electricity-heatpump_small
   - electricity-curtailment
   - electricity-liion_battery
   - electricity-pth
