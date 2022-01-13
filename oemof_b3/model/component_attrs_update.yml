@@ -6,27 +6,37 @@ ch4-demand:
     bus: ch4
     profile: ch4-demand-profile
 
-ch4-shortage:
+ch4-import:
   carrier: ch4
-  tech: shortage
+  tech: import
   type: shortage
   foreign_keys:
     bus: ch4
   defaults:
     output_parameters: "{}"
 
-h2-shortage:
+ch4-export:
+  carrier: ch4
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: ch4
+  defaults:
+    marginal_cost: 0
+    input_parameters: "{}"
+
+h2-import:
   carrier: h2
-  tech: shortage
+  tech: import
   type: shortage
   foreign_keys:
     bus: h2
   defaults:
     output_parameters: "{}"
 
-h2-excess:
+h2-export:
   carrier: h2
-  tech: excess
+  tech: export
   type: excess
   foreign_keys:
     bus: h2

@@ -25,8 +25,8 @@ components:
   - ch4-boiler
   - ch4-bpchp
   - ch4-demand
-  - ch4-excess
-  - ch4-shortage
+  - ch4-export
+  - ch4-import
   - ch4-gt
   - electricity-demand
   - electricity-electrolyzer
@@ -36,8 +36,8 @@ components:
   - electricity-shortage
   - h2-gt
   - h2-bpchp
-  - h2-excess
-  - h2-shortage
+  - h2-export
+  - h2-import
   - heat_central-demand
   - heat_central-excess
   - heat_central-shortage
