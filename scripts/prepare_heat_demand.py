@@ -13,9 +13,7 @@ in_path4 : str
     ``raw/building_class.csv``: path of input file with building classes of all states in Germany
     as .csv
 in_path5 : str
-    ``raw/scalars.csv``: path of template for scalar data as .csv
-in_path5 : str
-    ``oemof_b3/schema/timeseries.csv``: path of input file with times series format as .csv
+    ``raw/scalars.csv``: path of scalar data as .csv
 out_path : str
     ``results/_resources/ts_load_heat.csv``: path of output file with prepared data as .csv
 
