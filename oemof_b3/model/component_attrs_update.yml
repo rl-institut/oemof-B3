@@ -60,6 +60,7 @@ heat_central-excess:
     bus: heat_central
   defaults:
     marginal_cost: 0
+    input_parameters: "{}"
 
 heat_central-shortage:
   carrier: heat_central
@@ -96,6 +97,7 @@ heat_decentral-excess:
     bus: heat_decentral
   defaults:
     marginal_cost: 0
+    input_parameters: "{}"
 
 heat_decentral-shortage:
   carrier: heat_decentral
