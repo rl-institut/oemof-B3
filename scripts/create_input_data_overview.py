@@ -2,7 +2,7 @@
 r"""
 Inputs
 ------
-in_path1 : str
+in_path : str
     ``raw/{scalars}.csv``: path to raw scalars
 out_path : str
     ``results/_tables/{scalars}_technical_and_cost_assumptions.csv``: target path for the table
@@ -33,10 +33,10 @@ VAR_NAMES = [
 
 
 if __name__ == "__main__":
-    in_path1 = sys.argv[1]  # input data
+    in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
 
-    df = load_b3_scalars(in_path1)
+    df = load_b3_scalars(in_path)
 
     # filter for data within the scenario defined above
     df = df.loc[df["scenario"] == SCENARIO]
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # Raise error if DataFrame is empty
     if df.empty:
         raise ValueError(
-            f"No data in {in_path1} for scenario {SCENARIO} and variables {VAR_NAMES}."
+            f"No data in {in_path} for scenario {SCENARIO} and variables {VAR_NAMES}."
         )
 
     # unstack
