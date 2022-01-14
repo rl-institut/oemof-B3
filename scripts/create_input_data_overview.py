@@ -2,11 +2,15 @@
 r"""
 Inputs
 ------
-in_path1
+in_path1 : str
+    ``raw/{scalars}.csv``: path to raw scalars
+out_path : str
+    ``results/_tables/{scalars}_technical_and_cost_assumptions.csv``: target path for the table
 
 Outputs
 -------
-out_path
+.csv
+    Table showing investment cost and efficiency data.
 
 Description
 -----------
