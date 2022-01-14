@@ -25,9 +25,9 @@ SCENARIO = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
 VAR_NAMES = [
-    "overnight_cost",
+    "capacity_cost_overnight",
     "lifetime",
-    "FOM",
+    "fixom_cost",
     "efficiency",
 ]
 
