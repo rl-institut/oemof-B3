@@ -19,17 +19,18 @@ that it can be included in a TeX-document.
 """
 import sys
 
+from oemof_b3 import labels_dict
 from oemof_b3.tools.data_processing import load_b3_scalars
 
 SCENARIO = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
-VAR_NAMES = [
-    "capacity_cost_overnight",
-    "lifetime",
-    "fixom_cost",
-    "efficiency",
-]
+VAR_NAMES = {
+    "capacity_cost_overnight": "Overnight cost",
+    "lifetime": "Lifetime",
+    "fixom_cost": "Fix OM cost",
+    "efficiency": "Efficiency",
+}
 
 
 if __name__ == "__main__":
@@ -62,7 +63,14 @@ if __name__ == "__main__":
 
     df = df[VAR_NAMES]
 
-    # TODO: map names
+    # map names
+
+    df["Name"] = df.index.map(lambda x: "-".join(x))
+    df.loc[:, "Name"].replace(labels_dict, inplace=True)
+    df.set_index("Name", inplace=True, drop=True)
+
+    # map var_names
+    df = df.rename(columns=VAR_NAMES)
 
     # save
     df.to_csv(out_path)
