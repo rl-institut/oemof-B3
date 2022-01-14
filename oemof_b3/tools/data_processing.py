@@ -148,7 +148,7 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True)
+    df.to_csv(path, index=True, sep=";")
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")
