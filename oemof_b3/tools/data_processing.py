@@ -81,7 +81,7 @@ def format_header(df, header, index_name):
     return df_formatted
 
 
-def load_b3_scalars(path, sep=","):
+def load_b3_scalars(path, sep=";"):
     """
     This function loads scalars from a csv file.
 
@@ -109,7 +109,7 @@ def load_b3_scalars(path, sep=","):
     return df
 
 
-def load_b3_timeseries(path, sep=","):
+def load_b3_timeseries(path, sep=";"):
     """
     This function loads a stacked time series from a csv file.
 
