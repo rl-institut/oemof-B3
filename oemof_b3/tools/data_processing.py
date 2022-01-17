@@ -295,6 +295,66 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
+def merge_a_into_b(df_a, df_b, on):
+    r"""
+    Writes scalar data from df_a into df_b, according to 'on'. Where df_a provides no data,
+    the values of df_b are used.
+
+    Parameters
+    ----------
+    df_a : pd.DataFrame
+        DataFrame in oemof_b3 scalars format
+    df_b : pd.DataFrame
+        DataFrame in oemof_b3 scalars format
+    on : list
+        List of columns to merge on
+
+    Returns
+    -------
+    merged : pd.DataFrame
+        DataFrame in oemof_b3 scalars format.
+    """
+    _df_a = df_a.copy()
+    _df_b = df_b.copy()
+
+    # save df_b's index name and column order
+    df_b_index_name = _df_b.index.name
+    df_b_columns = _df_b.columns
+
+    # Warn if data is lost because of merge
+    a_not_b = pd.Index(_df_a.loc[:, on]).difference(pd.Index(_df_b.loc[:, on]))
+    print(
+        f"There are {len(a_not_b)} elements are in df_a but not in df_b and will be lost: {a_not_b}"
+    )
+
+    b_not_a = pd.Index(_df_b.loc[:, on]).difference(pd.Index(_df_a.loc[:, on]))
+    print(f"There are {len(b_not_a)} elements are new in df_b: {b_not_a}")
+
+    # Merge a with b, ignoring all data in b
+    merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
+        _df_a,
+        on=on,
+        how="left",
+        sort=False,
+    )
+
+    merged.index.name = df_b_index_name
+
+    # Where df_a contains no new data, use df_b
+    merged = merged.reset_index().set_index(
+        on
+    )  # First reset, then set index to keep it as a column
+
+    merged.update(_df_b.set_index(on), overwrite=False)
+
+    # Set original index and recover column order
+    merged = merged.reset_index().set_index(df_b_index_name)
+
+    merged = merged[df_b_columns]
+
+    return merged
+
+
 def check_consistency_timeindex(df, index):
     """
     This function assert that values of a column in a stacked DataFrame are same
