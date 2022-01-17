@@ -22,7 +22,7 @@ import sys
 from oemof_b3 import labels_dict
 from oemof_b3.tools.data_processing import load_b3_scalars
 
-SCENARIO = "Base 2050"
+SCENARIO = "High 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
 VAR_NAMES = {
@@ -31,7 +31,13 @@ VAR_NAMES = {
     "fixom_cost": "Fix OM cost",
     "efficiency": "Efficiency",
 }
-
+DTYPES = {
+    "capacity_cost_overnight": "Int64",  # use pandas' int to allow for NaNs
+    "lifetime": "Int64",
+    "fixom_cost": "Int64",
+    "efficiency": float,
+}
+ROUND = {"efficiency": 2}
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
@@ -63,8 +69,10 @@ if __name__ == "__main__":
 
     df = df[VAR_NAMES]
 
-    # map names
+    df = df.astype(DTYPES)
+    df = df.round(ROUND)
 
+    # map names
     df["Name"] = df.index.map(lambda x: "-".join(x))
     df.loc[:, "Name"].replace(labels_dict, inplace=True)
     df.set_index("Name", inplace=True, drop=True)
