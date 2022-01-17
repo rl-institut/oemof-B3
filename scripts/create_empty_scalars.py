@@ -52,11 +52,7 @@ def format_input_scalars(df):
 
     _df.drop_duplicates(inplace=True)
 
-    _df = _df.reset_index(drop=True)
-
-    _df.index.name = "id_scal"
-
-    _df = _df.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    _df = sort_values(_df)
 
     return _df
 
@@ -76,11 +72,7 @@ def expand_scalars(df, column, where, expand):
 
         _df_wo_cc = _df_wo_cc.append(d)
 
-    _df_wo_cc.reset_index(inplace=True, drop=True)
-
-    _df_wo_cc.index.name = "id_scal"
-
-    _df_wo_cc = _df_wo_cc.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    _df_wo_cc = sort_values(_df_wo_cc)
 
     return _df_wo_cc
 
