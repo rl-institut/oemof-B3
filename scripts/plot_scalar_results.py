@@ -28,8 +28,6 @@ from oemoflex.tools.plots import plot_grouped_bar
 from oemof_b3.tools import data_processing as dp
 from oemof_b3 import colors_odict, labels_dict
 
-unit_dict = {"capacity": "W", "flow_out_electricity": "Wh"}
-
 
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     # pivot
@@ -68,6 +66,7 @@ if __name__ == "__main__":
     REGIONS = ["BB", "BE"]  # BE_BB
     CONV_NUMBER = 1000
     VAR_NAMES = ["capacity", "flow_out_electricity"]
+    UNITS = {"capacity": "W", "flow_out_electricity": "Wh"}
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
@@ -95,9 +94,7 @@ if __name__ == "__main__":
 
         # plot data
         fig, ax = plt.subplots()
-        plot_grouped_bar(
-            ax, prepared_scalar_data, colors_odict, unit=unit_dict[var_name]
-        )
+        plot_grouped_bar(ax, prepared_scalar_data, colors_odict, unit=UNITS[var_name])
         ax.set_title(var_name)
         output_path_plot = os.path.join(target, var_name + ".png")
         plt.savefig(output_path_plot, bbox_inches="tight")
