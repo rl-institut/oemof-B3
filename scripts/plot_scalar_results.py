@@ -100,4 +100,6 @@ if __name__ == "__main__":
             ax, prepared_scalar_data, colors_odict, unit=unit_dict[var_name]
         )
         ax.set_title(var_name)
-        plt.savefig(os.path.join(target, var_name + ".png"), bbox_inches="tight")
+        output_path_plot = os.path.join(target, var_name + ".png")
+        plt.savefig(output_path_plot, bbox_inches="tight")
+        print(f"User info: Plot of '{var_name}' has been saved to: {output_path_plot}.")
