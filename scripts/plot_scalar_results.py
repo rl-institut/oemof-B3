@@ -25,6 +25,7 @@ import oemoflex.tools.plots as plots
 import pandas as pd
 from oemoflex.tools.plots import plot_grouped_bar
 
+from oemof_b3.tools import data_processing as dp
 from oemof_b3 import colors_odict, labels_dict
 
 unit_dict = {"capacity": "W", "flow_out_electricity": "Wh"}
@@ -81,10 +82,8 @@ if __name__ == "__main__":
     for var_name in VAR_NAMES:
 
         # select data with chosen var_name
-        selected_scalar_data = scalars[scalars["var_name"] == var_name]
-        selected_scalar_data = selected_scalar_data[
-            selected_scalar_data["region"].isin(REGIONS)
-        ]
+        selected_scalar_data = dp.filter_df(scalars, "var_name", var_name)
+        selected_scalar_data = dp.filter_df(selected_scalar_data, "region", REGIONS)
 
         # prepare data
         prepared_scalar_data = prepare_scalar_data(
