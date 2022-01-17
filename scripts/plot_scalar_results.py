@@ -84,6 +84,10 @@ if __name__ == "__main__":
         selected_scalar_data = dp.filter_df(scalars, "var_name", var_name)
         selected_scalar_data = dp.filter_df(selected_scalar_data, "region", REGIONS)
 
+        if selected_scalar_data.empty:
+            print(f"No data to plot for '{var_name}'.")
+            continue
+        print(selected_scalar_data)
         # prepare data
         prepared_scalar_data = prepare_scalar_data(
             df=selected_scalar_data,
