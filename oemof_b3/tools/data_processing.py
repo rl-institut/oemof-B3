@@ -17,6 +17,19 @@ HEADER_B3_TS = pd.read_csv(
 ).columns
 
 
+def sort_values(df, reset_index=True):
+    _df = df.copy()
+
+    _df = _df.sort_values(by=["scenario", "carrier", "tech", "var_name", "region"])
+
+    if reset_index:
+        _df = _df.reset_index(drop=True)
+
+        _df.index.name = "id_scal"
+
+    return _df
+
+
 def get_list_diff(list_a, list_b):
     r"""
     Returns all items of list_a that are not in list_b.

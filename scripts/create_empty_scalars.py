@@ -23,7 +23,7 @@ from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
 
 from oemof_b3.model import bus_attrs_update, component_attrs_update
-from oemof_b3.tools.data_processing import HEADER_B3_SCAL, format_header
+from oemof_b3.tools.data_processing import HEADER_B3_SCAL, format_header, sort_values
 
 NON_REGIONAL = [
     "capacity_cost",
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     empty_scalars = format_input_scalars(components)
 
     # set scenario name
-    empty_scalars.loc[:, "scenario"] = "toy-scenario"
+    empty_scalars.loc[:, "scenario"] = scenario_specs["name"]
 
     # if empty raw scalars should be created, reverse the annuisation as well.
     # if empty resources scalars are needed, set this to False.
@@ -134,5 +134,7 @@ if __name__ == "__main__":
             where="storage_capacity_cost",
             expand=["storage_capacity_cost_overnight", "storage_fixom_cost"],
         )
+
+    empty_scalars = sort_values(empty_scalars)
 
     empty_scalars.to_csv(destination)
