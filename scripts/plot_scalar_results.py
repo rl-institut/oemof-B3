@@ -3,9 +3,9 @@ r"""
 Inputs
 -------
 scalars_path : str
-    ``results/{scenario}/postprocessed/scalars.csv``: path to csv with scalar data.
+    ``results/{scenario}/postprocessed/``: path to directory containing postprocessed results.
 target : str
-    ``results/{scenario}/plotted/``: path where a new directory is
+    ``results/{scenario}/plotted/scalars/``: path where a new directory is
     created and the plots are saved.
 
 Outputs
@@ -59,7 +59,7 @@ def load_scalars(path):
 
 
 if __name__ == "__main__":
-    scalars_path = sys.argv[1]
+    scalars_path = os.path.join(sys.argv[1], "scalars.csv")
 
     target = sys.argv[2]
 

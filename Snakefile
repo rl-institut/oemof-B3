@@ -166,7 +166,7 @@ rule plot_conv_pp_scalars:
 
 rule plot_scalar_results:
     input:
-        "results/{scenario}/postprocessed/scalars.csv"
+        "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/plotted/scalars/")
     shell:
