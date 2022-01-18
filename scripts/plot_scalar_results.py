@@ -65,11 +65,23 @@ if __name__ == "__main__":
     # User input
     REGIONS = ["BB", "BE"]  # BE_BB
     MW_TO_W = 1e6
-    VAR_NAMES = ["capacity", "flow_out_electricity", "invest_out_electricity"]
+    VAR_NAMES = [
+        "capacity",
+        "flow_out_electricity",
+        "invest_out_electricity",
+        "flow_out_heat_central",
+        "invest_out_heat_central",
+        "flow_out_heat_decentral",
+        "invest_out_heat_decentral",
+    ]
     UNITS = {
         "capacity": "W",
         "flow_out_electricity": "Wh",
         "invest_out_electricity": "W",
+        "flow_out_heat_central": "Wh",
+        "invest_out_heat_central": "W",
+        "flow_out_heat_decentral": "Wh",
+        "invest_out_heat_decentral": "W",
     }
 
     # create the directory plotted where all plots are saved
