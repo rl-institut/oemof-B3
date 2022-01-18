@@ -42,7 +42,7 @@ electricity-heatpump_small:
   foreign_keys:
     from_bus: electricity
     to_bus: heat_decentral
-    efficiency: cop-profile
+    efficiency: efficiency-profile
   defaults:
     output_parameters: "{}"
 
