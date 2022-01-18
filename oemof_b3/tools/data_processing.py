@@ -295,10 +295,11 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
-def merge_a_into_b(df_a, df_b, on):
+def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
     r"""
     Writes scalar data from df_a into df_b, according to 'on'. Where df_a provides no data,
-    the values of df_b are used.
+    the values of df_b are used. If how='outer', data from df_a that is not in df_b will be
+    kept.
 
     Parameters
     ----------
@@ -308,6 +309,10 @@ def merge_a_into_b(df_a, df_b, on):
         DataFrame in oemof_b3 scalars format
     on : list
         List of columns to merge on
+    how : str
+        'left' or 'outer'
+    indicator : bool
+        If True, an indicator column is included
 
     Returns
     -------
@@ -319,7 +324,9 @@ def merge_a_into_b(df_a, df_b, on):
 
     # save df_b's index name and column order
     df_b_index_name = _df_b.index.name
-    df_b_columns = _df_b.columns
+    df_b_columns = list(_df_b.columns)
+    if indicator:
+        df_b_columns.append("_merge")
 
     # Warn if data is lost because of merge
     a_not_b = pd.Index(_df_a.loc[:, on]).difference(pd.Index(_df_b.loc[:, on]))
@@ -334,7 +341,8 @@ def merge_a_into_b(df_a, df_b, on):
     merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
         _df_a,
         on=on,
-        how="left",
+        how=how,
+        indicator=indicator,
         sort=False,
     )
 
