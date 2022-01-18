@@ -65,8 +65,12 @@ if __name__ == "__main__":
     # User input
     REGIONS = ["BB", "BE"]  # BE_BB
     CONV_NUMBER = 1000
-    VAR_NAMES = ["capacity", "flow_out_electricity"]
-    UNITS = {"capacity": "W", "flow_out_electricity": "Wh"}
+    VAR_NAMES = ["capacity", "flow_out_electricity", "invest_out_electricity"]
+    UNITS = {
+        "capacity": "W",
+        "flow_out_electricity": "Wh",
+        "invest_out_electricity": "W",
+    }
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
