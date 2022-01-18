@@ -102,7 +102,9 @@ if __name__ == "__main__":
 
         # plot data
         fig, ax = plt.subplots()
-        plot_grouped_bar(ax, prepared_scalar_data, colors_odict, unit=UNITS[var_name])
+        plot_grouped_bar(
+            ax, prepared_scalar_data, colors_odict, unit=UNITS[var_name], stacked=True
+        )
         ax.set_title(var_name)
         # Shrink current axis's height by 10% on the bottom
         box = ax.get_position()
