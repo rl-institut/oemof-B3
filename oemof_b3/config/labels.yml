@@ -11,6 +11,8 @@ electricity-liion_battery: Battery
 electricity-pth: res. PtH
 electricity-shortage: Shortage
 electricity-transmission: Transmission
+electricity-heatpump_large: Heat pump (DH)
+electricity-heatpump_small: Heat pump (domestic)
 h2-gt: H2 GT
 heat_central-demand: Heat cen. demand
 heat_decentral-demand: Heat dec. demand

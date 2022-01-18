@@ -42,7 +42,8 @@ Heat dec. storage out,#9467bd
 Heat dec. storage in,#9467bd
 
 CH4 Boiler,#d62728
-Heatpump,#2ca02c
+Heat pump (DH),#2ca02c
+Heat pump (domestic),#2ca00c
 res. PtH,#ff7f0e
 
 CH4 excess,red
