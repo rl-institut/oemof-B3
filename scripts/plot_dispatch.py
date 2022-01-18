@@ -65,8 +65,8 @@ if __name__ == "__main__":
 
         # prepare dispatch data
         # convert data to SI-unit
-        conv_number = 1000
-        data = data * conv_number
+        MW_to_W = 1e6
+        data = data * MW_to_W
         df, df_demand = plots.prepare_dispatch_data(
             data,
             bus_name=bus_name,
