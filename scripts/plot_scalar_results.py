@@ -63,7 +63,7 @@ if __name__ == "__main__":
     target = sys.argv[2]
 
     # User input
-    REGIONS = ["BB", "BE"]  # BE_BB
+    REGIONS = ["BB", "B"]  # BE_BB
     MW_TO_W = 1e6
     VAR_NAMES = [
         "capacity",
