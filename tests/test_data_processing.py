@@ -12,6 +12,7 @@ from oemof_b3.tools.data_processing import (
     filter_df,
     aggregate_scalars,
     check_consistency_timeindex,
+    merge_a_into_b,
 )
 
 # Paths
@@ -449,3 +450,37 @@ def test_stack_unstack_on_example_data():
     df_stacked = stack_timeseries(df)
     df_unstacked = unstack_timeseries(df_stacked)
     assert pd.testing.assert_frame_equal(df, df_unstacked) is None
+
+
+def test_merge_a_into_b():
+    r"""
+    Tests merge function.
+    """
+    a = pd.DataFrame(
+        {
+            "A": ["a", "b", "x"],
+            "B": [2, 2, 2],
+            "C": [3, 3, 3],
+        }
+    )
+    b = pd.DataFrame(
+        {
+            "A": ["a", "b", "c"],
+            "B": [np.nan, np.nan, np.nan],
+            "C": [1, np.nan, 1],
+        }
+    )
+    a.index.name = "id_scal"
+    b.index.name = "id_scal"
+
+    expected_result = pd.DataFrame(
+        {
+            "A": ["a", "b", "c", "x"],
+            "B": [2.0, 2.0, np.nan, 2.0],
+            "C": [3.0, 3.0, 1.0, 3.0],
+        }
+    )
+
+    c = merge_a_into_b(a, b, on=["A"])
+
+    assert c.equals(expected_result)
