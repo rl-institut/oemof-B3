@@ -104,6 +104,19 @@ if __name__ == "__main__":
         fig, ax = plt.subplots()
         plot_grouped_bar(ax, prepared_scalar_data, colors_odict, unit=UNITS[var_name])
         ax.set_title(var_name)
+        # Shrink current axis's height by 10% on the bottom
+        box = ax.get_position()
+        ax.set_position(
+            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
+        )
+        # Put a legend below current axis
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.1),
+            fancybox=True,
+            ncol=4,
+            fontsize=14,
+        )
         output_path_plot = os.path.join(target, var_name + ".png")
         plt.savefig(output_path_plot, bbox_inches="tight")
         print(f"User info: Plot of '{var_name}' has been saved to: {output_path_plot}.")
