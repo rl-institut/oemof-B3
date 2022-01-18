@@ -34,8 +34,8 @@ import sys
 import pandas as pd
 import yaml
 
-import oemof_b3.tools.geo as geo
 import oemof_b3.tools.data_processing as dp
+import oemof_b3.tools.geo as geo
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
