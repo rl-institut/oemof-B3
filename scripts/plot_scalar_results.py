@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # User input
     REGIONS = ["BB", "BE"]  # BE_BB
-    CONV_NUMBER = 1000
+    MW_TO_W = 1e6
     VAR_NAMES = ["capacity", "flow_out_electricity", "invest_out_electricity"]
     UNITS = {
         "capacity": "W",
@@ -97,7 +97,7 @@ if __name__ == "__main__":
             df=selected_scalar_data,
             colors_odict=colors_odict,
             labels_dict=labels_dict,
-            conv_number=CONV_NUMBER,
+            conv_number=MW_TO_W,
         )
 
         # plot data
