@@ -105,5 +105,13 @@ if __name__ == "__main__":
 
     df = pd.concat(combined, 1)
 
+    df.index = df.index.droplevel(2)
+
+    # map names
+    df["Technology"] = df.index.map(lambda x: "-".join(x))
+    df.loc[:, "Technology"].replace(labels_dict, inplace=True)
+    df.set_index("Technology", inplace=True, drop=True)
+    df = df.sort_index()
+
     # save
     df.to_csv(out_path)
