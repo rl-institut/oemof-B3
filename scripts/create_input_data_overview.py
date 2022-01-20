@@ -62,6 +62,10 @@ if __name__ == "__main__":
     # unstack
     df = df.set_index(INDEX).unstack("var_name")
 
+    # save units
+    idx = pd.IndexSlice
+    units = df.loc[:, idx["var_unit", "capacity_cost_overnight"]]
+
     # bring table into correct end format
     df = df.loc[:, "var_value"]
 
@@ -78,6 +82,7 @@ if __name__ == "__main__":
     )
 
     # map names
+    df["unit"] = units
     df["Name"] = df.index.map(lambda x: "-".join(x))
     df.loc[:, "Name"].replace(labels_dict, inplace=True)
     df.set_index("Name", inplace=True, drop=True)
