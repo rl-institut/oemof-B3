@@ -68,8 +68,8 @@ def prepare_vehicle_time_series(input_dir):
         ).drop(columns=["Unnamed: 0"], axis=1)
         ts = ts_raw[ts_raw.index.year == year]
 
-        # resample (15 min to hourly)
-        hourly_ts = ts.resample("H").sum()
+        # resample (15 min to hourly), unit is kW
+        hourly_ts = ts.resample("H").mean()
 
         # normalize with total electricity demand
         hourly_ts_norm = hourly_ts / hourly_ts.sum()
