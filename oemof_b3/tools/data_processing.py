@@ -135,6 +135,32 @@ def load_b3_timeseries(path, sep=","):
     return df
 
 
+def multi_load(paths, load_func):
+    if isinstance(paths, list):
+        pass
+    elif isinstance(paths, str):
+        return load_func(paths)
+    else:
+        raise ValueError(f"{paths} has to be either list of paths or path.")
+
+    dfs = []
+    for path in paths:
+        df = load_func(path)
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+
+    return result
+
+
+def multi_load_b3_scalars(paths):
+    return multi_load(paths, load_b3_scalars)
+
+
+def multi_load_b3_timeseries(paths):
+    return multi_load(paths, load_b3_timeseries)
+
+
 def save_df(df, path):
     """
     This function saves data to a csv file.

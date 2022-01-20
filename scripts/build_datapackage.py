@@ -28,38 +28,12 @@ from oemoflex.tools.helpers import load_yaml
 from oemof_b3.model import bus_attrs_update, component_attrs_update, foreign_keys_update
 from oemof_b3.tools.data_processing import (
     filter_df,
-    load_b3_scalars,
-    load_b3_timeseries,
     unstack_timeseries,
     format_header,
     HEADER_B3_SCAL,
+    multi_load_b3_scalars,
+    multi_load_b3_timeseries,
 )
-
-
-def multi_load(paths, load_func):
-    if isinstance(paths, list):
-        pass
-    elif isinstance(paths, str):
-        return load_func(paths)
-    else:
-        raise ValueError(f"{paths} has to be either list of paths or path.")
-
-    dfs = []
-    for path in paths:
-        df = load_func(path)
-        dfs.append(df)
-
-    result = pd.concat(dfs)
-
-    return result
-
-
-def multi_load_b3_scalars(paths):
-    return multi_load(paths, load_b3_scalars)
-
-
-def multi_load_b3_timeseries(paths):
-    return multi_load(paths, load_b3_timeseries)
 
 
 def expand_regions(scalars, regions, where="ALL"):
