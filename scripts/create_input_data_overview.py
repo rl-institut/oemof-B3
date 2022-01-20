@@ -97,6 +97,10 @@ if __name__ == "__main__":
     df = df.sort_index()
 
     def round_setting_int(df, decimals):
+        r"""
+        Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
+        it changes the dtype to Int64. Tolerates NaNs.
+        """
         _df = df.copy()
 
         for col, dec in decimals.items():
