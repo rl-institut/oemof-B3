@@ -27,31 +27,13 @@ from oemof_b3.tools.data_processing import load_b3_scalars
 SCENARIO = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
+DECIMALS = {
+    "Capacity cost": 0,
+    "Fix OM cost": 0,
+    "Lifetime": 0,
+    "Efficiency": 2,
+}
 VAR_NAMES = {
-    "capacity_cost_overnight": "Overnight cost",
-    "storage_capacity_cost_overnight": "Overnight cost",
-    "fixom_cost": "Fix OM cost",
-    "storage_fixom_cost": "Fix OM cost",
-    "lifetime": "Lifetime",
-    "efficiency": "Efficiency",
-}
-DTYPES = {
-    "capacity_cost_overnight": "Int64",  # use pandas' int to allow for NaNs
-    "storage_capacity_cost_overnight": "Int64",
-    "fixom_cost": "Int64",
-    "storage_fixom_cost": "Int64",
-    "lifetime": "Int64",
-    "efficiency": float,
-}
-ROUND = {
-    "capacity_cost_overnight": 0,
-    "storage_capacity_cost_overnight": 0,
-    "fixom_cost": 0,
-    "storage_fixom_cost": 0,
-    "lifetime": 0,
-    "efficiency": 2,
-}
-DISPLAY_UNITS = {
     "Capacity cost": ["capacity_cost_overnight", "storage_capacity_cost_overnight"],
     "Fix OM cost": ["fixom_cost", "storage_fixom_cost"],
     "Lifetime": ["lifetime"],
@@ -68,12 +50,13 @@ if __name__ == "__main__":
     df = df.loc[df["scenario"] == SCENARIO]
 
     # filter for the variables defined above
-    df = df.loc[df["var_name"].isin(VAR_NAMES)]
+    variables = [item for sublist in VAR_NAMES.values() for item in sublist]
+    df = df.loc[df["var_name"].isin(variables)]
 
     # Raise error if DataFrame is empty
     if df.empty:
         raise ValueError(
-            f"No data in {in_path} for scenario {SCENARIO} and variables {VAR_NAMES}."
+            f"No data in {in_path} for scenario {SCENARIO} and variables {variables}."
         )
 
     # unstack
@@ -85,7 +68,7 @@ if __name__ == "__main__":
     # save units
     idx = pd.IndexSlice
     combined = []
-    for name, group in DISPLAY_UNITS.items():
+    for name, group in VAR_NAMES.items():
         values = df.loc[:, idx["var_value", group]]
         values = values.stack()
 
@@ -112,6 +95,21 @@ if __name__ == "__main__":
     df.loc[:, "Technology"].replace(labels_dict, inplace=True)
     df.set_index("Technology", inplace=True, drop=True)
     df = df.sort_index()
+
+    def round_setting_int(df, decimals):
+        _df = df.copy()
+
+        for col, dec in decimals.items():
+            if dec == 0:
+                dtype = "Int64"
+            else:
+                dtype = float
+
+            _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
+
+        return _df
+
+    df = round_setting_int(df, DECIMALS)
 
     # save
     df.to_csv(out_path)
