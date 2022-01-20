@@ -54,6 +54,8 @@ ROUND = {
 DISPLAY_UNITS = {
     "Capacity cost": ["capacity_cost_overnight", "storage_capacity_cost_overnight"],
     "Fix OM cost": ["fixom_cost", "storage_fixom_cost"],
+    "Lifetime": ["lifetime"],
+    "Efficiency": ["efficiency"],
 }
 
 if __name__ == "__main__":
@@ -93,23 +95,15 @@ if __name__ == "__main__":
         result = pd.concat([values, units], 1)
         result.columns = [name, name + "_unit"]
 
+        result.index = result.index.remove_unused_levels()
+
+        n_levels = list(range(len(result.index.levels[2])))
+
+        result.index = result.index.set_levels(n_levels, level=2)
+
         combined.append(result)
 
-    # collect those var_names that are not grouped
-    rest = df.loc[:, idx["var_value", ["lifetime", "efficiency"]]]
-
-    # Add a third level because these data are not stacked
-    rest["newlevel"] = "capacity_cost_overnight"
-    rest = rest.set_index("newlevel", append=True)
-    rest.columns = rest.columns.droplevel(0)
-
-    # concat the rest with the first
-    combined[0] = pd.concat([combined[0], rest], 1)
-
-    # concat all
-    combined[0].index = combined[0].index.droplevel(2)
-    combined[1].index = combined[1].index.droplevel(2)
-    combined = pd.concat(combined, 1)
+    df = pd.concat(combined, 1)
 
     # save
-    combined.to_csv(out_path)
+    df.to_csv(out_path)
