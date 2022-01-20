@@ -24,22 +24,37 @@ import pandas as pd
 from oemof_b3 import labels_dict
 from oemof_b3.tools.data_processing import load_b3_scalars
 
-SCENARIO = "High 2050"
+SCENARIO = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
 VAR_NAMES = {
     "capacity_cost_overnight": "Overnight cost",
-    "lifetime": "Lifetime",
+    "storage_capacity_cost_overnight": "Overnight cost",
     "fixom_cost": "Fix OM cost",
+    "storage_fixom_cost": "Fix OM cost",
+    "lifetime": "Lifetime",
     "efficiency": "Efficiency",
 }
 DTYPES = {
     "capacity_cost_overnight": "Int64",  # use pandas' int to allow for NaNs
-    "lifetime": "Int64",
+    "storage_capacity_cost_overnight": "Int64",
     "fixom_cost": "Int64",
+    "storage_fixom_cost": "Int64",
+    "lifetime": "Int64",
     "efficiency": float,
 }
-ROUND = {"capacity_cost_overnight": 0, "lifetime": 0, "fixom_cost": 0, "efficiency": 2}
+ROUND = {
+    "capacity_cost_overnight": 0,
+    "storage_capacity_cost_overnight": 0,
+    "fixom_cost": 0,
+    "storage_fixom_cost": 0,
+    "lifetime": 0,
+    "efficiency": 2,
+}
+DISPLAY_UNITS = {
+    "Capacity cost": ["capacity_cost_overnight", "storage_capacity_cost_overnight"],
+    "Fix OM cost": ["fixom_cost", "storage_fixom_cost"],
+}
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
@@ -62,33 +77,39 @@ if __name__ == "__main__":
     # unstack
     df = df.set_index(INDEX).unstack("var_name")
 
+    # bring table into correct end format
+    df = df.loc[:, ["var_value", "var_unit", "reference"]]
+
     # save units
     idx = pd.IndexSlice
-    units = df.loc[:, idx["var_unit", "capacity_cost_overnight"]]
+    combined = []
+    for name, group in DISPLAY_UNITS.items():
+        values = df.loc[:, idx["var_value", group]]
+        values = values.stack()
 
-    # bring table into correct end format
-    df = df.loc[:, "var_value"]
+        units = df.loc[:, idx["var_unit", group]]
+        units = units.stack()
 
-    for var_name in VAR_NAMES:
-        if var_name not in df.columns:
-            df[var_name] = ""
+        result = pd.concat([values, units], 1)
+        result.columns = [name, name + "_unit"]
 
-    df = df[VAR_NAMES]
+        combined.append(result)
 
-    df = (
-        df.apply(lambda col: pd.to_numeric(col, errors="coerce"), 1)
-        .round(ROUND)
-        .astype(DTYPES)
-    )
+    # collect those var_names that are not grouped
+    rest = df.loc[:, idx["var_value", ["lifetime", "efficiency"]]]
 
-    # map names
-    df["unit"] = units
-    df["Name"] = df.index.map(lambda x: "-".join(x))
-    df.loc[:, "Name"].replace(labels_dict, inplace=True)
-    df.set_index("Name", inplace=True, drop=True)
+    # Add a third level because these data are not stacked
+    rest["newlevel"] = "capacity_cost_overnight"
+    rest = rest.set_index("newlevel", append=True)
+    rest.columns = rest.columns.droplevel(0)
 
-    # map var_names
-    df = df.rename(columns=VAR_NAMES)
+    # concat the rest with the first
+    combined[0] = pd.concat([combined[0], rest], 1)
+
+    # concat all
+    combined[0].index = combined[0].index.droplevel(2)
+    combined[1].index = combined[1].index.droplevel(2)
+    combined = pd.concat(combined, 1)
 
     # save
-    df.to_csv(out_path)
+    combined.to_csv(out_path)
