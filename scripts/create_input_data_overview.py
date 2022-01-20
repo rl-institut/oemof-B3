@@ -19,6 +19,8 @@ that it can be included in a TeX-document.
 """
 import sys
 
+import pandas as pd
+
 from oemof_b3 import labels_dict
 from oemof_b3.tools.data_processing import load_b3_scalars
 
@@ -37,7 +39,7 @@ DTYPES = {
     "fixom_cost": "Int64",
     "efficiency": float,
 }
-ROUND = {"efficiency": 2}
+ROUND = {"capacity_cost_overnight": 0, "lifetime": 0, "fixom_cost": 0, "efficiency": 2}
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
@@ -69,8 +71,11 @@ if __name__ == "__main__":
 
     df = df[VAR_NAMES]
 
-    df = df.astype(DTYPES)
-    df = df.round(ROUND)
+    df = (
+        df.apply(lambda col: pd.to_numeric(col, errors="coerce"), 1)
+        .round(ROUND)
+        .astype(DTYPES)
+    )
 
     # map names
     df["Name"] = df.index.map(lambda x: "-".join(x))
