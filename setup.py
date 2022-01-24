@@ -16,12 +16,13 @@ setup(
     packages=["oemof_b3"],
     install_requires=[
         "pandas",
+        "demandlib",
         "rtree",
         "pyyaml",
         "snakemake",
         "oemoflex @ git+https://git@github.com/rl-institut/oemoflex@dev#egg=oemoflex",
         "sphinx-rtd-theme>=0.5.1",
-        "demandlib",
+
     ],
     extras_require={"dev": ["pytest", "black==20.8b1", "coverage", "flake8"]},
 )
