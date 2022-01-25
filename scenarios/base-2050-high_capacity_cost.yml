@@ -1,0 +1,84 @@
+# This scenario config file contains information for several steps in the model pipeline, i.e.
+# build_datapackage, parametrize, optimize and potentially also postprocess or plot.
+
+# build_datapackage
+
+name: base-2050-high_capacity_cost
+
+regions:
+  - BB
+  - B
+
+links:
+  - BB-B
+
+busses:
+  - ch4
+  - electricity
+  - h2
+  - heat_central
+  - heat_decentral
+  - biomass
+
+components:
+  - biomass-gt
+  - ch4-boiler_large
+  - ch4-boiler_small
+  - ch4-bpchp
+  - ch4-demand
+  - ch4-excess
+  - ch4-gt
+  - electricity-demand
+  - electricity-electrolyzer
+  - electricity-heatpump_large
+  - electricity-heatpump_small
+  - electricity-curtailment
+  - electricity-liion_battery
+  - electricity-pth
+  - electricity-shortage
+  - h2-gt
+  - h2-bpchp
+  - heat_central-demand
+  - heat_central-excess
+  - heat_central-shortage
+  - heat_central-storage
+  - heat_decentral-demand
+  - heat_decentral-excess
+  - heat_decentral-shortage
+  - heat_decentral-storage
+  - hydro-ror
+  - solar-pv
+  - wind-onshore
+
+# parametrize
+
+path_scalars:
+  - results/_resources/scal_base_PR#91.csv
+  - results/_resources/scal_high_PR#91.csv
+
+filter_scalars:
+  1:
+    scenario:
+      "Base 2050"
+  2:
+    scenario:
+      "High 2050"
+    name:
+      "B-biomass-gt"
+    var_name:
+      "capacity_cost"
+
+
+
+
+
+paths_timeseries:
+  - raw/time_series/ts_load_ch4.csv
+  - raw/time_series/ts_efficiency_heatpump_small.csv
+  - results/_resources/ts_feedin.csv
+  - results/_resources/ts_load_electricity.csv
+  - results/_resources/ts_load_heat.csv
+
+filter_timeseries:
+  scenario:
+    ts_2017
