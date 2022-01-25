@@ -62,7 +62,7 @@ if __name__ == "__main__":
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
 
-    # get the results from the the solved model(still oemof.solph)
+    # get results from the solved model(still oemof.solph)
     es.meta_results = processing.meta_results(m)
     es.results = processing.results(m)
     es.params = processing.parameter_as_dict(es)
