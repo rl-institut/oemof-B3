@@ -482,6 +482,5 @@ def test_merge_a_into_b():
     )
 
     c = merge_a_into_b(a, b, on=["A"], how="outer")
-    print(c)
-    print(expected_result)
+
     assert c.equals(expected_result)
