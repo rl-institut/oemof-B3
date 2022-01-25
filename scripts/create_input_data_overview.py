@@ -19,25 +19,26 @@ that it can be included in a TeX-document.
 """
 import sys
 
+import pandas as pd
+
 from oemof_b3 import labels_dict
 from oemof_b3.tools.data_processing import load_b3_scalars
 
-SCENARIO = "High 2050"
+SCENARIO = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
+DECIMALS = {
+    "Capacity cost": 0,
+    "Fix OM cost": 0,
+    "Lifetime": 0,
+    "Efficiency": 2,
+}
 VAR_NAMES = {
-    "capacity_cost_overnight": "Overnight cost",
-    "lifetime": "Lifetime",
-    "fixom_cost": "Fix OM cost",
-    "efficiency": "Efficiency",
+    "Capacity cost": ["capacity_cost_overnight", "storage_capacity_cost_overnight"],
+    "Fix OM cost": ["fixom_cost", "storage_fixom_cost"],
+    "Lifetime": ["lifetime"],
+    "Efficiency": ["efficiency"],
 }
-DTYPES = {
-    "capacity_cost_overnight": "Int64",  # use pandas' int to allow for NaNs
-    "lifetime": "Int64",
-    "fixom_cost": "Int64",
-    "efficiency": float,
-}
-ROUND = {"efficiency": 2}
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
@@ -49,36 +50,66 @@ if __name__ == "__main__":
     df = df.loc[df["scenario"] == SCENARIO]
 
     # filter for the variables defined above
-    df = df.loc[df["var_name"].isin(VAR_NAMES)]
+    variables = [item for sublist in VAR_NAMES.values() for item in sublist]
+    df = df.loc[df["var_name"].isin(variables)]
 
     # Raise error if DataFrame is empty
     if df.empty:
         raise ValueError(
-            f"No data in {in_path} for scenario {SCENARIO} and variables {VAR_NAMES}."
+            f"No data in {in_path} for scenario {SCENARIO} and variables {variables}."
         )
 
     # unstack
     df = df.set_index(INDEX).unstack("var_name")
 
     # bring table into correct end format
-    df = df.loc[:, "var_value"]
+    df = df.loc[:, ["var_value", "var_unit", "reference"]]
 
-    for var_name in VAR_NAMES:
-        if var_name not in df.columns:
-            df[var_name] = ""
+    # save units
+    idx = pd.IndexSlice
+    combined = []
+    for name, group in VAR_NAMES.items():
+        values = df.loc[:, idx["var_value", group]]
+        values = values.stack()
 
-    df = df[VAR_NAMES]
+        units = df.loc[:, idx["var_unit", group]]
+        units = units.stack()
 
-    df = df.astype(DTYPES)
-    df = df.round(ROUND)
+        result = pd.concat([values, units], 1)
+        result.columns = [name, name + "_unit"]
+
+        result.index = result.index.remove_unused_levels()
+
+        n_levels = list(range(len(result.index.levels[2])))
+
+        result.index = result.index.set_levels(n_levels, level=2)
+
+        combined.append(result)
+
+    df = pd.concat(combined, 1)
+
+    df.index = df.index.droplevel(2)
 
     # map names
-    df["Name"] = df.index.map(lambda x: "-".join(x))
-    df.loc[:, "Name"].replace(labels_dict, inplace=True)
-    df.set_index("Name", inplace=True, drop=True)
+    df["Technology"] = df.index.map(lambda x: "-".join(x))
+    df.loc[:, "Technology"].replace(labels_dict, inplace=True)
+    df.set_index("Technology", inplace=True, drop=True)
+    df = df.sort_index()
 
-    # map var_names
-    df = df.rename(columns=VAR_NAMES)
+    def round_setting_int(df, decimals):
+        _df = df.copy()
+
+        for col, dec in decimals.items():
+            if dec == 0:
+                dtype = "Int64"
+            else:
+                dtype = float
+
+            _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
+
+        return _df
+
+    df = round_setting_int(df, DECIMALS)
 
     # save
     df.to_csv(out_path)
