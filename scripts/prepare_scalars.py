@@ -20,7 +20,6 @@ The script performs the following steps to prepare scalar data for parametrizati
 * Calculate annualized investment cost from overnight cost, lifetime and wacc.
 """
 import sys
-import os
 
 import pandas as pd
 
@@ -97,11 +96,8 @@ def annuise_investment_cost(sc):
 
 
 if __name__ == "__main__":
-    # in_path = sys.argv[1]  # path to raw scalar data
-    # out_path = sys.argv[2]  # path to destination
-
-    in_path = "/home/local/RL-INSTITUT/marie-claire.gering/Repositories/oemof-B3/raw/base-scenario.csv"
-    out_path = "/home/local/RL-INSTITUT/marie-claire.gering/Repositories/oemof-B3/results/_resources/scal_base-scenario.csv"
+    in_path = sys.argv[1]  # path to raw scalar data
+    out_path = sys.argv[2]  # path to destination
 
     df = load_b3_scalars(in_path)
 
