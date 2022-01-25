@@ -160,4 +160,4 @@ if __name__ == "__main__":
     conv_scalars_prepared.replace(carrier_dict, inplace=True)
 
     # export prepared conventional power plant data
-    conv_scalars_prepared.to_csv(out_path, index=False)
+    conv_scalars_prepared.to_csv(out_path, sep=";", index=False)
