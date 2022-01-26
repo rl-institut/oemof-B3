@@ -1,8 +1,8 @@
-id_scal,scenario,name,var_name,carrier,region,tech,type,var_value
-0,base,BE-biomass-st,capacity,biomass,BE,gt,conversion,0
-3,base,BE-biomass-st,flow_in_biomass,biomass,BE,gt,conversion,0.0
-5,base,BE-biomass-st,flow_out_electricity,biomass,BE,gt,conversion,0.0
-7,base,BE-biomass-st,summed_variable_costs_in_biomass,biomass,BE,gt,conversion,0.0
-9,base,BE-biomass-st,summed_variable_costs_out_electricity,biomass,BE,gt,conversion,0.0
-11,base,BE-electricity-curtailment,flow_in_electricity,electricity,BE,curtailment,excess,70154039.41996899
-13,base,BE-electricity-demand,flow_in_electricity,electricity,BE,demand,load,13399999999.9999526871
+id_scal;scenario;name;var_name;carrier;region;tech;type;var_value
+0;base;BE-biomass-st;capacity;biomass;BE;gt;conversion;0
+3;base;BE-biomass-st;flow_in_biomass;biomass;BE;gt;conversion;0.0
+5;base;BE-biomass-st;flow_out_electricity;biomass;BE;gt;conversion;0.0
+7;base;BE-biomass-st;summed_variable_costs_in_biomass;biomass;BE;gt;conversion;0.0
+9;base;BE-biomass-st;summed_variable_costs_out_electricity;biomass;BE;gt;conversion;0.0
+11;base;BE-electricity-curtailment;flow_in_electricity;electricity;BE;curtailment;excess;70154039.41996899
+13;base;BE-electricity-demand;flow_in_electricity;electricity;BE;demand;load;13399999999.9999526871
