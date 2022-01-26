@@ -50,7 +50,7 @@ def prepare_vehicle_time_series(input_dir):
     ts_prepared : pd.DataFrame
         Contains electric vehicle charging demand time series in the format of time series template
         of oemof-B3
-
+s
     """
     # initialize data frame
     df = pd.DataFrame()
@@ -64,7 +64,7 @@ def prepare_vehicle_time_series(input_dir):
 
         # read data from file, copy and superfluous drop last time step
         ts_raw = pd.read_csv(
-            path, index_col=1, sep=";", decimal=",", parse_dates=True
+            path, index_col=1, sep=";", decimal=",", parse_dates=True, thousands=".",
         ).drop(columns=["Unnamed: 0"], axis=1)
         ts = ts_raw[ts_raw.index.year == year]
 
