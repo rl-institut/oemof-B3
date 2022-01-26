@@ -48,9 +48,7 @@ If you have installation problems, consider opening an
 
 How to install geopandas under Windows
 --------------------------------------
-The installation of geopandas on Windows can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. It is recommended to use one of the following ways:
-
-1) Using the conda-forge channel
+The installation of geopandas on Windows can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
 
 Simply type
 
@@ -58,26 +56,7 @@ Simply type
 
     conda install --channel conda-forge geopandas
 
-in the Anaconda prompt
-
-
-2) Creating a new environment
-
-Due to possible conflicts caused by installing other geospatial packages from different channels, it can be easier to install geopandas and its dependencies in a clean environment.
-
-The following commands create a new environment with the name geo_env, configures it to install packages always from conda-forge, and installs GeoPandas in it:
-
-::
-
-    conda create -n geo_env
-
-    conda activate geo_env
-
-    conda config --env --add channels conda-forge
-
-    conda config --env --set channel_priority strict
-
-    conda install python=3 geopandas
+in the Anaconda prompt.
 
 
 Required data
