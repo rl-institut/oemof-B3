@@ -19,6 +19,7 @@ setup(
         "rtree",
         "pyyaml",
         "snakemake",
+        "jsonschema==2.5",
         "oemoflex @ git+https://git@github.com/rl-institut/oemoflex@dev#egg=oemoflex",
         "sphinx-rtd-theme>=0.5.1",
     ],
