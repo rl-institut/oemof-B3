@@ -1,6 +1,13 @@
 import pandas as pd
-import geopandas as gpd
-from shapely.geometry import Point
+
+try:
+    import geopandas as gpd
+    from shapely.geometry import Point
+
+except ImportError:
+    raise ImportError(
+        "No module named 'geopandas'. You need to install 'geopandas' in order to use this script."
+    )
 
 
 def load_regions_file(file_path):
