@@ -1,4 +1,6 @@
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+from oemoflex.tools.helpers import load_yaml
+
 HTTP = HTTPRemoteProvider()
 
 
@@ -128,12 +130,16 @@ rule process_re_potential:
     shell:
         "python {input.script} {input.input_dir} {output.scalars} {output.table}"
 
+def get_paths_scenario_input(wildcards):
+    scenario_specs = load_yaml(f"scenarios/{wildcards.scenario}.yml")
+    paths_scenario_inputs = list()
+    paths_scenario_inputs.append(scenario_specs["path_scalars"])
+    paths_scenario_inputs.append(scenario_specs["paths_timeseries"])
+    return paths_scenario_inputs
+
 rule build_datapackage:
     input:
-        scalars = "results/_resources/scal_base-scenario.csv",
-        power_potential_re="results/_resources/scal_power_potential_wind_pv.csv",
-        feedin="results/_resources/ts_feedin.csv",
-        load_electricity="results/_resources/ts_load_electricity.csv",
+        get_paths_scenario_input,
         scenario="scenarios/{scenario}.yml",
     output:
         directory("results/{scenario}/preprocessed")
