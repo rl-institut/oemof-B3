@@ -81,7 +81,7 @@ def format_header(df, header, index_name):
     return df_formatted
 
 
-def load_b3_scalars(path, sep=","):
+def load_b3_scalars(path, sep=";"):
     """
     This function loads scalars from a csv file.
 
@@ -109,7 +109,7 @@ def load_b3_scalars(path, sep=","):
     return df
 
 
-def load_b3_timeseries(path, sep=","):
+def load_b3_timeseries(path, sep=";"):
     """
     This function loads a stacked time series from a csv file.
 
@@ -148,7 +148,7 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True)
+    df.to_csv(path, index=True, sep=";")
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")

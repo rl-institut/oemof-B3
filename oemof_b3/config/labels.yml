@@ -18,7 +18,10 @@ hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
 h2-bpchp: H2 Backpressure CHP
-ch4-excess: CH4 Excess
+ch4-export: CH4 Export
+ch4-import: CH4 Import
+h2-export: H2 Export
+h2-import: H2 Import
 heat_central-excess: Heat cen. excess
 heat_central-storage: Heat cen. storage
 heat_central-shortage: Heat cen. shortage

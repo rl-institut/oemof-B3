@@ -25,7 +25,7 @@ import pandas as pd
 
 from oemof.tools.economics import annuity
 
-from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars
+from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, save_df
 
 
 def fill_na(df):
@@ -111,4 +111,4 @@ if __name__ == "__main__":
 
     sc.scalars.index.name = "id_scal"
 
-    sc.scalars.to_csv(out_path)
+    save_df(sc.scalars, out_path)
