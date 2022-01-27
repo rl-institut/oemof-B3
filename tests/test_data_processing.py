@@ -444,7 +444,7 @@ def test_stack_unstack_on_example_data():
         "oemof_tabular_sequence.csv",
     )
 
-    df = pd.read_csv(file_path, index_col=0)
+    df = pd.read_csv(file_path, index_col=0, sep=";")
     df.index = pd.to_datetime(df.index)
 
     df_stacked = stack_timeseries(df)
