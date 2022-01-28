@@ -7,6 +7,7 @@ import os
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
 extras = {
     "standard": ["pandas", "rtree", "pyyaml", "snakemake", "sphinx-rtd-theme>=0.5.1"],
     "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas"],
