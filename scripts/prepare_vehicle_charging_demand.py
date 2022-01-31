@@ -4,7 +4,7 @@ Inputs
 -------
 input_dir : str
     ``raw/time_series/vehicle_charging``: Path to directory where csv files containing electric
-    vehicle charging demand time series are placed
+    vehicle charging demand profiles are placed
 output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name to prepared time
     series
@@ -12,13 +12,13 @@ output_file : str
 Outputs
 ---------
 pandas.DataFrame
-    Normalized electric vehicle charging demand for regions "B" and "BB" for all years provided in
-    `input_dir`.
+    Normalized electric vehicle charging demand profiles for regions "B" and "BB" for all years
+    provided in `input_dir`.
 
 Description
 -------------
-This script prepares electric vehicle charging demand time series for the regions Berlin
-and Brandenburg. The time series have been created before with simBEV
+This script prepares electric vehicle charging demand profiles for the regions Berlin and
+Brandenburg. The profiles have been created before with simBEV
 (https://github.com/rl-institut/simbev). The charging strategy of simBEV data is "greedy", i.e.
 batteries are charged with maximum power until they are fully charged or removed. This scripts
 applies a charging strategy "balanced" for the profiles "home" and "work" during specific hours (see
@@ -43,7 +43,7 @@ WORK_END = "14:00"  # end charging strategy "balanced" for work profile
 
 def prepare_vehicle_charging_demand(input_dir, balanced=True):
     r"""
-    Prepares and formats electric vehicle charging demand time series for regions 'B' and 'BB'.
+    Prepares and formats electric vehicle charging demand profiles for regions 'B' and 'BB'.
 
     The profiles are resampled from 15-min to hourly time steps. If `balanced` is True the profiles
     "work" and "home" are smoothed between `HOME_START`, `HOME_END` and `WORK_START`, `WORK_END`
@@ -53,7 +53,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
     Parameters
     ----------
     input_dir : str
-        Path to directory where csv files containing electric vehicle charging demand time series
+        Path to directory where csv files containing electric vehicle charging demand profiles
         are placed
     balanced : bool
         If True profiles "work" and "home" are smoothed with charging strategy "balanced".
@@ -62,8 +62,8 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
     Returns
     -------
     ts_prepared : pd.DataFrame
-        Contains electric vehicle charging demand time series in the format of time series template
-        of oemof-B3
+        Contains electric vehicle charging demand profiles in the format of time series template of
+        oemof-B3
 
     """
     # initialize data frame
