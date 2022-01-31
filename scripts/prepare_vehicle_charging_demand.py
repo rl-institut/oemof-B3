@@ -160,6 +160,11 @@ def balance_profiles(df):
         pd.DataFrame(df.index)["time"].apply(lambda x: 0 if x.hour < 12 else 1).values
     )
     df["temp"] = df.index.dayofyear + temp
+    if int(HOME_START.split(":")[0]) < 12:
+        raise ValueError(
+            f"For smoothing home profile the days should be split at an earlier hour than 12 if "
+            f"`HOME_START` is {HOME_START}."
+        )
 
     df["sum UC home"] = df.groupby(df["temp"])["sum UC home"].apply(
         lambda x: balanced_between_hours(ts=x, start=HOME_START, end=HOME_END)
