@@ -91,10 +91,10 @@ rule prepare_electricity_demand:
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
-rule prepare_vehicle_electricity_demand:
+rule prepare_vehicle_charging_demand:
     input:
         input_dir=directory("raw/time_series/vehicle_charging"),
-        script="scripts/prepare_vehicle_electricity_demand.py"
+        script="scripts/prepare_vehicle_charging_demand.py"
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
     shell:

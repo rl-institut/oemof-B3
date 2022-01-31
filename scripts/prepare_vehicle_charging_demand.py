@@ -41,7 +41,7 @@ WORK_START = "06:00"  # start charging strategy "balanced" for work profile
 WORK_END = "14:00"  # end charging strategy "balanced" for work profile
 
 
-def prepare_vehicle_time_series(input_dir, balanced=True):
+def prepare_vehicle_charging_demand(input_dir, balanced=True):
     r"""
     Prepares and formats electric vehicle charging demand time series for regions 'B' and 'BB'.
 
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     input_dir = sys.argv[1]
     output_file = sys.argv[2]
 
-    time_series = prepare_vehicle_time_series(input_dir=input_dir)
+    time_series = prepare_vehicle_charging_demand(input_dir=input_dir)
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

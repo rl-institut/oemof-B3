@@ -1,7 +1,7 @@
 import os
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from scripts.prepare_vehicle_electricity_demand import prepare_vehicle_time_series
+from scripts.prepare_vehicle_charging_demand import prepare_vehicle_charging_demand
 from oemof_b3.tools.data_processing import load_b3_timeseries, save_df
 
 # Paths
@@ -13,7 +13,7 @@ filename_results = os.path.join(
 
 
 def test_prepare_vehicle_time_series():
-    df = prepare_vehicle_time_series(input_dir=vehicle_files_test_dir)
+    df = prepare_vehicle_charging_demand(input_dir=vehicle_files_test_dir)
 
     # temporarily save df and load again for correct dtypes
     temp_filename = os.path.join(
