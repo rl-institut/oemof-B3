@@ -133,8 +133,12 @@ rule process_re_potential:
 def get_paths_scenario_input(wildcards):
     scenario_specs = load_yaml(f"scenarios/{wildcards.scenario}.yml")
     paths_scenario_inputs = list()
-    paths_scenario_inputs.append(scenario_specs["path_scalars"])
-    paths_scenario_inputs.append(scenario_specs["paths_timeseries"])
+    for key in ["paths_scalars", "paths_timeseries"]:
+        paths = scenario_specs[key]
+        if isinstance(paths, list):
+            paths_scenario_inputs.extend(paths)
+        elif isinstance(paths, str):
+            paths_scenario_inputs.append(paths)
     return paths_scenario_inputs
 
 rule build_datapackage:
