@@ -16,7 +16,7 @@ Description
 -------------
 Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and an
 oemof.solph.Model, which is optimized. The EnergySystem with results, meta-results and parameters
-is saved.
+is saved. Further, additional parameters like emission limit are saved in a separate file.
 """
 import os
 import sys
@@ -30,12 +30,17 @@ from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
 from oemof_b3.tools import data_processing as dp
 
-path_scalars = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), os.pardir, "raw", "base-scenario.csv")
-)  # todo note: this file name should be taken from a central place
-scalars = dp.load_b3_scalars(path_scalars)
-emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
-emission_limit = emission_scalars.at["emission_limit", "var_value"]
+
+def get_emission_limit():
+    """Reads emission limit from csv file in `preprocessed`."""
+    path_emission_limit = os.path.join(preprocessed, "additional_scalars.csv")
+    scalars = dp.load_b3_scalars(path_emission_limit)
+    emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index(
+        "var_name"
+    )
+    emission_limit = emission_scalars.at["emission_limit", "var_value"]
+    return emission_limit
+
 
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
@@ -57,7 +62,7 @@ if __name__ == "__main__":
     m = Model(es)
 
     # Add an emission constraint
-    constraints.emission_limit(m, limit=emission_limit)
+    constraints.emission_limit(m, limit=get_emission_limit())
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
