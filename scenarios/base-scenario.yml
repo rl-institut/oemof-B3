@@ -50,6 +50,14 @@ components:
   - solar-pv
   - wind-onshore
 
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
 # parametrize
 
 path_scalars: results/_resources/scal_base-scenario.csv
