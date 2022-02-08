@@ -88,7 +88,7 @@ if __name__ == "__main__":
         # plot one winter and one summer month
         # select timeframe
         start_date_data = str(data.index[0])
-        end_date_data = str(data.index[31*24-1])
+        end_date_data = str(data.index[31 * 24 - 1])
         timeframe = [
             (start_date_data, end_date_data),
             (
