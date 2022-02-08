@@ -93,7 +93,11 @@ if __name__ == "__main__":
     scenario_specs = load_yaml(scenario_specs)
 
     # setup empty EnergyDataPackage
-    datetimeindex = pd.date_range(start="2019-01-01", freq="H", periods=8760)
+    datetimeindex = pd.date_range(
+        start=scenario_specs["datetimeindex"]["start"],
+        freq=scenario_specs["datetimeindex"]["freq"],
+        periods=scenario_specs["datetimeindex"]["periods"],
+    )
 
     # setup default structure
     edp = EnergyDataPackage.setup_default(
