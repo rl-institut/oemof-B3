@@ -43,12 +43,6 @@ if __name__ == "__main__":
     bus_directory = os.path.join(postprocessed, "sequences/bus/")
     bus_files = os.listdir(bus_directory)
 
-    # select timeframe
-    timeframe = [
-        ("2019-01-01 00:00:00", "2019-01-31 23:00:00"),
-        ("2019-07-01 00:00:00", "2019-07-31 23:00:00"),
-    ]
-
     # select carrier
     carriers = ["electricity", "heat_central", "heat_decentral"]
 
@@ -92,6 +86,16 @@ if __name__ == "__main__":
 
         # normal dispatch plot
         # plot one winter and one summer month
+        # select timeframe
+        start_date_data = str(data.index[0])
+        end_date_data = str(data.index[31*24-1])
+        timeframe = [
+            (start_date_data, end_date_data),
+            (
+                start_date_data.replace("01-", "07-"),
+                end_date_data.replace("01-", "07-"),
+            ),
+        ]
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
 
