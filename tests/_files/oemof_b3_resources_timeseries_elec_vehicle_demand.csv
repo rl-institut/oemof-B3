@@ -1,3 +1,3 @@
-id_ts,scenario,region,var_name,timeindex_start,timeindex_stop,timeindex_resolution,series,var_unit,source,comment
-0,ts_2019,Brandenburg,vehicle-charging-profile,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.36641573208006967, 0.33080598089020347, 0.30277828702972687]",None,created with simBEV,https://github.com/rl-institut/simbev
-1,ts_2015,Berlin,vehicle-charging-profile,2015-01-01 00:00:00,2015-01-01 02:00:00,H,"[0.3709718013655691, 0.3303502017829303, 0.2986779968515006]",None,created with simBEV,https://github.com/rl-institut/simbev
+id_ts;scenario;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+0;ts_2019;Brandenburg;vehicle-charging-profile;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.36641573208006967, 0.33080598089020347, 0.30277828702972687]";None;created with simBEV;https://github.com/rl-institut/simbev
+1;ts_2015;Berlin;vehicle-charging-profile;2015-01-01 00:00:00;2015-01-01 02:00:00;H;"[0.3709718013655691, 0.3303502017829303, 0.2986779968515006]";None;created with simBEV;https://github.com/rl-institut/simbev
