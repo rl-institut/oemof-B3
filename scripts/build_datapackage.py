@@ -242,9 +242,9 @@ if __name__ == "__main__":
     )
 
     # parametrize scalars
-    path_scalars = scenario_specs["path_scalars"]
+    paths_scalars = scenario_specs["paths_scalars"]
 
-    scalars = multi_load_b3_scalars(path_scalars)
+    scalars = multi_load_b3_scalars(paths_scalars)
 
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])
