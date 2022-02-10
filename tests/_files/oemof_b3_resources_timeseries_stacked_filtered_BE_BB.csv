@@ -1,3 +1,3 @@
-id_ts,region,var_name,timeindex_start,timeindex_stop,timeindex_resolution,series,var_unit,source,comment
-5,BE_BB,flow from BB-electricity.3 to BE-BB-electricity-transmission,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[137824.4, 125071.28, 81162.145]",,,
-10,BE_BB,flow from BE-BB-electricity-transmission to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
+id_ts;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+5;BE_BB;flow from BB-electricity.3 to BE-BB-electricity-transmission;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[137824.4, 125071.28, 81162.145]";;;
+10;BE_BB;flow from BE-BB-electricity-transmission to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;

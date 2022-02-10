@@ -47,6 +47,14 @@ rule clean:
 
 # Rules for intermediate steps
 
+rule create_input_data_overview:
+    input:
+        "raw/{scalars}.csv"
+    output:
+        "results/_tables/{scalars}_technical_and_cost_assumptions.csv"
+    shell:
+        "python scripts/create_input_data_overview.py {input} {output}"
+
 rule prepare_example:
     input:
         "examples/{scenario}/preprocessed/{scenario}"
