@@ -50,7 +50,7 @@ components:
 
 # parametrize
 
-path_scalars: raw/toy-scenario.csv
+paths_scalars: raw/toy-scenario.csv
 
 filter_scalars:
   1:
