@@ -51,6 +51,8 @@ if __name__ == "__main__":
 
     solver = "cbc"
 
+    emission_limit = get_emission_limit()
+
     if not os.path.exists(optimized):
         os.mkdir(optimized)
 
@@ -62,7 +64,7 @@ if __name__ == "__main__":
     m = Model(es)
 
     # Add an emission constraint
-    constraints.emission_limit(m, limit=get_emission_limit())
+    constraints.emission_limit(m, limit=emission_limit)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
