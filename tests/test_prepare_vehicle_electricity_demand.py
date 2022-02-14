@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
 from scripts.prepare_vehicle_charging_demand import prepare_vehicle_charging_demand
