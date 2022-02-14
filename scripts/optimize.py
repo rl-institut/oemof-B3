@@ -16,7 +16,7 @@ Description
 -------------
 Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and an
 oemof.solph.Model, which is optimized. The EnergySystem with results, meta-results and parameters
-is saved. Further, additional parameters like emission limit are saved in a separate file.
+is saved.
 """
 import os
 import sys

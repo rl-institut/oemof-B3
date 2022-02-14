@@ -17,6 +17,7 @@ Description
 -------------
 The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
 fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
+Further, additional parameters like emission limit are saved in a separate file.
 """
 import sys
 import os
