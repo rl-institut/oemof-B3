@@ -66,15 +66,19 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         oemof-B3
 
     """
+    def get_year_region_from_filename():
+        """Gets  region and year from file name"""
+        split_filename = os.path.splitext(os.path.basename(filename))[0].split("_")
+        r, y = split_filename[2], int(split_filename[3])
+        return r, y
+
     # initialize data frame
     df = pd.DataFrame()
 
     # loop through files in `input_dir`
     for filename in os.listdir(input_dir):
-        # get year and region from file name
-        split_filename = os.path.splitext(os.path.basename(filename))[0].split("_")
-        region, year = split_filename[2], int(split_filename[3])
         path = os.path.join(input_dir, filename)
+        region, year = get_year_region_from_filename()
 
         # read data from file, copy and superfluous drop last time step
         ts_raw = pd.read_csv(
