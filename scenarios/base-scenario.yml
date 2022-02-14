@@ -52,7 +52,7 @@ components:
 
 # parametrize
 
-path_scalars: results/_resources/scal_base-scenario.csv
+paths_scalars: results/_resources/scal_base-scenario.csv
 
 filter_scalars:
   1:
