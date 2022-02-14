@@ -11,3 +11,4 @@ dist
 build
 gurobi.log
 data.open-power-system-data.org/
+/oemof_b3/tools/equate_flows.py
