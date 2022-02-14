@@ -10,16 +10,15 @@ Model structure
     :backlinks: top
 
 
-An `oemof.solph.EnergySystem` in the form of a tabular Datapackage form comprises scalar data
-(elements) and data with a time index (sequences). The model oemof-B3 uses
-`oemoflex <https://github.com/rl-institut/oemoflex>`_ to build empty
-DataPackages and fills them with concrete numbers.
+The input data consists of scalar data (elements) and data with a time index (sequences).
+The model oemof-B3 uses `oemoflex <https://github.com/rl-institut/oemoflex>`_ to build empty
+DataPackages and fills them with concrete numbers using the input data (see :ref:`buid_datapckage<build_datapackage>`).
 
 
 Elements
 --------
 
-The element-files describe the busses and components of the energy system. All `oemof.solph.Bus` es
+The element-files describe the busses and components of the energy system. All `oemof.solph.Bus`es
 are defined in a single file :file:`bus.csv`. The other components are split between several files.
 
 Filenames for the components are of the form
@@ -38,6 +37,16 @@ There is a set of general variables that appear in all components:
   offshore, ror, phs,
   extchp, bpchp, battery)
 * **type** Type of oemof.tabular.facade, defined in `TYPEMAP`.
+
+Below is an example of the gas turbine of the base examples scenario, which can be found in
+:file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.
+
+=======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
+region   name       type        carrier  tech   from_bus  to_bus          capacity  capacity_cost  efficiency   carrier_cost   marginal_cost  expandable  output_paramters
+=======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
+BE       BE-ch4-gt  conversion  ch4      gt     BE-ch4    BE-electricity  1500000                  0.619        0.021          0.0045         False       {}
+BB       BB-ch4-gt  conversion  ch4      gt     BB-ch4    BB-electricity  600000                   0.619        0.021          0.0045         False       {}
+=======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
 
 Beyond that, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
