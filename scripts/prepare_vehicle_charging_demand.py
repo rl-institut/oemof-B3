@@ -66,6 +66,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         oemof-B3
 
     """
+
     def get_year_region_from_filename():
         """Gets  region and year from file name"""
         split_filename = os.path.splitext(os.path.basename(filename))[0].split("_")

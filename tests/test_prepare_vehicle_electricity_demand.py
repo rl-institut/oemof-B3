@@ -12,10 +12,10 @@ filename_results = os.path.join(
     test_dir, "_files", "oemof_b3_resources_timeseries_elec_vehicle_demand.csv"
 )
 temp_filename = os.path.join(
-        test_dir,
-        "_files",
-        "temp.csv",
-    )
+    test_dir,
+    "_files",
+    "temp.csv",
+)
 
 
 def _save_and_reload_ts(df):
@@ -25,7 +25,9 @@ def _save_and_reload_ts(df):
 
 
 def test_prepare_vehicle_charging_demand():
-    df = prepare_vehicle_charging_demand(input_dir=vehicle_files_test_dir, balanced=True)
+    df = prepare_vehicle_charging_demand(
+        input_dir=vehicle_files_test_dir, balanced=True
+    )
 
     # temporarily save df and load again for correct dtypes
     df = _save_and_reload_ts(df)
@@ -38,7 +40,9 @@ def test_prepare_vehicle_charging_demand():
 
 
 def test_prepare_vehicle_charging_demand_smoothing():
-    df = prepare_vehicle_charging_demand(input_dir=vehicle_files_test_dir, balanced=True)
+    df = prepare_vehicle_charging_demand(
+        input_dir=vehicle_files_test_dir, balanced=True
+    )
 
     # temporarily save df and load again for correct dtypes
     df = _save_and_reload_ts(df)
