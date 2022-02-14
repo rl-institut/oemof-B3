@@ -135,6 +135,9 @@ def balance_profiles(df):
     r"""
     Smoothes profiles "work" and "home" of `df` between specific hours (see global variables).
 
+    The profiles are smoothed between `HOME_START`, `HOME_END` and `WORK_START`, `WORK_END`
+    respectively with charging strategy "balanced".
+
     Parameters
     ----------
     df: pandas.DataFrame
