@@ -18,7 +18,7 @@ DataPackages and fills them with concrete numbers using the input data (see :ref
 Elements
 --------
 
-The element-files describe the busses and components of the energy system. All `oemof.solph.Bus`es
+The element-files describe the busses and components of the energy system. All `oemof.solph.Bus` es
 are defined in a single file :file:`bus.csv`. The other components are split between several files.
 
 Filenames for the components are of the form
