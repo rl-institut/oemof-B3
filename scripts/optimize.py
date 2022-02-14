@@ -39,6 +39,7 @@ def get_emission_limit():
         "var_name"
     )
     emission_limit = emission_scalars.at["emission_limit", "var_value"]
+    assert isinstance(emission_limit, (int, float)), "Expected a number for 'emission limit'"
     return emission_limit
 
 
