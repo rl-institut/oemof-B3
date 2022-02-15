@@ -104,13 +104,13 @@ def get_year(file_name):
     return year
 
 
-def get_holidays(path, year, region):
+def get_holidays(year, region, path_holidays):
     """
     This function determines all holidays of a given region in a given year
 
     Parameters
     ----------
-    path : str
+    path_holidays : str
         Input path
     year : int
         Year
@@ -122,7 +122,7 @@ def get_holidays(path, year, region):
 
     """
     # Read all national holidays per state
-    all_holidays = pd.read_csv(path)
+    all_holidays = pd.read_csv(path_holidays)
     holidays_dict = {}
 
     # Get holidays in region
@@ -139,17 +139,17 @@ def get_holidays(path, year, region):
     return holidays_dict
 
 
-def get_building_class(region, path):
+def get_building_class(region, path_building_class):
     """
     This function reads building classes of German states from input path
     and returns the building class of given region
 
     Parameters
     ----------
-    path : str
-        Input path
     region : str
         Region (eg. Brandenburg)
+    path_building_class : str
+        Input path
 
     Returns
     -------
@@ -158,7 +158,7 @@ def get_building_class(region, path):
          eg. 5 in case of BB and 3 in case of B
     """
     # Read all national holidays per state
-    all_building_classes = pd.read_csv(path)
+    all_building_classes = pd.read_csv(path_building_class)
     building_class_df = all_building_classes.loc[
         all_building_classes["region"] == region
     ]
@@ -233,7 +233,9 @@ def get_heat_demand(path, scenario, carrier, region):
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
     sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
     if sc_filtered.empty:
-        raise ValueError(f"No scalar data found that matches scenario='{scenario}', carrier='{carrier}', region='{region}'")
+        raise ValueError(
+            f"No scalar data found that matches scenario='{scenario}', carrier='{carrier}', region='{region}'"
+        )
 
     if not (sc_filtered["var_unit"].values[0] == sc_filtered["var_unit"].values).all():
         raise ValueError(
