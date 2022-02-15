@@ -43,7 +43,7 @@ import oemof_b3.tools.data_processing as dp
 
 def find_regional_files(path, region):
     """
-    This function returns a list with file names to region
+    This function returns a list of file names in a directory that match the specified region.
 
     Parameters
     ----------
@@ -56,7 +56,7 @@ def find_regional_files(path, region):
     Returns
     -------
     files_region : list
-        List of file names of region
+        List of file names matching region
     """
     files_region = [file for file in os.listdir(path) if region in file]
     files_region = sorted(files_region)
@@ -114,6 +114,7 @@ def get_holidays(path, year, region):
         Input path
     year : int
         Year
+
     Returns
     -------
     holidays_dict : dict
@@ -231,6 +232,8 @@ def get_heat_demand(path, scenario, carrier, region):
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
     sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
+    if sc_filtered.empty:
+        raise ValueError(f"No scalar data found that matches scenario='{scenario}', carrier='{carrier}', region='{region}'")
 
     if not (sc_filtered["var_unit"].values[0] == sc_filtered["var_unit"].values).all():
         raise ValueError(
