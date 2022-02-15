@@ -169,8 +169,8 @@ def get_building_class(region, path_building_class):
 
 def check_central_decentral(demands, value, consumer, carrier):
     """
-    This function checks whether the kind of heat is central or decentral adds it
-    to yearly demands if it exists and otherwise to a new column in Dataframe
+    This function adds yearly demands per consumer and carrier to existing column
+    in DataFrame and otherwise to a new column in this DataFrame
 
     Parameters
     ----------
@@ -188,12 +188,12 @@ def check_central_decentral(demands, value, consumer, carrier):
     demands : pd.DataFrame
          Updated DataFrame that contains yearly demands
     """
-    if consumer + "_" + carrier in demands.columns:
-        demands[consumer + "_" + carrier].values[0] = np.add(
-            demands[consumer + "_" + carrier].values[0], value
-        )
+    col_name = consumer + "_" + carrier
+
+    if col_name in demands.columns:
+        demands[col_name].values[0] = np.add(demands[col_name].values[0], value)
     else:
-        demands[consumer + "_" + carrier] = [value]
+        demands[col_name] = [value]
     return demands
 
 
