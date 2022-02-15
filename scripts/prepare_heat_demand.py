@@ -223,7 +223,7 @@ def get_heat_demand(path, scenario, carrier, region):
 
     """
     # Read state heat demands of ghd and hh sectors
-    sc = dp.load_b3_scalars(path)  # TODO: Add ', sep=";"' if from schema
+    sc = dp.load_b3_scalars(path)
     consumers = ["ghd", "efh", "mfh"]
     demands = pd.DataFrame()
     newline = "\n"
