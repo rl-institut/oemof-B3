@@ -234,7 +234,10 @@ def get_heat_demand(path, scenario, carrier, region):
     sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
     if sc_filtered.empty:
         raise ValueError(
-            f"No scalar data found that matches scenario='{scenario}', carrier='{carrier}', region='{region}'"
+            f"No scalar data found that matches "
+            f"scenario='{scenario}', "
+            f"carrier='{carrier}', "
+            f"region='{region}'"
         )
 
     if not (sc_filtered["var_unit"].values[0] == sc_filtered["var_unit"].values).all():
