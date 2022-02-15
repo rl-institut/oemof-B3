@@ -226,7 +226,6 @@ def get_heat_demand(path, scenario, carrier, region):
     sc = dp.load_b3_scalars(path)
     consumers = ["ghd", "efh", "mfh"]
     demands = pd.DataFrame()
-    newline = "\n"
 
     sc_filtered = dp.filter_df(sc, "tech", "demand")
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
@@ -255,7 +254,7 @@ def get_heat_demand(path, scenario, carrier, region):
             print(
                 f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
                 f"'{consumer}', region '{region}' and scenario '{scenario}' in {path}."
-                + newline
+                + "\n"
                 + "The demand is going to be summed up. "
                 "Otherwise you have to rerun the calculation and provide only one demand of the "
                 "same carrier, consumer, region and scenario."
