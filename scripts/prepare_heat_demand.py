@@ -418,7 +418,7 @@ if __name__ == "__main__":
             year = get_year(weather_file_name)
 
             # Get holidays
-            holidays = get_holidays(in_path3, year, region)
+            holidays = get_holidays(year, region, in_path3)
 
             # Read temperature from weather data
             path_weather_data = os.path.join(in_path1, weather_file_name)
