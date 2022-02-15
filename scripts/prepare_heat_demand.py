@@ -197,15 +197,15 @@ def check_central_decentral(demands, value, consumer, carrier):
     return demands
 
 
-def get_heat_demand(path, scenario, carrier, region):
+def get_heat_demand(scalars, scenario, carrier, region):
     """
     This function returns ghd and hh demands together with their unit of a given region and a
     given scenario
 
     Parameters
     ----------
-    path : str
-        Input path
+    scalars : DataFrame
+        Dataframe with scalars
     scenario : str
         Scenario e.g. "base"
     carrier : str
@@ -222,12 +222,10 @@ def get_heat_demand(path, scenario, carrier, region):
         Unit of total demands (eg. GWh)
 
     """
-    # Read state heat demands of ghd and hh sectors
-    sc = dp.load_b3_scalars(path)
     consumers = ["ghd", "efh", "mfh"]
     demands = pd.DataFrame()
 
-    sc_filtered = dp.filter_df(sc, "tech", "demand")
+    sc_filtered = dp.filter_df(scalars, "tech", "demand")
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
     sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
@@ -242,7 +240,7 @@ def get_heat_demand(path, scenario, carrier, region):
     if not (sc_filtered["var_unit"].values[0] == sc_filtered["var_unit"].values).all():
         raise ValueError(
             f"Unit mismatch in scalar data of heat demands. "
-            f"Please make sure units match in {path}."
+            f"Please make sure units match in {in_path5}."
         )
 
     demand_unit = list(set(sc_filtered["var_unit"]))
@@ -253,7 +251,7 @@ def get_heat_demand(path, scenario, carrier, region):
         if len(sc_filtered_consumer) > 1:
             print(
                 f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
-                f"'{consumer}', region '{region}' and scenario '{scenario}' in {path}."
+                f"'{consumer}', region '{region}' and scenario '{scenario}' in {in_path5}."
                 + "\n"
                 + "The demand is going to be summed up. "
                 "Otherwise you have to rerun the calculation and provide only one demand of the "
@@ -407,6 +405,9 @@ if __name__ == "__main__":
     # Add empty data frame for results / output
     total_heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
+    # Read state heat demands of ghd and hh sectors
+    sc = dp.load_b3_scalars(in_path5)
+
     for region in REGION:
         weather_file_names = find_regional_files(in_path1, region)
 
@@ -428,7 +429,7 @@ if __name__ == "__main__":
 
             # Get heat demand in region and scenario
             yearly_demands, sc_demand_unit = get_heat_demand(
-                in_path5, SCENARIO, carrier, region
+                sc, SCENARIO, carrier, region
             )
 
             heat_load_year = calculate_heat_load(
