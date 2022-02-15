@@ -28,15 +28,15 @@ def test_prepare_vehicle_charging_demand():
         input_dir=vehicle_files_test_dir, balanced=True
     )
 
-    # sort df to prevent failing in CI
-    df.sort_values("region", inplace=True)
-
     # temporarily save df and load again for correct dtypes
     df = _save_and_reload_ts(df)
 
-    # read expected results
+    # sort df to prevent failing in CI
+    df = df.sort_values("region").set_index("scenario")
+
+    # read and prepare expected results
     df_exp = load_b3_timeseries(filename_results)
-    df_exp.sort_values("region", inplace=True)
+    df_exp = df_exp.sort_values("region").set_index("scenario")
 
     assert_frame_equal(df, df_exp)
     assert_series_equal(df["series"], df_exp["series"])
