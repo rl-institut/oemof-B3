@@ -197,3 +197,26 @@ electricity-pth:
   defaults:
     output_parameters: "{}"
 
+h2-demand:
+  carrier: h2
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: h2
+    profile: h2-demand-profile
+
+h2-cavern:
+  carrier: h2
+  tech: storage
+  type: storage
+  foreign_keys:
+    bus: h2
+
+h2-excess:
+  carrier: h2
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: h2
+  defaults:
+    marginal_cost: 0
