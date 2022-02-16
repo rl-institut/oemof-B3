@@ -52,7 +52,7 @@ components:
 
 # parametrize
 
-path_scalars:
+paths_scalars:
   - results/_resources/scal_base_PR#91.csv
   - results/_resources/scal_high_PR#91.csv
 
