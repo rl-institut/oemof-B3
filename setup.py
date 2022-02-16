@@ -16,7 +16,7 @@ extras = {
         "snakemake",
         "dynaconf",
     ],
-    "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas"],
+    "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas", "pre-commit"],
 }
 
 extras["full"] = list(set(extras["standard"] + extras["dev"]))
