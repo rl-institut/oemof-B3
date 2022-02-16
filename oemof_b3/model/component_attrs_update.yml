@@ -22,7 +22,6 @@ ch4-export:
   foreign_keys:
     bus: ch4
   defaults:
-    marginal_cost: 0
     input_parameters: "{}"
 
 ch4-shortage:
@@ -50,7 +49,6 @@ h2-export:
   foreign_keys:
     bus: h2
   defaults:
-    marginal_cost: 0
     input_parameters: "{}"
 
 h2-shortage:
@@ -79,7 +77,6 @@ electricity-export:
   foreign_keys:
     bus: electricity
   defaults:
-    marginal_cost: 0
     input_parameters: "{}"
 
 electricity-import:
@@ -89,7 +86,6 @@ electricity-import:
   foreign_keys:
     bus: electricity
   defaults:
-    marginal_cost: 0
     output_parameters: "{}"
 
 heat_central-demand:
