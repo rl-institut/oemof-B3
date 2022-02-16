@@ -50,9 +50,9 @@ There is a set of general variables that appear in all components:
 * **type** Type of oemof.tabular.facade, defined in `TYPEMAP`.
 
 * **var_value** The variable's value. It can have different types, e.g. numbers or boolean values,
-  depending on the variable. The type of var_value is defined in XXX.
+  depending on the variable.
 
-* **var_unit** The unit of the variable. TODO: Are there requirements for the units?
+* **var_unit** The unit of the variable.
 
 * **source**
 
