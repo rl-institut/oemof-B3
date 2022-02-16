@@ -14,6 +14,16 @@ and [oemoflex](https://github.com/rl-institut/oemoflex).
 Oemof-B3 is currently under heavy development, which means that first full scenario runs will be
 available in the coming months.
 
+## Installation
+
+Currently, Oemof-B3 needs python 3.7 (newer versions may be supported, but installation can take very long).
+
+In order to install oemof-B3 locally, following steps must be made: 
+- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
+- enter folder and install oemof-B3 package using pip, via: `pip install -e .`
+
+Oemof-B3 needs pandoc in order to create reports. Pandoc can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+
 ## Getting started
 
 ## Docs
