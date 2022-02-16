@@ -9,7 +9,7 @@ def read(fname):
 
 
 extras = {
-    "standard": ["pandas", "rtree", "pyyaml", "snakemake", "sphinx-rtd-theme>=0.5.1"],
+    "standard": ["pandas", "rtree", "pyyaml", "snakemake"],
     "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas"],
 }
 
