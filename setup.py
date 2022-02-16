@@ -9,7 +9,7 @@ def read(fname):
 
 
 extras = {
-    "standard": ["pandas", "rtree", "pyyaml", "snakemake"],
+    "standard": ["pandas", "rtree", "pyyaml", "snakemake", "sphinx-rtd-theme>=0.5.1"],
     "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas"],
 }
 
@@ -24,7 +24,6 @@ setup(
     packages=["oemof_b3"],
     install_requires=[
         "oemoflex @ git+https://git@github.com/rl-institut/oemoflex@dev#egg=oemoflex",
-        "sphinx-rtd-theme>=0.5.1",
     ],
     extras_require=extras,
 )
