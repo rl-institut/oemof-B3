@@ -26,17 +26,34 @@ carrier-tech.csv (e.g. :file:`electricity-demand.csv`, :file:`gas-bpchp.csv`).
 
 There is a set of general variables that appear in all components:
 
-* **region** Region of a component. (the regions are defined in the topology file
-  :file: ../oemof_b3/model/topology.yml)
+* **id_scal** Numbering of the component (Optional)
+
+* **scenario** ...
+
 * **name** Unique name of the form :py:attr:`'region-carrier-tech'` (e.g. :py:attr:`'LU-gas-bpchp'`,
   :py:attr:`'AT-electricity-airsourcehp'`).
+
+* **var_name** ...
+
 * **carrier** Energy carrier of the flow into the component (e.g. solar, wind, biomass, coal,
   lignite, uranium, oil, gas, methane, hydro, waste, electricity, heat). This allows to categorize
   the component and should correspond to the bus to which the component is connected.
+
+* **region** Region of a component. (the regions are defined in the topology file
+  :file: ../oemof_b3/model/topology.yml)
+
 * **tech** More detailled specification of the technology (e.g. st, ocgt, ccgt, pv, onshore,
   offshore, ror, phs,
   extchp, bpchp, battery)
 * **type** Type of oemof.tabular.facade, defined in `TYPEMAP`.
+
+* **var_value**
+
+* **var_unit**
+
+* **source**
+
+* **comment**
 
 Below is an example of the gas turbine of the base examples scenario, which can be found in
 :file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.
