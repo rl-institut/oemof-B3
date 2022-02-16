@@ -54,9 +54,9 @@ There is a set of general variables that appear in all components:
 
 * **var_unit** The unit of the variable.
 
-* **source**
+* **source** Source of the variable's value
 
-* **comment**
+* **comment** Additional information or notes such as the license or scope of validity
 
 
 Sequences
