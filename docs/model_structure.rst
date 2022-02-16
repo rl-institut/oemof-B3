@@ -28,12 +28,13 @@ There is a set of general variables that appear in all components:
 
 * **id_scal** Numbering of the component (Optional)
 
-* **scenario** ...
+* **scenario** Name of the scenario (e.g. :py:attr:`'Base 2050'`)
 
 * **name** Unique name of the form :py:attr:`'region-carrier-tech'` (e.g. :py:attr:`'LU-gas-bpchp'`,
   :py:attr:`'AT-electricity-airsourcehp'`).
 
-* **var_name** ...
+* **var_name** Unique name for the variable, e.g. :py:attr:`'capacity'`, :py:attr:`'marginal_cost'` or
+  :py:attr:`'expandable'`.
 
 * **carrier** Energy carrier of the flow into the component (e.g. solar, wind, biomass, coal,
   lignite, uranium, oil, gas, methane, hydro, waste, electricity, heat). This allows to categorize
@@ -45,17 +46,34 @@ There is a set of general variables that appear in all components:
 * **tech** More detailled specification of the technology (e.g. st, ocgt, ccgt, pv, onshore,
   offshore, ror, phs,
   extchp, bpchp, battery)
+
 * **type** Type of oemof.tabular.facade, defined in `TYPEMAP`.
 
-* **var_value**
+* **var_value** The variable's value. It can have different types, e.g. numbers or boolean values,
+  depending on the variable. The type of var_value is defined in XXX.
 
-* **var_unit**
+* **var_unit** The unit of the variable. TODO: Are there requirements for the units?
 
 * **source**
 
 * **comment**
 
-Below is an example of the gas turbine of the base examples scenario, which can be found in
+
+Sequences
+---------
+
+The sequences-files contain all timeseries, like load profiles or possible renewable generation.
+
+The filenames are of the form carrier-type_profile (e.g.
+:file:`wind-offshore_profile.csv`, :file:`electricity-demand_profile.csv`).
+
+
+Preprocessed data
+--------------------
+
+The input data as described above is then preprocessed. The preprocessed data in turn is organized in
+elements (scalars data) and sequences, stored in separate folders and with one file for each component.
+Below is an example of the element file for the gas turbine of the base examples scenario, which can be found in
 :file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.
 
 =======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
@@ -68,11 +86,3 @@ BB       BB-ch4-gt  conversion  ch4      gt     BB-ch4    BB-electricity  600000
 Beyond that, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
-
-Sequences
----------
-
-The sequences-files contain all timeseries, like load profiles or possible renewable generation.
-
-The filenames are of the form carrier-type_profile (e.g.
-:file:`wind-offshore_profile.csv`, :file:`electricity-demand_profile.csv`).
