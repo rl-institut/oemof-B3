@@ -9,8 +9,8 @@ def read(fname):
 
 
 extras = {
-    "standard": ["pandas", "rtree", "pyyaml", "snakemake", "sphinx-rtd-theme>=0.5.1"],
-    "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas"],
+    "standard": ["pandas", "rtree", "pyyaml", "snakemake"],
+    "dev": ["pytest", "black==20.8b1", "coverage", "flake8", "geopandas", "sphinx-rtd-theme>=0.5.1"],
 }
 
 extras["full"] = list(set(extras["standard"] + extras["dev"]))
