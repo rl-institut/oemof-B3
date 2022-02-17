@@ -165,6 +165,11 @@ def parametrize_scalars(edp, scalars, filters):
 
         filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
 
+        duplicated = filtered.loc[filtered.index.duplicated()]
+
+        if duplicated.any():
+            raise ValueError(f"There are duplicates in the scalar data: {duplicated}")
+
         update_with_checks(edp.data["component"], filtered)
 
         print(f"Updated DataPackage with scalars filtered by {filt}.")
