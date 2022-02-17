@@ -20,9 +20,13 @@ Currently, Oemof-B3 needs python 3.7 (newer versions may be supported, but insta
 
 In order to install oemof-B3 locally, following steps must be made: 
 - git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
-- enter folder and install oemof-B3 package using pip, via: `pip install -e .`
+- enter folder
+- create virtual environment using conda: `conda env create environment.yml`
+- activate environment: `conda activate oemof_b3`
+- install oemof-B3 package using pip, via: `pip install -e .`
 
-Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml). 
+If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
 
 
 ## Getting started
