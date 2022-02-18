@@ -5,6 +5,14 @@
 
 name: base-scenario
 
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
 regions:
   - BB
   - B
