@@ -158,7 +158,7 @@ if __name__ == "__main__":
         title = f"production_{carrier}"
         output_path_plot = os.path.join(target, f"{title}.png")
         var_name = f"flow_out_{carrier}"
-        unit = "W"
+        unit = "Wh"
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, region=REGIONS)
@@ -176,7 +176,7 @@ if __name__ == "__main__":
         title = f"storage_out_{carrier}"
         output_path_plot = os.path.join(target, f"{title}.png")
         var_name = f"flow_out_{carrier}"
-        unit = "W"
+        unit = "Wh"
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, region=REGIONS)
