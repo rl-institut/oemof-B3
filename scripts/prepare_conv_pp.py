@@ -13,7 +13,7 @@ in_path3 : str
 in_path4 : str
     ``oemof_b3/schema/scalars.csv``: path of template for scalar data as .csv
 out_path : str
-    ``results/_resources/conv_pp_scalar.csv``: path of output file with prepared data as .csv
+    ``results/_resources/scal_conv_pp.csv``: path of output file with prepared data as .csv
 
 Outputs
 ---------
@@ -34,8 +34,8 @@ import sys
 import pandas as pd
 import yaml
 
-import oemof_b3.tools.geo as geo
 import oemof_b3.tools.data_processing as dp
+import oemof_b3.tools.geo as geo
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
@@ -160,4 +160,4 @@ if __name__ == "__main__":
     conv_scalars_prepared.replace(carrier_dict, inplace=True)
 
     # export prepared conventional power plant data
-    conv_scalars_prepared.to_csv(out_path, index=False)
+    dp.save_df(conv_scalars_prepared, out_path)

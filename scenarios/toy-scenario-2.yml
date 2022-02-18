@@ -5,6 +5,14 @@
 
 name: toy-scenario-2
 
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
 regions:
   - BB
   - B
@@ -25,8 +33,8 @@ components:
   - ch4-boiler
   - ch4-bpchp
   - ch4-demand
-  - ch4-shortage
-  - ch4-excess
+  - ch4-export
+  - ch4-import
   - ch4-gt
   - electricity-demand
   - electricity-electrolyzer
@@ -36,6 +44,8 @@ components:
   - electricity-shortage
   - h2-gt
   - h2-bpchp
+  - h2-export
+  - h2-import
   - heat_central-demand
   - heat_central-excess
   - heat_central-shortage
@@ -50,7 +60,7 @@ components:
 
 # parametrize
 
-path_scalars: raw/toy-scenario.csv
+paths_scalars: raw/toy-scenario.csv
 
 filter_scalars:
   1:

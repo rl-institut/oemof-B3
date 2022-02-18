@@ -6,12 +6,57 @@ ch4-demand:
     bus: ch4
     profile: ch4-demand-profile
 
+ch4-import:
+  carrier: ch4
+  tech: import
+  type: shortage
+  foreign_keys:
+    bus: ch4
+  defaults:
+    output_parameters: "{}"
+
+ch4-export:
+  carrier: ch4
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: ch4
+  defaults:
+    input_parameters: "{}"
+
 ch4-shortage:
   carrier: ch4
   tech: shortage
   type: shortage
   foreign_keys:
     bus: ch4
+  defaults:
+    output_parameters: "{}"
+
+h2-import:
+  carrier: h2
+  tech: import
+  type: shortage
+  foreign_keys:
+    bus: h2
+  defaults:
+    output_parameters: "{}"
+
+h2-export:
+  carrier: h2
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: h2
+  defaults:
+    input_parameters: "{}"
+
+h2-shortage:
+  carrier: h2
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: h2
   defaults:
     output_parameters: "{}"
 
@@ -22,6 +67,24 @@ electricity-electrolyzer:
   foreign_keys:
     from_bus: electricity
     to_bus: h2
+  defaults:
+    output_parameters: "{}"
+
+electricity-export:
+  carrier: electricity
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: electricity
+  defaults:
+    input_parameters: "{}"
+
+electricity-import:
+  carrier: electricity
+  tech: import
+  type: shortage
+  foreign_keys:
+    bus: electricity
   defaults:
     output_parameters: "{}"
 
@@ -41,6 +104,7 @@ heat_central-excess:
     bus: heat_central
   defaults:
     marginal_cost: 0
+    input_parameters: "{}"
 
 heat_central-shortage:
   carrier: heat_central
@@ -77,6 +141,7 @@ heat_decentral-excess:
     bus: heat_decentral
   defaults:
     marginal_cost: 0
+    input_parameters: "{}"
 
 heat_decentral-shortage:
   carrier: heat_decentral

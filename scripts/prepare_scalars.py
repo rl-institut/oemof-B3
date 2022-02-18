@@ -3,9 +3,10 @@ r"""
 Inputs
 -------
 in_path1 : str
-    path incl. file name of input file with raw scalar data as .csv
+    ``raw/scal_base-scenario.csv``: path incl. file name of input file with raw scalar data as .csv
 out_path : str
-    path incl. file name of output file with prepared scalar data as .csv
+    ``results/_resources/scal_base-scenario.csv``: path incl. file name of output file with prepared
+    scalar data as .csv
 
 Outputs
 ---------
@@ -24,7 +25,7 @@ import pandas as pd
 
 from oemof.tools.economics import annuity
 
-from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars
+from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, save_df
 
 
 def fill_na(df):
@@ -110,4 +111,4 @@ if __name__ == "__main__":
 
     sc.scalars.index.name = "id_scal"
 
-    sc.scalars.to_csv(out_path)
+    save_df(sc.scalars, out_path)
