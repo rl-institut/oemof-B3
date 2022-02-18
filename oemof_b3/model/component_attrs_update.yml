@@ -241,10 +241,13 @@ h2-demand:
 
 h2-cavern:
   carrier: h2
-  tech: storage
+  tech: cavern
   type: storage
   foreign_keys:
     bus: h2
+  defaults:
+    input_parameters: "{}"
+    output_parameters: "{}"
 
 h2-excess:
   carrier: h2
@@ -254,3 +257,4 @@ h2-excess:
     bus: h2
   defaults:
     marginal_cost: 0
+    input_parameters: "{}"
