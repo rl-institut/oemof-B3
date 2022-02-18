@@ -143,6 +143,17 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
+    def plot_invest_to_carrier(carrier):
+        var_name = f"invest_out_{carrier}"
+        unit = "W"
+        output_path_plot = os.path.join(target, var_name + ".png")
+
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.prepare_data()
+        plot.draw_plot(unit=unit, title=var_name)
+        plot.save_plot(output_path_plot)
+
     def plot_storage_capacity_carrier(carrier):
         var_name = "storage_capacity"
         unit = "W"
@@ -189,5 +200,6 @@ if __name__ == "__main__":
 
     plot_capacity_to_carrier("electricity")
     plot_storage_capacity_carrier("electricity")
+    plot_invest_to_carrier("electricity")
     plot_flow_out_carrier("electricity")
     plot_storage_out_carrier("electricity")
