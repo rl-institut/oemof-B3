@@ -165,6 +165,18 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
+    def plot_storage_invest():
+        title = "storage_invest"
+        output_path_plot = os.path.join(target, f"{title}.png")
+        var_name = "invest"
+        unit = "Wh"
+
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.prepare_data()
+        plot.draw_plot(unit=unit, title=title)
+        plot.save_plot(output_path_plot)
+
     def plot_flow_out(carrier):
         title = f"production_{carrier}"
         output_path_plot = os.path.join(target, f"{title}.png")
@@ -201,5 +213,6 @@ if __name__ == "__main__":
     plot_capacity()
     plot_storage_capacity()
     plot_invest_out("electricity")
+    plot_storage_invest()
     plot_flow_out("electricity")
     plot_storage_out("electricity")
