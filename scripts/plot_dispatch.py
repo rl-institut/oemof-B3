@@ -87,15 +87,12 @@ if __name__ == "__main__":
         # normal dispatch plot
         # plot one winter and one summer month
         # select timeframe
-        start_date_data = str(data.index[0])
-        end_date_data = str(data.index[31 * 24 - 1])
+        year = data.index[0].year
         timeframe = [
-            (start_date_data, end_date_data),
-            (
-                start_date_data.replace("01-", "07-"),
-                end_date_data.replace("01-", "07-"),
-            ),
+            (f"{year}-01-01 00:00:00", f"{year}-01-31 23:00:00"),
+            (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
         ]
+
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
 
