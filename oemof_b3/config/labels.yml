@@ -7,6 +7,8 @@ ch4-gt: CH4 GT
 electricity-curtailment: Curtailment
 electricity-demand: El. demand
 electricity-electrolyzer: Electrolyzer
+electricity-export: El. Export
+electricity-import: El. Import
 electricity-liion_battery: Battery
 electricity-pth: res. PtH
 electricity-shortage: Shortage

@@ -25,6 +25,8 @@ Shortage,#7f7f7f
 Curtailment,#7f7f7f
 
 El. demand,#000000
+El. Export,#8c564b
+El. Import,8c564b
 
 H2 Backpressure CHP,magenta
 CH4 Backpressure CHP,brown
