@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # To obey flake8
     colors_odict = colors_odict
 
-    def plot_capacity_to_carrier(carrier):
+    def plot_capacity():
         var_name = "capacity"
         unit = "W"
         output_path_plot = os.path.join(target, var_name + ".png")
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
-    def plot_invest_to_carrier(carrier):
+    def plot_invest_out(carrier):
         var_name = f"invest_out_{carrier}"
         unit = "W"
         output_path_plot = os.path.join(target, var_name + ".png")
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
-    def plot_storage_capacity_carrier(carrier):
+    def plot_storage_capacity():
         var_name = "storage_capacity"
         unit = "W"
         output_path_plot = os.path.join(target, var_name + ".png")
@@ -165,7 +165,7 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
-    def plot_flow_out_carrier(carrier):
+    def plot_flow_out(carrier):
         title = f"production_{carrier}"
         output_path_plot = os.path.join(target, f"{title}.png")
         var_name = f"flow_out_{carrier}"
@@ -183,7 +183,7 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
-    def plot_storage_out_carrier(carrier):
+    def plot_storage_out(carrier):
         title = f"storage_out_{carrier}"
         output_path_plot = os.path.join(target, f"{title}.png")
         var_name = f"flow_out_{carrier}"
@@ -198,8 +198,8 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
-    plot_capacity_to_carrier("electricity")
-    plot_storage_capacity_carrier("electricity")
-    plot_invest_to_carrier("electricity")
-    plot_flow_out_carrier("electricity")
-    plot_storage_out_carrier("electricity")
+    plot_capacity()
+    plot_storage_capacity()
+    plot_invest_out("electricity")
+    plot_flow_out("electricity")
+    plot_storage_out("electricity")
