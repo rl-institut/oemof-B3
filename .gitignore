@@ -11,3 +11,5 @@ dist
 build
 gurobi.log
 data.open-power-system-data.org/
+# Ignore dynaconf secret files
+.secrets.*
