@@ -129,4 +129,4 @@ if __name__ == "__main__":
 
     empty_scalars = sort_values(empty_scalars)
 
-    empty_scalars.to_csv(destination, sep=';')
+    empty_scalars.to_csv(destination, sep=";")
