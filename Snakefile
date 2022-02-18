@@ -51,10 +51,8 @@ rule create_input_data_overview:
         "raw/{scalars}.csv"
     output:
         "results/_tables/{scalars}_technical_and_cost_assumptions.csv"
-    log:
-        "logs/create_input_data_overview/{scalars}.log"
     shell:
-        "python scripts/create_input_data_overview.py {input} {output} > {log}"
+        "python scripts/create_input_data_overview.py {input} {output}"
 
 rule prepare_example:
     input:
@@ -76,10 +74,8 @@ rule prepare_conv_pp:
         script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/scal_conv_pp.csv"
-    log:
-        "logs/prepare_conv_pp/prepare_conv_pp.log"
     shell:
-        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output} > {log}"
+        "python scripts/prepare_conv_pp.py {input.opsd} {input.gpkg} {input.b3_regions} {output}"
 
 rule prepare_feedin:
     input:
@@ -89,10 +85,8 @@ rule prepare_feedin:
         script="scripts/prepare_feedin.py"
     output:
         "results/_resources/ts_feedin.csv"
-    log:
-        "logs/prepare_feedin/prepare_feedin.log"
     shell:
-        "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output} > {log}"
+        "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
 
 rule prepare_electricity_demand:
     input:
@@ -101,10 +95,8 @@ rule prepare_electricity_demand:
         script="scripts/prepare_electricity_demand.py"
     output:
         "results/_resources/ts_load_electricity.csv"
-    log:
-        "logs/prepare_electricity_demand/prepare_electricity_demand.log"
     shell:
-        "python {input.script} {input.opsd_url} {output} > {log}"
+        "python {input.script} {input.opsd_url} {output}"
 
 rule prepare_vehicle_charging_demand:
     input:
@@ -121,10 +113,8 @@ rule prepare_scalars:
         script="scripts/prepare_scalars.py",
     output:
         "results/_resources/scal_base-scenario.csv"
-    log:
-        "logs/prepare_scalars/prepare_scalars.log"
     shell:
-        "python {input.script} {input.raw_scalars} {output} > {log}"
+        "python {input.script} {input.raw_scalars} {output}"
 
 rule prepare_re_potential:
     input:
@@ -136,10 +126,8 @@ rule prepare_re_potential:
         script="scripts/prepare_re_potential.py"
     output:
         directory("results/_resources/RE_potential/")
-    log:
-        "logs/prepare_re_potential/prepare_re_potential.log"
     shell:
-        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output} > {log}"
+        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output}"
 
 rule process_re_potential:
     input:
@@ -148,10 +136,8 @@ rule process_re_potential:
     output:
         scalars="results/_resources/scal_power_potential_wind_pv.csv",
         table="results/_tables/potential_wind_pv_kreise.csv",
-    log:
-        "logs/process_re_potential/process_re_potential.log"
     shell:
-        "python {input.script} {input.input_dir} {output.scalars} {output.table} > {log}"
+        "python {input.script} {input.input_dir} {output.scalars} {output.table}"
 
 def get_paths_scenario_input(wildcards):
     scenario_specs = load_yaml(f"scenarios/{wildcards.scenario}.yml")
@@ -167,43 +153,41 @@ def get_paths_scenario_input(wildcards):
 rule build_datapackage:
     input:
         get_paths_scenario_input,
-        scenario="scenarios/{scenario}.yml",
+        scenario="scenarios/{scenario}.yml"
     output:
         directory("results/{scenario}/preprocessed")
-    log:
-        "logs/build_datapackage/{scenario}.log"
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/build_datapackage.py {input.scenario} {output} > {log}"
+        "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
     output:
         directory("results/{scenario}/optimized/")
-    log:
-        "logs/optimize/{scenario}.log"
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/optimize.py {input} {output} > {log}"
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
         "results/{scenario}/optimized"
     output:
         directory("results/{scenario}/postprocessed/")
-    log:
-        "logs/postprocess/{scenario}.log"
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/postprocess.py {input} {wildcards.scenario} {output} > {log}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/plotted/")
-    log:
-        "logs/plot_dispatch/{scenario}.log"
     shell:
-        "python scripts/plot_dispatch.py {input} {output} > {log}"
+        "python scripts/plot_dispatch.py {input} {output}"
 
 rule plot_conv_pp_scalars:
     input:
@@ -211,10 +195,8 @@ rule plot_conv_pp_scalars:
         script="scripts/plot_conv_pp_scalars.py"
     output:
         "results/_resources/plots/{resource}-{var_name}.png"
-    log:
-        "logs/plot_conv_pp_scalars/{resource}-{var_name}.log"
     shell:
-        "python {input.script} {input.data} {wildcards.var_name} {output} > {log}"
+        "python {input.script} {input.data} {wildcards.var_name} {output}"
 
 rule report:
     input:
@@ -223,8 +205,8 @@ rule report:
         plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
-    log:
-        "logs/report/{scenario}.log"
+    params:
+        logfile="logs/{scenario}.log"
     run:
         import os
         import shutil
@@ -271,17 +253,13 @@ rule join_scenario_results:
         get_scenarios_in_group
     output:
         "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
-    log:
-        "logs/join_scenario_results/{scenario_group}.log"
     shell:
-        "python scripts/join_scenarios.py {input} {output} > {log}"
+        "python scripts/join_scenarios.py {input} {output}"
 
 rule plot_joined_scalars:
     input:
         "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     output:
         directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
-    log:
-        "logs/plot_joined_scalars/{scenario_group}.log"
     shell:
-        "python scripts/plot_joined_scalars.py {input} {output} > {log}"
+        "python scripts/plot_joined_scalars.py {input} {output}"
