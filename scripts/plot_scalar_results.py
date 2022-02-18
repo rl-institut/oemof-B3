@@ -57,6 +57,62 @@ def load_scalars(path):
     return df
 
 
+class ScalarPlot:
+    def __init__(self, scalars):
+        self.scalars = scalars
+        self.selected_scalars = None
+        self.prepared_scalar_data = None
+
+    def select_data(self, **kwargs):
+        self.selected_scalars = self.scalars.copy()
+        for key, value in kwargs.items():
+            self.selected_scalars = dp.filter_df(self.selected_scalars, key, value)
+
+        if self.selected_scalars.empty:
+            print("No data to plot.")
+
+        return self.selected_scalars
+
+    def prepare_data(self):
+        self.prepared_scalar_data = prepare_scalar_data(
+            df=self.selected_scalars,
+            colors_odict=colors_odict,
+            labels_dict=labels_dict,
+            conv_number=MW_TO_W,
+        )
+
+        return self.prepared_scalar_data
+
+    def draw_plot(self, unit, title):
+        fig, ax = plt.subplots()
+        try:
+            plot_grouped_bar(
+                ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
+            )
+            ax.set_title(title)
+            # Shrink current axis's height by 10% on the bottom
+            box = ax.get_position()
+            ax.set_position(
+                [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
+            )
+            # Put a legend below current axis
+            ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.1),
+                fancybox=True,
+                ncol=4,
+                fontsize=14,
+            )
+
+            return fig, ax
+        except:
+            print("Could not plot.")
+
+    def save_plot(self, output_path_plot):
+        plt.savefig(output_path_plot, bbox_inches="tight")
+        print(f"User info: Plot has been saved to: {output_path_plot}.")
+
+
 if __name__ == "__main__":
     scalars_path = os.path.join(sys.argv[1], "scalars.csv")
 
@@ -65,24 +121,6 @@ if __name__ == "__main__":
     # User input
     REGIONS = ["BB", "B"]  # BE_BB
     MW_TO_W = 1e6
-    VAR_NAMES = [
-        "capacity",
-        "flow_out_electricity",
-        "invest_out_electricity",
-        "flow_out_heat_central",
-        "invest_out_heat_central",
-        "flow_out_heat_decentral",
-        "invest_out_heat_decentral",
-    ]
-    UNITS = {
-        "capacity": "W",
-        "flow_out_electricity": "Wh",
-        "invest_out_electricity": "W",
-        "flow_out_heat_central": "Wh",
-        "invest_out_heat_central": "W",
-        "flow_out_heat_decentral": "Wh",
-        "invest_out_heat_decentral": "W",
-    }
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
@@ -94,43 +132,62 @@ if __name__ == "__main__":
     # To obey flake8
     colors_odict = colors_odict
 
-    for var_name in VAR_NAMES:
-
-        # select data with chosen var_name
-        selected_scalar_data = dp.filter_df(scalars, "var_name", var_name)
-        selected_scalar_data = dp.filter_df(selected_scalar_data, "region", REGIONS)
-
-        if selected_scalar_data.empty:
-            print(f"No data to plot for '{var_name}'.")
-            continue
-
-        # prepare data
-        prepared_scalar_data = prepare_scalar_data(
-            df=selected_scalar_data,
-            colors_odict=colors_odict,
-            labels_dict=labels_dict,
-            conv_number=MW_TO_W,
-        )
-
-        # plot data
-        fig, ax = plt.subplots()
-        plot_grouped_bar(
-            ax, prepared_scalar_data, colors_odict, unit=UNITS[var_name], stacked=True
-        )
-        ax.set_title(var_name)
-        # Shrink current axis's height by 10% on the bottom
-        box = ax.get_position()
-        ax.set_position(
-            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
-        )
-        # Put a legend below current axis
-        ax.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, -0.1),
-            fancybox=True,
-            ncol=4,
-            fontsize=14,
-        )
+    def plot_capacity_to_carrier(carrier):
+        var_name = "capacity"
+        unit = "W"
         output_path_plot = os.path.join(target, var_name + ".png")
-        plt.savefig(output_path_plot, bbox_inches="tight")
-        print(f"User info: Plot of '{var_name}' has been saved to: {output_path_plot}.")
+
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.prepare_data()
+        plot.draw_plot(unit=unit, title=var_name)
+        plot.save_plot(output_path_plot)
+
+    def plot_storage_capacity_carrier(carrier):
+        var_name = "storage_capacity"
+        unit = "W"
+        output_path_plot = os.path.join(target, var_name + ".png")
+
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.prepare_data()
+        plot.draw_plot(unit=unit, title=var_name)
+        plot.save_plot(output_path_plot)
+
+    def plot_flow_out_carrier(carrier):
+        title = f"production_{carrier}"
+        output_path_plot = os.path.join(target, f"{title}.png")
+        var_name = f"flow_out_{carrier}"
+        unit = "W"
+
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars,
+            "tech",
+            ["storage", "asymmetric_storage", "link"],
+            inverse=True,
+        )
+        plot.prepare_data()
+        plot.draw_plot(unit=unit, title=title)
+        plot.save_plot(output_path_plot)
+
+    def plot_storage_out_carrier(carrier):
+        title = f"storage_out_{carrier}"
+        output_path_plot = os.path.join(target, f"{title}.png")
+        var_name = f"flow_out_{carrier}"
+        unit = "W"
+
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, "tech", ["storage", "asymmetric_storage"]
+        )
+        plot.prepare_data()
+        plot.draw_plot(unit=unit, title=title)
+        plot.save_plot(output_path_plot)
+
+    plot_capacity_to_carrier("electricity")
+    plot_storage_capacity_carrier("electricity")
+    plot_flow_out_carrier("electricity")
+    plot_storage_out_carrier("electricity")
