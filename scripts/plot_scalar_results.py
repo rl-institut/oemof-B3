@@ -164,7 +164,7 @@ if __name__ == "__main__":
         plot.select_data(var_name=var_name, region=REGIONS)
         plot.selected_scalars = dp.filter_df(
             plot.selected_scalars,
-            "tech",
+            "type",
             ["storage", "asymmetric_storage", "link"],
             inverse=True,
         )
@@ -181,7 +181,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, region=REGIONS)
         plot.selected_scalars = dp.filter_df(
-            plot.selected_scalars, "tech", ["storage", "asymmetric_storage"]
+            plot.selected_scalars, "type", ["storage", "asymmetric_storage"]
         )
         plot.prepare_data()
         plot.draw_plot(unit=unit, title=title)
