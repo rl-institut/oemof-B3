@@ -100,6 +100,10 @@ def prepare_ror_time_series(filename_ts, region):
     r"""
     Prepares and formats run-of-the-river (ror) time series for region 'B' and 'BB'.
 
+    The raw data only includes one year. This functions prepares the time series for years `YEARS`
+    using the same data for each year. For leap years Feb 29th is filled with the last value of Feb
+    28.
+
     Parameters
     ----------
     filename_ts : str
@@ -109,7 +113,7 @@ def prepare_ror_time_series(filename_ts, region):
 
     Returns
     -------
-    ts_prepared : pd.DataFrame
+    ts_df : pd.DataFrame
         Contains time series in the format of time series template of oemof-B3
 
     """
