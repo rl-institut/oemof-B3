@@ -243,7 +243,6 @@ if __name__ == "__main__":
     destination = sys.argv[2]
 
     logfile = sys.argv[3]
-    print(logfile)
     logger = config.add_snake_logger(logfile, "build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
