@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
         # select solver 'gurobi', 'cplex', 'glpk' etc
         m.solve(solver=solver)
-    except:
+    except:  # noqa: E722
         logger.exception(
             f"Could not optimize energysystem for datapackage from '{preprocessed}'."
         )

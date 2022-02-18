@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
         rdp.to_csv_dir(destination)
 
-    except:
+    except:  # noqa: E722
         logger.exception(
             f"Could not postprocess data from energysystem in '{optimized}'."
         )
