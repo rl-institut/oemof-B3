@@ -12,10 +12,19 @@ electricity-pth: res. PtH
 electricity-shortage: Shortage
 electricity-transmission: Transmission
 h2-gt: H2 GT
-heat-demand: Heat demand
+heat_central-demand: Heat cen. demand
+heat_decentral-demand: Heat dec. demand
 hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
-ch4-excess: CH4 Excess
-heat-excess: Heat Excess
-heat-storage: Heat Storage
+h2-bpchp: H2 Backpressure CHP
+ch4-export: CH4 Export
+ch4-import: CH4 Import
+h2-export: H2 Export
+h2-import: H2 Import
+heat_central-excess: Heat cen. excess
+heat_central-storage: Heat cen. storage
+heat_central-shortage: Heat cen. shortage
+heat_decentral-excess: Heat dec. excess
+heat_decentral-storage: Heat dec. storage
+heat_decentral-shortage: Heat dec. shortage

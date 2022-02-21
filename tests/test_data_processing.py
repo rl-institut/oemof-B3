@@ -23,6 +23,12 @@ path_file_sc = os.path.join(
     "oemof_b3_resources_scalars.csv",
 )
 
+path_file_sc_mixed_types = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_scalars_mixed_types.csv",
+)
+
 path_file_ts_stacked = os.path.join(
     os.path.abspath(os.path.join(this_path, os.pardir)),
     "_files",
@@ -89,6 +95,21 @@ def test_load_b3_scalars():
 
     for col in sc_cols_list:
         assert col in df_cols
+
+
+def test_load_b3_scalars_mixed_types():
+    """
+    This test checks whether the entries in "var_value" have the correct types.
+    """
+
+    df = load_b3_scalars(path_file_sc_mixed_types)
+
+    types = [type(value) for value in df["var_value"]]
+
+    # could more strictly assert that types are [int, float, bool, str, dict] as soon as this is
+    # needed.
+
+    assert types == [float, float, str, str, str], f"Types are {types}"
 
 
 def test_load_b3_timeseries():
@@ -422,7 +443,7 @@ def test_stack_unstack_on_example_data():
         "oemof_tabular_sequence.csv",
     )
 
-    df = pd.read_csv(file_path, index_col=0)
+    df = pd.read_csv(file_path, index_col=0, sep=";")
     df.index = pd.to_datetime(df.index)
 
     df_stacked = stack_timeseries(df)

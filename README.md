@@ -33,5 +33,3 @@ and run
     make html
 
 The output will then be located in `docs/_build/html` and can be opened with your favorite browser
-
-## License

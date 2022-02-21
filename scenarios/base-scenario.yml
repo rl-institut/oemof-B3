@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: toy-scenario-2
+name: base-scenario
 
 datetimeindex:
   start:
@@ -36,8 +36,11 @@ components:
   - ch4-export
   - ch4-import
   - ch4-gt
+  - ch4-shortage
   - electricity-demand
   - electricity-electrolyzer
+  - electricity-export
+  - electricity-import
   - electricity-curtailment
   - electricity-liion_battery
   - electricity-pth
@@ -46,6 +49,7 @@ components:
   - h2-bpchp
   - h2-export
   - h2-import
+  - h2-shortage
   - heat_central-demand
   - heat_central-excess
   - heat_central-shortage
@@ -58,20 +62,25 @@ components:
   - solar-pv
   - wind-onshore
 
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
 # parametrize
 
-paths_scalars: raw/toy-scenario.csv
+paths_scalars: results/_resources/scal_base-scenario.csv
 
 filter_scalars:
   1:
     scenario:
-      toy-scenario
-  2:
-    scenario:
-      toy-scenario-high
+      base-scenario
 
 paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 
 filter_timeseries:
   scenario:
-    toy-scenario-update
+    toy-scenario

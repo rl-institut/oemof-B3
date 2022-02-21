@@ -1,10 +1,12 @@
+# coding: utf-8
 r"""
 Inputs
 -------
 postprocessed : str
-    path to directory which contains the input data which can be plotted
+    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
+    can be plotted
 plotted : str
-    path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/``: path where a new directory is created and the plots are saved
 
 Outputs
 ---------
@@ -41,16 +43,12 @@ if __name__ == "__main__":
     bus_directory = os.path.join(postprocessed, "sequences/bus/")
     bus_files = os.listdir(bus_directory)
 
-    # select timeframe
-    timeframe = [
-        ("2019-01-01 00:00:00", "2019-01-31 23:00:00"),
-        ("2019-07-01 00:00:00", "2019-07-31 23:00:00"),
-    ]
-
     # select carrier
-    carrier = "electricity"
+    carriers = ["electricity", "heat_central", "heat_decentral"]
 
-    selected_bus_files = [file for file in bus_files if carrier in file]
+    selected_bus_files = [
+        file for file in bus_files for carrier in carriers if carrier in file
+    ]
 
     for bus_file in selected_bus_files:
 
@@ -88,6 +86,13 @@ if __name__ == "__main__":
 
         # normal dispatch plot
         # plot one winter and one summer month
+        # select timeframe
+        year = data.index[0].year
+        timeframe = [
+            (f"{year}-01-01 00:00:00", f"{year}-01-31 23:00:00"),
+            (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
+        ]
+
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
 
