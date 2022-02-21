@@ -5,6 +5,14 @@
 
 name: low-2050
 
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
 regions:
   - BB
   - B
@@ -61,6 +69,14 @@ components:
   - hydro-ror
   - solar-pv
   - wind-onshore
+
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
 
 # parametrize
 
