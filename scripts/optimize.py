@@ -41,24 +41,31 @@ from oemof_b3.tools.equate_flows import equate_flows_by_keyword
 
 # global variables
 EL_GAS_RELATION = "electricity_gas_relation"
+EMISSION_LIMIT = "emission_limit"
+EL_KEY = "electricity"  # prefix of keywords for gas electricity relation
+GAS_KEY = "gas"  # prefix of keywords for gas electricity relation
 
 
-def get_emission_limit():
-    """Reads emission limit from csv file in `preprocessed`."""
-    path = os.path.join(preprocessed, "additional_scalars.csv")
-    scalars = dp.load_b3_scalars(path)
-    emission_df = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
+def drop_none_values(df):
+    """drops row if `var_value` is None"""
+    drop_indices = df.loc[df.var_value == "None"].index
+    df.drop(drop_indices, inplace=True)
+    return df
 
-    # drop row if `var_value` is None
-    drop_indices = emission_df.loc[emission_df.var_value == "None"].index
-    emission_df.drop(drop_indices, inplace=True)
+
+def get_emission_limit(scalars):
+    """Gets emission limit from scalars and returns None if it is missing or None."""
+    emission_df_raw = scalars.loc[scalars["carrier"] == "emission"].set_index(
+        "var_name"
+    )
+    emission_df = drop_none_values(emission_df_raw)
 
     # return None if no emission limit is given ('None' or entry missing)
     if emission_df.empty:
         print("No emission limit set.")
         return None
     else:
-        limit = emission_df.at["emission_limit", "var_value"]
+        limit = emission_df.at[EMISSION_LIMIT, "var_value"]
         print(f"Emission limit set to {limit}.")
         return limit
 
@@ -73,10 +80,9 @@ def get_electricity_gas_relations(scalars):
         Contains rows of scalars with 'var_name' `EL_GAS_RELATION`
     If no factor is given returns None.
     """
-    relations = scalars.loc[scalars.var_name == EL_GAS_RELATION]
+    relations_raw = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     # drop relations that are None
-    drop_indices = relations.loc[relations.var_value == "None"].index
-    relations.drop(drop_indices, inplace=True)
+    relations = drop_none_values(relations_raw)
     if relations.empty:
         print("No gas electricity relation is set.")
         return None
@@ -95,8 +101,8 @@ def add_electricity_gas_relation_constraints(model, relations):
         suffix = f"{row.carrier.split('_')[1]}-{row.region}"
         equate_flows_by_keyword(
             model=model,
-            keyword1=f"electricity_{suffix}",
-            keyword2=f"gas_{suffix}",
+            keyword1=f"{EL_KEY}_{suffix}",
+            keyword2=f"{GAS_KEY}_{suffix}",
             factor1=row.var_value,
         )
 
@@ -116,6 +122,7 @@ if __name__ == "__main__":
 
     # get emission limit and electricity gas relations from `scalars`
     emission_limit = get_emission_limit()
+    emission_limit = get_emission_limit(scalars)
     el_gas_relations = get_electricity_gas_relations(scalars)
     
     if not os.path.exists(optimized):
