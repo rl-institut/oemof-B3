@@ -255,12 +255,12 @@ def get_heat_demand(scalars, scenario, carrier, region):
     -------
     demands : DataFrame
         Dataframe with total yearly demand of central and decentral heat per consumer
-        (eg.: ghd, efh, mfh)
+        (eg.: ghd, hh)
     demand_unit : str
         Unit of total demands (eg. GWh)
 
     """
-    consumers = ["ghd", "efh", "mfh"]
+    consumers = ["ghd", "hh"]
     demands = pd.DataFrame()
 
     sc_filtered = dp.filter_df(scalars, "tech", "demand")
@@ -347,7 +347,7 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
         shlp_type="EFH",
         building_class=building_class,
         wind_class=0,
-        annual_heat_demand=yearly_demands["efh" + "_" + carrier][0],
+        annual_heat_demand=share_efh * yearly_demands["hh" + "_" + carrier][0],
         name="EFH",
         ww_incl=True,
     ).get_bdew_profile()
@@ -360,7 +360,7 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
         shlp_type="MFH",
         building_class=building_class,
         wind_class=0,
-        annual_heat_demand=yearly_demands["mfh" + "_" + carrier][0],
+        annual_heat_demand=share_mfh * yearly_demands["hh" + "_" + carrier][0],
         name="MFH",
         ww_incl=True,
     ).get_bdew_profile()
@@ -447,6 +447,8 @@ if __name__ == "__main__":
     sc = dp.load_b3_scalars(in_path5)
 
     for region in REGION:
+        share_efh, share_mfh = get_shares_from_hh_distribution(in_path2, region)
+
         weather_file_names = find_regional_files(in_path1, region)
 
         for weather_file_name, carrier in itertools.product(
