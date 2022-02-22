@@ -19,6 +19,7 @@ The script creates an empty EnergyDatapackage from the specifications given in t
 fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
 """
 import sys
+import os
 from collections import OrderedDict
 
 import pandas as pd
@@ -33,7 +34,13 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     format_header,
     HEADER_B3_SCAL,
+    save_df,
 )
+
+# global variables
+EL_GAS_RELATION = "electricity_gas_relation"
+EMISSION_LIMIT = "emission_limit"
+ADDITIONAL_SCALARS_FILE = "additional_scalars.csv"
 
 
 def multi_load(paths, load_func):
@@ -216,6 +223,17 @@ def parametrize_sequences(edp, ts, filters):
     return edp
 
 
+def save_additional_scalars(scalars, destination):
+    """Saves additional scalars like the emission limit to `ADDITIONAL_SCALARS_FILE`"""
+    # get electricity/gas relations and emission limit
+    el_gas_rel = scalars.loc[scalars.var_name == EL_GAS_RELATION]
+    emissions = scalars.loc[scalars.var_name == EMISSION_LIMIT]
+    # all values in one data frame
+    df = pd.concat([el_gas_rel, emissions])
+    filename = os.path.join(destination, ADDITIONAL_SCALARS_FILE)
+    save_df(df, filename)
+
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -262,6 +280,9 @@ if __name__ == "__main__":
 
     # save to csv
     edp.to_csv_dir(destination)
+
+    # save emission limit and gas-electricity-relation to "additional_scalars.csv" in `destination`
+    save_additional_scalars(scalars=scalars, destination=destination)
 
     # add metadata
     edp.infer_metadata(foreign_keys_update=foreign_keys_update)
