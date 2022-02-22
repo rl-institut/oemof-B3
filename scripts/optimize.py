@@ -35,6 +35,7 @@ from oemof.outputlib import processing
 # pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
+from oemof_b3.tools import data_processing as dp
 
 from oemof_b3.tools.equate_flows import equate_flows_by_keyword
 from oemof_b3.tools.data_processing import load_b3_scalars
@@ -43,18 +44,24 @@ from oemof_b3.tools.data_processing import load_b3_scalars
 EL_GAS_RELATION = "electricity_gas_relation"
 
 
-def add_electricity_gas_relation_constraints(model, relations):
-    r"""
-    Adds constraint `equate_flows_by_keyword` to `model`.
-    """
-    for index, row in relations.iterrows():
-        suffix = f"{row.carrier.split('_')[1]}-{row.region}"
-        equate_flows_by_keyword(
-            model=model,
-            keyword1=f"electricity_{suffix}",
-            keyword2=f"gas_{suffix}",
-            factor1=row.var_value,
-        )
+def get_emission_limit():
+    """Reads emission limit from csv file in `preprocessed`."""
+    path = os.path.join(preprocessed, "additional_scalars.csv")
+    scalars = dp.load_b3_scalars(path)
+    emission_df = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
+
+    # drop row if `var_value` is None
+    drop_indices = emission_df.loc[emission_df.var_value == "None"].index
+    emission_df.drop(drop_indices, inplace=True)
+
+    # return None if no emission limit is given ('None' or entry missing)
+    if emission_df.empty:
+        print("No emission limit set.")
+        return None
+    else:
+        limit = emission_df.at["emission_limit", "var_value"]
+        print(f"Emission limit set to {limit}.")
+        return limit
 
 
 def get_electricity_gas_relations(scalars):
@@ -77,6 +84,20 @@ def get_electricity_gas_relations(scalars):
         return relations
 
 
+def add_electricity_gas_relation_constraints(model, relations):
+    r"""
+    Adds constraint `equate_flows_by_keyword` to `model`.
+    """
+    for index, row in relations.iterrows():
+        suffix = f"{row.carrier.split('_')[1]}-{row.region}"
+        equate_flows_by_keyword(
+            model=model,
+            keyword1=f"electricity_{suffix}",
+            keyword2=f"gas_{suffix}",
+            factor1=row.var_value,
+        )
+
+
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
 
@@ -89,9 +110,11 @@ if __name__ == "__main__":
     # get additional scalars containing emission limit and gas electricity relation
     path_additional_scalars = os.path.join(preprocessed, "additional_scalars.csv")
     scalars = load_b3_scalars(path_additional_scalars)
-    # get electricity gas relations from `scalars`
-    el_gas_relations = get_electricity_gas_relations(scalars)
 
+    # get emission limit and electricity gas relations from `scalars`
+    emission_limit = get_emission_limit()
+    el_gas_relations = get_electricity_gas_relations(scalars)
+    
     if not os.path.exists(optimized):
         os.mkdir(optimized)
 
@@ -103,13 +126,15 @@ if __name__ == "__main__":
     m = Model(es)
 
     # add constraints
+    if emission_limit is not None:
+        constraints.emission_limit(m, limit=emission_limit)
     if el_gas_relations is not None:
         add_electricity_gas_relation_constraints(model=m, relations=el_gas_relations)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
 
-    # get the results from the the solved model(still oemof.solph)
+    # get results from the solved model(still oemof.solph)
     es.meta_results = processing.meta_results(m)
     es.results = processing.results(m)
     es.params = processing.parameter_as_dict(es)

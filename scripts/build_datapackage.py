@@ -17,6 +17,7 @@ Description
 -------------
 The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
 fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
+Further, additional parameters like emission limit are saved in a separate file.
 """
 import sys
 import os
@@ -172,6 +173,11 @@ def parametrize_scalars(edp, scalars, filters):
 
         filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
 
+        duplicated = filtered.loc[filtered.index.duplicated()]
+
+        if duplicated.any():
+            raise ValueError(f"There are duplicates in the scalar data: {duplicated}")
+
         update_with_checks(edp.data["component"], filtered)
 
         print(f"Updated DataPackage with scalars filtered by {filt}.")
@@ -248,7 +254,11 @@ if __name__ == "__main__":
     scenario_specs = load_yaml(scenario_specs)
 
     # setup empty EnergyDataPackage
-    datetimeindex = pd.date_range(start="2019-01-01", freq="H", periods=8760)
+    datetimeindex = pd.date_range(
+        start=scenario_specs["datetimeindex"]["start"],
+        freq=scenario_specs["datetimeindex"]["freq"],
+        periods=scenario_specs["datetimeindex"]["periods"],
+    )
 
     # setup default structure
     edp = EnergyDataPackage.setup_default(
@@ -264,9 +274,9 @@ if __name__ == "__main__":
     )
 
     # parametrize scalars
-    path_scalars = scenario_specs["path_scalars"]
+    paths_scalars = scenario_specs["paths_scalars"]
 
-    scalars = multi_load_b3_scalars(path_scalars)
+    scalars = multi_load_b3_scalars(paths_scalars)
 
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])

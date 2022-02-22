@@ -5,6 +5,14 @@
 
 name: toy-scenario-2
 
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
 regions:
   - BB
   - B
@@ -52,7 +60,7 @@ components:
 
 # parametrize
 
-path_scalars: raw/toy-scenario.csv
+paths_scalars: raw/toy-scenario.csv
 
 filter_scalars:
   1:
