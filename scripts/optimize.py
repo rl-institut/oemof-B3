@@ -33,16 +33,20 @@ from oemof_b3.tools import data_processing as dp
 
 def get_emission_limit():
     """Reads emission limit from csv file in `preprocessed`."""
-    path_emission_limit = os.path.join(preprocessed, "additional_scalars.csv")
-    scalars = dp.load_b3_scalars(path_emission_limit)
-    emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index(
-        "var_name"
-    )
-    limit = emission_scalars.at["emission_limit", "var_value"]
-    assert isinstance(
-        emission_limit, (int, float)
-    ), "Expected a number for 'emission limit'"
-    return limit
+    path = os.path.join(preprocessed, "additional_scalars.csv")
+    scalars = dp.load_b3_scalars(path)
+    emission_df = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
+
+    # drop row if `var_value` is None
+    drop_indices = emission_df.loc[emission_df.var_value == "None"].index
+    emission_df.drop(drop_indices, inplace=True)
+
+    # return None if no emission limit is given ('None' or entry missing)
+    if emission_df.empty:
+        return None
+    else:
+        limit = emission_df.at["emission_limit", "var_value"]
+        return limit
 
 
 if __name__ == "__main__":
@@ -67,7 +71,8 @@ if __name__ == "__main__":
     m = Model(es)
 
     # Add an emission constraint
-    constraints.emission_limit(m, limit=emission_limit)
+    if emission_limit is not None:
+        constraints.emission_limit(m, limit=emission_limit)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
