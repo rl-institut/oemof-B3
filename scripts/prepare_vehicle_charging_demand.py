@@ -20,7 +20,7 @@ Description
 This script prepares electric vehicle charging demand profiles for the regions Berlin and
 Brandenburg. The profiles have been created before with simBEV
 (https://github.com/rl-institut/simbev). The charging strategy of simBEV data is "greedy", i.e.
-batteries are charged with maximum power until they are fully charged or removed. This scripts
+batteries are charged with maximum power until they are fully charged or removed. This script
 applies a charging strategy "balanced" for the profiles "home" and "work" during specific hours (see
 global variables).
 
@@ -46,8 +46,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
     Prepares and formats electric vehicle charging demand profiles for regions 'B' and 'BB'.
 
     The profiles are resampled from 15-min to hourly time steps. If `balanced` is True the profiles
-    "work" and "home" are smoothed between `HOME_START`, `HOME_END` and `WORK_START`, `WORK_END`
-    respectively with charging strategy "balanced".
+    "work" and "home" are smoothed between [`HOME_START`, `HOME_END`] and
+    [`WORK_START`, `WORK_END`]. The respective values are replaced by the average of all these
+    values. We refer to this as charging strategy 'balanced'.
     The charging demand profile is then divided by the total demand.
 
     Parameters
@@ -56,7 +57,8 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         Path to directory where csv files containing electric vehicle charging demand profiles
         are placed
     balanced : bool
-        If True profiles "work" and "home" are smoothed with charging strategy "balanced".
+        If True profiles "work" and "home" are smoothed with charging strategy "balanced" with
+        :py:func:`smooth_profiles()`.
         Default: True
 
     Returns
@@ -96,7 +98,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         hourly_ts = ts.resample("H").mean()
 
         if balanced:
-            # smooth work and home profiles as they have high peaks (~strategy balanced)
+            # smooth work and home profiles as they have high peaks (strategy balanced)
             hourly_ts = smooth_profiles(df=hourly_ts)
 
         # only keep column "sum CS power" (sum of power demand at all charging stations)
@@ -136,8 +138,8 @@ def smooth_profiles(df):
     r"""
     Smoothes profiles "work" and "home" of `df` between specific hours (see global variables).
 
-    The profiles are smoothed between `HOME_START`, `HOME_END` and `WORK_START`, `WORK_END`
-    respectively with charging strategy "balanced".
+    Values between [`HOME_START`, `HOME_END`] and [`WORK_START`, `WORK_END`] respectively are
+    replaced by the average of all these values. We refer to this as charging strategy 'balanced'.
 
     Parameters
     ----------
