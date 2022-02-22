@@ -15,8 +15,15 @@ es.dump
 Description
 -------------
 Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and an
-oemof.solph.Model, which is optimized. The EnergySystem with results, meta-results and parameters
-is saved.
+oemof.solph.Model, which is optimized.
+The following constraints are added:
+- `emission_limit`: maximum amount of emissions
+- `equate_flows_by_keyword`: gas-power relation is set. This constraint is only added if
+    'electricity_gas_relation' is added to the scalars. To use this constraint you need to copy
+    [`equate_flows.py`](https://github.com/oemof/oemof-solph/blob/features/equate-flows/src/oemof/solph/constraints/equate_variables.py)
+    of oemof.solph into `/tools` directory of `oemof-B3`.
+The EnergySystem with results, meta-results and parameters is saved.
+
 """
 import os
 import sys
@@ -29,55 +36,44 @@ from oemof.outputlib import processing
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
 
+from oemof_b3.tools.equate_flows import equate_flows_by_keyword
+from oemof_b3.tools.data_processing import load_b3_scalars
 
-def add_gas_power_relation_constraints(model, energysystem):
+# global variables
+EL_GAS_RELATION = "electricity_gas_relation"
+
+
+def add_electricity_gas_relation_constraints(model, relations):
     r"""
+    Adds constraint `equate_flows_by_keyword` to `model`.
+    """
+    for index, row in relations.iterrows():
+        suffix = f"{row.carrier.split('_')[1]}-{row.region}"
+        equate_flows_by_keyword(
+            model=model,
+            keyword1=f"electricity_{suffix}",
+            keyword2=f"gas_{suffix}",
+            factor1=row.var_value,
+        )
 
-    Parameters
-    ----------
-    model:
-    energysystem:
+
+def get_electricity_gas_relations(scalars):
+    r"""
+    Gets electricity/gas relations from scalars. Returns None if no relations are given.
 
     Returns
     -------
-
+    pd.DataFrame
+        Contains rows of scalars with 'var_name' `EL_GAS_RELATION`
+    If no factor is given returns None.
     """
-    # loop through busses
-    bus_names = ["B-heat_central", "BB-heat_central", "B-heat_decentral", "BB-heat_decentral"]  # todo automate by regions and busses in .yml
-    busses = [es.groups[x] for x in bus_names]
+    relations = scalars.loc[scalars.var_name == EL_GAS_RELATION]
+    # drop relations that are None or empty
 
-    # todo get factor (varies for central/decentral, also for B/BB?)
-
-    for bus in busses:
-        region = bus.label.split("-")[0]
-        # get gas and electricity powered components depending on bus
-        if "decentral" in bus.label:
-            heat_pump = energysystem.groups[f"{region}-electricity-heat_pump"]  # todo note: hps missing
-            boiler = energysystem.groups[f"{region}-ch4-boiler"]
-
-            # add constraint
-            constraints.equate_variables(
-                model=model,
-                var1=model.InvestmentFlow.invest[heat_pump, bus],
-                var2=model.InvestmentFlow.invest[boiler, bus],
-                factor1=factor,
-            )
-        else:
-            # electricity components
-            heat_pump = energysystem.groups[f"{region}-electricity-heat_pump"]
-            res_pth = energysystem.groups[f"{region}-electricity-pth"]
-            # gas components
-            boiler = energysystem.groups[f"{region}-ch4-boiler"]
-            ch4_chp = energysystem.groups[f"{region}-ch4-bpchp"]
-            h2_chp = energysystem.groups[f"{region}-h2-bpchp"]
-
-            # add constraint
-            constraints.equate_variables(
-                model=model,
-                var1=model.InvestmentFlow.invest[line12, bus], # todo adding up investment flows
-                var2=model.InvestmentFlow.invest[line21, bus],
-                factor1=factor,
-            )
+    if relations.empty:
+        return None
+    else:
+        return relations
 
 
 if __name__ == "__main__":
@@ -89,6 +85,12 @@ if __name__ == "__main__":
 
     solver = "cbc"
 
+    # get additional scalars containing emission limit and gas electricity relation
+    path_additional_scalars = os.path.join(preprocessed, "additional_scalars.csv")
+    scalars = load_b3_scalars(path_additional_scalars)
+    # get electricity gas relations from `scalars`
+    el_gas_relations = get_electricity_gas_relations(scalars)
+
     if not os.path.exists(optimized):
         os.mkdir(optimized)
 
@@ -99,8 +101,9 @@ if __name__ == "__main__":
     # create model from energy system (this is just oemof.solph)
     m = Model(es)
 
-    # add constraints # todo only to be added if factor is given in data
-    add_gas_power_relation_constraints(model=m, energysystem=es)
+    # add constraints
+    if el_gas_relations is not None:
+        add_electricity_gas_relation_constraints(model=m, relations=el_gas_relations)
 
     # select solver 'gurobi', 'cplex', 'glpk' etc
     m.solve(solver=solver)
