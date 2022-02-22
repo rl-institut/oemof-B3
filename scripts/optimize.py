@@ -68,8 +68,9 @@ def get_electricity_gas_relations(scalars):
     If no factor is given returns None.
     """
     relations = scalars.loc[scalars.var_name == EL_GAS_RELATION]
-    # drop relations that are None or empty
-
+    # drop relations that are None
+    drop_indices = relations.loc[relations.var_value == 'None'].index
+    relations.drop(drop_indices, inplace=True)
     if relations.empty:
         return None
     else:
