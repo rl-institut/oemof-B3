@@ -297,7 +297,7 @@ if __name__ == "__main__":
     # save to csv
     edp.to_csv_dir(destination)
 
-    # save emission limit and gas-electricity-relation to "additional_scalars.csv" in `destination`
+    # save additional scalars like "emission_limit" to "additional_scalars.csv" in `destination`
     save_additional_scalars(scalars=scalars, destination=destination)
 
     # add metadata

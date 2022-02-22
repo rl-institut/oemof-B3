@@ -35,10 +35,9 @@ from oemof.outputlib import processing
 # pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
-from oemof_b3.tools import data_processing as dp
 
+from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.equate_flows import equate_flows_by_keyword
-from oemof_b3.tools.data_processing import load_b3_scalars
 
 # global variables
 EL_GAS_RELATION = "electricity_gas_relation"
@@ -109,7 +108,7 @@ if __name__ == "__main__":
 
     # get additional scalars containing emission limit and gas electricity relation
     path_additional_scalars = os.path.join(preprocessed, "additional_scalars.csv")
-    scalars = load_b3_scalars(path_additional_scalars)
+    scalars = dp.load_b3_scalars(path_additional_scalars)
 
     # get emission limit and electricity gas relations from `scalars`
     emission_limit = get_emission_limit()
