@@ -78,8 +78,12 @@ def get_electricity_gas_relations(scalars):
     drop_indices = relations.loc[relations.var_value == "None"].index
     relations.drop(drop_indices, inplace=True)
     if relations.empty:
+        print("No gas electricity relation is set.")
         return None
     else:
+        print(
+            f"Gas electricity relations are set for busses: {relations.carrier.drop_duplicates().values}"
+        )
         return relations
 
 
