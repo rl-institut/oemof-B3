@@ -17,8 +17,10 @@ Description
 -------------
 The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
 fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
+Further, additional parameters like emission limit are saved in a separate file.
 """
 import sys
+import os
 from collections import OrderedDict
 
 import pandas as pd
@@ -33,6 +35,7 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     format_header,
     HEADER_B3_SCAL,
+    save_df,
 )
 
 
@@ -221,6 +224,14 @@ def parametrize_sequences(edp, ts, filters):
     return edp
 
 
+def save_emission_limit():
+    """Saves emission limit to `destination`"""
+    emission_scalars = scalars.loc[scalars["carrier"] == "emission"]
+    filename = os.path.join(destination, "additional_scalars.csv")
+    save_df(emission_scalars, filename)
+    return
+
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -271,6 +282,9 @@ if __name__ == "__main__":
 
     # save to csv
     edp.to_csv_dir(destination)
+
+    # add emission limit to `destination`
+    save_emission_limit()
 
     # add metadata
     edp.infer_metadata(foreign_keys_update=foreign_keys_update)
