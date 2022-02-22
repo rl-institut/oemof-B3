@@ -38,11 +38,11 @@ def get_emission_limit():
     emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index(
         "var_name"
     )
-    emission_limit = emission_scalars.at["emission_limit", "var_value"]
+    limit = emission_scalars.at["emission_limit", "var_value"]
     assert isinstance(
         emission_limit, (int, float)
     ), "Expected a number for 'emission limit'"
-    return emission_limit
+    return limit
 
 
 if __name__ == "__main__":
