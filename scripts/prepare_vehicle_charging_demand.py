@@ -21,9 +21,11 @@ This script prepares electric vehicle charging demand profiles for the regions B
 Brandenburg. The profiles have been created before with simBEV
 (https://github.com/rl-institut/simbev). The charging strategy of simBEV data is "greedy", i.e.
 batteries are charged with maximum power until they are fully charged or removed. This script
-applies a charging strategy "balanced" for the profiles "home" and "work" during specific hours (see
-global variables).
-
+applies a charging strategy we refer to as "balanced" for the profiles "home" and "work" during
+specific hours (see global variables). To apply this charging strategy values between
+[`HOME_START`, `HOME_END`] and [`WORK_START`, `WORK_END`] respectively are replaced by the average
+of all these values. We assume that this is a more realistic picture of the future than a charging
+strategy "greedy".
 """
 
 import sys
