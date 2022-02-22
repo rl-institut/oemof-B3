@@ -221,9 +221,7 @@ def parametrize_sequences(edp, ts, filters):
 
 def save_emission_limit():
     """Saves emission limit to `destination`"""
-    emission_scalars = scalars.loc[scalars["carrier"] == "emission"].set_index(
-        "var_name"
-    )
+    emission_scalars = scalars.loc[scalars["carrier"] == "emission"]
     filename = os.path.join(destination, "additional_scalars.csv")
     save_df(emission_scalars, filename)
     return
