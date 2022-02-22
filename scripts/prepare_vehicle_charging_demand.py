@@ -97,7 +97,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
 
         if balanced:
             # smooth work and home profiles as they have high peaks (~strategy balanced)
-            hourly_ts = balance_profiles(df=hourly_ts)
+            hourly_ts = smooth_profiles(df=hourly_ts)
 
         # only keep column "sum CS power" (sum of power demand at all charging stations)
         ts_total_demand = pd.DataFrame(hourly_ts["sum CS power"]).rename(
@@ -132,7 +132,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
     return ts_prepared
 
 
-def balance_profiles(df):
+def smooth_profiles(df):
     r"""
     Smoothes profiles "work" and "home" of `df` between specific hours (see global variables).
 
@@ -151,7 +151,7 @@ def balance_profiles(df):
         charging demand.
     """
 
-    def balanced_between_hours(ts, start, end):
+    def balance_between_hours(ts, start, end):
         """Apply charging strategy 'balanced' between two hours of the day."""
         # calculate average between start and end
         average = ts.between_time(start, end).mean()
@@ -160,7 +160,7 @@ def balance_profiles(df):
         return ts
 
     df["sum UC work"] = df.groupby(df.index.date)["sum UC work"].apply(
-        lambda x: balanced_between_hours(ts=x, start=WORK_START, end=WORK_END)
+        lambda x: balance_between_hours(ts=x, start=WORK_START, end=WORK_END)
     )
 
     # for home: determine which hours of the day should belong to next day
@@ -175,7 +175,7 @@ def balance_profiles(df):
         )
 
     df["sum UC home"] = df.groupby(df["temp"])["sum UC home"].apply(
-        lambda x: balanced_between_hours(ts=x, start=HOME_START, end=HOME_END)
+        lambda x: balance_between_hours(ts=x, start=HOME_START, end=HOME_END)
     )
 
     # get total charging df after balancing
