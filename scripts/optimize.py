@@ -69,7 +69,7 @@ def get_electricity_gas_relations(scalars):
     """
     relations = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     # drop relations that are None
-    drop_indices = relations.loc[relations.var_value == 'None'].index
+    drop_indices = relations.loc[relations.var_value == "None"].index
     relations.drop(drop_indices, inplace=True)
     if relations.empty:
         return None
