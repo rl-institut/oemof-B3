@@ -87,9 +87,8 @@ def get_electricity_gas_relations(scalars):
         print("No gas electricity relation is set.")
         return None
     else:
-        print(
-            f"Gas electricity relations are set for busses: {relations.carrier.drop_duplicates().values}"
-        )
+        busses = relations.carrier.drop_duplicates().values
+        print(f"Gas electricity relations are set for busses: {busses}")
         return relations
 
 
@@ -120,11 +119,11 @@ if __name__ == "__main__":
     path_additional_scalars = os.path.join(preprocessed, "additional_scalars.csv")
     scalars = dp.load_b3_scalars(path_additional_scalars)
 
-    # get emission limit and electricity gas relations from `scalars`
-    emission_limit = get_emission_limit()
+    # get emission limit, electricity gas relations and output_parameters of bpchp from `scalars`
     emission_limit = get_emission_limit(scalars)
     el_gas_relations = get_electricity_gas_relations(scalars)
-    
+    bpchp_out = get_bpchp_output_parameters(scalars)
+
     if not os.path.exists(optimized):
         os.mkdir(optimized)
 

@@ -238,7 +238,9 @@ def save_additional_scalars(scalars, destination):
     # get `output_parameters` of backpressure components as they are not take into
     # consideration in oemof.tabular so far. They are added to the components' output flow towards
     # the heat bus in script `optimize.py`.
-    bpchp_out = scalars.loc[(scalars.tech == "bpchp") & (scalars.var_name == "output_parameters")]
+    bpchp_out = scalars.loc[
+        (scalars.tech == "bpchp") & (scalars.var_name == "output_parameters")
+    ]
 
     # save all dataframes in one file
     df = pd.concat([el_gas_rel, emissions, bpchp_out])
