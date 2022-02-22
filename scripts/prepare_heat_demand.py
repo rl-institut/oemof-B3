@@ -41,6 +41,44 @@ from demandlib import bdew
 import oemof_b3.tools.data_processing as dp
 
 
+def get_shares_from_hh_distribution(path, region):
+    """
+    This function calculates the share of single family houses (Einfamilienhaus: efh)
+    and multi-family houses (Mehrfamilienhaus: mfh) from the household distribution
+    in input data
+
+    Parameters
+    ----------
+    path : str
+        Path to data
+
+    region : str
+        Region (eg. Brandenburg)
+
+    Returns
+    -------
+    share_efh : float
+        Share of efh in household distribution
+
+    share_mfh : float
+        Share of mfh in household distribution
+    """
+    # Get share of EFH and MFH from distribution of households
+    distribution_hh = pd.read_csv(path)
+    distribution_hh_reg = distribution_hh[distribution_hh["region"] == region]
+
+    share_efh = (
+        distribution_hh_reg["sfh"]
+        / np.add(distribution_hh_reg["sfh"], distribution_hh_reg["mfh"])
+    ).values[0]
+    share_mfh = (
+        distribution_hh_reg["mfh"]
+        / np.add(distribution_hh_reg["sfh"], distribution_hh_reg["mfh"])
+    ).values[0]
+
+    return share_efh, share_mfh
+
+
 def find_regional_files(path, region):
     """
     This function returns a list of file names in a directory that match the specified region.
