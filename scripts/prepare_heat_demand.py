@@ -456,6 +456,40 @@ def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, 
     return heat_load_postprocessed
 
 
+def adapt_scalars(scalars):
+    """
+    This function is used to sum the annual heat demand of the respective sectors per carrier
+    (central heat, decentral heat). The scalars are modified by writing the aggregated heat demand
+    into them in case they are missing.
+
+    Parameters
+    ----------
+    scalars : DataFrame
+        Dataframe with scalars
+
+    Returns
+    -------
+    scalars_modified : pd.DataFrame
+         Modified DataFrame that contains scalars with aggregated heat demands
+    """
+    scalars_modified = scalars
+    scalars_index_name = scalars.index.name
+
+    filtered_sc = filter_demands(scalars, SCENARIO, carrier, region)
+    #   scalars = scalars.drop(filtered_sc.index)   # If deletion respective heat demand per sector
+    filtered_sc_value_sum = filtered_sc.sum(axis=0, numeric_only=True)
+    new_scalars = filtered_sc.iloc[0]
+    for string in ["hh-", "ghd-", "i-"]:
+        new_scalars.loc["name"] = new_scalars.loc["name"].replace(string, "")
+    new_scalars["var_value"] = filtered_sc_value_sum.values[0]
+
+    if new_scalars["name"] not in scalars["name"].values:
+        scalars_modified = scalars.append(new_scalars, ignore_index=True)
+        scalars_modified.index.name = scalars_index_name
+
+    return scalars_modified
+
+
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
@@ -473,6 +507,7 @@ if __name__ == "__main__":
 
     # Read state heat demands of ghd and hh sectors
     sc = dp.load_b3_scalars(in_path5)
+    sc_copy = sc.copy()
 
     for region in REGION:
         share_efh, share_mfh = get_shares_from_hh_distribution(in_path2, region)
@@ -506,6 +541,12 @@ if __name__ == "__main__":
             total_heat_load = postprocess_data(
                 total_heat_load, heat_load_year, region, f"ts_{year}", sc_demand_unit
             )
+
+        for carrier in CARRIERS:
+            sc_copy = adapt_scalars(sc_copy)
+
+        if not sc_copy.equals(sc):
+            dp.save_df(sc, in_path5)
 
     # Rearrange stacked time series
     head_load = dp.format_header(
