@@ -1,6 +1,13 @@
 import os
 import logging
 
+from dynaconf import Dynaconf
+
+settings = Dynaconf(
+    envvar_prefix="DYNACONF",
+    settings_files=["settings.yaml", ".secrets.yaml"],
+)
+
 
 class LevelFilter(logging.Filter):
     def __init__(self, level):
