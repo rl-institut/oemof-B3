@@ -31,6 +31,9 @@ If environment is build otherwise, pandoc must be installed manually. It can be 
 
 ## Getting started
 
+Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
+
+
 ## Docs
 
 Read the docs [here](https://oemof-b3.readthedocs.io/).
