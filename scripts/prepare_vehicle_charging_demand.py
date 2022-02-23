@@ -41,6 +41,7 @@ HOME_START = "15:00"  # start charging strategy "balanced" for home profile
 HOME_END = "05:00"  # end charging strategy "balanced" for home profile
 WORK_START = "06:00"  # start charging strategy "balanced" for work profile
 WORK_END = "14:00"  # end charging strategy "balanced" for work profile
+REGION_DICT = {"Berlin": "B", "Brandenburg": "BB"}
 
 
 def prepare_vehicle_charging_demand(input_dir, balanced=True):
@@ -84,6 +85,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
     for filename in os.listdir(input_dir):
         path = os.path.join(input_dir, filename)
         region, year = get_year_region_from_filename()
+        region = REGION_DICT[region]
 
         # read data from file, copy and superfluous drop last time step
         ts_raw = pd.read_csv(
