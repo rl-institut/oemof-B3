@@ -310,9 +310,9 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
     on : list
         List of columns to merge on
     how : str
-        'left' or 'outer'
+        'left' or 'outer'. Default: 'left'
     indicator : bool
-        If True, an indicator column is included
+        If True, an indicator column is included. Default: False
 
     Returns
     -------
