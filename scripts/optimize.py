@@ -28,7 +28,9 @@ from oemof.outputlib import processing
 # pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
+
 from oemof_b3.tools import data_processing as dp
+from oemof_b3.config import config
 
 
 def get_emission_limit():
@@ -56,6 +58,9 @@ if __name__ == "__main__":
 
     optimized = sys.argv[2]
 
+    logfile = sys.argv[3]
+    logger = config.add_snake_logger(logfile, "optimize")
+
     filename_metadata = "datapackage.json"
 
     solver = "cbc"
@@ -65,24 +70,33 @@ if __name__ == "__main__":
     if not os.path.exists(optimized):
         os.mkdir(optimized)
 
-    es = EnergySystem.from_datapackage(
-        os.path.join(preprocessed, filename_metadata), attributemap={}, typemap=TYPEMAP
-    )
+    try:
+        es = EnergySystem.from_datapackage(
+            os.path.join(preprocessed, filename_metadata),
+            attributemap={},
+            typemap=TYPEMAP,
+        )
 
-    # create model from energy system (this is just oemof.solph)
-    m = Model(es)
+        # create model from energy system (this is just oemof.solph)
+        m = Model(es)
 
-    # Add an emission constraint
-    if emission_limit is not None:
-        constraints.emission_limit(m, limit=emission_limit)
+        # Add an emission constraint
+        if emission_limit is not None:
+            constraints.emission_limit(m, limit=emission_limit)
 
-    # select solver 'gurobi', 'cplex', 'glpk' etc
-    m.solve(solver=solver)
+        # select solver 'gurobi', 'cplex', 'glpk' etc
+        m.solve(solver=solver)
+    except:  # noqa: E722
+        logger.exception(
+            f"Could not optimize energysystem for datapackage from '{preprocessed}'."
+        )
+        raise
 
-    # get results from the solved model(still oemof.solph)
-    es.meta_results = processing.meta_results(m)
-    es.results = processing.results(m)
-    es.params = processing.parameter_as_dict(es)
+    else:
+        # get results from the solved model(still oemof.solph)
+        es.meta_results = processing.meta_results(m)
+        es.results = processing.results(m)
+        es.params = processing.parameter_as_dict(es)
 
-    # dump the EnergySystem
-    es.dump(optimized)
+        # dump the EnergySystem
+        es.dump(optimized)

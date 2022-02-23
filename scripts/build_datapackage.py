@@ -19,6 +19,7 @@ The script creates an empty EnergyDatapackage from the specifications given in t
 fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
 Further, additional parameters like emission limit are saved in a separate file.
 """
+import logging
 import sys
 import os
 from collections import OrderedDict
@@ -37,6 +38,9 @@ from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
     save_df,
 )
+from oemof_b3.config import config
+
+logger = logging.getLogger()
 
 
 def multi_load(paths, load_func):
@@ -128,14 +132,14 @@ def update_with_checks(old, new):
     """
     # Check if some data would get lost
     if not new.index.isin(old.index).all():
-        print("Index of new data is not in the index of old data.")
+        logger.warning("Index of new data is not in the index of old data.")
 
     try:
         # Check if it overwrites by setting errors = 'raise'
         old.update(new, errors="raise")
     except ValueError:
         old.update(new, errors="ignore")
-        print("Update overwrites existing data.")
+        logger.warning("Update overwrites existing data.")
 
 
 def parametrize_scalars(edp, scalars, filters):
@@ -175,7 +179,7 @@ def parametrize_scalars(edp, scalars, filters):
 
         update_with_checks(edp.data["component"], filtered)
 
-        print(f"Updated DataPackage with scalars filtered by {filt}.")
+        logger.info(f"Updated DataPackage with scalars filtered by {filt}.")
 
     edp.unstack_components()
 
@@ -219,7 +223,7 @@ def parametrize_sequences(edp, ts, filters):
 
         edp.data[name].update(data_unstacked)
 
-    print(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
+    logger.info(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
 
     return edp
 
@@ -236,6 +240,9 @@ if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
     destination = sys.argv[2]
+
+    logfile = sys.argv[3]
+    logger = config.add_snake_logger(logfile, "build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
 

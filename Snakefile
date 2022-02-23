@@ -153,27 +153,33 @@ def get_paths_scenario_input(wildcards):
 rule build_datapackage:
     input:
         get_paths_scenario_input,
-        scenario="scenarios/{scenario}.yml",
+        scenario="scenarios/{scenario}.yml"
     output:
         directory("results/{scenario}/preprocessed")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/build_datapackage.py {input.scenario} {output}"
+        "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
     output:
         directory("results/{scenario}/optimized/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/optimize.py {input} {output}"
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
         "results/{scenario}/optimized"
     output:
         directory("results/{scenario}/postprocessed/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
@@ -199,6 +205,8 @@ rule report:
         plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
+    params:
+        logfile="logs/{scenario}.log"
     run:
         import os
         import shutil
