@@ -209,7 +209,8 @@ rule report:
         shell(
         """
         pandoc -V geometry:a4paper,margin=2.5cm \
-        --resource-path={output}/../plotted \
+        --lua-filter report/pandoc_filter.lua \
+        --resource-path={input[2]} \
         --metadata title="Results for scenario {wildcards.scenario}" \
         {output}/report.md -o {output}/report.pdf
         """
@@ -217,7 +218,8 @@ rule report:
         # static html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={input[2]} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report.md -o {output}/report.html
@@ -226,7 +228,8 @@ rule report:
         # interactive html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={input[2]} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report_interactive.md -o {output}/report_interactive.html
