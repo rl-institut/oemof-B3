@@ -35,6 +35,7 @@ from oemof.tabular.facades import TYPEMAP
 
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.config import config
+from oemof_b3.config.config import settings
 
 
 def get_emission_limit(scalars):
@@ -73,12 +74,6 @@ if __name__ == "__main__":
     logfile = sys.argv[3]
     logger = config.add_snake_logger(logfile, "optimize")
 
-    filename_metadata = "datapackage.json"
-
-    solver = "cbc"
-
-    DEBUG = False
-
     # get additional scalars, set to None at first
     emission_limit = None
     additional_scalars = get_additional_scalars()
@@ -90,13 +85,13 @@ if __name__ == "__main__":
 
     try:
         es = EnergySystem.from_datapackage(
-            os.path.join(preprocessed, filename_metadata),
+            os.path.join(preprocessed, settings.optimize.filename_metadata),
             attributemap={},
             typemap=TYPEMAP,
         )
 
         # Reduce number of timestep for debugging
-        if DEBUG:
+        if settings.optimize.debug:
             es.timeindex = es.timeindex[:3]
 
             logger.info(
@@ -110,8 +105,7 @@ if __name__ == "__main__":
         if emission_limit is not None:
             constraints.emission_limit(m, limit=emission_limit)
 
-        # select solver 'gurobi', 'cplex', 'glpk' etc
-        m.solve(solver=solver)
+        m.solve(solver=settings.optimize.solver)
     except:  # noqa: E722
         logger.exception(
             f"Could not optimize energysystem for datapackage from '{preprocessed}'."
