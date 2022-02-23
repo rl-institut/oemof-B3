@@ -9,6 +9,6 @@
 
 ![Plot 2](BB-electricity_07.png)
 
-![Plot 3](BE-electricity_01.png)
+![Plot 3](B-electricity_01.png)
 
-![Plot 4](BE-electricity_07.png)
+![Plot 4](B-electricity_07.png)
