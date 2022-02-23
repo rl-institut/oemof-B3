@@ -23,7 +23,12 @@ from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
 
 from oemof_b3.model import bus_attrs_update, component_attrs_update
-from oemof_b3.tools.data_processing import HEADER_B3_SCAL, format_header, sort_values, save_df
+from oemof_b3.tools.data_processing import (
+    HEADER_B3_SCAL,
+    format_header,
+    sort_values,
+    save_df,
+)
 
 NON_REGIONAL = [
     "capacity_cost",
