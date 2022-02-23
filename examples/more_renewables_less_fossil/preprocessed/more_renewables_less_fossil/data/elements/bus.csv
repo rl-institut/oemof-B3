@@ -1,9 +1,9 @@
 region,name,type,balanced
-BE,BE-electricity,bus,True
-BE,BE-ch4,bus,False
-BE,BE-oil,bus,False
-BE,BE-other,bus,False
-BE,BE-biomass,bus,False
+B,B-electricity,bus,True
+B,B-ch4,bus,False
+B,B-oil,bus,False
+B,B-other,bus,False
+B,B-biomass,bus,False
 BB,BB-electricity,bus,True
 BB,BB-ch4,bus,False
 BB,BB-oil,bus,False
