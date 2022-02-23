@@ -337,7 +337,7 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
         )
 
     b_not_a = pd.Index(_df_b.loc[:, on]).difference(pd.Index(_df_a.loc[:, on]))
-    print(f"There are {len(b_not_a)} elements are new in df_b: {b_not_a}")
+    print(f"There are {len(b_not_a)} elements are merged into df_b: {b_not_a}")
 
     # Merge a with b, ignoring all data in b
     merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
@@ -350,7 +350,7 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
 
     merged.index.name = df_b_index_name
 
-    # Where df_a contains no new data, use df_b
+    # Where df_a contains no data, use df_b
     merged = merged.reset_index().set_index(
         on
     )  # First reset, then set index to keep it as a column
