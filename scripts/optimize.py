@@ -28,9 +28,9 @@ from oemof.outputlib import processing
 # pylint: disable=unusedimport
 from oemof.tabular import datapackage  # noqa
 from oemof.tabular.facades import TYPEMAP
-from oemof_b3.tools import data_processing as dp
 
-import config
+from oemof_b3.tools import data_processing as dp
+from oemof_b3.config import config
 
 
 def get_emission_limit():

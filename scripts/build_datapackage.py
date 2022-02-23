@@ -38,8 +38,7 @@ from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
     save_df,
 )
-import config
-
+from oemof_b3.config import config
 
 logger = logging.getLogger()
 

@@ -23,7 +23,7 @@ import sys
 from oemof.solph import EnergySystem
 from oemoflex.model.datapackage import ResultsDataPackage
 
-import config
+from oemof_b3.config import config
 
 
 if __name__ == "__main__":
