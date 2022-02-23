@@ -18,8 +18,8 @@ class LevelFilter(logging.Filter):
         return record.levelno != self.level
 
 
-DEBUG = os.environ.get("DEBUG", False)
-LOGGING_LEVEL = os.environ.get(
+DEBUG = settings.get("DEBUG", False)
+LOGGING_LEVEL = settings.get(
     "LOGGING_LEVEL", logging.DEBUG if DEBUG else logging.INFO
 )
 LOGGING_FOLDER = "logs"
