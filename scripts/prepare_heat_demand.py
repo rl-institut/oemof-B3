@@ -456,7 +456,7 @@ def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, 
     return heat_load_postprocessed
 
 
-def adapt_scalars(scalars):
+def update_scalars_with_aggregated_heat_demands(scalars):
     """
     This function is used to sum the annual heat demand of the respective sectors per carrier
     (central heat, decentral heat). The scalars are modified by writing the aggregated heat demand
@@ -471,8 +471,9 @@ def adapt_scalars(scalars):
     -------
     scalars_modified : pd.DataFrame
          Modified DataFrame that contains scalars with aggregated heat demands
+    scalars : pd.DataFrame
+        Dataframe with scalars
     """
-    scalars_modified = scalars
     scalars_index_name = scalars.index.name
 
     filtered_sc = filter_demands(scalars, SCENARIO, carrier, region)
@@ -487,7 +488,9 @@ def adapt_scalars(scalars):
         scalars_modified = scalars.append(new_scalars, ignore_index=True)
         scalars_modified.index.name = scalars_index_name
 
-    return scalars_modified
+        return scalars_modified
+    else:
+        return scalars
 
 
 if __name__ == "__main__":
@@ -543,7 +546,7 @@ if __name__ == "__main__":
             )
 
         for carrier in CARRIERS:
-            sc_copy = adapt_scalars(sc_copy)
+            sc_copy = update_scalars_with_aggregated_heat_demands(sc_copy)
 
         if not sc_copy.equals(sc):
             dp.save_df(sc, in_path5)
