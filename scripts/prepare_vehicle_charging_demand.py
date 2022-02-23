@@ -129,7 +129,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
 
     # add additional information as required by template
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "vehicle-charging-profile"
+    ts_prepared.loc[:, "var_name"] = "electricity-bev_charging-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
 
