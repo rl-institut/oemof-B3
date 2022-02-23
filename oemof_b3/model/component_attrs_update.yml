@@ -258,3 +258,11 @@ h2-excess:
   defaults:
     marginal_cost: 0
     input_parameters: "{}"
+
+electricity-bev_charging:
+  carrier: electricity
+  tech: bev_charging
+  type: load
+  foreign_keys:
+    bus: electricity
+    profile: electricity-bev_charging-profile

@@ -310,9 +310,9 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
     on : list
         List of columns to merge on
     how : str
-        'left' or 'outer'
+        'left' or 'outer'. Default: 'left'
     indicator : bool
-        If True, an indicator column is included
+        If True, an indicator column is included. Default: False
 
     Returns
     -------
@@ -330,12 +330,14 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
 
     # Warn if data is lost because of merge
     a_not_b = pd.Index(_df_a.loc[:, on]).difference(pd.Index(_df_b.loc[:, on]))
-    print(
-        f"There are {len(a_not_b)} elements are in df_a but not in df_b and will be lost: {a_not_b}"
-    )
+    if how == "left" and not a_not_b.empty:
+        print(
+            f"There are {len(a_not_b)} elements that are in df_a but not in df_b"
+            f" and will be lost: {a_not_b}"
+        )
 
     b_not_a = pd.Index(_df_b.loc[:, on]).difference(pd.Index(_df_a.loc[:, on]))
-    print(f"There are {len(b_not_a)} elements are new in df_b: {b_not_a}")
+    print(f"There are {len(b_not_a)} elements are merged into df_b: {b_not_a}")
 
     # Merge a with b, ignoring all data in b
     merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
@@ -348,7 +350,7 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
 
     merged.index.name = df_b_index_name
 
-    # Where df_a contains no new data, use df_b
+    # Where df_a contains no data, use df_b
     merged = merged.reset_index().set_index(
         on
     )  # First reset, then set index to keep it as a column
