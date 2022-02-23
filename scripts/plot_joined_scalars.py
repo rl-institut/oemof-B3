@@ -31,7 +31,7 @@ unit_dict = {"capacity": "W", "flow_out_electricity": "Wh"}
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     # pivot
     df_pivot = pd.pivot_table(
-        df, index=["scenario", "region"], columns="name", values="var_value"
+        df, index=["scenario_key", "region"], columns="name", values="var_value"
     )
     # rename and aggregate duplicated columns
     df_pivot = plots.map_labels(df_pivot, labels_dict)

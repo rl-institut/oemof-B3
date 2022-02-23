@@ -6,7 +6,7 @@ import pandas as pd
 
 from oemoflex.model.datapackage import EnergyDataPackage
 
-# select scenario
+# select scenario key
 scenario_names = [
     "base",
     "more_renewables",

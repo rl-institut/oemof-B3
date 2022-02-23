@@ -243,7 +243,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
         columns_to_aggregate = [columns_to_aggregate]
 
     # Define the columns that are split and thus not aggregated
-    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name"]
+    groupby = ["scenario_key", "carrier", "region", "tech", "type", "var_name"]
 
     groupby = list(set(groupby).difference(set(columns_to_aggregate)))
 
@@ -471,7 +471,7 @@ def unstack_var_name(df):
     _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
     _df = _df.set_index(
-        ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
+        ["scenario_key", "name", "region", "carrier", "tech", "type", "var_name"]
     )
 
     unstacked = _df.unstack("var_name")

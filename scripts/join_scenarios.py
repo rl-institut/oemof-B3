@@ -41,7 +41,7 @@ if __name__ == "__main__":
         scalars = load_scalars(
             os.path.join("results", scenario, "postprocessed", "scalars.csv")
         )
-        scalars["scenario"] = scenario
+        scalars["scenario_key"] = scenario
         joined_scalars.append(scalars)
 
     joined_scalars = pd.concat(joined_scalars)

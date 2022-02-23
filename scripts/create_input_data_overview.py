@@ -47,7 +47,7 @@ if __name__ == "__main__":
     df = load_b3_scalars(in_path)
 
     # filter for data within the scenario defined above
-    df = df.loc[df["scenario"] == SCENARIO]
+    df = df.loc[df["scenario_key"] == SCENARIO]
 
     # filter for the variables defined above
     variables = [item for sublist in VAR_NAMES.values() for item in sublist]

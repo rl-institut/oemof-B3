@@ -56,7 +56,7 @@ def format_input_scalars(df):
 
     _df.index.name = "id_scal"
 
-    _df = _df.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    _df = _df.sort_values(by=["carrier", "tech", "var_name", "scenario_key"])
 
     return _df
 
@@ -80,7 +80,9 @@ def expand_scalars(df, column, where, expand):
 
     _df_wo_cc.index.name = "id_scal"
 
-    _df_wo_cc = _df_wo_cc.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    _df_wo_cc = _df_wo_cc.sort_values(
+        by=["carrier", "tech", "var_name", "scenario_key"]
+    )
 
     return _df_wo_cc
 
@@ -119,7 +121,7 @@ if __name__ == "__main__":
     empty_scalars = format_input_scalars(components)
 
     # set scenario name
-    empty_scalars.loc[:, "scenario"] = "toy-scenario"
+    empty_scalars.loc[:, "scenario_key"] = "toy-scenario"
 
     # if empty raw scalars should be created, reverse the annuisation as well.
     # if empty resources scalars are needed, set this to False.

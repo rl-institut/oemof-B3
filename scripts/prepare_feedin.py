@@ -92,7 +92,7 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
 
     return ts_prepared
 
@@ -156,7 +156,7 @@ def prepare_ror_time_series(filename_ts, region):
         ts_prepared = dp.format_header(
             df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
         )
-        ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+        ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
         ts_df = pd.concat([ts_df, ts_prepared])
 
     # add additional information as required by template
