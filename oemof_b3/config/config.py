@@ -1,4 +1,3 @@
-
 import logging
 
 from dynaconf import Dynaconf
@@ -19,9 +18,7 @@ class LevelFilter(logging.Filter):
 
 
 DEBUG = settings.get("DEBUG", False)
-LOGGING_LEVEL = settings.get(
-    "LOGGING_LEVEL", logging.DEBUG if DEBUG else logging.INFO
-)
+LOGGING_LEVEL = settings.get("LOGGING_LEVEL", logging.DEBUG if DEBUG else logging.INFO)
 LOGGING_FOLDER = "logs"
 
 root_logger = logging.getLogger()
