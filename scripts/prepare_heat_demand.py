@@ -235,6 +235,44 @@ def check_central_decentral(demands, value, consumer, carrier):
     return demands
 
 
+def filter_demands(scalars, scenario, carrier, region):
+    """
+    This function filters scalars by 'tech' == 'demand',
+    'carrier' == carrier, 'region' == region and 'scenario' == scenario
+    and returns the filtered dataframe
+
+    Parameters
+    ----------
+    scalars : DataFrame
+        Dataframe with scalars
+    scenario : str
+        Scenario e.g. "base"
+    carrier : str
+         Name of carrier (eg.: heat_central, heat_decentral)
+    region : str
+        Region (eg. Brandenburg)
+
+    Returns
+    -------
+    sc_filtered : DataFrame
+        Dataframe with filtered scalar data
+
+    """
+    sc_filtered = dp.filter_df(scalars, "tech", "demand")
+    sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
+    sc_filtered = dp.filter_df(sc_filtered, "region", region)
+    sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
+    if sc_filtered.empty:
+        raise ValueError(
+            f"No scalar data found that matches "
+            f"scenario='{scenario}', "
+            f"carrier='{carrier}', "
+            f"region='{region}'"
+        )
+
+    return sc_filtered
+
+
 def get_heat_demand(scalars, scenario, carrier, region):
     """
     This function returns ghd and hh demands together with their unit of a given region and a
@@ -263,17 +301,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     consumers = ["ghd", "hh"]
     demands = pd.DataFrame()
 
-    sc_filtered = dp.filter_df(scalars, "tech", "demand")
-    sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
-    sc_filtered = dp.filter_df(sc_filtered, "region", region)
-    sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
-    if sc_filtered.empty:
-        raise ValueError(
-            f"No scalar data found that matches "
-            f"scenario='{scenario}', "
-            f"carrier='{carrier}', "
-            f"region='{region}'"
-        )
+    sc_filtered = filter_demands(scalars, scenario, carrier, region)
 
     if not (sc_filtered["var_unit"].values[0] == sc_filtered["var_unit"].values).all():
         raise ValueError(
