@@ -12,3 +12,4 @@ dist
 build
 gurobi.log
 data.open-power-system-data.org/
+/.secrets.yaml
