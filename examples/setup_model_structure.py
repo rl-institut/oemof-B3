@@ -42,8 +42,8 @@ edp = EnergyDataPackage.setup_default(
     name=scenario_name,
     basepath=preprocessed,
     datetimeindex=pd.date_range("1/1/2016", periods=24 * 10, freq="H"),
-    regions=["BE", "BB"],
-    links=["BB-BE"],
+    regions=["B", "BB"],
+    links=["BB-B"],
     busses=["electricity", "ch4", "biomass", "oil", "other"],
     components=[
         "electricity-shortage",
