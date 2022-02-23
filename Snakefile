@@ -98,6 +98,15 @@ rule prepare_electricity_demand:
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
+rule prepare_vehicle_charging_demand:
+    input:
+        input_dir=directory("raw/time_series/vehicle_charging"),
+        script="scripts/prepare_vehicle_charging_demand.py"
+    output:
+        "results/_resources/ts_load_electricity_vehicles.csv"
+    shell:
+        "python {input.script} {input.input_dir} {output}"
+
 rule prepare_scalars:
     input:
         raw_scalars="raw/scalars_{range}.csv",
@@ -146,27 +155,33 @@ def get_paths_scenario_input(wildcards):
 rule build_datapackage:
     input:
         get_paths_scenario_input,
-        scenario="scenarios/{scenario}.yml",
+        scenario="scenarios/{scenario}.yml"
     output:
         directory("results/{scenario}/preprocessed")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/build_datapackage.py {input.scenario} {output}"
+        "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
     output:
         directory("results/{scenario}/optimized/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/optimize.py {input} {output}"
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
         "results/{scenario}/optimized"
     output:
         directory("results/{scenario}/postprocessed/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
@@ -192,6 +207,8 @@ rule report:
         plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
+    params:
+        logfile="logs/{scenario}.log"
     run:
         import os
         import shutil
@@ -202,7 +219,8 @@ rule report:
         shell(
         """
         pandoc -V geometry:a4paper,margin=2.5cm \
-        --resource-path={output}/../plotted \
+        --lua-filter report/pandoc_filter.lua \
+        --resource-path={input[2]} \
         --metadata title="Results for scenario {wildcards.scenario}" \
         {output}/report.md -o {output}/report.pdf
         """
@@ -210,7 +228,8 @@ rule report:
         # static html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={input[2]} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report.md -o {output}/report.html
@@ -219,7 +238,8 @@ rule report:
         # interactive html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={input[2]} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report_interactive.md -o {output}/report_interactive.html
