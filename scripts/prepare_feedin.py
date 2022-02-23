@@ -133,7 +133,7 @@ def prepare_ror_time_series(filename_ts, region):
         leap_year = new_index_df.index.is_leap_year[0]
 
         # extend time series for leap years
-        if leap_year == True:
+        if leap_year == True:  # noqa: E712
             # Change datetimeindex to current `year`
             time_series.index = (
                 time_series.reset_index()["index"]
