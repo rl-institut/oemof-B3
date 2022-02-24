@@ -92,6 +92,52 @@ def get_electricity_gas_relations(scalars):
         return relations
 
 
+def get_bpchp_output_parameters(scalars):
+    r"""Gets 'output_parameters' of backpressure CHPs from scalars and
+    returns None if it is missing or None."""
+    bpchp_outs_raw = scalars.loc[
+        (scalars.tech == "bpchp") & (scalars.var_name == "output_parameters")
+    ]
+
+    # drop rows that have empty dict as var_value
+    bpchp_outs = drop_values_by_keyword(bpchp_outs_raw, "{}")
+    if bpchp_outs.empty:
+        return None
+    else:
+        return bpchp_outs
+
+
+def add_output_parameters_to_bpchp(parameters, energysystem):
+    r"""
+    Adds keywords for electricity-gas relation constraint to backpressure CHPs.
+
+    This is necessary as oemof.tabular does not support `output_parameters` of these components,
+    yet. The keywords are set as attributes of the output flow towards `heat_bus`.
+
+    Parameters
+    ----------
+    parameters : pd.DataFrame
+        Contains output_parameters of backpressure CHP scalars.
+    energysystem : oemof.solph.network.EnergySystem
+        The energy system
+    """
+    # rename column 'name' as is collides with iterrows()
+    parameters.rename(columns={"name": "name_"}, inplace=True)
+    for i, element in parameters.iterrows():
+        # get heat bus the component is connected to
+        bus = energysystem.groups[element.name_].heat_bus
+
+        # get keyword and boolean value
+        split_str = element.var_value.split('"')
+        keyword = split_str[1]
+        value = bool(split_str[2].split("}")[0].split()[1])
+
+        # set keyword as attribute with value
+        setattr(energysystem.groups[element.name_].outputs.data[bus], keyword, value)
+
+    return energysystem
+
+
 def add_electricity_gas_relation_constraints(model, relations):
     r"""
     Adds constraint `equate_flows_by_keyword` to `model`.
@@ -130,6 +176,9 @@ if __name__ == "__main__":
     es = EnergySystem.from_datapackage(
         os.path.join(preprocessed, filename_metadata), attributemap={}, typemap=TYPEMAP
     )
+    # add output_parameters of bpchp
+    if bpchp_out is not None:
+        es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
 
     # create model from energy system (this is just oemof.solph)
     m = Model(es)
