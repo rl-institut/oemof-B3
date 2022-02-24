@@ -1,0 +1,8 @@
+name: oemof_b3
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.7
+  - conda-forge::pandoc>=2.17
+
