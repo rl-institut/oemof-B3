@@ -52,14 +52,13 @@ def get_emission_limit(scalars):
 
 
 def get_additional_scalars():
-    """Returns additional scalars as pd.DataFrame or None"""
+    """Returns additional scalars as pd.DataFrame or None if file does not exist"""
     filename_add_scalars = os.path.join(preprocessed, "additional_scalars.csv")
     if os.path.exists(filename_add_scalars):
         scalars = dp.load_b3_scalars(filename_add_scalars)
-        emission_limit = get_emission_limit(scalars)
+        return scalars
     else:
-        emission_limit = None
-    return emission_limit
+        return None
 
 
 if __name__ == "__main__":
@@ -75,7 +74,9 @@ if __name__ == "__main__":
     solver = "cbc"
 
     # get additional scalars
-    emission_limit = get_additional_scalars()
+    scalars = get_additional_scalars()
+    if scalars is not None:
+        emission_limit = get_emission_limit(scalars)
 
     if not os.path.exists(optimized):
         os.mkdir(optimized)
@@ -91,8 +92,9 @@ if __name__ == "__main__":
         m = Model(es)
 
         # Add an emission constraint
-        if emission_limit is not None:
-            constraints.emission_limit(m, limit=emission_limit)
+        if scalars is not None:
+            if emission_limit is not None:
+                constraints.emission_limit(m, limit=emission_limit)
 
         # select solver 'gurobi', 'cplex', 'glpk' etc
         m.solve(solver=solver)
