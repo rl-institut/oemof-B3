@@ -88,7 +88,7 @@ def get_electricity_gas_relations(scalars):
         return None
     else:
         busses = relations.carrier.drop_duplicates().values
-        print(f"Gas electricity relations are set for busses: {busses}")
+        print(f"Gas electricity relations will be set for busses: {busses}")
         return relations
 
 
@@ -143,11 +143,12 @@ def add_electricity_gas_relation_constraints(model, relations):
     Adds constraint `equate_flows_by_keyword` to `model`.
     """
     for index, row in relations.iterrows():
-        suffix = f"{row.carrier.split('_')[1]}-{row.region}"
+        # Formulate suffix for keywords <carrier>-<region>
+        suffix = f"{row.carrier}-{row.region}"
         equate_flows_by_keyword(
             model=model,
-            keyword1=f"{EL_KEY}_{suffix}",
-            keyword2=f"{GAS_KEY}_{suffix}",
+            keyword1=f"{EL_KEY}-{suffix}",
+            keyword2=f"{GAS_KEY}-{suffix}",
             factor1=row.var_value,
         )
 
