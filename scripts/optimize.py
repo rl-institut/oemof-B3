@@ -46,9 +46,9 @@ EL_KEY = "electricity"  # prefix of keywords for gas electricity relation
 GAS_KEY = "gas"  # prefix of keywords for gas electricity relation
 
 
-def drop_none_values(df):
+def drop_values_by_keyword(df, keyword="None"):
     """drops row if `var_value` is None"""
-    drop_indices = df.loc[df.var_value == "None"].index
+    drop_indices = df.loc[df.var_value == keyword].index
     df.drop(drop_indices, inplace=True)
     return df
 
@@ -58,7 +58,7 @@ def get_emission_limit(scalars):
     emission_df_raw = scalars.loc[scalars["carrier"] == "emission"].set_index(
         "var_name"
     )
-    emission_df = drop_none_values(emission_df_raw)
+    emission_df = drop_values_by_keyword(emission_df_raw)
 
     # return None if no emission limit is given ('None' or entry missing)
     if emission_df.empty:
@@ -82,7 +82,7 @@ def get_electricity_gas_relations(scalars):
     """
     relations_raw = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     # drop relations that are None
-    relations = drop_none_values(relations_raw)
+    relations = drop_values_by_keyword(relations_raw)
     if relations.empty:
         print("No gas electricity relation is set.")
         return None
