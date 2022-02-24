@@ -62,11 +62,11 @@ def get_emission_limit(scalars):
 
     # return None if no emission limit is given ('None' or entry missing)
     if emission_df.empty:
-        print("No emission limit set.")
+        print("No emission limit will be set.")
         return None
     else:
         limit = emission_df.at[EMISSION_LIMIT, "var_value"]
-        print(f"Emission limit set to {limit}.")
+        print(f"Emission limit will be set to {limit}.")
         return limit
 
 
@@ -84,7 +84,7 @@ def get_electricity_gas_relations(scalars):
     # drop relations that are None
     relations = drop_values_by_keyword(relations_raw)
     if relations.empty:
-        print("No gas electricity relation is set.")
+        print("No gas electricity relation will be set.")
         return None
     else:
         busses = relations.carrier.drop_duplicates().values
