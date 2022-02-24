@@ -3,6 +3,7 @@
 __pycache__/
 raw/
 results/
+logs/
 docs/_build
 # Packages
 *.egg
