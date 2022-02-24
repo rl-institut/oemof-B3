@@ -49,7 +49,7 @@ GAS_KEY = "gas"  # prefix of keywords for gas electricity relation
 def drop_values_by_keyword(df, keyword="None"):
     """drops row if `var_value` is None"""
     drop_indices = df.loc[df.var_value == keyword].index
-    df.drop(drop_indices, inplace=True)
+    df = df.drop(drop_indices)
     return df
 
 
@@ -177,6 +177,7 @@ if __name__ == "__main__":
     es = EnergySystem.from_datapackage(
         os.path.join(preprocessed, filename_metadata), attributemap={}, typemap=TYPEMAP
     )
+
     # add output_parameters of bpchp
     if bpchp_out is not None:
         es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
