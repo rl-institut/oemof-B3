@@ -33,10 +33,8 @@ from oemof_b3.tools import data_processing as dp
 from oemof_b3.config import config
 
 
-def get_emission_limit():
+def get_emission_limit(scalars):
     """Reads emission limit from csv file in `preprocessed`."""
-    path = os.path.join(preprocessed, "additional_scalars.csv")
-    scalars = dp.load_b3_scalars(path)
     emission_df = scalars.loc[scalars["carrier"] == "emission"].set_index("var_name")
 
     # drop row if `var_value` is None
@@ -53,6 +51,17 @@ def get_emission_limit():
         return limit
 
 
+def get_additional_scalars():
+    """Returns additional scalars as pd.DataFrame or None"""
+    filename_add_scalars = os.path.join(preprocessed, "additional_scalars.csv")
+    if os.path.exists(filename_add_scalars):
+        scalars = dp.load_b3_scalars(filename_add_scalars)
+        emission_limit = get_emission_limit(scalars)
+    else:
+        emission_limit = None
+    return emission_limit
+
+
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
 
@@ -65,7 +74,8 @@ if __name__ == "__main__":
 
     solver = "cbc"
 
-    emission_limit = get_emission_limit()
+    # get additional scalars
+    emission_limit = get_additional_scalars()
 
     if not os.path.exists(optimized):
         os.mkdir(optimized)
