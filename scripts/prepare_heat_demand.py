@@ -263,7 +263,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     consumers = ["ghd", "hh"]
     demands = pd.DataFrame()
 
-    sc_filtered = dp.filter_df(scalars, "tech", "demand")
+    sc_filtered = dp.filter_df(scalars, "type", "load")
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
     sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
@@ -284,7 +284,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     demand_unit = list(set(sc_filtered["var_unit"]))
 
     for consumer in consumers:
-        sc_filtered_consumer = sc_filtered[sc_filtered["name"].str.contains(consumer)]
+        sc_filtered_consumer = sc_filtered[sc_filtered["tech"].str.contains(consumer)]
 
         if len(sc_filtered_consumer) > 1:
             print(
