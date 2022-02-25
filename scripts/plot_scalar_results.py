@@ -169,6 +169,7 @@ if __name__ == "__main__":
     target = sys.argv[2]
 
     # User input
+    CARRIERS = ["electricity", "heat_central", "heat_decentral"]
     REGIONS = ["BB", "B"]  # BE_BB
     MW_TO_W = 1e6
 
@@ -262,8 +263,10 @@ if __name__ == "__main__":
         plot.save_plot(output_path_plot)
 
     plot_capacity()
-    plot_storage_capacity("electricity")
-    plot_invest_out("electricity")
-    plot_storage_invest("electricity")
-    plot_flow_out("electricity")
-    plot_storage_out("electricity")
+
+    for carrier in CARRIERS:
+        plot_storage_capacity(carrier)
+        plot_invest_out(carrier)
+        plot_storage_invest(carrier)
+        plot_flow_out(carrier)
+        plot_storage_out(carrier)
