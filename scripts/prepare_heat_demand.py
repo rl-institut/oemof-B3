@@ -442,9 +442,6 @@ if __name__ == "__main__":
 
     CARRIERS = ["heat_central", "heat_decentral"]
 
-    # Add empty data frame for results / output
-    total_heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
-
     # Read state heat demands of ghd and hh sectors
     sc = dp.load_b3_scalars(in_path5)
 
@@ -457,6 +454,9 @@ if __name__ == "__main__":
     regions = sc_filtered.loc[:, "region"].unique()
 
     scenarios = sc_filtered.loc[:, "scenario"].unique()
+
+    # Create empty data frame for results / output
+    total_heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
     for region, scenario in itertools.product(regions, scenarios):
         share_efh, share_mfh = get_shares_from_hh_distribution(in_path2, region)
