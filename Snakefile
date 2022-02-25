@@ -109,10 +109,12 @@ rule prepare_vehicle_charging_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/base-scenario.csv",
+        raw_scalars="raw/scalars_{range}.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_base-scenario.csv"
+        "results/_resources/scal_{range}.csv"
+    wildcard_constraints:
+        range=("base_PR#91|high_PR#91|low_PR#91")
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
