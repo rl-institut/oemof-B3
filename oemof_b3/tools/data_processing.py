@@ -329,9 +329,10 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
         df_b_columns.append("_merge")
 
     # Give some information on how the merge affects the data
-    a_not_b = set(pd.Index(_df_a.loc[:, on])).difference(
-        set(pd.Index(_df_b.loc[:, on]))
-    )
+    set_index_a = set(map(tuple, pd.Index(_df_a.loc[:, on].replace(np.nan, "NaN"))))
+    set_index_b = set(map(tuple, pd.Index(_df_b.loc[:, on].replace(np.nan, "NaN"))))
+
+    a_not_b = set_index_a.difference(set_index_b)
     if a_not_b:
         if how == "left":
             print(
@@ -344,14 +345,10 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
                 f" added to df_b: {a_not_b}"
             )
 
-    a_and_b = set(pd.Index(_df_a.loc[:, on])).intersection(
-        set(pd.Index(_df_b.loc[:, on]))
-    )
+    a_and_b = set_index_a.intersection(set_index_b)
     print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
 
-    b_not_a = set(pd.Index(_df_b.loc[:, on])).difference(
-        set(pd.Index(_df_a.loc[:, on]))
-    )
+    b_not_a = set_index_b.difference(set_index_a)
     print(f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}")
 
     # Merge a with b, ignoring all data in b
