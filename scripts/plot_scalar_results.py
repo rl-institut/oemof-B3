@@ -85,8 +85,15 @@ class ScalarPlot:
         return self.prepared_scalar_data
 
     def draw_plot(self, unit, title):
-        fig, ax = plt.subplots()
+        # do not plot if the data is empty or all zeros.
+        if (
+            self.prepared_scalar_data.empty
+            or (self.prepared_scalar_data == 0).all().all()
+        ):
+            return None
+
         try:
+            fig, ax = plt.subplots()
             plot_grouped_bar(
                 ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
             )
