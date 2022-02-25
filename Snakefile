@@ -114,7 +114,7 @@ rule prepare_scalars:
     output:
         "results/_resources/scal_{range}.csv"
     wildcard_constraints:
-        range=("base_PR#91|high_PR#91|low_PR#91")
+        range=("base|high|low")
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
@@ -124,7 +124,7 @@ rule prepare_heat_demand:
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
         building_class="raw/building_class.csv",
-        scalars="raw/scalars.csv",
+        scalars="raw/scalars_base.csv",
         script="scripts/prepare_heat_demand.py",
     output:
         scalars="results/_resources/scal_load_heat.csv",
