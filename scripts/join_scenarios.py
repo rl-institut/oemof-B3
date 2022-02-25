@@ -35,9 +35,7 @@ if __name__ == "__main__":
 
     joined_scalars = list()
     for path_sc in paths_scenarios:
-        scalars = load_scalars(
-            os.path.join(path_sc, "scalars.csv")
-        )
+        scalars = load_scalars(os.path.join(path_sc, "scalars.csv"))
 
         joined_scalars.append(scalars)
 
