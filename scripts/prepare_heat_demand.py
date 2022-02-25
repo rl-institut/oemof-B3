@@ -438,7 +438,7 @@ if __name__ == "__main__":
     in_path4 = sys.argv[4]  # path to building class
     in_path5 = sys.argv[5]  # path to b3 scalars.csv
     out_path1 = sys.argv[6]
-    out_path2 = sys.argv[6]
+    out_path2 = sys.argv[7]
 
     CARRIERS = ["heat_central", "heat_decentral"]
 
