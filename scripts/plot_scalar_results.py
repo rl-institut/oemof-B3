@@ -62,6 +62,7 @@ class ScalarPlot:
         self.scalars = scalars
         self.selected_scalars = None
         self.prepared_scalar_data = None
+        self.plotted = False
 
     def select_data(self, **kwargs):
         self.selected_scalars = self.scalars.copy()
@@ -105,13 +106,17 @@ class ScalarPlot:
                 fontsize=14,
             )
 
+            self.plotted = True
+
             return fig, ax
+
         except:  # noqa E722
             print("Could not plot.")
 
     def save_plot(self, output_path_plot):
-        plt.savefig(output_path_plot, bbox_inches="tight")
-        print(f"User info: Plot has been saved to: {output_path_plot}.")
+        if self.plotted:
+            plt.savefig(output_path_plot, bbox_inches="tight")
+            print(f"User info: Plot has been saved to: {output_path_plot}.")
 
 
 def set_hierarchical_xlabels(
