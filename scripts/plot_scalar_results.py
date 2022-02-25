@@ -164,7 +164,7 @@ def set_hierarchical_xlabels(
 
 
 if __name__ == "__main__":
-    scalars_path = os.path.join(sys.argv[1], "scalars.csv")
+    scalars_path = sys.argv[1]
 
     target = sys.argv[2]
 
