@@ -105,7 +105,7 @@ class ScalarPlot:
             )
 
             return fig, ax
-        except:
+        except:  # noqa E722
             print("Could not plot.")
 
     def save_plot(self, output_path_plot):
