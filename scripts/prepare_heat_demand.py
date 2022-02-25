@@ -478,6 +478,32 @@ if __name__ == "__main__":
             total_heat_load = postprocess_data(
                 total_heat_load, heat_load_year, region, f"ts_{year}", sc_demand_unit
             )
+    # aggregate heat demand for different sectors (hh, ghd, i)
+    demand_per_sector = dp.filter_df(
+        sc, "tech", ["demand_hh", "demand_ghd", "demand_i"]
+    )
+    aggregated_demands = dp.aggregate_scalars(
+        demand_per_sector,
+        "tech",
+        {
+            "var_value": sum,
+            "var_unit": dp.aggregate_units,
+            "source": dp.aggregate_units,
+        },
+    )
+    aggregated_demands.loc[:, "tech"] = "demand"
+
+    # merge the aggregated demands into scalars
+    sc = dp.merge_a_into_b(
+        sc,
+        aggregated_demands,
+        on=["scenario", "name", "var_name", "carrier", "region", "tech", "type"],
+        how="outer",
+    )
+
+    sc.index.name = "id_scal"
+
+    dp.save_df(sc, in_path5)
 
     # Rearrange stacked time series
     head_load = dp.format_header(
