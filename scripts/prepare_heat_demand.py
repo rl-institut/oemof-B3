@@ -440,7 +440,6 @@ if __name__ == "__main__":
     out_path1 = sys.argv[6]
     out_path2 = sys.argv[6]
 
-    REGION = ["BB", "B"]
     SCENARIO = "base"
     CARRIERS = ["heat_central", "heat_decentral"]
 
@@ -450,7 +449,15 @@ if __name__ == "__main__":
     # Read state heat demands of ghd and hh sectors
     sc = dp.load_b3_scalars(in_path5)
 
-    for region in REGION:
+    # filter for heat demand data
+    sc_filtered = dp.filter_df(sc, "type", "load")
+
+    sc_filtered = dp.filter_df(sc_filtered, "carrier", CARRIERS)
+
+    # get regions from data
+    regions = sc_filtered.loc[:, "region"].unique()
+
+    for region in regions:
         share_efh, share_mfh = get_shares_from_hh_distribution(in_path2, region)
 
         weather_file_names = find_regional_files(in_path1, region)
