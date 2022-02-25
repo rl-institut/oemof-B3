@@ -95,10 +95,11 @@ class ScalarPlot:
             ax.set_position(
                 [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
             )
+            set_hierarchical_xlabels(self.prepared_scalar_data.index)
             # Put a legend below current axis
             ax.legend(
                 loc="upper center",
-                bbox_to_anchor=(0.5, -0.1),
+                bbox_to_anchor=(0.5, -0.18),
                 fancybox=True,
                 ncol=4,
                 fontsize=14,
@@ -111,6 +112,55 @@ class ScalarPlot:
     def save_plot(self, output_path_plot):
         plt.savefig(output_path_plot, bbox_inches="tight")
         print(f"User info: Plot has been saved to: {output_path_plot}.")
+
+
+def set_hierarchical_xlabels(
+    index,
+    ax=None,
+    hlines=False,
+    bar_xmargin=0.1,
+    bar_yinterval=0.1,
+):
+    r"""
+    adapted from https://linuxtut.com/ 'Draw hierarchical axis labels with matplotlib + pandas'
+    """
+    from itertools import groupby
+    from matplotlib.lines import Line2D
+
+    ax = ax or plt.gca()
+
+    assert isinstance(index, pd.MultiIndex)
+    labels = ax.set_xticklabels([s for *_, s in index])
+    for lb in labels:
+        lb.set_rotation(0)
+
+    transform = ax.get_xaxis_transform()
+
+    for i in range(1, len(index.codes)):
+        xpos0 = -0.5  # Coordinates on the left side of the target group
+        for (*_, code), codes_iter in groupby(zip(*index.codes[:-i])):
+            xpos1 = xpos0 + sum(
+                1 for _ in codes_iter
+            )  # Coordinates on the right side of the target group
+            ax.text(
+                (xpos0 + xpos1) / 2,
+                (bar_yinterval * (-i - 0.1)),
+                index.levels[-i - 1][code],
+                transform=transform,
+                ha="center",
+                va="top",
+            )
+            if hlines:
+                ax.add_line(
+                    Line2D(
+                        [xpos0 + bar_xmargin, xpos1 - bar_xmargin],
+                        [bar_yinterval * -i] * 2,
+                        transform=transform,
+                        color="k",
+                        clip_on=False,
+                    )
+                )
+            xpos0 = xpos1
 
 
 if __name__ == "__main__":
