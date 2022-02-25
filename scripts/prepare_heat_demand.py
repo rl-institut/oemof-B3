@@ -506,7 +506,7 @@ if __name__ == "__main__":
     aggregated_demands.loc[:, "tech"] = "demand"
 
     aggregated_demands.loc[:, "name"] = aggregated_demands.apply(
-        lambda x: "-".join([x["carrier"], x["tech"]]), 1
+        lambda x: "-".join([x["region"], x["carrier"], x["tech"]]), 1
     )
 
     dp.save_df(aggregated_demands, out_path1)
