@@ -14,8 +14,11 @@ in_path4 : str
     as .csv
 in_path5 : str
     ``raw/scalars.csv``: path of scalar data as .csv
-out_path : str
-    ``results/_resources/ts_load_heat.csv``: path of output file with prepared data as .csv
+out_path1 : str
+    ``results/_resources/scal_load_heat.csv``: path of output file with aggregated scalar data as
+    .csv
+out_path2 : str
+    ``results/_resources/ts_load_heat.csv``: path of output file with timeseries data as .csv
 
 Outputs
 ---------
@@ -434,7 +437,8 @@ if __name__ == "__main__":
     in_path3 = sys.argv[3]  # path to holidays
     in_path4 = sys.argv[4]  # path to building class
     in_path5 = sys.argv[5]  # path to b3 scalars.csv
-    out_path = sys.argv[6]
+    out_path1 = sys.argv[6]
+    out_path2 = sys.argv[6]
 
     REGION = ["BB", "B"]
     SCENARIO = "base"
@@ -493,17 +497,11 @@ if __name__ == "__main__":
     )
     aggregated_demands.loc[:, "tech"] = "demand"
 
-    # merge the aggregated demands into scalars
-    sc = dp.merge_a_into_b(
-        sc,
-        aggregated_demands,
-        on=["scenario", "name", "var_name", "carrier", "region", "tech", "type"],
-        how="outer",
+    aggregated_demands.loc[:, "name"] = aggregated_demands.apply(
+        lambda x: "-".join([x["carrier"], x["tech"]]), 1
     )
 
-    sc.index.name = "id_scal"
-
-    dp.save_df(sc, in_path5)
+    dp.save_df(aggregated_demands, out_path1)
 
     # Rearrange stacked time series
     head_load = dp.format_header(
@@ -511,4 +509,4 @@ if __name__ == "__main__":
         header=dp.HEADER_B3_TS,
         index_name="id_ts",
     )
-    dp.save_df(head_load, out_path)
+    dp.save_df(head_load, out_path2)

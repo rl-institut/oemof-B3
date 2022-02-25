@@ -127,9 +127,10 @@ rule prepare_heat_demand:
         scalars="raw/scalars.csv",
         script="scripts/prepare_heat_demand.py",
     output:
-        "results/_resources/ts_load_heat.csv"
+        scalars="results/_resources/scal_load_heat.csv",
+        timeseries="results/_resources/ts_load_heat.csv",
     shell:
-        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output}"
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries}"
 
 rule prepare_re_potential:
     input:
