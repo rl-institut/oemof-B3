@@ -329,14 +329,18 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
         df_b_columns.append("_merge")
 
     # Warn if data is lost because of merge
-    a_not_b = pd.Index(_df_a.loc[:, on]).difference(pd.Index(_df_b.loc[:, on]))
+    a_not_b = set(pd.Index(_df_a.loc[:, on])).difference(
+        set(pd.Index(_df_b.loc[:, on]))
+    )
     if how == "left" and not a_not_b.empty:
         print(
             f"There are {len(a_not_b)} elements that are in df_a but not in df_b"
             f" and will be lost: {a_not_b}"
         )
 
-    b_not_a = pd.Index(_df_b.loc[:, on]).difference(pd.Index(_df_a.loc[:, on]))
+    b_not_a = set(pd.Index(_df_b.loc[:, on])).difference(
+        set(pd.Index(_df_a.loc[:, on]))
+    )
     print(f"There are {len(b_not_a)} elements are merged into df_b: {b_not_a}")
 
     # Merge a with b, ignoring all data in b
