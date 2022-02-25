@@ -328,20 +328,31 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
     if indicator:
         df_b_columns.append("_merge")
 
-    # Warn if data is lost because of merge
+    # Give some information on how the merge affects the data
     a_not_b = set(pd.Index(_df_a.loc[:, on])).difference(
         set(pd.Index(_df_b.loc[:, on]))
     )
-    if how == "left" and not a_not_b.empty:
-        print(
-            f"There are {len(a_not_b)} elements that are in df_a but not in df_b"
-            f" and will be lost: {a_not_b}"
-        )
+    if a_not_b:
+        if how == "left":
+            print(
+                f"There are {len(a_not_b)} elements in df_a but not in df_b"
+                f" and are lost (choose how='outer' to keep them): {a_not_b}"
+            )
+        elif how == "outer":
+            print(
+                f"There are {len(a_not_b)} elements in df_a that are"
+                f" added to df_b: {a_not_b}"
+            )
+
+    a_and_b = set(pd.Index(_df_a.loc[:, on])).intersection(
+        set(pd.Index(_df_b.loc[:, on]))
+    )
+    print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
 
     b_not_a = set(pd.Index(_df_b.loc[:, on])).difference(
         set(pd.Index(_df_a.loc[:, on]))
     )
-    print(f"There are {len(b_not_a)} elements are merged into df_b: {b_not_a}")
+    print(f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}")
 
     # Merge a with b, ignoring all data in b
     merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
