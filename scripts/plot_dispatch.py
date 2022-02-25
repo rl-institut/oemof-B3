@@ -43,12 +43,6 @@ if __name__ == "__main__":
     bus_directory = os.path.join(postprocessed, "sequences/bus/")
     bus_files = os.listdir(bus_directory)
 
-    # select timeframe
-    timeframe = [
-        ("2019-01-01 00:00:00", "2019-01-31 23:00:00"),
-        ("2019-07-01 00:00:00", "2019-07-31 23:00:00"),
-    ]
-
     # select carrier
     carriers = ["electricity", "heat_central", "heat_decentral"]
 
@@ -65,8 +59,8 @@ if __name__ == "__main__":
 
         # prepare dispatch data
         # convert data to SI-unit
-        conv_number = 1000
-        data = data * conv_number
+        MW_to_W = 1e6
+        data = data * MW_to_W
         df, df_demand = plots.prepare_dispatch_data(
             data,
             bus_name=bus_name,
@@ -92,6 +86,13 @@ if __name__ == "__main__":
 
         # normal dispatch plot
         # plot one winter and one summer month
+        # select timeframe
+        year = data.index[0].year
+        timeframe = [
+            (f"{year}-01-01 00:00:00", f"{year}-01-31 23:00:00"),
+            (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
+        ]
+
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
 

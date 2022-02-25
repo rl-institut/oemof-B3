@@ -21,6 +21,9 @@ downloads the 60 min timeseries data from OPSD and keeps it locally.
 The script takes this data and filters for the load data of the 50 Hertz region in Germany.
 The load data is normalized with the total electricity demand of the corresponding year and put
 into the timeseries template format. The years 2015 to 2019 (including) are available.
+Note: the electricity demand profile for electric vehicle charging is prepared in
+`prepare_vehicle_charging_demand.py`.
+
 """
 
 import sys
@@ -78,7 +81,7 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     # add additional information as required by template
     ts_prepared.loc[:, "region"] = region
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "load-profile"
+    ts_prepared.loc[:, "var_name"] = "electricity-demand-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
     ts_prepared.loc[:, "scenario"] = f"ts_{year}"

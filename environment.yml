@@ -1,5 +1,8 @@
-name: myvenv
+name: oemof_b3
+channels:
+  - defaults
+  - conda-forge
 dependencies:
-- python=3.6
-- pip:
-   - -r requirements.txt
+  - python=3.7
+  - conda-forge::pandoc>=2.17
+

@@ -23,7 +23,12 @@ from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
 
 from oemof_b3.model import bus_attrs_update, component_attrs_update
-from oemof_b3.tools.data_processing import HEADER_B3_SCAL, format_header
+from oemof_b3.tools.data_processing import (
+    HEADER_B3_SCAL,
+    format_header,
+    sort_values,
+    save_df,
+)
 
 NON_REGIONAL = [
     "capacity_cost",
@@ -52,11 +57,7 @@ def format_input_scalars(df):
 
     _df.drop_duplicates(inplace=True)
 
-    _df = _df.reset_index(drop=True)
-
-    _df.index.name = "id_scal"
-
-    _df = _df.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    _df = sort_values(_df)
 
     return _df
 
@@ -76,11 +77,7 @@ def expand_scalars(df, column, where, expand):
 
         _df_wo_cc = _df_wo_cc.append(d)
 
-    _df_wo_cc.reset_index(inplace=True, drop=True)
-
-    _df_wo_cc.index.name = "id_scal"
-
-    _df_wo_cc = _df_wo_cc.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    _df_wo_cc = sort_values(_df_wo_cc)
 
     return _df_wo_cc
 
@@ -93,7 +90,11 @@ if __name__ == "__main__":
     scenario_specs = load_yaml(scenario_specs)
 
     # setup empty EnergyDataPackage
-    datetimeindex = pd.date_range(start="2019-01-01", freq="H", periods=8760)
+    datetimeindex = pd.date_range(
+        start=scenario_specs["datetimeindex"]["start"],
+        freq=scenario_specs["datetimeindex"]["freq"],
+        periods=scenario_specs["datetimeindex"]["periods"],
+    )
 
     # setup default structure
     edp = EnergyDataPackage.setup_default(
@@ -115,7 +116,7 @@ if __name__ == "__main__":
     empty_scalars = format_input_scalars(components)
 
     # set scenario name
-    empty_scalars.loc[:, "scenario"] = "toy-scenario"
+    empty_scalars.loc[:, "scenario"] = scenario_specs["name"]
 
     # if empty raw scalars should be created, reverse the annuisation as well.
     # if empty resources scalars are needed, set this to False.
@@ -135,4 +136,6 @@ if __name__ == "__main__":
             expand=["storage_capacity_cost_overnight", "storage_fixom_cost"],
         )
 
-    empty_scalars.to_csv(destination)
+    empty_scalars = sort_values(empty_scalars)
+
+    save_df(empty_scalars, destination)
