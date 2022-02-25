@@ -440,7 +440,6 @@ if __name__ == "__main__":
     out_path1 = sys.argv[6]
     out_path2 = sys.argv[6]
 
-    SCENARIO = "base"
     CARRIERS = ["heat_central", "heat_decentral"]
 
     # Add empty data frame for results / output
@@ -457,7 +456,9 @@ if __name__ == "__main__":
     # get regions from data
     regions = sc_filtered.loc[:, "region"].unique()
 
-    for region in regions:
+    scenarios = sc_filtered.loc[:, "scenario"].unique()
+
+    for region, scenario in itertools.product(regions, scenarios):
         share_efh, share_mfh = get_shares_from_hh_distribution(in_path2, region)
 
         weather_file_names = find_regional_files(in_path1, region)
@@ -480,7 +481,7 @@ if __name__ == "__main__":
 
             # Get heat demand in region and scenario
             yearly_demands, sc_demand_unit = get_heat_demand(
-                sc, SCENARIO, carrier, region
+                sc, scenario, carrier, region
             )
 
             heat_load_year = calculate_heat_load(
