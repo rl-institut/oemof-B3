@@ -17,6 +17,19 @@ HEADER_B3_TS = pd.read_csv(
 ).columns
 
 
+def sort_values(df, reset_index=True):
+    _df = df.copy()
+
+    _df = _df.sort_values(by=["scenario", "carrier", "tech", "var_name", "region"])
+
+    if reset_index:
+        _df = _df.reset_index(drop=True)
+
+        _df.index.name = "id_scal"
+
+    return _df
+
+
 def get_list_diff(list_a, list_b):
     r"""
     Returns all items of list_a that are not in list_b.
@@ -280,6 +293,91 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
 
     return df_aggregated
+
+
+def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
+    r"""
+    Writes scalar data from df_a into df_b, according to 'on'. Where df_a provides no data,
+    the values of df_b are used. If how='outer', data from df_a that is not in df_b will be
+    kept.
+
+    Parameters
+    ----------
+    df_a : pd.DataFrame
+        DataFrame in oemof_b3 scalars format
+    df_b : pd.DataFrame
+        DataFrame in oemof_b3 scalars format
+    on : list
+        List of columns to merge on
+    how : str
+        'left' or 'outer'. Default: 'left'
+    indicator : bool
+        If True, an indicator column is included. Default: False
+
+    Returns
+    -------
+    merged : pd.DataFrame
+        DataFrame in oemof_b3 scalars format.
+    """
+    _df_a = df_a.copy()
+    _df_b = df_b.copy()
+
+    # save df_b's index name and column order
+    df_b_index_name = _df_b.index.name
+    df_b_columns = list(_df_b.columns)
+    if indicator:
+        df_b_columns.append("_merge")
+
+    # Give some information on how the merge affects the data
+    a_not_b = set(pd.Index(_df_a.loc[:, on])).difference(
+        set(pd.Index(_df_b.loc[:, on]))
+    )
+    if a_not_b:
+        if how == "left":
+            print(
+                f"There are {len(a_not_b)} elements in df_a but not in df_b"
+                f" and are lost (choose how='outer' to keep them): {a_not_b}"
+            )
+        elif how == "outer":
+            print(
+                f"There are {len(a_not_b)} elements in df_a that are"
+                f" added to df_b: {a_not_b}"
+            )
+
+    a_and_b = set(pd.Index(_df_a.loc[:, on])).intersection(
+        set(pd.Index(_df_b.loc[:, on]))
+    )
+    print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+
+    b_not_a = set(pd.Index(_df_b.loc[:, on])).difference(
+        set(pd.Index(_df_a.loc[:, on]))
+    )
+    print(f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}")
+
+    # Merge a with b, ignoring all data in b
+    merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
+        _df_a,
+        on=on,
+        how=how,
+        indicator=indicator,
+        sort=False,
+    )
+
+    merged.index.name = df_b_index_name
+
+    # Where df_a contains no data, use df_b
+    merged = merged.reset_index().set_index(
+        on
+    )  # First reset, then set index to keep it as a column
+
+    merged.update(_df_b.set_index(on), overwrite=False)
+
+    # Set original index and recover column order
+    merged = merged.reset_index().set_index(df_b_index_name)
+
+    merged = merged[df_b_columns]
+
+    return merged
 
 
 def check_consistency_timeindex(df, index):

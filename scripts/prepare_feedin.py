@@ -36,7 +36,6 @@ import oemof_b3.tools.data_processing as dp
 # global variables
 YEARS = list(range(2010, 2020))
 # specific to wind and pv time series
-
 NUTS_DE30 = "DE30"
 NUTS_DE40 = "DE40"
 RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
@@ -162,7 +161,7 @@ def prepare_ror_time_series(filename_ts, region):
     # add additional information as required by template
     ts_df.loc[:, "region"] = region
     ts_df.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_df.loc[:, "var_name"] = "ror-profile"
+    ts_df.loc[:, "var_name"] = "hydro-ror-profile"
     ts_df.loc[:, "source"] = TS_SOURCE_ROR
     ts_df.loc[:, "comment"] = TS_COMMENT_ROR
 
@@ -184,12 +183,12 @@ if __name__ == "__main__":
         wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
             year=year,
-            type="wind",
+            type="wind-onshore",
         )
 
         # prepare pv time series
         pv_ts = prepare_wind_and_pv_time_series(
-            filename_ts=filename_pv, year=year, type="pv"
+            filename_ts=filename_pv, year=year, type="solar-pv"
         )
 
         # add time series to `time_series_df`
