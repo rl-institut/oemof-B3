@@ -29,7 +29,7 @@ from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, sav
 
 
 def fill_na(df):
-    key = "scenario"
+    key = "scenario_key"
 
     value = "None"
 
@@ -105,7 +105,9 @@ if __name__ == "__main__":
 
     annuise_investment_cost(sc)
 
-    sc.scalars = sc.scalars.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    sc.scalars = sc.scalars.sort_values(
+        by=["carrier", "tech", "var_name", "scenario_key"]
+    )
 
     sc.scalars.reset_index(inplace=True, drop=True)
 

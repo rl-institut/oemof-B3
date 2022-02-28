@@ -79,7 +79,7 @@ paths_scalars:
 
 filter_scalars:
   1:
-    scenario:
+    scenario_key:
       "Base 2050"
 
 paths_timeseries:
@@ -92,5 +92,5 @@ paths_timeseries:
   - results/_resources/ts_load_electricity_vehicles.csv
 
 filter_timeseries:
-  scenario:
+  scenario_key:
     ts_2017

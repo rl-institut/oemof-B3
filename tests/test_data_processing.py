@@ -38,7 +38,7 @@ path_file_ts_stacked = os.path.join(
 
 # Headers
 sc_cols_list = [
-    "scenario",
+    "scenario_key",
     "name",
     "var_name",
     "carrier",
@@ -52,7 +52,7 @@ sc_cols_list = [
 ]
 
 ts_cols_list = [
-    "scenario",
+    "scenario_key",
     "region",
     "var_name",
     "timeindex_start",

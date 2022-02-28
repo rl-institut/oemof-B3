@@ -4,6 +4,7 @@ ch4-boiler: CH4 Boiler
 ch4-bpchp: CH4 Backpressure CHP
 ch4-extchp: CH4 Extraction CHP
 ch4-gt: CH4 GT
+electricity-bev_charging: BEV charging
 electricity-curtailment: Curtailment
 electricity-demand: El. demand
 electricity-electrolyzer: Electrolyzer
@@ -22,6 +23,7 @@ hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
 h2-bpchp: H2 Backpressure CHP
+h2-cavern: H2 Cavern
 ch4-export: CH4 Export
 ch4-import: CH4 Import
 h2-export: H2 Export
