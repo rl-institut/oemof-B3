@@ -136,7 +136,7 @@ if __name__ == "__main__":
     conv_scalars_prepared.loc[
         :, "comment"
     ] = "filename: conventional_power_plants_DE.csv, aggregated based on NUTS3 region"
-    conv_scalars_prepared.loc[:, "scenario"] = "Status quo"
+    conv_scalars_prepared.loc[:, "scenario_key"] = "Status quo"
     conv_scalars_prepared.loc[:, "type"] = "None"
 
     # Set units

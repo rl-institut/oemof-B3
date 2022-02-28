@@ -64,14 +64,14 @@ paths_scalars: raw/toy-scenario.csv
 
 filter_scalars:
   1:
-    scenario:
+    scenario_key:
       toy-scenario
   2:
-    scenario:
+    scenario_key:
       toy-scenario-high
 
 paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
 
 filter_timeseries:
-  scenario:
+  scenario_key:
     toy-scenario-update

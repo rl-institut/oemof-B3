@@ -84,7 +84,7 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     ts_prepared.loc[:, "var_name"] = "electricity-demand-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
 
     return ts_prepared
 
