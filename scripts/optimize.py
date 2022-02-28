@@ -92,7 +92,7 @@ if __name__ == "__main__":
         m = Model(es)
 
         # Add an emission constraint
-        if additional_scalars is not None:
+        if additional_scalars is not None:  # only then `emission_limit` exists
             if emission_limit is not None:
                 constraints.emission_limit(m, limit=emission_limit)
 
