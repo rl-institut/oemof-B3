@@ -187,7 +187,7 @@ rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/")
+        directory("results/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
@@ -199,6 +199,22 @@ rule plot_conv_pp_scalars:
         "results/_resources/plots/{resource}-{var_name}.png"
     shell:
         "python {input.script} {input.data} {wildcards.var_name} {output}"
+
+rule plot_scalar_results:
+    input:
+        "results/{scenario}/postprocessed/scalars.csv"
+    output:
+        directory("results/{scenario}/plotted/scalars/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
+
+rule plot_joined_scalars:
+    input:
+        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+    output:
+        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
 
 rule report:
     input:
@@ -260,11 +276,3 @@ rule join_scenario_results:
         "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
-
-rule plot_joined_scalars:
-    input:
-        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
-    output:
-        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
-    shell:
-        "python scripts/plot_joined_scalars.py {input} {output}"
