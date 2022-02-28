@@ -9,6 +9,32 @@ Model pipeline
     :local:
     :backlinks: top
 
+The main functionality of oemof-B3 is a data processing pipeline which is managed using snakemake.
+The pipeline preprocesses raw data into scalar and timeseries resources that is used to
+build tabular datapackages representing single energy system optimization problems. These can be
+understood by oemof.tabular and optimized by oemof.solph. In the next steps, the results of the
+optimization are postprocessed and plotted. The individual steps are documented in detail in the
+following sections.
+
+The subdirectories of oemof-B3 shown below contain configurations and data for the model.
+:file:`Examples` contains pre-fabricated datapackages that can readily be optimized. The directory
+:file:`scenarios` contains :file:`.yml`-files defining individual scenarios. Raw data is not part
+of the repo and has to be provided in :file:`raw`. Intermediate and final results will be saved in
+:file:`results`. Logs are saved in :file:`/logs`.
+
+.. code-block::
+
+    .
+    ├── examples
+    ├── logs
+    ├── oemof_b3
+    │     ├── config
+    │     ├── model
+    │     ├── schema
+    ├── raw
+    ├── results
+    ├── scenarios
+
 
 Preprocessing
 =============
