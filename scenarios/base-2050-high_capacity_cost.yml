@@ -74,8 +74,9 @@ components:
 # parametrize
 
 paths_scalars:
-  - results/_resources/scal_base_PR#91.csv
-  - results/_resources/scal_high_PR#91.csv
+  - results/_resources/scal_base.csv
+  - results/_resources/scal_high.csv
+  - results/_resources/scal_load_heat.csv
 
 filter_scalars:
   1:
