@@ -74,9 +74,9 @@ if __name__ == "__main__":
     solver = "cbc"
 
     # get additional scalars
-    scalars = get_additional_scalars()
-    if scalars is not None:
-        emission_limit = get_emission_limit(scalars)
+    additional_scalars = get_additional_scalars()
+    if additional_scalars is not None:
+        emission_limit = get_emission_limit(additional_scalars)
 
     if not os.path.exists(optimized):
         os.mkdir(optimized)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         m = Model(es)
 
         # Add an emission constraint
-        if scalars is not None:
+        if additional_scalars is not None:
             if emission_limit is not None:
                 constraints.emission_limit(m, limit=emission_limit)
 
