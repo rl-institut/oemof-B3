@@ -20,7 +20,7 @@ HEADER_B3_TS = pd.read_csv(
 def sort_values(df, reset_index=True):
     _df = df.copy()
 
-    _df = _df.sort_values(by=["scenario", "carrier", "tech", "var_name", "region"])
+    _df = _df.sort_values(by=["scenario_key", "carrier", "tech", "var_name", "region"])
 
     if reset_index:
         _df = _df.reset_index(drop=True)
