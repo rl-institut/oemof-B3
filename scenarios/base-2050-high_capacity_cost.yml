@@ -79,10 +79,10 @@ paths_scalars:
 
 filter_scalars:
   1:
-    scenario:
+    scenario_key:
       "Base 2050"
   2:
-    scenario:
+    scenario_key:
       "High 2050"
     name:
       "B-biomass-gt"
@@ -103,5 +103,5 @@ paths_timeseries:
   - results/_resources/ts_load_heat.csv
 
 filter_timeseries:
-  scenario:
+  scenario_key:
     ts_2017
