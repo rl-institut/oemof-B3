@@ -234,7 +234,8 @@ rule report:
     input:
         template="report/report.md",
         template_interactive="report/report_interactive.md",
-        plots="results/{scenario}/plotted"
+        plots_scalars="results/{scenario}/plotted/scalars",
+        plots_dispatch="results/{scenario}/plotted/dispatch",
     output:
         directory("results/{scenario}/report/")
     params:
