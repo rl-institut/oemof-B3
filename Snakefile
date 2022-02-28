@@ -216,7 +216,7 @@ rule plot_conv_pp_scalars:
 
 rule plot_scalar_results:
     input:
-        "results/{scenario}/postprocessed/scalars.csv"
+        "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/plotted/scalars/")
     shell:
@@ -224,7 +224,7 @@ rule plot_scalar_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+        "results/joined_scenarios/{scenario_list}/joined/"
     output:
         directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
     shell:
