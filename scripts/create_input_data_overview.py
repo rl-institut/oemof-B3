@@ -24,7 +24,7 @@ import pandas as pd
 from oemof_b3 import labels_dict
 from oemof_b3.tools.data_processing import load_b3_scalars
 
-SCENARIO = "Base 2050"
+SCENARIO_KEY = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
 DECIMALS = {
@@ -46,8 +46,8 @@ if __name__ == "__main__":
 
     df = load_b3_scalars(in_path)
 
-    # filter for data within the scenario defined above
-    df = df.loc[df["scenario_key"] == SCENARIO]
+    # filter for data within the scenario key defined above
+    df = df.loc[df["scenario_key"] == SCENARIO_KEY]
 
     # filter for the variables defined above
     variables = [item for sublist in VAR_NAMES.values() for item in sublist]
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # Raise error if DataFrame is empty
     if df.empty:
         raise ValueError(
-            f"No data in {in_path} for scenario {SCENARIO} and variables {variables}."
+            f"No data in {in_path} for scenario {SCENARIO_KEY} and variables {variables}."
         )
 
     # unstack
