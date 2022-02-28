@@ -269,7 +269,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     sc_filtered = dp.filter_df(scalars, "type", "load")
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
-    sc_filtered = dp.filter_df(sc_filtered, "scenario", scenario)
+    sc_filtered = dp.filter_df(sc_filtered, "scenario_key", scenario)
     if sc_filtered.empty:
         raise ValueError(
             f"No scalar data found that matches "
@@ -420,7 +420,7 @@ def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, 
     heat_load_year_stacked = dp.stack_timeseries(heat_load_year)
 
     heat_load_year_stacked["region"] = region
-    heat_load_year_stacked["scenario"] = scenario
+    heat_load_year_stacked["scenario_key"] = scenario
     heat_load_year_stacked["var_unit"] = unit[0]
 
     # Append stacked heat load of year to stacked time series with total heat loads
@@ -453,7 +453,7 @@ if __name__ == "__main__":
     # get regions from data
     regions = sc_filtered.loc[:, "region"].unique()
 
-    scenarios = sc_filtered.loc[:, "scenario"].unique()
+    scenarios = sc_filtered.loc[:, "scenario_key"].unique()
 
     # Create empty data frame for results / output
     total_heat_load = pd.DataFrame(columns=dp.HEADER_B3_TS)
