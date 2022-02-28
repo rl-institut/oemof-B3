@@ -38,11 +38,7 @@ Please activate pre-commit hooks (via `pre-commit install`) in order to follow o
 
 Read the docs [here](https://oemof-b3.readthedocs.io/).
 
-To build the docs locally, simply go to the `docs` folder
-
-    cd docs
-
-Install the requirements
+To build the docs locally, simply install the requirements
 
     pip install -r docs_requirements.txt
 
