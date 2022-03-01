@@ -43,9 +43,10 @@ regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, 
 Preprocessed datapackages
 -------------------------
 
-The input data as described above is then preprocessed. The preprocessed data in turn is organized in
-elements (scalars data) and sequences, stored in separate folders and with one file for each component.
-Below is an example of the element file for the gas turbine of the base examples scenario, which can be found in
+Preprocessed datapackages are a collection of .csv-files, one file for all busses and one for each
+component, stored in :file:`elements` (scalars data) and :file`sequences` (time series for e.g.
+renewable feedin or demand profiles), stored in separate folders. Below is an example of the element
+file for the gas turbine of the base examples scenario, which can be found in
 :file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.
 
 =======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
@@ -55,7 +56,7 @@ BE       BE-ch4-gt  conversion  ch4      gt     BE-ch4    BE-electricity  150000
 BB       BB-ch4-gt  conversion  ch4      gt     BB-ch4    BB-electricity  600000                   0.619        0.021          0.0045         False       {}
 =======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
 
-Beyond that, there are specific variables which depend on the type of the component. Components and
+More generally, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
 
