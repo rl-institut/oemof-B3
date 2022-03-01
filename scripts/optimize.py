@@ -73,7 +73,8 @@ if __name__ == "__main__":
 
     solver = "cbc"
 
-    # get additional scalars
+    # get additional scalars, set to None at first
+    emission_limit = None
     additional_scalars = get_additional_scalars()
     if additional_scalars is not None:
         emission_limit = get_emission_limit(additional_scalars)
@@ -92,9 +93,8 @@ if __name__ == "__main__":
         m = Model(es)
 
         # Add an emission constraint
-        if additional_scalars is not None:  # only then `emission_limit` exists
-            if emission_limit is not None:
-                constraints.emission_limit(m, limit=emission_limit)
+        if emission_limit is not None:
+            constraints.emission_limit(m, limit=emission_limit)
 
         # select solver 'gurobi', 'cplex', 'glpk' etc
         m.solve(solver=solver)
