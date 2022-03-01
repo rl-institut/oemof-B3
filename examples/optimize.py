@@ -10,9 +10,9 @@ from oemof.tabular.facades import TYPEMAP
 
 # select scenario
 scenario_names = [
-    "base",
-    "more_renewables",
-    "more_renewables_less_fossil",
+    "example_base",
+    "example_more_re",
+    "example_more_re_less_fossil",
 ]
 
 try:
@@ -29,7 +29,7 @@ assert scenario_name in scenario_names, (
 # define directories
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed = os.path.join(here, scenario_name, "preprocessed", scenario_name)
+preprocessed = os.path.join(here, scenario_name, "preprocessed")
 
 optimized = os.path.join(here, scenario_name, "optimized")
 
