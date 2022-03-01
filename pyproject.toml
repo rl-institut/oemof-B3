@@ -1,3 +1,29 @@
+[tool.poetry]
+name = "oemof-B3"
+version = "0.0.0"
+description = "Windflächenrechner - Agora Energiewende"
+authors = [
+  "Jann Launer <jann.launer@rl-institut.de>",
+  "Sabine Haas <sabine.haas@rl-institut.de>",
+  "Marie-Claire Gering <marie-claire.gering@rl-institut.de>",
+  "Hendrik Huyskens <hendrik.huyskens@rl-institut.de>",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "0.25.3"
+rtree = "0.9.7"
+pyyaml = "6.0"
+snakemake = "<6.0.0"
+oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", branch = "dev"}
+
+[tool.poetry.dev-dependencies]
+black = "20.8b1"
+pytest = "^7.0.1"
+coverage = "^6.3.2"
+flake8 = "^4.0.1"
+geopandas = "^0.10.2"
+
 [tool.black]
 exclude = '''
 /(
