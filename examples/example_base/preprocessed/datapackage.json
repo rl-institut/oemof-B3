@@ -1,6 +1,6 @@
 {
     "profile": "tabular-data-package",
-    "name": "more_renewables_less_fossil",
+    "name": "example_base",
     "resources": [
         {
             "path": "data/elements/electricity-transmission.csv",
