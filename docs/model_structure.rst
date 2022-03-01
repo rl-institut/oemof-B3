@@ -12,7 +12,7 @@ Model structure
 
 The input data consists of scalar data (elements) and data with a time index (sequences).
 The model oemof-B3 uses `oemoflex <https://github.com/rl-institut/oemoflex>`_ to build empty
-DataPackages and fills them with concrete numbers using preprocessed resources (see :ref:`buid_datapckage<build_datapackage>`).
+DataPackages and fills them with concrete numbers using preprocessed resources (see :ref:`build_datapackage<build_datapackage>`).
 
 oemof-B3 resources
 ------------------
