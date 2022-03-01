@@ -10,8 +10,8 @@ destination : str
 Outputs
 ---------
 oemoflex.EnergyDatapackage
-    EnergyDatapackage in the correct structure, with data (scalars and timeseries) as csv and
-    metadata (describing resources and foreign key relations) as json.
+    EnergyDatapackage that can be read by oemof.tabular, with data (scalars and timeseries)
+    as csv and metadata (describing resources and foreign key relations) as json.
 
 Description
 -------------
