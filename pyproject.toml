@@ -6,11 +6,16 @@ authors = [
   "Jann Launer <jann.launer@rl-institut.de>",
   "Sabine Haas <sabine.haas@rl-institut.de>",
   "Marie-Claire Gering <marie-claire.gering@rl-institut.de>",
+  "Julius Meier <julius.meier@rl-institut.de>",
+  "Caroline Möller <Caroline.Moeller@rl-institut.de>",
+  "Monika Orlowski <monika.orlowski@rl-institut.de>",
+  "Kilian Helfenbein <kilian.helfenbein@rl-institut.de>",
+  "Maja Zimmermann <maja.zimmermann@rl-institut.de>",
   "Hendrik Huyskens <hendrik.huyskens@rl-institut.de>",
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.7, <3.9"
 pandas = "0.25.3"
 rtree = "0.9.7"
 pyyaml = "6.0"
