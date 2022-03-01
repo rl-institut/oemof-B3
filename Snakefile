@@ -19,7 +19,11 @@ rule plot_all_resources:
 
 rule plot_all_examples:
     input:
-        expand("results/{scenario}/plotted/scalars", scenario=scenario_groups["examples"])
+        expand(
+            "results/{scenario}/plotted/scalars",
+            scenario=scenario_groups["examples"],
+            plot_type=["scalars", "dispatch"],
+        )
 
 rule report_all_examples:
     input:
@@ -27,7 +31,11 @@ rule report_all_examples:
 
 rule plot_all_scenarios:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenario_groups["base-scenarios"])
+        expand(
+            "results/{scenario}/plotted/{plot_type}",
+            scenario=scenario_groups["base-scenarios"],
+            plot_type=["scalars", "dispatch"],
+        )
 
 rule plot_grouped_scenarios:
     input:
