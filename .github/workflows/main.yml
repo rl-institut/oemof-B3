@@ -60,7 +60,7 @@ jobs:
         run: poetry install --no-interaction --no-root
 
       - name: Install library
-        run: poetry install --dev --no-interaction
+        run: poetry install --no-interaction
 
       - name: Lint with black
         run: |
