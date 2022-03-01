@@ -13,17 +13,9 @@ resource_plots = ['scal_conv_pp-capacity_net_el']
 
 
 # Target rules
-rule plot_grouped_scenarios:
+rule plot_all_resources:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["examples"])
-
-rule plot_all_scenarios:
-    input:
-        expand("results/{scenario}/plotted/", scenario=scenario_groups["toy-scenarios"])
-
-rule run_all_examples:
-    input:
-        expand("results/{scenario}/postprocessed", scenario=scenario_groups["examples"])
+        expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
 
 rule plot_all_examples:
     input:
@@ -33,9 +25,14 @@ rule report_all_examples:
     input:
         expand("results/{scenario}/report/", scenario=scenario_groups["examples"])
 
-rule plot_all_resources:
+rule plot_all_scenarios:
     input:
-        expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
+        expand("results/{scenario}/plotted/", scenario=scenario_groups["toy-scenarios"])
+
+rule plot_grouped_scenarios:
+    input:
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["examples"])
+
 
 rule clean:
     shell:
