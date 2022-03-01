@@ -3,32 +3,30 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/conventional_power_plants_DE.csv``: path of input file with raw opsd data as .csv
+    ``raw/conventional_power_plants_DE.csv``: path incl. file name of input file with raw OPSD data
 in_path2 : str
-    ``raw/boundaries_germany_nuts3.gpkg``: path of input file with geodata of regions in Germany
-    as .gpgk
+    ``raw/boundaries_germany_nuts3.gpkg``: path incl. file name of input file with geodata of
+    regions in Germany
 in_path3 : str
-    ``raw/b3_regions.yaml``: path of input file with names of regions in Berlin and Brandenburg
-    as .yaml
-in_path4 : str
-    ``oemof_b3/schema/scalars.csv``: path of template for scalar data as .csv
+    ``raw/b3_regions.yaml``: path incl. file name of input file with names of regions in Berlin and
+    Brandenburg
 out_path : str
-    ``results/_resources/scal_conv_pp.csv``: path of output file with prepared data as .csv
+    ``results/_resources/scal_conv_pp.csv``: path incl. file name of output file with prepared data
 
 Outputs
 ---------
 pandas.DataFrame
-    with grouped and aggregated data of conventional power plants in Berlin and Brandenburg.
+    Contains grouped and aggregated data of conventional power plants in Berlin and Brandenburg.
     Data is grouped by region, energy source, technology and chp capability and contains
     net capacity and efficiency.
 
 Description
 -------------
-The script filters the OPSD conventional power plant package for power plants
-in Berlin and Brandenburg. The retrieved data is stored in a new dataframe, aggregated and
-saved as a csv file in the format of the scalar data template.
-Only operating power plants are considered.
+The script filters the OPSD conventional power plant package for power plants in the regions Berlin
+and Brandenburg. The retrieved data is stored in a new dataframe, aggregated and saved as a csv file
+in the format of the scalar data template. Only operating power plants are considered.
 """
+
 import sys
 
 import pandas as pd

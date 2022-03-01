@@ -3,15 +3,15 @@ r"""
 Inputs
 -------
 input_dir : str
-    ``raw/time_series/vehicle_charging``: Path to directory where csv files containing electric
+    ``raw/time_series/vehicle_charging``: Path of directory where csv files containing electric
     vehicle charging demand profiles are placed
 output_file : str
-    ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name to prepared time
+    ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
 
 Outputs
 ---------
-pandas.DataFrame
+pd.DataFrame
     Normalized electric vehicle charging demand profiles for regions "B" and "BB" for all years
     provided in `input_dir`.
 

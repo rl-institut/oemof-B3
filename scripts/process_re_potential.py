@@ -5,10 +5,10 @@ Inputs
 input_dir : str
     ``results/_resources/RE_potential/``: Path to input directory of renewable potential
 output_scalars : str
-    ``results/_resources/scal_power_potential_wind_pv.csv``: Path incl. file name to scalar output
-    as input to energy system model
+    ``results/_resources/scal_power_potential_wind_pv.csv``: Path incl. file name of scalar output,
+     which is input to energy system model
 output_tables : str
-    ``results/_tables/potential_wind_pv_kreise.csv``: Path incl. file name to output for results
+    ``results/_tables/potential_wind_pv_kreise.csv``: Path incl. file name of output for results
     documentation
 
 Outputs
@@ -27,7 +27,6 @@ Description
 Processes the area and power potential of pv and wind energy resulting from script
 'prepare_re_potential.py'. Formats the power potential of pv and wind energy as input for the
 energy system model and joins results of both pv and wind.
-
 """
 
 import pandas as pd
