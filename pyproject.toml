@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "oemof-B3"
 version = "0.0.0"
-description = "Windflächenrechner - Agora Energiewende"
+description = "oemof-B3 - an open-source energy system model for Brandenburg/Berlin"
 authors = [
   "Jann Launer <jann.launer@rl-institut.de>",
   "Sabine Haas <sabine.haas@rl-institut.de>",
