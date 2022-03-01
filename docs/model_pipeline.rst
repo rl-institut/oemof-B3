@@ -10,9 +10,9 @@ Model pipeline
     :backlinks: top
 
 The main functionality of oemof-B3 is a data processing pipeline which is managed using snakemake.
-The pipeline preprocesses raw data into scalar and timeseries resources that is used to
+The pipeline preprocesses raw data into scalar and time series resources that is used to
 build tabular datapackages representing single energy system optimization problems. These can be
-understood by oemof.tabular and optimized by oemof.solph. In the next steps, the results of the
+understood by `oemof.tabular <https://github.com/oemof/oemof-tabular>`_ and optimized by `oemof.solph <https://github.com/oemof/oemof-solph>`_. In the next steps, the results of the
 optimization are postprocessed and plotted. The individual steps are documented in detail in the
 following sections.
 
