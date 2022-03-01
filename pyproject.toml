@@ -34,7 +34,7 @@ exclude = '''
   | \.mypy_cache
   | meta/migrations
   | docs
-
+  | .venv
 )/
 '''
 max-line-length=100
