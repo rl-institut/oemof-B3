@@ -61,3 +61,6 @@ their properties are defined in
 
 Postprocessed data
 -------------------
+
+Data postprocessing makes use of oemoflex's functionality, thus postprocessed data follows its
+data format.
