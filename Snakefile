@@ -5,7 +5,7 @@ HTTP = HTTPRemoteProvider()
 
 
 scenario_groups = {
-    "examples": ["base", "more_renewables", "more_renewables_less_fossil"],
+    "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
     "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
 }
 
@@ -19,7 +19,7 @@ rule plot_all_resources:
 
 rule plot_all_examples:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenario_groups["examples"])
+        expand("results/{scenario}/plotted/scalars", scenario=scenario_groups["examples"])
 
 rule report_all_examples:
     input:
@@ -53,7 +53,7 @@ rule create_input_data_overview:
 
 rule prepare_example:
     input:
-        "examples/{scenario}/preprocessed/{scenario}"
+        "examples/{scenario}/preprocessed/"
     output:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
