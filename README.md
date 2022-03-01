@@ -4,7 +4,7 @@ Oemof-B3 is an energy system model of Berlin and Brandenburg. It represents many
 Electricity, central and decentral heat, hydrogen, CO2 and methane. It is a multi-node-model, which
 means that several distinct regions are represented that are connected via transmission lines.
 
-<img src="/docs/_img/model_structure.svg" width="700"/>
+<img src="/docs/_img/model_structure.svg" width="900"/>
 
 The model is a perfect-foresight, cost minimizing linear optimization model that builds upon
 [oemof.solph](https://github.com/oemof/oemof-solph),
