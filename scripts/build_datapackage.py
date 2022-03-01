@@ -17,8 +17,11 @@ Description
 -------------
 The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
 fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
+Further, additional parameters like emission limit are saved in a separate file.
 """
+import logging
 import sys
+import os
 from collections import OrderedDict
 
 import pandas as pd
@@ -33,7 +36,11 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     format_header,
     HEADER_B3_SCAL,
+    save_df,
 )
+from oemof_b3.config import config
+
+logger = logging.getLogger()
 
 
 def multi_load(paths, load_func):
@@ -125,14 +132,14 @@ def update_with_checks(old, new):
     """
     # Check if some data would get lost
     if not new.index.isin(old.index).all():
-        print("Index of new data is not in the index of old data.")
+        logger.warning("Index of new data is not in the index of old data.")
 
     try:
         # Check if it overwrites by setting errors = 'raise'
         old.update(new, errors="raise")
     except ValueError:
         old.update(new, errors="ignore")
-        print("Update overwrites existing data.")
+        logger.warning("Update overwrites existing data.")
 
 
 def parametrize_scalars(edp, scalars, filters):
@@ -172,7 +179,7 @@ def parametrize_scalars(edp, scalars, filters):
 
         update_with_checks(edp.data["component"], filtered)
 
-        print(f"Updated DataPackage with scalars filtered by {filt}.")
+        logger.info(f"Updated DataPackage with scalars filtered by {filt}.")
 
     edp.unstack_components()
 
@@ -214,17 +221,30 @@ def parametrize_sequences(edp, ts, filters):
 
         data_unstacked = unstack_timeseries(data)
 
-        edp.data[name].update(data_unstacked)
+        edp.data[name] = data_unstacked
 
-    print(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
+        edp.data[name].index.name = "timeindex"
+
+    logger.info(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
 
     return edp
+
+
+def save_emission_limit():
+    """Saves emission limit to `destination`"""
+    emission_scalars = scalars.loc[scalars["carrier"] == "emission"]
+    filename = os.path.join(destination, "additional_scalars.csv")
+    save_df(emission_scalars, filename)
+    return
 
 
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
     destination = sys.argv[2]
+
+    logfile = sys.argv[3]
+    logger = config.add_snake_logger(logfile, "build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
 
@@ -256,6 +276,9 @@ if __name__ == "__main__":
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])
 
+    # Drop those scalars that do not belong to a specific component
+    scalars = scalars.loc[~scalars["name"].isna()]
+
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 
     edp = parametrize_scalars(edp, scalars, filters)
@@ -271,6 +294,9 @@ if __name__ == "__main__":
 
     # save to csv
     edp.to_csv_dir(destination)
+
+    # add emission limit to `destination`
+    save_emission_limit()
 
     # add metadata
     edp.infer_metadata(foreign_keys_update=foreign_keys_update)

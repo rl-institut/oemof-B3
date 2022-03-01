@@ -8,10 +8,11 @@ filename_wind : str
 filename_pv : str
     ``raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv``: Path incl. file name to pv
     feed-in time series of renewables ninja
-filename_for : str
-    ``raw/time_series/DIW_Hydro_availability.csv``:
+filename_ror : str
+    ``raw/time_series/DIW_Hydro_availability.csv``: Path incl. file name to feed-in time series of
+    run-of-river power plants
 output_file : str
-    ``results/_resources/ts_feedin.csv``:
+    ``results/_resources/ts_feedin.csv``: Path incl. file name to prepared time series
 
 Outputs
 ---------
@@ -33,10 +34,8 @@ import os
 import oemof_b3.tools.data_processing as dp
 
 # global variables
+YEARS = list(range(2010, 2020))
 # specific to wind and pv time series
-RE_NINJA_YEARS = list(
-    range(2010, 2020)
-)  # re ninja wind+pv time series are prepared for these years
 NUTS_DE30 = "DE30"
 NUTS_DE40 = "DE40"
 RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
@@ -47,7 +46,6 @@ TS_COMMENT = "navigate to country Germany"
 REGIONS = ["BB", "B"]
 TS_SOURCE_ROR = "https://zenodo.org/record/1044463"
 TS_COMMENT_ROR = "Isolated ror availability time series from DIW data"
-YEAR_ROR = 2017
 
 
 def prepare_wind_and_pv_time_series(filename_ts, year, type):
@@ -93,7 +91,7 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
 
     return ts_prepared
 
@@ -101,6 +99,10 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
 def prepare_ror_time_series(filename_ts, region):
     r"""
     Prepares and formats run-of-the-river (ror) time series for region 'B' and 'BB'.
+
+    The raw data only includes one year. This functions prepares the time series for years `YEARS`
+    using the same data for each year. For leap years Feb 29th is filled with the last value of Feb
+    28.
 
     Parameters
     ----------
@@ -111,32 +113,59 @@ def prepare_ror_time_series(filename_ts, region):
 
     Returns
     -------
-    ts_prepared : pd.DataFrame
+    ts_df : pd.DataFrame
         Contains time series in the format of time series template of oemof-B3
 
     """
     # load raw time series and copy data frame
     ts_raw = pd.read_csv(filename_ts, index_col=0, skiprows=3, delimiter=";")
-    time_series = ts_raw.copy()
+    # add time index
+    ts_raw.index = pd.date_range("2017-01-01 00:00:00", "2017-12-31 23:00:00", freq="H")
 
-    time_series.index = pd.date_range(
-        f"{YEAR_ROR}-01-01 00:00:00", f"{YEAR_ROR}-12-31 23:00:00", 8760
-    )
-    # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
-    ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
-    ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
-    )
+    # prepare for all years
+    ts_df = pd.DataFrame()
+    for year in YEARS:
+        time_series = ts_raw.copy()
+        new_index = pd.date_range(
+            f"{year}-01-01 00:00:00", f"{year}-12-31 23:00:00", freq="H"
+        )
+        new_index_df = pd.DataFrame(index=new_index)
+        leap_year = new_index_df.index.is_leap_year[0]
+
+        # extend time series for leap years
+        if leap_year == True:  # noqa: E712
+            # Change datetimeindex to current `year`
+            time_series.index = (
+                time_series.reset_index()["index"]
+                .apply(lambda x: x.replace(year=year))
+                .values
+            )
+            # concatenate `time_series` and the new index and fill nans with value of previous day
+            time_series = pd.concat(
+                [time_series, new_index_df], axis=1, join="outer"
+            ).fillna(method="ffill")
+        else:
+            # set `new_index`
+            time_series.index = new_index
+
+        # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
+        ts_stacked = dp.stack_timeseries(time_series).rename(
+            columns={"var_name": "region"}
+        )
+        ts_prepared = dp.format_header(
+            df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+        )
+        ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
+        ts_df = pd.concat([ts_df, ts_prepared])
 
     # add additional information as required by template
-    ts_prepared.loc[:, "region"] = region
-    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "ror-profile"
-    ts_prepared.loc[:, "source"] = TS_SOURCE_ROR
-    ts_prepared.loc[:, "comment"] = TS_COMMENT_ROR
-    ts_prepared.loc[:, "scenario"] = f"ts_{YEAR_ROR}"
+    ts_df.loc[:, "region"] = region
+    ts_df.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_df.loc[:, "var_name"] = "hydro-ror-profile"
+    ts_df.loc[:, "source"] = TS_SOURCE_ROR
+    ts_df.loc[:, "comment"] = TS_COMMENT_ROR
 
-    return ts_prepared
+    return ts_df
 
 
 if __name__ == "__main__":
@@ -149,17 +178,17 @@ if __name__ == "__main__":
     time_series_df = pd.DataFrame()
 
     # prepare time series for each year
-    for year in RE_NINJA_YEARS:
+    for year in YEARS:
         # prepare wind time series
         wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
             year=year,
-            type="wind",
+            type="wind-onshore",
         )
 
         # prepare pv time series
         pv_ts = prepare_wind_and_pv_time_series(
-            filename_ts=filename_pv, year=year, type="pv"
+            filename_ts=filename_pv, year=year, type="solar-pv"
         )
 
         # add time series to `time_series_df`

@@ -23,6 +23,8 @@ import sys
 from oemof.solph import EnergySystem
 from oemoflex.model.datapackage import ResultsDataPackage
 
+from oemof_b3.config import config
+
 
 if __name__ == "__main__":
 
@@ -32,12 +34,22 @@ if __name__ == "__main__":
 
     destination = sys.argv[3]
 
-    es = EnergySystem()
+    logfile = sys.argv[4]
+    logger = config.add_snake_logger(logfile, "postprocess")
 
-    es.restore(optimized)
+    try:
+        es = EnergySystem()
 
-    rdp = ResultsDataPackage.from_energysytem(es)
+        es.restore(optimized)
 
-    rdp.set_scenario_name(scenario_name)
+        rdp = ResultsDataPackage.from_energysytem(es)
 
-    rdp.to_csv_dir(destination)
+        rdp.set_scenario_name(scenario_name)
+
+        rdp.to_csv_dir(destination)
+
+    except:  # noqa: E722
+        logger.exception(
+            f"Could not postprocess data from energysystem in '{optimized}'."
+        )
+        raise

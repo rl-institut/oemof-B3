@@ -78,7 +78,7 @@ if __name__ == "__main__":
     )
 
     # add additional information as required by template
-    scalar_df.loc[:, "scenario"] = ""
+    scalar_df.loc[:, "scenario_key"] = ""
     scalar_df.loc[:, "name"] = "None"
     scalar_df.loc[:, "var_name"] = "capacity"
     scalar_df.loc[:, "type"] = "volatile"

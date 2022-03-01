@@ -98,14 +98,39 @@ rule prepare_electricity_demand:
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
+rule prepare_vehicle_charging_demand:
+    input:
+        input_dir=directory("raw/time_series/vehicle_charging"),
+        script="scripts/prepare_vehicle_charging_demand.py"
+    output:
+        "results/_resources/ts_load_electricity_vehicles.csv"
+    shell:
+        "python {input.script} {input.input_dir} {output}"
+
 rule prepare_scalars:
     input:
-        raw_scalars="raw/base-scenario.csv",
+        raw_scalars="raw/scalars_{range}.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_base-scenario.csv"
+        "results/_resources/scal_{range}.csv"
+    wildcard_constraints:
+        range=("base|high|low")
     shell:
         "python {input.script} {input.raw_scalars} {output}"
+
+rule prepare_heat_demand:
+    input:
+        weather="raw/weatherdata",
+        distribution_hh="raw/distribution_households.csv",
+        holidays="raw/holidays.csv",
+        building_class="raw/building_class.csv",
+        scalars="raw/scalars_base.csv",
+        script="scripts/prepare_heat_demand.py",
+    output:
+        scalars="results/_resources/scal_load_heat.csv",
+        timeseries="results/_resources/ts_load_heat.csv",
+    shell:
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries}"
 
 rule prepare_re_potential:
     input:
@@ -144,33 +169,39 @@ def get_paths_scenario_input(wildcards):
 rule build_datapackage:
     input:
         get_paths_scenario_input,
-        scenario="scenarios/{scenario}.yml",
+        scenario="scenarios/{scenario}.yml"
     output:
         directory("results/{scenario}/preprocessed")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/build_datapackage.py {input.scenario} {output}"
+        "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
     output:
         directory("results/{scenario}/optimized/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/optimize.py {input} {output}"
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
         "results/{scenario}/optimized"
     output:
         directory("results/{scenario}/postprocessed/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/")
+        directory("results/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
@@ -183,6 +214,22 @@ rule plot_conv_pp_scalars:
     shell:
         "python {input.script} {input.data} {wildcards.var_name} {output}"
 
+rule plot_scalar_results:
+    input:
+        "results/{scenario}/postprocessed/scalars.csv"
+    output:
+        directory("results/{scenario}/plotted/scalars/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
+
+rule plot_joined_scalars:
+    input:
+        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+    output:
+        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
+
 rule report:
     input:
         template="report/report.md",
@@ -190,6 +237,8 @@ rule report:
         plots="results/{scenario}/plotted"
     output:
         directory("results/{scenario}/report/")
+    params:
+        logfile="logs/{scenario}.log"
     run:
         import os
         import shutil
@@ -200,7 +249,8 @@ rule report:
         shell(
         """
         pandoc -V geometry:a4paper,margin=2.5cm \
-        --resource-path={output}/../plotted \
+        --lua-filter report/pandoc_filter.lua \
+        --resource-path={input[2]} \
         --metadata title="Results for scenario {wildcards.scenario}" \
         {output}/report.md -o {output}/report.pdf
         """
@@ -208,7 +258,8 @@ rule report:
         # static html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={input[2]} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report.md -o {output}/report.html
@@ -217,7 +268,8 @@ rule report:
         # interactive html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={input[2]} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report_interactive.md -o {output}/report_interactive.html
@@ -238,11 +290,3 @@ rule join_scenario_results:
         "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
-
-rule plot_joined_scalars:
-    input:
-        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
-    output:
-        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
-    shell:
-        "python scripts/plot_joined_scalars.py {input} {output}"
