@@ -6,7 +6,7 @@ HTTP = HTTPRemoteProvider()
 
 scenario_groups = {
     "examples": ["base", "more_renewables", "more_renewables_less_fossil"],
-    "toy-scenarios": ["toy-scenario","toy-scenario-2"],
+    "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
 }
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
@@ -27,11 +27,11 @@ rule report_all_examples:
 
 rule plot_all_scenarios:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenario_groups["toy-scenarios"])
+        expand("results/{scenario}/plotted/", scenario=scenario_groups["base-scenarios"])
 
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["examples"])
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["base-scenarios"])
 
 
 rule clean:
