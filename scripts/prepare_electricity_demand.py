@@ -3,10 +3,10 @@ r"""
 Inputs
 -------
 opsd_ts_data : str
-    raw opsd timeseries data including electricty load as .csv
+    raw opsd timeseries data including electricity load as .csv.
 output_file : str
     ``results/_resources/ts_load_electricity.csv``: path of output file with prepared
-    data as .csv
+    timeseries data as .csv.
 
 Outputs
 ---------
