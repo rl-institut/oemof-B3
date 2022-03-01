@@ -33,7 +33,7 @@ Time series
    :file: ../oemof_b3/schema/timeseries.csv
 
 A few more conventions are important to know. Missing data is left empty. If a value applies to all
-regions, this is indicated by `ALL`. If it applies to the sum of regions, by `TOTAL`.
+regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
 
 Preprocessed datapackages
 -------------------------
