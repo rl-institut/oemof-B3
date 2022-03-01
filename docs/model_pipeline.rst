@@ -23,7 +23,7 @@ following sections.
 
 .. created with snakemake --dag results/base-2050/report/ | dot -Tsvg > /docs/_img/model_pipeline.svg
 
-The subdirectories of oemof-B3 shown below contain configurations and data for the model.
+The subdirectories of oemof-B3 shown below contain configurations and data of the model.
 :file:`Examples` contains pre-fabricated datapackages that can readily be optimized. The directory
 :file:`scenarios` contains :file:`.yml`-files defining individual scenarios. Raw data is not part
 of the repo and has to be provided in :file:`raw`. Intermediate and final results will be saved in
