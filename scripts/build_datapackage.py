@@ -6,6 +6,8 @@ scenario_specs : str
     ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------

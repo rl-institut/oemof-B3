@@ -8,6 +8,8 @@ scenario_name : str
     `` ``
 destination : str
     ``results/{scenario}/preprocessed``
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------

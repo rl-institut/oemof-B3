@@ -6,6 +6,8 @@ preprocessed : str
     ``results/{scenario}/preprocessed``
 optimized : str
     ``results/{scenario}/optimized/``
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
