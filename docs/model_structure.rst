@@ -54,5 +54,5 @@ Beyond that, there are specific variables which depend on the type of the compon
 their properties are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
 
-Postprocesssed data
+Postprocessed data
 -------------------
