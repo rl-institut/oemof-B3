@@ -2,7 +2,7 @@
 r"""
 Inputs
 -------
-*scenarios : list[str]
+scenarios : list[str]
     A list of scenario paths.
 destination : path
     ``results/joined_scenarios/{scenario_list}/joined/scalars.csv``: Path of output file to store
