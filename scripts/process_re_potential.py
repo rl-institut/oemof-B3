@@ -25,7 +25,7 @@ pd.DataFrame
 Description
 -------------
 Processes the area and power potential of pv and wind energy resulting from script
-'prepare_re_potential.py'. Reformats the power potential of pv and wind energy as input for the
+'prepare_re_potential.py'. Formats the power potential of pv and wind energy as input for the
 energy system model and joins results of both pv and wind.
 
 """
