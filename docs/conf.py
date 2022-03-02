@@ -34,6 +34,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.napoleon',
     'sphinxcontrib.bibtex',
+    'sphinx.ext.autosectionlabel'
 ]
 
 # specify bibfiles for sphinxcontrib.bibtex
