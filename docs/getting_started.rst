@@ -13,34 +13,43 @@ Using oemof-B3
 ==============
 
 
-Installing the latest (dev) version
------------------------------------
-
-Clone oemof-B3 from github:
-
-::
-
-    git clone git@github.com:rl-institut/oemof-B3.git
-
-
-Now you can install your local version of oemof-B3 using pip:
-
-::
-
-    pip install -e <path/to/oemof-B3/root/dir>
-
-
-Requirements
+Installation
 ------------
-1. To use `oemof-solph`, which does the energy system optimization in oemof-B3,
-   a LP/MILP solver must be installed.
-   To use the CBC solver install the `coinor-cbc` package. For further details, read the
-   `installation instructions on
-   oemof.solph <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_.
 
-2. oemof-B3 needs `oemof-tabular` for data preprocessing.
-   If you install oemof-b3 locally, the current dev version of oemof.tabular will automatically
-   be installed.
+You can install oemof-B3 in your environment via pip.
+
+    pip install oemof-B3
+
+As oemof-B3 is under development, it might be better to install the current dev branch locally. See
+below for instructions.
+
+To test if everything works, you can run the examples.
+
+Installing the latest (dev) version locally
+-------------------------------------------
+
+Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+
+In order to install oemof-B3 locally, following steps must be made:
+- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
+- enter folder
+- create virtual environment using conda: `conda env create environment.yml`
+- activate environment: `conda activate oemof-B3`
+- install oemof-B3 package using poetry, via: `poetry install`
+
+Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml).
+If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+
+Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
+
+Required: An LP-solver
+----------------------
+
+To use `oemof-solph`, which does the energy system optimization in oemof-B3,
+a LP/MILP solver must be installed.
+To use the CBC solver install the `coinor-cbc` package. For further details, read the
+`installation instructions on
+oemof.solph <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_.
 
 If you have installation problems, consider opening an
 `issue <https://github.com/rl-institut/oemof-B3/issues>`_.
@@ -63,7 +72,7 @@ in the Anaconda prompt.
 Required data
 -------------
 
-Raw input_data is currently **not** provided with the github repository but will be published at a
+Raw input data is currently **not** provided with the github repository but will be published at a
 later stage:
 
 .. todo: Link to the section that explains raw data.
@@ -111,7 +120,7 @@ To run all example scenarios, execute:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES> run_all_examples
+     snakemake -j<NUMBER_OF_CPU_CORES> plot_all_examples
 
 Alternatively, to create just the output file or directory of one rule, run:
 
