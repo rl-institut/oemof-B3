@@ -3,11 +3,14 @@ r"""
 Inputs
 -------
 optimized : str
-    ``results/{scenario}/optimized``
+    ``results/{scenario}/optimized``: Directory containing dump of oemof.solph.Energysystem
+    with optimization results and parameters.
 scenario_name : str
-    `` ``
+    ``{scenario}``: Name of the scenario.
 destination : str
-    ``results/{scenario}/preprocessed``
+    ``results/{scenario}/postprocessed``: Target path for postprocessed results.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -16,7 +19,7 @@ oemoflex.ResultsDatapackage
 
 Description
 -------------
-Postprocess the results of an optimization.
+The script performs the postprocessing of optimization results.
 """
 import sys
 

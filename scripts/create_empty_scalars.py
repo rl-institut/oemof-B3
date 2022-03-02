@@ -3,18 +3,18 @@ r"""
 Inputs
 -------
 scenario_specs : str
-    path of input file (.yml) containing scenario specifications
+    ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
 destination : str
     path of output directory
 
 Outputs
 ---------
 pandas.DataFrame
-    Empty scalars
+    Empty scalar in oemof-B3 resource format.
 
 Description
 -------------
-The script creates an empty scalars that serve as a template for input data.
+The script creates an empty DataFrame for scalar data that serve as a template for input data.
 """
 import sys
 

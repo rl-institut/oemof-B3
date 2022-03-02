@@ -1,6 +1,6 @@
-.. _plot_scalar_resources_label:
+.. _plot_conv_pp_scalars_label:
 
-plot_scalar_resources
+plot_conv_pp_scalars
 =====================
 
 .. automodule:: plot_conv_pp_scalars

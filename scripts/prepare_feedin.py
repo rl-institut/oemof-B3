@@ -4,20 +4,20 @@ Inputs
 -------
 filename_wind : str
     ``raw/time_series/ninja_wind_country_DE_current_merra-2_nuts-2_corrected.csv``: Path incl. file
-    name to wind feed-in time series of renewables ninja
+    name of wind feed-in time series of renewables ninja
 filename_pv : str
-    ``raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv``: Path incl. file name to pv
+    ``raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv``: Path incl. file name of pv
     feed-in time series of renewables ninja
 filename_ror : str
-    ``raw/time_series/DIW_Hydro_availability.csv``: Path incl. file name to feed-in time series of
+    ``raw/time_series/DIW_Hydro_availability.csv``: Path incl. file name of feed-in time series of
     run-of-river power plants
 output_file : str
-    ``results/_resources/ts_feedin.csv``: Path incl. file name to prepared time series
+    ``results/_resources/ts_feedin.csv``: Path incl. file name of prepared time series
 
 Outputs
 ---------
-output_file : str
-    Path incl. file name to output: wind and pv feed-in time series
+pd.DataFrame
+    Prepared feed-in time series of pv, wind and hydropower
 
 Description
 -------------

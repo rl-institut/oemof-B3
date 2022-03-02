@@ -3,10 +3,10 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/scal_base-scenario.csv``: path incl. file name of input file with raw scalar data as .csv
+    ``raw/scalars_{range}.csv``: path incl. file name of input file with raw scalar data
 out_path : str
-    ``results/_resources/scal_base-scenario.csv``: path incl. file name of output file with prepared
-    scalar data as .csv
+    ``results/_resources/scal_{range}.csv``: path incl. file name of output file with prepared
+    scalar data
 
 Outputs
 ---------
@@ -19,6 +19,7 @@ The script performs the following steps to prepare scalar data for parametrizati
 
 * Calculate annualized investment cost from overnight cost, lifetime and wacc.
 """
+
 import sys
 
 import pandas as pd

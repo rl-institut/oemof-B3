@@ -2,8 +2,8 @@
 r"""
 Inputs
 -------
-list_scenarios : path
-    ``scenario_groups/{scenario_list}.yml``: Path to yaml-file containing a list of scenarios.
+scenarios : list[str]
+    A list of scenario paths.
 destination : path
     ``results/joined_scenarios/{scenario_list}/joined/scalars.csv``: Path of output file to store
     joined scalar results.
@@ -15,7 +15,7 @@ Outputs
 
 Description
 -------------
-This script joins scalar results of a set of scenarios.
+This script joins scalar results of a group of scenarios.
 """
 import os
 import sys

@@ -6,12 +6,14 @@ scenario_specs : str
     ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
 oemoflex.EnergyDatapackage
-    EnergyDatapackage in the correct structure, with data (scalars and timeseries) as csv and
-    metadata (describing resources and foreign key relations) as json.
+    EnergyDatapackage that can be read by oemof.tabular, with data (scalars and timeseries)
+    as csv and metadata (describing resources and foreign key relations) as json.
 
 Description
 -------------

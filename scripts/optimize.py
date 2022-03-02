@@ -3,9 +3,13 @@ r"""
 Inputs
 -------
 preprocessed : str
-    ``results/{scenario}/preprocessed``
+    ``results/{scenario}/preprocessed``: Path to preprocessed EnergyDatapackage containing
+    elements, sequences and datapackage.json.
 optimized : str
-    ``results/{scenario}/optimized/``
+    ``results/{scenario}/optimized/`` Target path to store dump of oemof.solph.Energysystem
+    with optimization results and parameters.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------

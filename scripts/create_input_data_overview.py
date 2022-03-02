@@ -3,19 +3,18 @@ r"""
 Inputs
 ------
 in_path : str
-    ``raw/{scalars}.csv``: path to raw scalars
+    ``raw/{scalars}.csv``: path to raw scalar data.
 out_path : str
-    ``results/_tables/{scalars}_technical_and_cost_assumptions.csv``: target path for the table
+    ``results/_tables/{scalars}_technical_and_cost_assumptions.csv``: target path for the table.
 
 Outputs
 -------
 .csv
-    Table showing investment cost and efficiency data.
+    Table showing investment cost and efficiency data for all technologies.
 
 Description
 -----------
-This script creates overview tables of input data such
-that it can be included in a TeX-document.
+This script creates an overview table of input data that can be included in a TeX-document.
 """
 import sys
 

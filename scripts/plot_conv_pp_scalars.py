@@ -2,7 +2,10 @@ r"""
 Inputs
 -------
 resources : str
-    path of input file with data of prepared conventional power plant data as .csv
+    ``results/_resources/{resource}.csv``: path of input file with data of prepared conventional
+    power plant data as .csv
+var_name : str
+    Indicates the var_name which shall be plotted
 target : str
     path of output file with plot
 
