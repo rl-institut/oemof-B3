@@ -31,12 +31,12 @@ But it can be invested into battery storage to expand it.
 
 Three scenarios have been built based on the grid development plan:
 
-- **base**: This scenario represents a future energy system with higher capacities for renewables
+- **example_base**: This scenario represents a future energy system with higher capacities for renewables
   compared to the current system. The assumed capacities corresponds to those of scenario A 2035 of
   the grid development plan.
-- **more_renewable**: This scenario assumes larger capacities of renewable energies (wind, pv,
+- **example_more_re**: This scenario assumes larger capacities of renewable energies (wind, pv,
   biomass) compared to the base scenario, corresponding to scenario B 2035 of the grid development
   plan.
-- **more_renewable_less_fossil**: This scenario represents a system with more renewable capacities
+- **example_more_re_less_fossil**: This scenario represents a system with more renewable capacities
   compared to the previous and assumes that the capacities of fossil (gas, oil) powerplants have
   been reduced further. The capacities correspond to scenario B 2040 of the grid development plan.

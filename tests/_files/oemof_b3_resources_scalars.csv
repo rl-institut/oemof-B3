@@ -1,4 +1,4 @@
-scenario;name;var_name;carrier;region;tech;type;var_value
+scenario_key;name;var_name;carrier;region;tech;type;var_value
 base;BE-biomass-st;capacity;biomass;BE;gt;conversion;0
 base;BB-biomass-st;capacity;biomass;BB;gt;conversion;400000
 base;BB-biomass-st;flow_in_biomass;biomass;BB;gt;conversion;2692790078.846871

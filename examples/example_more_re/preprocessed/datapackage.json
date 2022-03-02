@@ -1,6 +1,6 @@
 {
     "profile": "tabular-data-package",
-    "name": "base",
+    "name": "example_more_re",
     "resources": [
         {
             "path": "data/elements/electricity-transmission.csv",

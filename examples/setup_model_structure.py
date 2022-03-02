@@ -8,9 +8,9 @@ from oemoflex.model.datapackage import EnergyDataPackage
 
 # select scenario
 scenario_names = [
-    "base",
-    "more_renewables",
-    "more_renewables_less_fossil",
+    "example_base",
+    "example_more_re",
+    "example_more_re_less_fossil",
 ]
 
 try:
@@ -26,7 +26,7 @@ assert scenario_name in scenario_names, (
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-preprocessed = os.path.join(here, scenario_name, "preprocessed", scenario_name)
+preprocessed = os.path.join(here, scenario_name, "preprocessed")
 
 if not os.path.exists(preprocessed):
     os.makedirs(preprocessed)

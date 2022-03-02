@@ -5,37 +5,42 @@ HTTP = HTTPRemoteProvider()
 
 
 scenario_groups = {
-    "examples": ["base", "more_renewables", "more_renewables_less_fossil"],
-    "toy-scenarios": ["toy-scenario","toy-scenario-2"],
+    "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
+    "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
 }
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
 
 # Target rules
-rule plot_grouped_scenarios:
+rule plot_all_resources:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["examples"])
-
-rule plot_all_scenarios:
-    input:
-        expand("results/{scenario}/plotted/", scenario=scenario_groups["toy-scenarios"])
-
-rule run_all_examples:
-    input:
-        expand("results/{scenario}/postprocessed", scenario=scenario_groups["examples"])
+        expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
 
 rule plot_all_examples:
     input:
-        expand("results/{scenario}/plotted/", scenario=scenario_groups["examples"])
+        expand(
+            "results/{scenario}/plotted/scalars",
+            scenario=scenario_groups["examples"],
+            plot_type=["scalars", "dispatch"],
+        )
 
 rule report_all_examples:
     input:
         expand("results/{scenario}/report/", scenario=scenario_groups["examples"])
 
-rule plot_all_resources:
+rule plot_all_scenarios:
     input:
-        expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
+        expand(
+            "results/{scenario}/plotted/{plot_type}",
+            scenario=scenario_groups["base-scenarios"],
+            plot_type=["scalars", "dispatch"],
+        )
+
+rule plot_grouped_scenarios:
+    input:
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["base-scenarios"])
+
 
 rule clean:
     shell:
@@ -56,7 +61,7 @@ rule create_input_data_overview:
 
 rule prepare_example:
     input:
-        "examples/{scenario}/preprocessed/{scenario}"
+        "examples/{scenario}/preprocessed/"
     output:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
@@ -100,7 +105,7 @@ rule prepare_electricity_demand:
 
 rule prepare_vehicle_charging_demand:
     input:
-        input_dir=directory("raw/time_series/vehicle_charging"),
+        input_dir="raw/time_series/vehicle_charging",
         script="scripts/prepare_vehicle_charging_demand.py"
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
@@ -109,12 +114,28 @@ rule prepare_vehicle_charging_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/base-scenario.csv",
+        raw_scalars="raw/scalars_{range}.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_base-scenario.csv"
+        "results/_resources/scal_{range}.csv"
+    wildcard_constraints:
+        range=("base|high|low")
     shell:
         "python {input.script} {input.raw_scalars} {output}"
+
+rule prepare_heat_demand:
+    input:
+        weather="raw/weatherdata",
+        distribution_hh="raw/distribution_households.csv",
+        holidays="raw/holidays.csv",
+        building_class="raw/building_class.csv",
+        scalars="raw/scalars_base.csv",
+        script="scripts/prepare_heat_demand.py",
+    output:
+        scalars="results/_resources/scal_load_heat.csv",
+        timeseries="results/_resources/ts_load_heat.csv",
+    shell:
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries}"
 
 rule prepare_re_potential:
     input:
@@ -185,7 +206,7 @@ rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/")
+        directory("results/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
@@ -198,11 +219,28 @@ rule plot_conv_pp_scalars:
     shell:
         "python {input.script} {input.data} {wildcards.var_name} {output}"
 
+rule plot_scalar_results:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/scalars/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
+
+rule plot_joined_scalars:
+    input:
+        "results/joined_scenarios/{scenario_list}/joined/"
+    output:
+        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
+
 rule report:
     input:
         template="report/report.md",
         template_interactive="report/report_interactive.md",
-        plots="results/{scenario}/plotted"
+        plots_scalars="results/{scenario}/plotted/scalars",
+        plots_dispatch="results/{scenario}/plotted/dispatch",
     output:
         directory("results/{scenario}/report/")
     params:
@@ -258,11 +296,3 @@ rule join_scenario_results:
         "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
-
-rule plot_joined_scalars:
-    input:
-        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
-    output:
-        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
-    shell:
-        "python scripts/plot_joined_scalars.py {input} {output}"
