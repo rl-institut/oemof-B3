@@ -15,9 +15,9 @@ overview.
 Raw data
 --------
 
-Raw data from external source comes in different formats. As a first step, the model transforms it
-into the oemof-B3-resources-format, explained below. Raw data that represents model-own
-assumptions is provided in that format already.
+Raw data from external source comes in different formats. As a first step, preprocessing scripts in
+the model pipeline bring it into the oemof-B3-resources-format, explained in the next section. Raw data that
+represents model-own assumptions is provided in that format already.
 
 oemof-B3 resources
 ------------------
@@ -44,7 +44,8 @@ There is no unit transformation within the model, i.e. the user needs to ensure 
 Preprocessed datapackages
 -------------------------
 
-Preprocessed datapackages are a collection of .csv-files, one file for all busses and one for each
+A preprocessed datapackage represents an instance of an energy system scenario.
+It is a collection of .csv-files, one file for all busses and one for each
 component, stored in :file:`elements` (scalars data) and :file:`sequences` (time series for e.g.
 renewable feedin or demand profiles), stored in separate folders. Below is an example of the element
 file for the gas turbine of the base examples scenario, which can be found in
