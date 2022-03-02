@@ -16,14 +16,14 @@ Raw data
 --------
 
 Raw data from external source comes in different formats. As a first step, preprocessing scripts in
-the model pipeline bring it into the oemof-B3-resources-format, explained in the next section. Raw data that
-represents model-own assumptions is provided in that format already.
+the model pipeline (see :ref:`Preprocessing`) convert it into the oemof-B3-resources-format,
+explained in the next section. Raw data that represents model-own assumptions is provided in that format already.
 
 oemof-B3 resources
 ------------------
 
-The resources, i.e. preprocessed data that serves as material for building scenarios, are prepared
-by several scripts. They follow a common data schema defined in :file:`oemof_b3/schema/`.
+The resources are preprocessed data that serves as material for building scenarios. They follow
+a common data schema defined in :file:`oemof_b3/schema/`.
 
 Scalars
 
@@ -44,12 +44,15 @@ There is no unit transformation within the model, i.e. the user needs to ensure 
 Preprocessed datapackages
 -------------------------
 
-A preprocessed datapackage represents an instance of an energy system scenario.
+The resources are then again preprocessed together with the scenario information to generate
+scenario-specific datapackages. A preprocessed datapackage represents an instance of an energy system scenario.
 It is a collection of .csv-files, one file for all busses and one for each
 component, stored in :file:`elements` (scalars data) and :file:`sequences` (time series for e.g.
 renewable feedin or demand profiles), stored in separate folders. Below is an example of the element
 file for the gas turbine of the base examples scenario, which can be found in
 :file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.
+
+.. todo: Explain more about scenarios, where and how they are defined and thus how new ones can be made
 
 =======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
 region   name       type        carrier  tech   from_bus  to_bus          capacity  capacity_cost  efficiency   carrier_cost   marginal_cost  expandable  output_paramters
