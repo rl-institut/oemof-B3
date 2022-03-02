@@ -130,9 +130,8 @@ When running snakemake with output files in subfolders on Windows with
 
 a ``MissingRuleException`` is raised. The process is unable to specify the output files in subfolders.
 This bug is an `open issue <https://github.com/snakemake/snakemake/issues/46>`_
-at `snakemake <https://snakemake.readthedocs.io/>`_.
-The `current workaround <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_
-described in `pypsa-eur <https://pypsa-eur.readthedocs.io/en/latest/index.html>`_
+in snakemake.
+A current workaround is described in `pypsa-eur <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_.
 is to run snakemake with the flag ``--keep-target-files`` to the command.
 
 ::
