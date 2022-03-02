@@ -61,9 +61,9 @@ Feedback is welcome. If you notice a bug, please open an
 
 ### Build the docs locally
 
-To build the docs locally, simply install the requirements
+To build the docs locally, simply install the requirements with
 
-    pip install -r docs_requirements.txt
+    pip install -r docs/docs_requirements.txt
 
 and run
 
