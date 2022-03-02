@@ -31,11 +31,13 @@ Description
 -------------
 The script produces heat demand profiles using the demandlib.
 For this purpose, it reads the scalar input data and filters them according to the corresponding
-heat demand. By processing historical weather data as well as the holidays belonging to the
-evaluated year, demandlib creates heat profiles, which are additionally normalized.
-Since the consumers business, trade and service (ghd) and private household (hh) are processed
-individually by demandlib, they are also passed individually in the scalar input data. The script
-summarizes the respective demand of the sectors and stores it in scalar resources.
+heat demand. By processing historical weather data as well as a household distribution in single-
+and multi-family houses that is assumed to be constant and the holidays belonging to the evaluated
+year, demandlib creates heat profiles, which are additionally normalized.
+Since the consumers trade, commerce and services (german: Gewerbe, Handel und Dienstleistungen
+(ghd)) and private household (hh) are processed individually by demandlib, they are also passed
+individually in the scalar input data. The script summarizes the respective demand of the consumers
+and stores it in scalar resources.
 """
 import datetime
 import itertools
