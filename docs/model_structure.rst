@@ -44,7 +44,7 @@ Preprocessed datapackages
 -------------------------
 
 Preprocessed datapackages are a collection of .csv-files, one file for all busses and one for each
-component, stored in :file:`elements` (scalars data) and :file`sequences` (time series for e.g.
+component, stored in :file:`elements` (scalars data) and :file:`sequences` (time series for e.g.
 renewable feedin or demand profiles), stored in separate folders. Below is an example of the element
 file for the gas turbine of the base examples scenario, which can be found in
 :file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.

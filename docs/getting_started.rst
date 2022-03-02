@@ -73,9 +73,7 @@ Required data
 -------------
 
 Raw input data is currently **not** provided with the github repository but will be published at a
-later stage:
-
-.. todo: Link to the section that explains raw data.
+later stage. More information about the raw data format can be found here: :ref:`Raw data`
 
 
 Workflow management with snakemake: Separating the steps
