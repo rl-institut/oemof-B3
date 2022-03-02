@@ -1,3 +1,20 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+HEADER_B3_SCAL : pandas.DataFrame
+``oemof_b3/schema/scalars.csv``: Header of scalars template
+
+HEADER_B3_TS : pandas.DataFrame
+``oemof_b3/schema/timeseries.csv``: Header of timeseries template
+
+Description
+-------------
+This script contains some helper functions for processing the data in oemof-B3, such as loading,
+filtering, sorting, merging, aggregating and saving.
+
+"""
+
 import os
 import ast
 import pandas as pd
