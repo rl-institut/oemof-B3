@@ -25,6 +25,8 @@ You can install oemof-B3 in your environment via pip.
 As oemof-B3 is under development, it might be better to install the current dev branch locally. See
 below for instructions.
 
+For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
+
 To test if everything works, you can run the examples.
 
 ### Installing the latest (dev) version locally
