@@ -2,7 +2,10 @@ r"""
 Inputs
 -------
 resources : str
-    path of input file with data of prepared conventional power plant data as .csv
+    ``results/_resources/{resource}.csv``: path of input file with data of prepared conventional
+    power plant data as .csv
+var_name :
+    ``scripts/plot_conv_pp_scalars.py``: The present script
 target : str
     path of output file with plot
 
