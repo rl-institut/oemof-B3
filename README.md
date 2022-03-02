@@ -16,6 +16,8 @@ available in the coming months.
 
 ## Getting started
 
+### Installation
+
 You can install oemof-B3 in your environment via pip. 
 
     pip install oemof-B3
@@ -23,20 +25,7 @@ You can install oemof-B3 in your environment via pip.
 As oemof-B3 is under development, it might be better to install the current dev branch locally. See
 below for instructions.
 
-To test if everything works, you can run the examples. 
-
-The raw data necessary to run the scenarios is not part of the model. It is not public yet and will
-be provided in the coming months. 
-
-## Documentation
-
-Find the documentation [here](https://oemof-b3.readthedocs.io/).
-
-## Contributing
-
-Feedback is welcome. If you notice a bug, please open an 
-[issue](https://github.com/rl-institut/oemof-B3/issues). To develop oemof-B3, the following
-instructions may be helpful.
+To test if everything works, you can run the examples.
 
 ### Installing the latest (dev) version locally
 
@@ -53,6 +42,20 @@ Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is includ
 If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
 
 Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
+
+### Data
+
+The raw data necessary to run the scenarios is not part of the model. It is not public yet and will
+be provided in the coming months. 
+
+### Documentation
+
+Find the documentation [here](https://oemof-b3.readthedocs.io/).
+
+## Contributing
+
+Feedback is welcome. If you notice a bug, please open an 
+[issue](https://github.com/rl-institut/oemof-B3/issues). 
 
 ### Build the docs locally
 
