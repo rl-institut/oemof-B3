@@ -3,6 +3,8 @@ Inputs
 -------
 resources : str
     path of input file with data of prepared conventional power plant data as .csv
+var_name: string
+    indicates the var_name which shall be plotted
 target : str
     path of output file with plot
 
