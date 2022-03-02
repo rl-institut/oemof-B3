@@ -6,7 +6,8 @@ postprocessed : str
     ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
     can be plotted
 plotted : str
-    ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
+    the plots are saved
 
 Outputs
 ---------
