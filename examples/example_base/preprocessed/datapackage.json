@@ -1031,7 +1031,7 @@
                         "format": "default"
                     },
                     {
-                        "name": "BE-solar-pv-profile",
+                        "name": "B-solar-pv-profile",
                         "type": "number",
                         "format": "default"
                     },
@@ -1061,7 +1061,7 @@
                         "format": "default"
                     },
                     {
-                        "name": "BE-electricity-demand-profile",
+                        "name": "B-electricity-demand-profile",
                         "type": "number",
                         "format": "default"
                     },
@@ -1091,7 +1091,7 @@
                         "format": "default"
                     },
                     {
-                        "name": "BE-wind-onshore-profile",
+                        "name": "B-wind-onshore-profile",
                         "type": "number",
                         "format": "default"
                     },
