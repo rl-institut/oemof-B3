@@ -12,6 +12,8 @@ Outputs
 ---------
 .pdf
     dispatch plot in pdf-format.
+.png
+    dispatch plot in png-format.
 .html
     interactive plotly dispatch plot in html-format.
 
