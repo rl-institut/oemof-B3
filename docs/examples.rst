@@ -16,7 +16,7 @@ Modelled components are
 * li-ion batteries,
 * transmission grid connection between BB and BE.
 
-The heat sector is not modelled.
+The examples are limited to the electricity sector, the heat sector is not modelled.
 
 Data for capacities of wind, photovoltaic and biomass as well as electricity demand have been taken
 from the grid development plan

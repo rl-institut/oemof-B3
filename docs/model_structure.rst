@@ -60,6 +60,9 @@ BB       BB-ch4-gt  conversion  ch4      gt     BB-ch4    BB-electricity  600000
 More generally, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
+Components and properties and also be added or updated in oemof-B3 using the files in :file:`oemof_b3/model/`.
+
+.. todo: Explain how to do this and when it is relevant.
 
 Postprocessed data
 -------------------
