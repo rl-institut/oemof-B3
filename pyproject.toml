@@ -22,7 +22,6 @@ rtree = "0.9.7"
 pyyaml = "6.0"
 snakemake = "<6.0.0"
 oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", branch = "dev"}
-demandlib = { git = "https://github.com/oemof/demandlib.git", branch = "dev"}
 
 
 [tool.poetry.dev-dependencies]
@@ -31,6 +30,9 @@ pytest = "^7.0.1"
 coverage = "^6.3.2"
 flake8 = "^4.0.1"
 geopandas = "^0.10.2"
+
+[tool.poetry.extras]
+docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib_bibtex"]
 
 [tool.black]
 exclude = '''
