@@ -4,10 +4,10 @@ Inputs
 -------
 filename_pv_agriculture : str
     ``raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv``: Path incl.
-    file name of area potential of agriculture PV
+    file name of area potential of agriculture pv
 filename_pv_road_railway : str
     ``raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv``: Path incl.
-    file name of area potential of roads and railway PV
+    file name of area potential of roads and railway pv
 filename_wind : str
     ``raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv``: Path incl. file name
     of area potential wind
@@ -15,7 +15,7 @@ filename_kreise : str
     ``raw/lookup_table_brandenburg_kreise.csv``: Path incl. file name of lookup table Kreise and
     NUTS of Brandenburg
 filename_assumptions : str
-    ``raw/scalars.csv``: Path incl. file name of assumptions
+    ``raw/scalars_base.csv``: Path incl. file name of assumptions
 output_dir : str
     ``results/_resources/RE_potential/``: Path of output directory where power and area potential of
     single areas and of "Landkreise" is saved
