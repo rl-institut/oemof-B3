@@ -49,7 +49,9 @@ if __name__ == "__main__":
 
         df.index = df.index.droplevel(["name", "scenario", "type"])
 
-        df["FLH"] = df[f"flow_out_{carrier}"] / (df["capacity"] + df["invest"])
+        df.loc[:, "FLH"] = df.loc[:, f"flow_out_{carrier}"] / df.loc[
+            :, ["capacity", "invest"]
+        ].sum(axis=1)
 
         return df
 
