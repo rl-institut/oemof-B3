@@ -59,6 +59,8 @@ def create_production_table(scalars, carrier):
         :, ["capacity", "invest"]
     ].sum(axis=1)
 
+    df = dp.round_setting_int(df, decimals={col: 0 for col in df.columns})
+
     return df
 
 
@@ -73,9 +75,11 @@ def create_demand_table(scalars):
 
     df = dp.filter_df(df, "type", ["excess", "load"])
 
-    df = df.set_index(["region", "carrier", "tech"])
+    df = df.set_index(["region", "carrier", "tech", "var_name"])
 
     df = df.loc[:, ["var_name", "var_value"]]
+
+    df = dp.round_setting_int(df, decimals={col: 0 for col in df.columns})
 
     return df
 
