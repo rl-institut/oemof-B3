@@ -31,6 +31,7 @@ if __name__ == "__main__":
     def create_production_table(scalars, carrier):
         VAR_NAMES = [
             "capacity",
+            f"invest_out_{carrier}",
             f"flow_out_{carrier}",
             "storage_capacity",
             "invest",
