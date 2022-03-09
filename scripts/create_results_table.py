@@ -22,6 +22,17 @@ import pandas as pd
 
 import oemof_b3.tools.data_processing as dp
 
+
+def unstack_var_name(df):
+    _df = df.copy()
+
+    _df = df.set_index(
+        ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
+    )
+
+    return _df.unstack("var_name")
+
+
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
@@ -44,7 +55,7 @@ if __name__ == "__main__":
 
         df = dp.filter_df(df, "var_name", VAR_NAMES)
 
-        df = dp.unstack_var_name(df).loc[:, "var_value"]
+        df = unstack_var_name(df).loc[:, "var_value"]
 
         df = df.loc[~df[f"flow_out_{carrier}"].isna()]
 
