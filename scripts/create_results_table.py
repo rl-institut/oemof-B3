@@ -18,6 +18,7 @@ Description
 import os
 import sys
 
+import numpy as np
 import pandas as pd
 
 import oemof_b3.tools.data_processing as dp
@@ -48,6 +49,8 @@ def create_production_table(scalars, carrier):
     df.loc[:, "FLH"] = df.loc[:, f"flow_out_{carrier}"] / df.loc[
         :, ["capacity", f"invest_out_{carrier}"]
     ].sum(axis=1)
+
+    df.replace({np.inf: np.nan}, inplace=True)
 
     df = dp.round_setting_int(df, decimals={col: 0 for col in df.columns})
 
