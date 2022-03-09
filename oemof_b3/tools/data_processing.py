@@ -620,6 +620,24 @@ def stack_var_name(df):
     return stacked
 
 
+def round_setting_int(df, decimals):
+    r"""
+    Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
+    it changes the dtype to Int64. Tolerates NaNs.
+    """
+    _df = df.copy()
+
+    for col, dec in decimals.items():
+        if dec == 0:
+            dtype = "Int64"
+        else:
+            dtype = float
+
+        _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
+
+    return _df
+
+
 class ScalarProcessor:
     r"""
     This class allows to filter and unstack scalar data in a way that makes processing simpler.
