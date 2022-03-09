@@ -46,7 +46,7 @@ def create_production_table(scalars, carrier):
     df.index = df.index.droplevel(["name", "scenario_key", "type"])
 
     df.loc[:, "FLH"] = df.loc[:, f"flow_out_{carrier}"] / df.loc[
-        :, ["capacity", "invest"]
+        :, ["capacity", f"invest_out_{carrier}"]
     ].sum(axis=1)
 
     df = dp.round_setting_int(df, decimals={col: 0 for col in df.columns})
