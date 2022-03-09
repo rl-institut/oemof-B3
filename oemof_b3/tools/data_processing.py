@@ -269,6 +269,8 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
+    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
+
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
 

@@ -23,16 +23,6 @@ import pandas as pd
 import oemof_b3.tools.data_processing as dp
 
 
-def unstack_var_name(df):
-    _df = df.copy()
-
-    _df = df.set_index(
-        ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
-    )
-
-    return _df.unstack("var_name")
-
-
 def create_production_table(scalars, carrier):
     VAR_NAMES = [
         "capacity",
@@ -45,15 +35,15 @@ def create_production_table(scalars, carrier):
 
     df = scalars.copy()
 
-    # df = dp.aggregate_scalars(df, "region")
+    df = dp.aggregate_scalars(df, "region")
 
     df = dp.filter_df(df, "var_name", VAR_NAMES)
 
-    df = unstack_var_name(df).loc[:, "var_value"]
+    df = dp.unstack_var_name(df).loc[:, "var_value"]
 
     df = df.loc[~df[f"flow_out_{carrier}"].isna()]
 
-    df.index = df.index.droplevel(["name", "scenario", "type"])
+    df.index = df.index.droplevel(["name", "scenario_key", "type"])
 
     df.loc[:, "FLH"] = df.loc[:, f"flow_out_{carrier}"] / df.loc[
         :, ["capacity", "invest"]
@@ -69,7 +59,7 @@ def create_demand_table(scalars):
 
     var_name = "flow_in_"
 
-    # df = dp.aggregate_scalars(df, "region")
+    df = dp.aggregate_scalars(df, "region")
 
     df = df.loc[df["var_name"].str.contains(var_name)]
 
@@ -89,6 +79,9 @@ if __name__ == "__main__":
     out_path = sys.argv[2]
 
     scalars = pd.read_csv(os.path.join(in_path, "scalars.csv"))
+
+    # Workaround to conform to oemof-b3 format
+    scalars.rename(columns={"scenario": "scenario_key"}, inplace=True)
 
     if not os.path.exists(out_path):
         os.makedirs(out_path)
