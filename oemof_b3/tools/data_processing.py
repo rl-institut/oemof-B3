@@ -628,7 +628,10 @@ def round_setting_int(df, decimals):
     _df = df.copy()
 
     for col, dec in decimals.items():
-        if dec == 0:
+        if col not in _df.columns:
+            print(f"No column named '{col}' found when trying to round.")
+            continue
+        elif dec == 0:
             dtype = "Int64"
         else:
             dtype = float
