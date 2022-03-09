@@ -25,7 +25,8 @@ import oemof_b3.tools.data_processing as dp
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
-    scalars = pd.read_csv(in_path)
+
+    scalars = pd.read_csv(os.path.join(in_path, "scalars.csv"))
 
     def create_production_table(scalars, carrier):
         VAR_NAMES = [
@@ -69,8 +70,11 @@ if __name__ == "__main__":
 
         return df
 
+    if not os.path.exists(out_path):
+        os.makedirs(out_path)
+
     df = create_production_table(scalars, "electricity")
-    df.to_csv(os.path.join(out_path, "production_table.csv"))
+    dp.save_df(df, os.path.join(out_path, "production_table.csv"))
 
     df = create_demand_table(scalars)
-    df.to_csv(os.path.join(out_path, "sink_table.csv"))
+    dp.save_df(df, os.path.join(out_path, "sink_table.csv"))
