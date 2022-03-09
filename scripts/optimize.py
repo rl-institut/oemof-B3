@@ -77,6 +77,8 @@ if __name__ == "__main__":
 
     solver = "cbc"
 
+    DEBUG = False
+
     # get additional scalars, set to None at first
     emission_limit = None
     additional_scalars = get_additional_scalars()
@@ -92,6 +94,14 @@ if __name__ == "__main__":
             attributemap={},
             typemap=TYPEMAP,
         )
+
+        # Reduce number of timestep for debugging
+        if DEBUG:
+            es.timeindex = es.timeindex[:3]
+
+            logger.info(
+                "Optimizing in DEBUG mode: Run model with first 3 timesteps only."
+            )
 
         # create model from energy system (this is just oemof.solph)
         m = Model(es)
