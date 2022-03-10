@@ -29,6 +29,7 @@ oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", branch = "dev"
 Sphinx = {version = "^4.3.2", optional = true}
 sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 sphinxcontrib-bibtex = {version = "^2.4.1", optional = true}
+docutils = "^0.17"
 
 [tool.poetry.dev-dependencies]
 black = "20.8b1"
