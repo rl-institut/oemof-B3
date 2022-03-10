@@ -74,8 +74,8 @@ components:
 # parametrize
 
 paths_scalars:
-  - results/_resources/scal_base.csv
-  - results/_resources/scal_high.csv
+  - results/_resources/scal_base_2050.csv
+  - results/_resources/scal_high_2050.csv
   - results/_resources/scal_load_heat.csv
 
 filter_scalars:
@@ -97,11 +97,11 @@ filter_scalars:
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv
   - raw/time_series/ts_load_h2.csv
-  - raw/time_series/ts_load_electricity_vehicles.csv
   - raw/time_series/ts_efficiency_heatpump_small.csv
   - results/_resources/ts_feedin.csv
   - results/_resources/ts_load_electricity.csv
   - results/_resources/ts_load_heat.csv
+  - results/_resources/ts_load_electricity_vehicles.csv
 
 filter_timeseries:
   scenario_key:

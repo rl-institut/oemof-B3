@@ -117,9 +117,10 @@ rule prepare_scalars:
         raw_scalars="raw/scalars_{range}.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_{range}.csv"
+        "results/_resources/scal_{range}_{year}.csv"
     wildcard_constraints:
-        range=("base|high|low")
+        range=("base|high|low"),
+        year=("2040|2050"),
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
