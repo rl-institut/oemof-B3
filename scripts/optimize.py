@@ -35,7 +35,6 @@ from oemof.tabular.facades import TYPEMAP
 
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.config import config
-from oemof_b3.config.config import settings
 
 
 def get_emission_limit(scalars):
@@ -85,7 +84,7 @@ if __name__ == "__main__":
 
     try:
         es = EnergySystem.from_datapackage(
-            os.path.join(preprocessed, settings.optimize.filename_metadata),
+            os.path.join(preprocessed, config.settings.optimize.filename_metadata),
             attributemap={},
             typemap=TYPEMAP,
         )
@@ -105,7 +104,7 @@ if __name__ == "__main__":
         if emission_limit is not None:
             constraints.emission_limit(m, limit=emission_limit)
 
-        m.solve(solver=settings.optimize.solver)
+        m.solve(solver=config.settings.optimize.solver)
     except:  # noqa: E722
         logger.exception(
             f"Could not optimize energysystem for datapackage from '{preprocessed}'."
