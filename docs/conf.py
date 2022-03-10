@@ -78,6 +78,7 @@ autodoc_mock_imports = [
     "demandlib",
     "matplotlib",
     "pandas",
+    "numpy",
     "geopandas",
     "yaml"
 ]
