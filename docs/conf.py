@@ -80,5 +80,6 @@ autodoc_mock_imports = [
     "pandas",
     "numpy",
     "geopandas",
+    "shapely",
     "yaml"
 ]
