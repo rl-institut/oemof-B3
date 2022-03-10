@@ -64,3 +64,19 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- Options for Sphinx autodoc ----------------------------------------------
+
+autodoc_mock_imports = [
+    "oemof",
+    "oemof.solph",
+    "oemof.outputlib",
+    "oemof.tabular",
+    "oemoflex",
+    "demandlib",
+    "matplotlib",
+    "pandas",
+    "geopandas",
+    "yaml"
+]
