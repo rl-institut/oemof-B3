@@ -25,10 +25,6 @@ rule plot_all_examples:
             plot_type=["scalars", "dispatch"],
         )
 
-rule report_all_examples:
-    input:
-        expand("results/{scenario}/report/", scenario=scenario_groups["examples"])
-
 rule plot_all_scenarios:
     input:
         expand(
