@@ -1,0 +1,54 @@
+'bus': [
+    'ch4-demand',
+    'ch4-excess',
+    'ch4-export',
+    'ch4-import',
+    'ch4-shortage',
+    'electricity-bev_charging',
+    'electricity-curtailment',
+    'electricity-demand',
+    'electricity-export',
+    'electricity-import',
+    'electricity-shortage',
+    'h2-cavern',
+    'h2-demand',
+    'h2-excess',
+    'h2-export',
+    'h2-import',
+    'h2-shortage',
+    'heat_central-demand',
+    'heat_central-excess',
+    'heat_central-shortage',
+    'heat_central-storage',
+    'heat_decentral-demand',
+    'heat_decentral-excess',
+    'heat_decentral-shortage',
+    'heat_decentral-storage',
+]
+
+'profile': [
+    'ch4-demand',
+    'electricity-bev_charging',
+    'h2-demand',
+    'heat_central-demand',
+    'heat_decentral-demand',
+]
+
+'from_to_bus': [
+    'ch4-boiler_large',
+    'ch4-boiler_small',
+    'electricity-electrolyzer',
+    'h2-gt',
+    'electricity-heatpump_large',
+    'electricity-heatpump_small',
+    'electricity-pth',
+    'electricity-transmission',
+]
+
+'chp': [
+    'h2-bpchp',
+]
+
+'efficiency': [
+    'electricity-heatpump_small',
+]

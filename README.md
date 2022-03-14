@@ -1,44 +1,77 @@
-# rli_template
-Template repository for creating new projects under the RLI's umbrella
+# oemof-B3
 
-## Get started
+Oemof-B3 is an energy system model of Berlin and Brandenburg. It represents many sectors:
+Electricity, central and decentral heat, hydrogen, CO2 and methane. It is a multi-node-model, which
+means that several distinct regions are represented that are connected via transmission lines.
 
-Simply click on the green `Use this template` button on the left of the `Clone or download` button.
+<img src="/docs/_img/model_structure.svg" width="900"/>
 
-The detailed instructions to create a new repository from this template can be found [here](https://help.github.com/en/articles/creating-a-repository-from-a-template).
+The model is a perfect-foresight, cost minimizing linear optimization model that builds upon
+[oemof.solph](https://github.com/oemof/oemof-solph),
+[oemof.tabular](https://github.com/oemof/oemof-tabular),
+and [oemoflex](https://github.com/rl-institut/oemoflex).
 
-## src folder
+Oemof-B3 is currently under heavy development, which means that first full scenario runs will be
+available in the coming months.
 
-This folder is where you should place the code of your package (package name to be edited in `setup.py` under name)
+## Getting started
 
-You can install it locally for developing with
+### Installation
 
-    python setup.py install
+Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+
+In order to install oemof-B3, proceed with the following steps:
+
+- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
+- enter folder
+- create virtual environment using conda: `conda env create environment.yml`
+- activate environment: `conda activate oemof-B3`
+- install oemof-B3 package using poetry, via: `poetry install`
+
+Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
+
+Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml). 
+If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+
+Oemof-B3 further needs demandlib in order to create heat load profiles. Due to a conflict of required pandas versions,
+the demandlib cannot be installed with `poetry install`. A separate installation is therefore necessary:
+
+    pip install demandlib
+
+The clash of the pandas version should be fixed with the release of oemof-B3 0.0.2.
+
+For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
+
+To test if everything works, you can run the examples.
+
+For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
+
+### Data
+
+The raw data necessary to run the scenarios is not part of the model. It is not public yet and will
+be provided in the coming months. 
+
+### Documentation
+
+Find the documentation [here](https://oemof-b3.readthedocs.io/).
+
+## Contributing
+
+Feedback is welcome. If you notice a bug, please open an 
+[issue](https://github.com/rl-institut/oemof-B3/issues). 
+
+### Build the docs locally
+
+To build the docs locally, you have to install related dependencies via
+
+    poetry install -E docs
+
+Afterwards, navigate into the docs directory with
     
-More details for packaging are available on [https://packaging.python.org](https://packaging.python.org/tutorials/packaging-projects/)
-
-
-## Docs
-
-To build the docs simply go to the `docs` folder
-
-    cd docs
-
-Install the requirements
-
-    pip install -r docs_requirements.txt
-
+    cd docs/
+    
 and run
 
     make html
 
 The output will then be located in `docs/_build/html` and can be opened with your favorite browser
-
-## Code linting
-
-In this template, 3 possible linters are proposed:
-- flake8 only sends warnings and error about linting (PEP8)
-- pylint sends warnings and error about linting (PEP8) and also allows warning about imports order
-- black sends warning but can also fix the files for you
-
-You can perfectly use the 3 of them or subset, at your preference. Don't forget to edit `.travis.yml` if you want to desactivate the automatic testing of some linters!

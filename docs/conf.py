@@ -12,12 +12,12 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
-
+sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('../scripts'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'rli_template'
+project = 'oemof-B3'
 copyright = '2020, Reiner Lemoine Institut'
 author = 'Reiner Lemoine Institut'
 
@@ -30,7 +30,16 @@ master_doc = 'index'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.napoleon',
+    'sphinxcontrib.bibtex',
+    'sphinx.ext.autosectionlabel'
+]
+
+# specify bibfiles for sphinxcontrib.bibtex
+bibtex_bibfiles = ['bibliography.bib']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,3 +65,21 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- Options for Sphinx autodoc ----------------------------------------------
+
+autodoc_mock_imports = [
+    "oemof",
+    "oemof.solph",
+    "oemof.outputlib",
+    "oemof.tabular",
+    "oemoflex",
+    "demandlib",
+    "matplotlib",
+    "pandas",
+    "numpy",
+    "geopandas",
+    "shapely",
+    "yaml"
+]
