@@ -20,14 +20,10 @@ rule plot_all_resources:
 rule plot_all_examples:
     input:
         expand(
-            "results/{scenario}/plotted/scalars",
+            "results/{scenario}/plotted/{plot_type}",
             scenario=scenario_groups["examples"],
             plot_type=["scalars", "dispatch"],
         )
-
-rule report_all_examples:
-    input:
-        expand("results/{scenario}/report/", scenario=scenario_groups["examples"])
 
 rule plot_all_scenarios:
     input:
@@ -114,12 +110,13 @@ rule prepare_vehicle_charging_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/scalars_{range}.csv",
+        raw_scalars="raw/scalars_{range}_{year}.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_{range}.csv"
+        "results/_resources/scal_{range}_{year}.csv"
     wildcard_constraints:
-        range=("base|high|low")
+        range=("base|high|low"),
+        year=("2040|2050"),
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
@@ -129,7 +126,7 @@ rule prepare_heat_demand:
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
         building_class="raw/building_class.csv",
-        scalars="raw/scalars_base.csv",
+        scalars="raw/scalars_base_2050.csv",
         script="scripts/prepare_heat_demand.py",
     output:
         scalars="results/_resources/scal_load_heat.csv",
@@ -143,7 +140,7 @@ rule prepare_re_potential:
         pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         kreise="raw/lookup_table_brandenburg_kreise.csv",
-        assumptions="raw/scalars.csv",
+        assumptions="raw/scalars_base_2050.csv",
         script="scripts/prepare_re_potential.py"
     output:
         directory("results/_resources/RE_potential/")
@@ -244,7 +241,8 @@ rule report:
     output:
         directory("results/{scenario}/report/")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="logs/{scenario}.log",
+        all_plots="results/{scenario}/plotted/",
     run:
         import os
         import shutil
@@ -256,7 +254,7 @@ rule report:
         """
         pandoc -V geometry:a4paper,margin=2.5cm \
         --lua-filter report/pandoc_filter.lua \
-        --resource-path={input[2]} \
+        --resource-path={params.all_plots} \
         --metadata title="Results for scenario {wildcards.scenario}" \
         {output}/report.md -o {output}/report.pdf
         """
@@ -264,7 +262,7 @@ rule report:
         # static html report
         shell(
         """
-        pandoc --resource-path={input[2]} \
+        pandoc --resource-path={params.all_plots} \
         --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
@@ -274,7 +272,7 @@ rule report:
         # interactive html report
         shell(
         """
-        pandoc --resource-path={input[2]} \
+        pandoc --resource-path={params.all_plots} \
         --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \

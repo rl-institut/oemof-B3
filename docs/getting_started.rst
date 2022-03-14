@@ -16,31 +16,35 @@ Using oemof-B3
 Installation
 ------------
 
-You can install oemof-B3 in your environment via pip.
-
-    pip install oemof-B3
-
-As oemof-B3 is under development, it might be better to install the current dev branch locally. See
-below for instructions.
-
-To test if everything works, you can run the examples.
-
-Installing the latest (dev) version locally
--------------------------------------------
-
 Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
-In order to install oemof-B3 locally, following steps must be made:
+In order to install oemof-B3, proceed with the following steps:
+
 - git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
 - enter folder
 - create virtual environment using conda: `conda env create environment.yml`
 - activate environment: `conda activate oemof-B3`
 - install oemof-B3 package using poetry, via: `poetry install`
 
+Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
+
 Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml).
 If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
 
-Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
+Oemof-B3 further needs demandlib in order to create heat load profiles. Due to an alleged clash of pandas versions,
+the demandlib cannot be installed with `poetry install`. A separate installation is therefore necessary:
+
+::
+
+    pip install demandlib
+
+The clash of the pandas version should be fixed with the release of oemof-B3 0.0.2.
+
+For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
+
+To test if everything works, you can run the examples.
+
+For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
 Required: An LP-solver
 ----------------------

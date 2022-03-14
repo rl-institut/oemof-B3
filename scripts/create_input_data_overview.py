@@ -62,7 +62,7 @@ if __name__ == "__main__":
     df = df.set_index(INDEX).unstack("var_name")
 
     # bring table into correct end format
-    df = df.loc[:, ["var_value", "var_unit", "reference"]]
+    df = df.loc[:, ["var_value", "var_unit", "source"]]
 
     # save units
     idx = pd.IndexSlice
