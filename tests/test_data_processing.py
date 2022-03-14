@@ -446,6 +446,7 @@ def test_stack_unstack_on_example_data():
 
     df = pd.read_csv(file_path, index_col=0, sep=";")
     df.index = pd.to_datetime(df.index)
+    df = df.asfreq("H")
 
     df_stacked = stack_timeseries(df)
     df_unstacked = unstack_timeseries(df_stacked)
