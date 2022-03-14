@@ -38,6 +38,8 @@ In order to install oemof-B3 locally, following steps must be made:
 - activate environment: `conda activate oemof-B3`
 - install oemof-B3 package using poetry, via: `poetry install`
 
+Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
+
 Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml).
 If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
 
