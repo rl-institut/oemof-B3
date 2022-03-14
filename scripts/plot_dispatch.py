@@ -41,7 +41,8 @@ if __name__ == "__main__":
     plotted = sys.argv[2]
 
     # create the directory plotted where all plots are saved
-    os.makedirs(plotted)
+    if not os.path.exists(plotted):
+        os.makedirs(plotted)
 
     bus_directory = os.path.join(postprocessed, "sequences/bus/")
     bus_files = os.listdir(bus_directory)
