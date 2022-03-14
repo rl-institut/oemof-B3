@@ -40,6 +40,8 @@ In order to install oemof-B3 locally, following steps must be made:
 - activate environment: `conda activate oemof-B3`
 - install oemof-B3 package using poetry, via: `poetry install`
 
+Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
+
 Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml). 
 If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
 
@@ -61,10 +63,14 @@ Feedback is welcome. If you notice a bug, please open an
 
 ### Build the docs locally
 
-To build the docs locally, simply install the requirements with
+To build the docs locally, you have to install related dependencies via
 
-    pip install -r docs/docs_requirements.txt
+    poetry install -E docs
 
+Afterwards, navigate into the docs directory with
+    
+    cd docs/
+    
 and run
 
     make html
