@@ -63,13 +63,13 @@ Feedback is welcome. If you notice a bug, please open an
 
 ### Build the docs locally
 
-To build the docs locally, navigate into the docs directory with
-    
-    cd docs/
-
-and simply install the requirements with
+To build the docs locally, you have to install related dependencies via
 
     poetry install -E docs
+
+Afterwards, navigate into the docs directory with
+    
+    cd docs/
     
 and run
 
