@@ -20,7 +20,7 @@ rule plot_all_resources:
 rule plot_all_examples:
     input:
         expand(
-            "results/{scenario}/plotted/scalars",
+            "results/{scenario}/plotted/{plot_type}",
             scenario=scenario_groups["examples"],
             plot_type=["scalars", "dispatch"],
         )
