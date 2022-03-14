@@ -18,6 +18,8 @@ Installation
 
 You can install oemof-B3 in your environment via pip.
 
+::
+
     pip install oemof-B3
 
 As oemof-B3 is under development, it might be better to install the current dev branch locally. See
