@@ -41,6 +41,15 @@ In order to install oemof-B3 locally, following steps must be made:
 Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml).
 If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
 
+Oemof-B3 further needs demandlib in order to create heat load profiles. Due to an alleged clash of pandas versions,
+the demandlib cannot be installed with `poetry install`. A separate installation is therefore necessary:
+
+::
+
+    pip install demandlib
+
+The clash of the pandas version should be fixed with the release of oemof-B3 0.0.2.
+
 Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
 Required: An LP-solver
