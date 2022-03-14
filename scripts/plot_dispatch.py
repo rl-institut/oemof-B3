@@ -61,15 +61,16 @@ if __name__ == "__main__":
         data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
         # prepare dispatch data
-        # convert data to SI-unit
-        MW_to_W = 1e6
-        data = data * MW_to_W
         df, df_demand = plots.prepare_dispatch_data(
             data,
             bus_name=bus_name,
             demand_name="demand",
             labels_dict=labels_dict,
         )
+
+        # convert data to SI-unit
+        MW_to_W = 1e6
+        data = data * MW_to_W
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
