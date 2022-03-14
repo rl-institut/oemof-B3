@@ -241,7 +241,8 @@ rule report:
     output:
         directory("results/{scenario}/report/")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="logs/{scenario}.log",
+        all_plots="results/{scenario}/plotted/",
     run:
         import os
         import shutil
@@ -253,7 +254,7 @@ rule report:
         """
         pandoc -V geometry:a4paper,margin=2.5cm \
         --lua-filter report/pandoc_filter.lua \
-        --resource-path={input[2]} \
+        --resource-path={params.all_plots} \
         --metadata title="Results for scenario {wildcards.scenario}" \
         {output}/report.md -o {output}/report.pdf
         """
@@ -261,7 +262,7 @@ rule report:
         # static html report
         shell(
         """
-        pandoc --resource-path={input[2]} \
+        pandoc --resource-path={params.all_plots} \
         --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
@@ -271,7 +272,7 @@ rule report:
         # interactive html report
         shell(
         """
-        pandoc --resource-path={input[2]} \
+        pandoc --resource-path={params.all_plots} \
         --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
