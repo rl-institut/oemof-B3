@@ -110,7 +110,7 @@ rule prepare_vehicle_charging_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/scalars_{range}.csv",
+        raw_scalars="raw/scalars_{range}_{year}.csv",
         script="scripts/prepare_scalars.py",
     output:
         "results/_resources/scal_{range}_{year}.csv"
