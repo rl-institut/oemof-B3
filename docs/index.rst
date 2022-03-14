@@ -26,5 +26,4 @@ oemof-B3: A sector-integrated energy system model of Brandenburg and Berlin
    :caption: Reference
 
    whats_new
-   api
    literature
