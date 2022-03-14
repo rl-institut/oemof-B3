@@ -63,10 +63,14 @@ Feedback is welcome. If you notice a bug, please open an
 
 ### Build the docs locally
 
-To build the docs locally, simply install the requirements with
+To build the docs locally, navigate into the docs directory with
+    
+    cd docs/
 
-    pip install -r docs/docs_requirements.txt
+and simply install the requirements with
 
+    poetry install -E docs
+    
 and run
 
     make html
