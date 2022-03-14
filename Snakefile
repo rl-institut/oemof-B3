@@ -140,7 +140,7 @@ rule prepare_re_potential:
         pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         kreise="raw/lookup_table_brandenburg_kreise.csv",
-        assumptions="raw/scalars.csv",
+        assumptions="raw/scalars_base_2050.csv",
         script="scripts/prepare_re_potential.py"
     output:
         directory("results/_resources/RE_potential/")
