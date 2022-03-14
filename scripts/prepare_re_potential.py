@@ -31,8 +31,8 @@ Description
 -------------
 Calculates the area and power potential of photovoltaics and wind energy. The area of single areas
 are retrieved from csv files and processed. The resulting area and power potential for "Landkreise"
-is saved in `output_dir/power_potential_wind_kreise.csv` for wind and
-in `output_dir/power_potential_pv_kreise.csv` for pv:
+is saved in `output_dir/power_potential_wind_kreise.csv` for wind and in
+`output_dir/power_potential_pv_kreise.csv` for pv:
     - power potential in column 'power_potential'
     - power potential after reducing by degree of agreement in column 'power_potential_agreed'
     - area potential in column 'area'
