@@ -126,7 +126,7 @@ rule prepare_heat_demand:
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
         building_class="raw/building_class.csv",
-        scalars="raw/scalars_base.csv",
+        scalars="raw/scalars_base_2050.csv",
         script="scripts/prepare_heat_demand.py",
     output:
         scalars="results/_resources/scal_load_heat.csv",
