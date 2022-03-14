@@ -31,6 +31,7 @@ Installing the latest (dev) version locally
 Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
 In order to install oemof-B3 locally, following steps must be made:
+
 - git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
 - enter folder
 - create virtual environment using conda: `conda env create environment.yml`
