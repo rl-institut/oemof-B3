@@ -6,12 +6,14 @@ scenario_specs : str
     ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
 oemoflex.EnergyDatapackage
-    EnergyDatapackage in the correct structure, with data (scalars and timeseries) as csv and
-    metadata (describing resources and foreign key relations) as json.
+    EnergyDatapackage that can be read by oemof.tabular, with data (scalars and timeseries)
+    as csv and metadata (describing resources and foreign key relations) as json.
 
 Description
 -------------
@@ -226,7 +228,9 @@ def parametrize_sequences(edp, ts, filters):
 
         data_unstacked = unstack_timeseries(data)
 
-        edp.data[name].update(data_unstacked)
+        edp.data[name] = data_unstacked
+
+        edp.data[name].index.name = "timeindex"
 
     logger.info(f"Updated DataPackage with timeseries from '{paths_timeseries}'.")
 
@@ -289,6 +293,9 @@ if __name__ == "__main__":
 
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, scenario_specs["regions"])
+
+    # Drop those scalars that do not belong to a specific component
+    scalars = scalars.loc[~scalars["name"].isna()]
 
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
 

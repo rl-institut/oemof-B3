@@ -2,8 +2,8 @@
 r"""
 Inputs
 -------
-list_scenarios : path
-    ``scenario_groups/{scenario_list}.yml``: Path to yaml-file containing a list of scenarios.
+scenarios : list[str]
+    A list of scenario paths.
 destination : path
     ``results/joined_scenarios/{scenario_list}/joined/scalars.csv``: Path of output file to store
     joined scalar results.
@@ -15,13 +15,12 @@ Outputs
 
 Description
 -------------
-This script joins scalar results of a set of scenarios.
+This script joins scalar results of a group of scenarios.
 """
 import os
 import sys
 
 import pandas as pd
-from oemoflex.tools.helpers import load_yaml
 
 
 def load_scalars(path):
@@ -30,18 +29,14 @@ def load_scalars(path):
 
 
 if __name__ == "__main__":
-    list_scenarios = sys.argv[1]
+    paths_scenarios = sys.argv[1:-1]
 
-    destination = sys.argv[2]
-
-    scenarios = load_yaml(list_scenarios)
+    destination = sys.argv[-1]
 
     joined_scalars = list()
-    for scenario in scenarios:
-        scalars = load_scalars(
-            os.path.join("results", scenario, "postprocessed", "scalars.csv")
-        )
-        scalars["scenario"] = scenario
+    for path_sc in paths_scenarios:
+        scalars = load_scalars(os.path.join(path_sc, "scalars.csv"))
+
         joined_scalars.append(scalars)
 
     joined_scalars = pd.concat(joined_scalars)

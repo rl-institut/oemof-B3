@@ -4,20 +4,20 @@ Inputs
 -------
 filename_pv_agriculture : str
     ``raw/area_potential/2021-05-18_pv_agriculture_brandenburg_kreise_epsg32633.csv``: Path incl.
-    file name to area potential agriculture pv csv
+    file name of area potential of agriculture pv
 filename_pv_road_railway : str
     ``raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv``: Path incl.
-    file name to area potential roads and railway pv csv
+    file name of area potential of roads and railway pv
 filename_wind : str
     ``raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv``: Path incl. file name
-    to area potential wind csv
+    of area potential wind
 filename_kreise : str
-    ``raw/lookup_table_brandenburg_kreise.csv``: Path incl. file name to lookup table Kreise and
+    ``raw/lookup_table_brandenburg_kreise.csv``: Path incl. file name of lookup table Kreise and
     NUTS of Brandenburg
 filename_assumptions : str
-    ``raw/scalars.csv``: Path incl. file name to assumptions csv
+    ``raw/scalars_base_2050.csv``: Path incl. file name of assumptions
 output_dir : str
-    ``results/_resources/RE_potential/``: Path to output directory where power and area potential of
+    ``results/_resources/RE_potential/``: Path of output directory where power and area potential of
     single areas and of "Landkreise" is saved
 
 Outputs
@@ -29,6 +29,8 @@ pd.DataFrame
 
 Description
 -------------
+Please note that this script is not integrated into the pipeline, yet.
+
 Calculates the area and power potential of photovoltaics and wind energy. The area of single areas
 are retrieved from csv files and processed. The resulting area and power potential for "Landkreise"
 is saved in `output_dir/power_potential_wind_kreise.csv` for wind and in
@@ -36,8 +38,8 @@ is saved in `output_dir/power_potential_wind_kreise.csv` for wind and in
     - power potential in column 'power_potential'
     - power potential after reducing by degree of agreement in column 'power_potential_agreed'
     - area potential in column 'area'
-    - percentage of overlap between the areas in columns 'overlap_pv_agriculture_percent',
-      'overlap_pv_road_railway_percent', only for pv: 'overlap_wind_percent'
+    - overlapping area in columns 'overlap_pv_agriculture_area', 'overlap_pv_road_railway_area',
+      only for pv: 'overlap_wind_area'
 
 Additionally, saves the following data in `output_dir`:
     - joined pv area potential from `filename_pv_agriculture` and `filename_pv_road_railway` of
@@ -47,8 +49,8 @@ Additionally, saves the following data in `output_dir`:
     - power potential of single areas in column 'power_potential' and reduced power potential (by
       degree of agreement) in column 'power_potential_agreed' in
       f"power_potential_single_areas_{type}.csv" for type in ['wind', 'pv']
-
 """
+
 import os
 import sys
 import pandas as pd

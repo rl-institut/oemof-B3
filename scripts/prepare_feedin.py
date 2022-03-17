@@ -4,20 +4,20 @@ Inputs
 -------
 filename_wind : str
     ``raw/time_series/ninja_wind_country_DE_current_merra-2_nuts-2_corrected.csv``: Path incl. file
-    name to wind feed-in time series of renewables ninja
+    name of wind feed-in time series of renewables ninja
 filename_pv : str
-    ``raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv``: Path incl. file name to pv
+    ``raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv``: Path incl. file name of pv
     feed-in time series of renewables ninja
 filename_ror : str
-    ``raw/time_series/DIW_Hydro_availability.csv``: Path incl. file name to feed-in time series of
+    ``raw/time_series/DIW_Hydro_availability.csv``: Path incl. file name of feed-in time series of
     run-of-river power plants
 output_file : str
-    ``results/_resources/ts_feedin.csv``: Path incl. file name to prepared time series
+    ``results/_resources/ts_feedin.csv``: Path incl. file name of prepared time series
 
 Outputs
 ---------
-output_file : str
-    Path incl. file name to output: wind and pv feed-in time series
+pd.DataFrame
+    Prepared feed-in time series of pv, wind and hydropower
 
 Description
 -------------
@@ -36,7 +36,6 @@ import oemof_b3.tools.data_processing as dp
 # global variables
 YEARS = list(range(2010, 2020))
 # specific to wind and pv time series
-
 NUTS_DE30 = "DE30"
 NUTS_DE40 = "DE40"
 RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
@@ -92,7 +91,7 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
 
     return ts_prepared
 
@@ -156,13 +155,13 @@ def prepare_ror_time_series(filename_ts, region):
         ts_prepared = dp.format_header(
             df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
         )
-        ts_prepared.loc[:, "scenario"] = f"ts_{year}"
+        ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
         ts_df = pd.concat([ts_df, ts_prepared])
 
     # add additional information as required by template
     ts_df.loc[:, "region"] = region
     ts_df.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_df.loc[:, "var_name"] = "ror-profile"
+    ts_df.loc[:, "var_name"] = "hydro-ror-profile"
     ts_df.loc[:, "source"] = TS_SOURCE_ROR
     ts_df.loc[:, "comment"] = TS_COMMENT_ROR
 
@@ -184,12 +183,12 @@ if __name__ == "__main__":
         wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
             year=year,
-            type="wind",
+            type="wind-onshore",
         )
 
         # prepare pv time series
         pv_ts = prepare_wind_and_pv_time_series(
-            filename_ts=filename_pv, year=year, type="pv"
+            filename_ts=filename_pv, year=year, type="solar-pv"
         )
 
         # add time series to `time_series_df`

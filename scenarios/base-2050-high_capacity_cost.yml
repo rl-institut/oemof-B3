@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: base-scenario
+name: base-2050-high_capacity_cost
 
 datetimeindex:
   start:
@@ -30,24 +30,33 @@ busses:
 
 components:
   - biomass-gt
-  - ch4-boiler
+  - ch4-boiler_large
+  - ch4-boiler_small
   - ch4-bpchp
   - ch4-demand
+  - ch4-excess
   - ch4-export
-  - ch4-import
   - ch4-gt
+  - ch4-import
   - ch4-shortage
+  - electricity-bev_charging
+  - electricity-curtailment
   - electricity-demand
   - electricity-electrolyzer
   - electricity-export
+  - electricity-heatpump_large
+  - electricity-heatpump_small
   - electricity-import
-  - electricity-curtailment
   - electricity-liion_battery
   - electricity-pth
   - electricity-shortage
-  - h2-gt
+  - electricity-transmission
   - h2-bpchp
+  - h2-cavern
+  - h2-demand
+  - h2-excess
   - h2-export
+  - h2-gt
   - h2-import
   - h2-shortage
   - heat_central-demand
@@ -62,25 +71,38 @@ components:
   - solar-pv
   - wind-onshore
 
-datetimeindex:
-  start:
-    "2019-01-01"
-  freq:
-    "H"
-  periods:
-    8760
-
 # parametrize
 
-paths_scalars: results/_resources/scal_base-scenario.csv
+paths_scalars:
+  - results/_resources/scal_base_2050.csv
+  - results/_resources/scal_high_2050.csv
+  - results/_resources/scal_load_heat.csv
 
 filter_scalars:
   1:
-    scenario:
-      base-scenario
+    scenario_key:
+      "Base 2050"
+  2:
+    scenario_key:
+      "High 2050"
+    name:
+      "B-biomass-gt"
+    var_name:
+      "capacity_cost"
 
-paths_timeseries: raw/time_series/toy-scenario-timeseries.csv
+
+
+
+
+paths_timeseries:
+  - raw/time_series/ts_load_ch4.csv
+  - raw/time_series/ts_load_h2.csv
+  - raw/time_series/ts_efficiency_heatpump_small.csv
+  - results/_resources/ts_feedin.csv
+  - results/_resources/ts_load_electricity.csv
+  - results/_resources/ts_load_heat.csv
+  - results/_resources/ts_load_electricity_vehicles.csv
 
 filter_timeseries:
-  scenario:
-    toy-scenario
+  scenario_key:
+    ts_2017

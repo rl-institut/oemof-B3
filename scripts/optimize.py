@@ -3,9 +3,13 @@ r"""
 Inputs
 -------
 preprocessed : str
-    ``results/{scenario}/preprocessed``
+    ``results/{scenario}/preprocessed``: Path to preprocessed EnergyDatapackage containing
+    elements, sequences and datapackage.json.
 optimized : str
-    ``results/{scenario}/optimized/``
+    ``results/{scenario}/optimized/`` Target path to store dump of oemof.solph.Energysystem
+    with optimization results and parameters.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -63,11 +67,11 @@ def get_emission_limit(scalars):
 
     # return None if no emission limit is given ('None' or entry missing)
     if emission_df.empty:
-        print("No emission limit will be set.")
+        print("No emission limit set.")
         return None
     else:
-        limit = emission_df.at[EMISSION_LIMIT, "var_value"]
-        print(f"Emission limit will be set to {limit}.")
+        limit = emission_df.at["emission_limit", "var_value"]
+        print(f"Emission limit set to {limit}.")
         return limit
 
 
@@ -154,6 +158,16 @@ def add_electricity_gas_relation_constraints(model, relations):
         )
 
 
+def get_additional_scalars():
+    """Returns additional scalars as pd.DataFrame or None if file does not exist"""
+    filename_add_scalars = os.path.join(preprocessed, "additional_scalars.csv")
+    if os.path.exists(filename_add_scalars):
+        scalars = dp.load_b3_scalars(filename_add_scalars)
+        return scalars
+    else:
+        return None
+
+
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
 
@@ -166,14 +180,15 @@ if __name__ == "__main__":
 
     solver = "cbc"
 
-    # get additional scalars containing emission limit and gas electricity relation
-    path_additional_scalars = os.path.join(preprocessed, "additional_scalars.csv")
-    scalars = dp.load_b3_scalars(path_additional_scalars)
+    DEBUG = False
 
-    # get emission limit, electricity gas relations and output_parameters of bpchp from `scalars`
-    emission_limit = get_emission_limit(scalars)
-    el_gas_relations = get_electricity_gas_relations(scalars)
-    bpchp_out = get_bpchp_output_parameters(scalars)
+    # get additional scalars, set to None at first
+    emission_limit = None
+    additional_scalars = get_additional_scalars()
+    if additional_scalars is not None:
+        emission_limit = get_emission_limit(additional_scalars)
+        el_gas_relations = get_electricity_gas_relations(additional_scalars)
+        bpchp_out = get_bpchp_output_parameters(additional_scalars)
 
     if not os.path.exists(optimized):
         os.mkdir(optimized)
@@ -184,6 +199,14 @@ if __name__ == "__main__":
             attributemap={},
             typemap=TYPEMAP,
         )
+
+        # Reduce number of timestep for debugging
+        if DEBUG:
+            es.timeindex = es.timeindex[:3]
+
+            logger.info(
+                "Optimizing in DEBUG mode: Run model with first 3 timesteps only."
+            )
 
         # add output_parameters of bpchp
         if bpchp_out is not None:
@@ -196,7 +219,9 @@ if __name__ == "__main__":
         if emission_limit is not None:
             constraints.emission_limit(m, limit=emission_limit)
         if el_gas_relations is not None:
-            add_electricity_gas_relation_constraints(model=m, relations=el_gas_relations)
+            add_electricity_gas_relation_constraints(
+                model=m, relations=el_gas_relations
+            )
 
         # select solver 'gurobi', 'cplex', 'glpk' etc
         m.solve(solver=solver)
@@ -214,4 +239,3 @@ if __name__ == "__main__":
 
         # dump the EnergySystem
         es.dump(optimized)
-

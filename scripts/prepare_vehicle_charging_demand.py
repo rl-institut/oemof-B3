@@ -3,15 +3,15 @@ r"""
 Inputs
 -------
 input_dir : str
-    ``raw/time_series/vehicle_charging``: Path to directory where csv files containing electric
+    ``raw/time_series/vehicle_charging``: Path of directory where csv files containing electric
     vehicle charging demand profiles are placed
 output_file : str
-    ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name to prepared time
+    ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
 
 Outputs
 ---------
-pandas.DataFrame
+pd.DataFrame
     Normalized electric vehicle charging demand profiles for regions "B" and "BB" for all years
     provided in `input_dir`.
 
@@ -41,6 +41,7 @@ HOME_START = "15:00"  # start charging strategy "balanced" for home profile
 HOME_END = "05:00"  # end charging strategy "balanced" for home profile
 WORK_START = "06:00"  # start charging strategy "balanced" for work profile
 WORK_END = "14:00"  # end charging strategy "balanced" for work profile
+REGION_DICT = {"Berlin": "B", "Brandenburg": "BB"}
 
 
 def prepare_vehicle_charging_demand(input_dir, balanced=True):
@@ -84,6 +85,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
     for filename in os.listdir(input_dir):
         path = os.path.join(input_dir, filename)
         region, year = get_year_region_from_filename()
+        region = REGION_DICT[region]
 
         # read data from file, copy and superfluous drop last time step
         ts_raw = pd.read_csv(
@@ -113,7 +115,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
 
         # stack time series and add region
         ts_stacked = dp.stack_timeseries(ts_total_norm).rename(
-            columns={"var_name": "scenario"}
+            columns={"var_name": "scenario_key"}
         )
         ts_stacked.loc[:, "region"] = region
 
@@ -129,7 +131,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
 
     # add additional information as required by template
     ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "vehicle-charging-profile"
+    ts_prepared.loc[:, "var_name"] = "electricity-bev_charging-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
 
