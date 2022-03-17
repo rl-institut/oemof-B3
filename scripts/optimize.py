@@ -67,11 +67,11 @@ def get_emission_limit(scalars):
 
     # return None if no emission limit is given ('None' or entry missing)
     if emission_df.empty:
-        print("No emission limit set.")
+        print("No emission limit will be set.")
         return None
     else:
         limit = emission_df.at["emission_limit", "var_value"]
-        print(f"Emission limit set to {limit}.")
+        print(f"Emission limit will be set to {limit}.")
         return limit
 
 
