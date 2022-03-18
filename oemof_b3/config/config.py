@@ -1,10 +1,13 @@
 import logging
+import pathlib
 
 from dynaconf import Dynaconf
 
+CONFIG_PATH = pathlib.Path(__file__).parent
+
 settings = Dynaconf(
     envvar_prefix="DYNACONF",
-    settings_files=["settings.yaml", ".secrets.yaml"],
+    settings_files=[CONFIG_PATH / "settings.yaml", CONFIG_PATH / ".secrets.yaml"],
 )
 
 
