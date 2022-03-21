@@ -90,7 +90,7 @@ if __name__ == "__main__":
         )
 
         # Reduce number of timestep for debugging
-        if settings.optimize.debug:
+        if config.settings.debug:
             es.timeindex = es.timeindex[:3]
 
             logger.info(
