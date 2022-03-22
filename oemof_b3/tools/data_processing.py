@@ -269,6 +269,8 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
+    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
+
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
 
@@ -618,6 +620,27 @@ def stack_var_name(df):
     stacked = pd.DataFrame(stacked).reset_index()
 
     return stacked
+
+
+def round_setting_int(df, decimals):
+    r"""
+    Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
+    it changes the dtype to Int64. Tolerates NaNs.
+    """
+    _df = df.copy()
+
+    for col, dec in decimals.items():
+        if col not in _df.columns:
+            print(f"No column named '{col}' found when trying to round.")
+            continue
+        elif dec == 0:
+            dtype = "Int64"
+        else:
+            dtype = float
+
+        _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
+
+    return _df
 
 
 class ScalarProcessor:

@@ -199,6 +199,14 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
+rule create_results_table:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/tables/")
+    shell:
+        "python scripts/create_results_table.py {input} {output}"
+
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"

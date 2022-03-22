@@ -21,7 +21,7 @@ import sys
 import pandas as pd
 
 from oemof_b3 import labels_dict
-from oemof_b3.tools.data_processing import load_b3_scalars
+import oemof_b3.tools.data_processing as dp
 
 SCENARIO_KEY = "Base 2050"
 REGION = "ALL"
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
 
-    df = load_b3_scalars(in_path)
+    df = dp.load_b3_scalars(in_path)
 
     # filter for data within the scenario key defined above
     df = df.loc[df["scenario_key"] == SCENARIO_KEY]
@@ -95,24 +95,7 @@ if __name__ == "__main__":
     df.set_index("Technology", inplace=True, drop=True)
     df = df.sort_index()
 
-    def round_setting_int(df, decimals):
-        r"""
-        Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
-        it changes the dtype to Int64. Tolerates NaNs.
-        """
-        _df = df.copy()
-
-        for col, dec in decimals.items():
-            if dec == 0:
-                dtype = "Int64"
-            else:
-                dtype = float
-
-            _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
-
-        return _df
-
-    df = round_setting_int(df, DECIMALS)
+    df = dp.round_setting_int(df, DECIMALS)
 
     # save
     df.to_csv(out_path)
