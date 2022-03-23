@@ -224,6 +224,14 @@ rule plot_conv_pp_scalars:
     shell:
         "python {input.script} {input.data} {wildcards.var_name} {output}"
 
+rule plot_resources_timeseries:
+    input:
+        "results/_resources/"
+    output:
+        "results/_resources/plots/ts_load.png"
+    shell:
+        "python scripts/plot_ts_resources.py {input} {output}"
+
 rule plot_scalar_results:
     input:
         "results/{scenario}/postprocessed/"
