@@ -1,12 +1,12 @@
-id_ts,region,var_name,timeindex_start,timeindex_stop,timeindex_resolution,series,var_unit,source,comment
-0,BB,flow from BB-biomass-st to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
-1,BB,flow from BB-ch4-gt to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
-2,BB,flow from BB-electricity to BB-electricity-curtailment,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
-3,BB,flow from BB-electricity.1 to BB-electricity-demand,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[1889794.8071409904, 1870448.7801216468, 1803840.2010708163]",,,
-4,BB,flow from BB-electricity.2 to BB-electricity-liion-battery,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
-5,BE_BB,flow from BB-electricity.3 to BE-BB-electricity-transmission,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[137824.4, 125071.28, 81162.145]",,,
-6,BB,flow from BB-electricity-liion-battery to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[882505.2, 1194379.0, 1289504.5]",,,
-7,BB,flow from BB-electricity-shortage to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
-8,BB,flow from BB-solar-pv to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
-9,BB,flow from BB-wind-onshore to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[1145114.0, 801141.1, 595497.8]",,,
-10,BE_BB,flow from BE-BB-electricity-transmission to BB-electricity,2019-01-01 00:00:00,2019-01-01 02:00:00,H,"[0.0, 0.0, 0.0]",,,
+id_ts;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+0;BB;flow from BB-biomass-st to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;
+1;BB;flow from BB-ch4-gt to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;
+2;BB;flow from BB-electricity to BB-electricity-curtailment;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;
+3;BB;flow from BB-electricity.1 to BB-electricity-demand;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[1889794.8071409904, 1870448.7801216468, 1803840.2010708163]";;;
+4;BB;flow from BB-electricity.2 to BB-electricity-liion-battery;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;
+5;BE_BB;flow from BB-electricity.3 to BE-BB-electricity-transmission;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[137824.4, 125071.28, 81162.145]";;;
+6;BB;flow from BB-electricity-liion-battery to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[882505.2, 1194379.0, 1289504.5]";;;
+7;BB;flow from BB-electricity-shortage to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;
+8;BB;flow from BB-solar-pv to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;
+9;BB;flow from BB-wind-onshore to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[1145114.0, 801141.1, 595497.8]";;;
+10;BE_BB;flow from BE-BB-electricity-transmission to BB-electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;"[0.0, 0.0, 0.0]";;;

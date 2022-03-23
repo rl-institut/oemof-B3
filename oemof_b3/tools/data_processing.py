@@ -1,3 +1,20 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+HEADER_B3_SCAL : pandas.DataFrame
+``oemof_b3/schema/scalars.csv``: Header of scalars template
+
+HEADER_B3_TS : pandas.DataFrame
+``oemof_b3/schema/timeseries.csv``: Header of timeseries template
+
+Description
+-------------
+This script contains some helper functions for processing the data in oemof-B3, such as loading,
+filtering, sorting, merging, aggregating and saving.
+
+"""
+
 import os
 import ast
 import pandas as pd
@@ -15,6 +32,19 @@ HEADER_B3_SCAL = pd.read_csv(
 HEADER_B3_TS = pd.read_csv(
     os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
 ).columns
+
+
+def sort_values(df, reset_index=True):
+    _df = df.copy()
+
+    _df = _df.sort_values(by=["scenario_key", "carrier", "tech", "var_name", "region"])
+
+    if reset_index:
+        _df = _df.reset_index(drop=True)
+
+        _df.index.name = "id_scal"
+
+    return _df
 
 
 def get_list_diff(list_a, list_b):
@@ -81,7 +111,7 @@ def format_header(df, header, index_name):
     return df_formatted
 
 
-def load_b3_scalars(path, sep=","):
+def load_b3_scalars(path, sep=";"):
     """
     This function loads scalars from a csv file.
 
@@ -109,7 +139,7 @@ def load_b3_scalars(path, sep=","):
     return df
 
 
-def load_b3_timeseries(path, sep=","):
+def load_b3_timeseries(path, sep=";"):
     """
     This function loads a stacked time series from a csv file.
 
@@ -174,7 +204,7 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True)
+    df.to_csv(path, index=True, sep=";")
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")
@@ -265,11 +295,13 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
+    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
+
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
 
     # Define the columns that are split and thus not aggregated
-    groupby = ["scenario", "carrier", "region", "tech", "type", "var_name"]
+    groupby = ["scenario_key", "carrier", "region", "tech", "type", "var_name"]
 
     groupby = list(set(groupby).difference(set(columns_to_aggregate)))
 
@@ -306,6 +338,88 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
 
     return df_aggregated
+
+
+def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
+    r"""
+    Writes scalar data from df_a into df_b, according to 'on'. Where df_a provides no data,
+    the values of df_b are used. If how='outer', data from df_a that is not in df_b will be
+    kept.
+
+    Parameters
+    ----------
+    df_a : pd.DataFrame
+        DataFrame in oemof_b3 scalars format
+    df_b : pd.DataFrame
+        DataFrame in oemof_b3 scalars format
+    on : list
+        List of columns to merge on
+    how : str
+        'left' or 'outer'. Default: 'left'
+    indicator : bool
+        If True, an indicator column is included. Default: False
+
+    Returns
+    -------
+    merged : pd.DataFrame
+        DataFrame in oemof_b3 scalars format.
+    """
+    _df_a = df_a.copy()
+    _df_b = df_b.copy()
+
+    # save df_b's index name and column order
+    df_b_index_name = _df_b.index.name
+    df_b_columns = list(_df_b.columns)
+    if indicator:
+        df_b_columns.append("_merge")
+
+    # Give some information on how the merge affects the data
+    set_index_a = set(map(tuple, pd.Index(_df_a.loc[:, on].replace(np.nan, "NaN"))))
+    set_index_b = set(map(tuple, pd.Index(_df_b.loc[:, on].replace(np.nan, "NaN"))))
+
+    a_not_b = set_index_a.difference(set_index_b)
+    if a_not_b:
+        if how == "left":
+            print(
+                f"There are {len(a_not_b)} elements in df_a but not in df_b"
+                f" and are lost (choose how='outer' to keep them): {a_not_b}"
+            )
+        elif how == "outer":
+            print(
+                f"There are {len(a_not_b)} elements in df_a that are"
+                f" added to df_b: {a_not_b}"
+            )
+
+    a_and_b = set_index_a.intersection(set_index_b)
+    print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+
+    b_not_a = set_index_b.difference(set_index_a)
+    print(f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}")
+
+    # Merge a with b, ignoring all data in b
+    merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
+        _df_a,
+        on=on,
+        how=how,
+        indicator=indicator,
+        sort=False,
+    )
+
+    merged.index.name = df_b_index_name
+
+    # Where df_a contains no data, use df_b
+    merged = merged.reset_index().set_index(
+        on
+    )  # First reset, then set index to keep it as a column
+
+    merged.update(_df_b.set_index(on), overwrite=False)
+
+    # Set original index and recover column order
+    merged = merged.reset_index().set_index(df_b_index_name)
+
+    merged = merged[df_b_columns]
+
+    return merged
 
 
 def check_consistency_timeindex(df, index):
@@ -497,7 +611,7 @@ def unstack_var_name(df):
     _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
     _df = _df.set_index(
-        ["scenario", "name", "region", "carrier", "tech", "type", "var_name"]
+        ["scenario_key", "name", "region", "carrier", "tech", "type", "var_name"]
     )
 
     unstacked = _df.unstack("var_name")
@@ -532,6 +646,27 @@ def stack_var_name(df):
     stacked = pd.DataFrame(stacked).reset_index()
 
     return stacked
+
+
+def round_setting_int(df, decimals):
+    r"""
+    Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
+    it changes the dtype to Int64. Tolerates NaNs.
+    """
+    _df = df.copy()
+
+    for col, dec in decimals.items():
+        if col not in _df.columns:
+            print(f"No column named '{col}' found when trying to round.")
+            continue
+        elif dec == 0:
+            dtype = "Int64"
+        else:
+            dtype = float
+
+        _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
+
+    return _df
 
 
 class ScalarProcessor:

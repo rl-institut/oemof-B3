@@ -1,4 +1,4 @@
--e.
+# Duplicates the docs requirements in pyproject.toml, but is necessary for readthedocs (rtd does not allow to poetry install -E docs).
 sphinx
-sphinx_rtd_theme
+sphinx-rtd-theme>=0.5.1
 sphinxcontrib_bibtex

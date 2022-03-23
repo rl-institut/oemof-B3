@@ -3,10 +3,10 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/scal_base-scenario.csv``: path incl. file name of input file with raw scalar data as .csv
+    ``raw/scalars_{range}_{year}.csv``: path incl. file name of input file with raw scalar data
 out_path : str
-    ``results/_resources/scal_base-scenario.csv``: path incl. file name of output file with prepared
-    scalar data as .csv
+    ``results/_resources/scal_{range}.csv``: path incl. file name of output file with prepared
+    scalar data
 
 Outputs
 ---------
@@ -19,17 +19,18 @@ The script performs the following steps to prepare scalar data for parametrizati
 
 * Calculate annualized investment cost from overnight cost, lifetime and wacc.
 """
+
 import sys
 
 import pandas as pd
 
 from oemof.tools.economics import annuity
 
-from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars
+from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, save_df
 
 
 def fill_na(df):
-    key = "scenario"
+    key = "scenario_key"
 
     value = "None"
 
@@ -64,9 +65,14 @@ def fill_na(df):
 
 def annuise_investment_cost(sc):
 
-    for var_name_cost in ["capacity_cost_overnight", "storage_capacity_cost_overnight"]:
+    for var_name_cost, var_name_fixom_cost in [
+        ("capacity_cost_overnight", "fixom_cost"),
+        ("storage_capacity_cost_overnight", "storage_fixom_cost"),
+    ]:
 
-        invest_data = sc.get_unstacked_var([var_name_cost, "lifetime"])
+        invest_data = sc.get_unstacked_var(
+            [var_name_cost, "lifetime", var_name_fixom_cost]
+        )
 
         # if some value is None in some scenario key, use the values from Base scenario to fill NaNs
         invest_data = fill_na(invest_data)
@@ -78,7 +84,9 @@ def annuise_investment_cost(sc):
         invest_data["wacc"] = wacc
 
         annuised_investment_cost = invest_data.apply(
-            lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"]), 1
+            lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"])
+            + x[var_name_fixom_cost],
+            1,
         )
 
         sc.append(var_name_cost.replace("_overnight", ""), annuised_investment_cost)
@@ -105,10 +113,12 @@ if __name__ == "__main__":
 
     annuise_investment_cost(sc)
 
-    sc.scalars = sc.scalars.sort_values(by=["carrier", "tech", "var_name", "scenario"])
+    sc.scalars = sc.scalars.sort_values(
+        by=["carrier", "tech", "var_name", "scenario_key"]
+    )
 
     sc.scalars.reset_index(inplace=True, drop=True)
 
     sc.scalars.index.name = "id_scal"
 
-    sc.scalars.to_csv(out_path)
+    save_df(sc.scalars, out_path)

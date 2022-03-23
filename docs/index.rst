@@ -18,13 +18,12 @@ oemof-B3: A sector-integrated energy system model of Brandenburg and Berlin
    :maxdepth: 1
    :caption: User's guide
 
-   model_structure
    model_pipeline
+   model_structure
 
 .. toctree::
    :maxdepth: 1
    :caption: Reference
 
    whats_new
-   api
    literature

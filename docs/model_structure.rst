@@ -9,44 +9,67 @@ Model structure
     :local:
     :backlinks: top
 
+In oemof-B3, data appears in different formats in each processing step. Here, we give a short
+overview.
 
-An `oemof.solph.EnergySystem` in the form of a tabular Datapackage form comprises scalar data
-(elements) and data with a time index (sequences). The model oemof-B3 uses
-`oemoflex <https://github.com/rl-institut/oemoflex>`_ to build empty
-DataPackages and fills them with concrete numbers.
-
-
-Elements
+Raw data
 --------
 
-The element-files describe the busses and components of the energy system. All `oemof.solph.Bus` es
-are defined in a single file :file:`bus.csv`. The other components are split between several files.
+Raw data from external source comes in different formats. As a first step, preprocessing scripts in
+the model pipeline (see :ref:`Preprocessing`) convert it into the oemof-B3-resources-format,
+explained in the next section. Raw data that represents model-own assumptions is provided in that format already.
 
-Filenames for the components are of the form
-carrier-tech.csv (e.g. :file:`electricity-demand.csv`, :file:`gas-bpchp.csv`).
+oemof-B3 resources
+------------------
 
-There is a set of general variables that appear in all components:
+The resources are preprocessed data that serves as material for building scenarios. They follow
+a common data schema defined in :file:`oemof_b3/schema/`.
 
-* **region** Region of a component. (the regions are defined in the topology file
-  :file: ../oemof_b3/model/topology.yml)
-* **name** Unique name of the form :py:attr:`'region-carrier-tech'` (e.g. :py:attr:`'LU-gas-bpchp'`,
-  :py:attr:`'AT-electricity-airsourcehp'`).
-* **carrier** Energy carrier of the flow into the component (e.g. solar, wind, biomass, coal,
-  lignite, uranium, oil, gas, methane, hydro, waste, electricity, heat). This allows to categorize
-  the component and should correspond to the bus to which the component is connected.
-* **tech** More detailled specification of the technology (e.g. st, ocgt, ccgt, pv, onshore,
-  offshore, ror, phs,
-  extchp, bpchp, battery)
-* **type** Type of oemof.tabular.facade, defined in `TYPEMAP`.
+Scalars
 
-Beyond that, there are specific variables which depend on the type of the component. Components and
+.. csv-table::
+   :delim: ;
+   :file: ../oemof_b3/schema/scalars.csv
+
+Time series
+
+.. csv-table::
+   :delim: ;
+   :file: ../oemof_b3/schema/timeseries.csv
+
+A few more conventions are important to know. Missing data is left empty. If a value applies to all
+regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
+There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
+
+Preprocessed datapackages
+-------------------------
+
+The resources are then again preprocessed together with the scenario information to generate
+scenario-specific datapackages. A preprocessed datapackage represents an instance of an energy system scenario.
+It is a collection of .csv-files, one file for all busses and one for each
+component, stored in :file:`elements` (scalars data) and :file:`sequences` (time series for e.g.
+renewable feedin or demand profiles), stored in separate folders. Below is an example of the element
+file for the gas turbine of the base examples scenario, which can be found in
+:file:`examples/base/preprocessed/base/data/elements/ch4-gt.csv`.
+
+.. todo: Explain more about scenarios, where and how they are defined and thus how new ones can be made
+
+=======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
+region   name       type        carrier  tech   from_bus  to_bus          capacity  capacity_cost  efficiency   carrier_cost   marginal_cost  expandable  output_paramters
+=======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
+BE       BE-ch4-gt  conversion  ch4      gt     BE-ch4    BE-electricity  1500000                  0.619        0.021          0.0045         False       {}
+BB       BB-ch4-gt  conversion  ch4      gt     BB-ch4    BB-electricity  600000                   0.619        0.021          0.0045         False       {}
+=======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
+
+More generally, there are specific variables which depend on the type of the component. Components and
 their properties are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
+Components and properties and also be added or updated in oemof-B3 using the files in :file:`oemof_b3/model/`.
 
-Sequences
----------
+.. todo: Explain how to do this and when it is relevant.
 
-The sequences-files contain all timeseries, like load profiles or possible renewable generation.
+Postprocessed data
+-------------------
 
-The filenames are of the form carrier-type_profile (e.g.
-:file:`wind-offshore_profile.csv`, :file:`electricity-demand_profile.csv`).
+Data postprocessing makes use of oemoflex's functionality, thus postprocessed data follows its
+data format.

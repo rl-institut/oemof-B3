@@ -12,6 +12,7 @@
 #
 import os
 import sys
+sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../scripts'))
 
 # -- Project information -----------------------------------------------------
@@ -21,7 +22,7 @@ copyright = '2020, Reiner Lemoine Institut'
 author = 'Reiner Lemoine Institut'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.0.2dev'
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,6 +35,7 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.napoleon',
     'sphinxcontrib.bibtex',
+    'sphinx.ext.autosectionlabel'
 ]
 
 # specify bibfiles for sphinxcontrib.bibtex
@@ -63,3 +65,21 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# -- Options for Sphinx autodoc ----------------------------------------------
+
+autodoc_mock_imports = [
+    "oemof",
+    "oemof.solph",
+    "oemof.outputlib",
+    "oemof.tabular",
+    "oemoflex",
+    "demandlib",
+    "matplotlib",
+    "pandas",
+    "numpy",
+    "geopandas",
+    "shapely",
+    "yaml"
+]

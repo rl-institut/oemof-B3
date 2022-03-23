@@ -1,42 +1,42 @@
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+from oemoflex.tools.helpers import load_yaml
+
 HTTP = HTTPRemoteProvider()
 
-examples = [
-    'base',
-    'more_renewables',
-    'more_renewables_less_fossil'
-]
 
-scenario_list_example = ['examples']
+scenario_groups = {
+    "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
+    "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
+}
 
-resources = ['scal_conv_pp']
+resource_plots = ['scal_conv_pp-capacity_net_el']
 
-scenarios = ["toy-scenario", "toy-scenario-2"]
 
 # Target rules
-rule plot_grouped_scenarios:
+rule plot_all_resources:
     input:
-        expand("results/joined_scenarios/{scenario_list}/joined_plotted/", scenario_list=scenario_list_example)
-
-rule plot_all_scenarios:
-    input:
-        expand("results/{scenario}/plotted/", scenario=examples)
-
-rule run_all_examples:
-    input:
-        expand("results/{scenario}/postprocessed", scenario=examples)
+        expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
 
 rule plot_all_examples:
     input:
-        expand("results/{scenario}/plotted/", scenario=examples)
+        expand(
+            "results/{scenario}/plotted/{plot_type}",
+            scenario=scenario_groups["examples"],
+            plot_type=["scalars", "dispatch"],
+        )
 
-rule report_all_examples:
+rule plot_all_scenarios:
     input:
-        expand("results/{scenario}/report/", scenario=examples)
+        expand(
+            "results/{scenario}/plotted/{plot_type}",
+            scenario=scenario_groups["base-scenarios"],
+            plot_type=["scalars", "dispatch"],
+        )
 
-rule plot_all_resources:
+rule plot_grouped_scenarios:
     input:
-        expand("results/_resources/plots/{resource}.png", resource=resources)
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["base-scenarios"])
+
 
 rule clean:
     shell:
@@ -57,12 +57,12 @@ rule create_input_data_overview:
 
 rule prepare_example:
     input:
-        "examples/{scenario}/preprocessed/{scenario}"
+        "examples/{scenario}/preprocessed/"
     output:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
-        scenario="|".join(examples)
+        scenario="|".join(scenario_groups["examples"])
     run:
         import shutil
         shutil.copytree(src=input[0], dst=output[0])
@@ -99,14 +99,40 @@ rule prepare_electricity_demand:
     shell:
         "python {input.script} {input.opsd_url} {output}"
 
+rule prepare_vehicle_charging_demand:
+    input:
+        input_dir="raw/time_series/vehicle_charging",
+        script="scripts/prepare_vehicle_charging_demand.py"
+    output:
+        "results/_resources/ts_load_electricity_vehicles.csv"
+    shell:
+        "python {input.script} {input.input_dir} {output}"
+
 rule prepare_scalars:
     input:
-        raw_scalars="raw/base-scenario.csv",
+        raw_scalars="raw/scalars_{range}_{year}.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_base-scenario.csv"
+        "results/_resources/scal_{range}_{year}.csv"
+    wildcard_constraints:
+        range=("base|high|low"),
+        year=("2040|2050"),
     shell:
         "python {input.script} {input.raw_scalars} {output}"
+
+rule prepare_heat_demand:
+    input:
+        weather="raw/weatherdata",
+        distribution_hh="raw/distribution_households.csv",
+        holidays="raw/holidays.csv",
+        building_class="raw/building_class.csv",
+        scalars="raw/scalars_base_2050.csv",
+        script="scripts/prepare_heat_demand.py",
+    output:
+        scalars="results/_resources/scal_load_heat.csv",
+        timeseries="results/_resources/ts_load_heat.csv",
+    shell:
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries}"
 
 rule prepare_re_potential:
     input:
@@ -114,7 +140,7 @@ rule prepare_re_potential:
         pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         kreise="raw/lookup_table_brandenburg_kreise.csv",
-        assumptions="raw/scalars.csv",
+        assumptions="raw/scalars_base_2050.csv",
         script="scripts/prepare_re_potential.py"
     output:
         directory("results/_resources/RE_potential/")
@@ -123,7 +149,7 @@ rule prepare_re_potential:
 
 rule process_re_potential:
     input:
-        input_dir=directory("results/_resources/RE_potential/"),
+        input_dir="results/_resources/RE_potential/",
         script="scripts/process_re_potential.py"
     output:
         scalars="results/_resources/scal_power_potential_wind_pv.csv",
@@ -131,35 +157,61 @@ rule process_re_potential:
     shell:
         "python {input.script} {input.input_dir} {output.scalars} {output.table}"
 
+def get_paths_scenario_input(wildcards):
+    scenario_specs = load_yaml(f"scenarios/{wildcards.scenario}.yml")
+    paths_scenario_inputs = list()
+    for key in ["paths_scalars", "paths_timeseries"]:
+        paths = scenario_specs[key]
+        if isinstance(paths, list):
+            paths_scenario_inputs.extend(paths)
+        elif isinstance(paths, str):
+            paths_scenario_inputs.append(paths)
+    return paths_scenario_inputs
+
 rule build_datapackage:
     input:
-        "scenarios/{scenario}.yml"
+        get_paths_scenario_input,
+        scenario="scenarios/{scenario}.yml"
     output:
         directory("results/{scenario}/preprocessed")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/build_datapackage.py {input} {output}"
+        "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
 rule optimize:
     input:
         "results/{scenario}/preprocessed"
     output:
         directory("results/{scenario}/optimized/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/optimize.py {input} {output}"
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
         "results/{scenario}/optimized"
     output:
         directory("results/{scenario}/postprocessed/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/postprocess.py {input} {wildcards.scenario} {output}"
+        "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
+
+rule create_results_table:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/tables/")
+    shell:
+        "python scripts/create_results_table.py {input} {output}"
 
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/")
+        directory("results/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
@@ -168,17 +220,37 @@ rule plot_conv_pp_scalars:
         data="results/_resources/{resource}.csv",
         script="scripts/plot_conv_pp_scalars.py"
     output:
-        "results/_resources/plots/{resource}_var_{var_name}.png"
+        "results/_resources/plots/{resource}-{var_name}.png"
     shell:
         "python {input.script} {input.data} {wildcards.var_name} {output}"
+
+rule plot_scalar_results:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/scalars/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
+
+rule plot_joined_scalars:
+    input:
+        "results/joined_scenarios/{scenario_list}/joined/"
+    output:
+        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+    shell:
+        "python scripts/plot_scalar_results.py {input} {output}"
 
 rule report:
     input:
         template="report/report.md",
-	template_interactive="report/report_interactive.md",
-        plots="results/{scenario}/plotted"
+        template_interactive="report/report_interactive.md",
+        plots_scalars="results/{scenario}/plotted/scalars",
+        plots_dispatch="results/{scenario}/plotted/dispatch",
     output:
         directory("results/{scenario}/report/")
+    params:
+        logfile="logs/{scenario}.log",
+        all_plots="results/{scenario}/plotted/",
     run:
         import os
         import shutil
@@ -189,7 +261,8 @@ rule report:
         shell(
         """
         pandoc -V geometry:a4paper,margin=2.5cm \
-        --resource-path={output}/../plotted \
+        --lua-filter report/pandoc_filter.lua \
+        --resource-path={params.all_plots} \
         --metadata title="Results for scenario {wildcards.scenario}" \
         {output}/report.md -o {output}/report.pdf
         """
@@ -197,7 +270,8 @@ rule report:
         # static html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={params.all_plots} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report.md -o {output}/report.html
@@ -206,7 +280,8 @@ rule report:
         # interactive html report
         shell(
         """
-        pandoc --resource-path={output}/../plotted \
+        pandoc --resource-path={params.all_plots} \
+        --lua-filter report/pandoc_filter.lua \
         --metadata title="Results for scenario {wildcards.scenario}" \
         --self-contained -s --include-in-header=report/report.css \
         {output}/report_interactive.md -o {output}/report_interactive.html
@@ -215,18 +290,15 @@ rule report:
         os.remove(os.path.join(output[0], "report.md"))
         os.remove(os.path.join(output[0], "report_interactive.md"))
 
+
+def get_scenarios_in_group(wildcards):
+    return [os.path.join("results", scenario, "postprocessed") for scenario in scenario_groups[wildcards.scenario_group]]
+
+
 rule join_scenario_results:
     input:
-        "scenario_groups/{scenario_list}.yml"
+        get_scenarios_in_group
     output:
-        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
+        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
     shell:
         "python scripts/join_scenarios.py {input} {output}"
-
-rule plot_joined_scalars:
-    input:
-        "results/joined_scenarios/{scenario_list}/joined/scalars.csv"
-    output:
-        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
-    shell:
-        "python scripts/plot_joined_scalars.py {input} {output}"

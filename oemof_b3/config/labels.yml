@@ -4,13 +4,18 @@ ch4-boiler: CH4 Boiler
 ch4-bpchp: CH4 Backpressure CHP
 ch4-extchp: CH4 Extraction CHP
 ch4-gt: CH4 GT
+electricity-bev_charging: BEV charging
 electricity-curtailment: Curtailment
 electricity-demand: El. demand
 electricity-electrolyzer: Electrolyzer
+electricity-export: El. Export
+electricity-import: El. Import
 electricity-liion_battery: Battery
 electricity-pth: res. PtH
 electricity-shortage: Shortage
 electricity-transmission: Transmission
+electricity-heatpump_large: Heat pump (DH)
+electricity-heatpump_small: Heat pump (domestic)
 h2-gt: H2 GT
 heat_central-demand: Heat cen. demand
 heat_decentral-demand: Heat dec. demand
@@ -18,7 +23,11 @@ hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
 h2-bpchp: H2 Backpressure CHP
-ch4-excess: CH4 Excess
+h2-cavern: H2 Cavern
+ch4-export: CH4 Export
+ch4-import: CH4 Import
+h2-export: H2 Export
+h2-import: H2 Import
 heat_central-excess: Heat cen. excess
 heat_central-storage: Heat cen. storage
 heat_central-shortage: Heat cen. shortage

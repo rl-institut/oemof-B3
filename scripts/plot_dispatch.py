@@ -6,12 +6,15 @@ postprocessed : str
     ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
     can be plotted
 plotted : str
-    ``results/{scenario}/plotted/``: path where a new directory is created and the plots are saved
+    ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
+    the plots are saved
 
 Outputs
 ---------
 .pdf
     dispatch plot in pdf-format.
+.png
+    dispatch plot in png-format.
 .html
     interactive plotly dispatch plot in html-format.
 
@@ -38,16 +41,11 @@ if __name__ == "__main__":
     plotted = sys.argv[2]
 
     # create the directory plotted where all plots are saved
-    os.makedirs(plotted)
+    if not os.path.exists(plotted):
+        os.makedirs(plotted)
 
     bus_directory = os.path.join(postprocessed, "sequences/bus/")
     bus_files = os.listdir(bus_directory)
-
-    # select timeframe
-    timeframe = [
-        ("2019-01-01 00:00:00", "2019-01-31 23:00:00"),
-        ("2019-07-01 00:00:00", "2019-07-31 23:00:00"),
-    ]
 
     # select carrier
     carriers = ["electricity", "heat_central", "heat_decentral"]
@@ -64,15 +62,16 @@ if __name__ == "__main__":
         data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
         # prepare dispatch data
-        # convert data to SI-unit
-        conv_number = 1000
-        data = data * conv_number
         df, df_demand = plots.prepare_dispatch_data(
             data,
             bus_name=bus_name,
             demand_name="demand",
             labels_dict=labels_dict,
         )
+
+        # convert data to SI-unit
+        MW_to_W = 1e6
+        data = data * MW_to_W
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
@@ -92,6 +91,13 @@ if __name__ == "__main__":
 
         # normal dispatch plot
         # plot one winter and one summer month
+        # select timeframe
+        year = data.index[0].year
+        timeframe = [
+            (f"{year}-01-01 00:00:00", f"{year}-01-31 23:00:00"),
+            (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
+        ]
+
         for start_date, end_date in timeframe:
             fig, ax = plt.subplots(figsize=(12, 5))
 

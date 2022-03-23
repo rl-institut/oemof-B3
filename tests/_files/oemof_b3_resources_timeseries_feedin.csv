@@ -1,5 +1,5 @@
-id_ts,scenario,region,var_name,timeindex_start,timeindex_stop,timeindex_resolution,series,var_unit,source,comment
-0,ts_2012,B,wind-profile,2012-01-01 10:00:00,2012-01-01 12:00:00,H,"[0.1593, 0.2175, 0.2113]",None,https://www.renewables.ninja/,navigate to country Germany
-1,ts_2012,BB,wind-profile,2012-01-01 10:00:00,2012-01-01 12:00:00,H,"[0.2299, 0.2635, 0.2866]",None,https://www.renewables.ninja/,navigate to country Germany
-0,ts_2012,B,pv-profile,2012-01-01 10:00:00,2012-01-01 12:00:00,H,"[0.013, 0.018, 0.011]",None,https://www.renewables.ninja/,navigate to country Germany
-1,ts_2012,BB,pv-profile,2012-01-01 10:00:00,2012-01-01 12:00:00,H,"[0.015, 0.019, 0.012]",None,https://www.renewables.ninja/,navigate to country Germany
+id_ts;scenario_key;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+0;ts_2012;B;wind-profile;2012-01-01 10:00:00;2012-01-01 12:00:00;H;"[0.1593, 0.2175, 0.2113]";None;https://www.renewables.ninja/;navigate to country Germany
+1;ts_2012;BB;wind-profile;2012-01-01 10:00:00;2012-01-01 12:00:00;H;"[0.2299, 0.2635, 0.2866]";None;https://www.renewables.ninja/;navigate to country Germany
+0;ts_2012;B;pv-profile;2012-01-01 10:00:00;2012-01-01 12:00:00;H;"[0.013, 0.018, 0.011]";None;https://www.renewables.ninja/;navigate to country Germany
+1;ts_2012;BB;pv-profile;2012-01-01 10:00:00;2012-01-01 12:00:00;H;"[0.015, 0.019, 0.012]";None;https://www.renewables.ninja/;navigate to country Germany
