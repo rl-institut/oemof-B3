@@ -74,6 +74,11 @@ components:
 # parametrize
 
 paths_scalars:
+  - raw/split/capacities_potentials.csv
+  - raw/split/carrier_costs.csv
+  - raw/split/demands.csv
+  - raw/split/emission_constraint.csv
+  - raw/split/gas_el_constraint.csv
   - results/_resources/scal_costs_efficiencies.csv
   - results/_resources/scal_load_heat.csv
 
