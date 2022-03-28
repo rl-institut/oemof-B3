@@ -110,13 +110,10 @@ rule prepare_vehicle_charging_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/scalars_{range}_{year}.csv",
+        raw_scalars="raw/split/costs_efficiencies.csv",
         script="scripts/prepare_scalars.py",
     output:
-        "results/_resources/scal_{range}_{year}.csv"
-    wildcard_constraints:
-        range=("base|high|low"),
-        year=("2040|2050"),
+        "results/_resources/scal_costs_efficiencies.csv"
     shell:
         "python {input.script} {input.raw_scalars} {output}"
 
@@ -126,7 +123,7 @@ rule prepare_heat_demand:
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
         building_class="raw/building_class.csv",
-        scalars="raw/scalars_base_2050.csv",
+        scalars="raw/split/demands.csv",
         script="scripts/prepare_heat_demand.py",
     output:
         scalars="results/_resources/scal_load_heat.csv",
@@ -140,7 +137,7 @@ rule prepare_re_potential:
         pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         kreise="raw/lookup_table_brandenburg_kreise.csv",
-        assumptions="raw/scalars_base_2050.csv",
+        assumptions="raw/split/capacities_potentials.csv",
         script="scripts/prepare_re_potential.py"
     output:
         directory("results/_resources/RE_potential/")
