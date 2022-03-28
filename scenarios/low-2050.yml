@@ -16,14 +16,6 @@ datetimeindex:
 model_scope:
   scope_full
 
-datetimeindex:
-  start:
-    "2019-01-01"
-  freq:
-    "H"
-  periods:
-    8760
-
 # parametrize
 
 paths_scalars:
