@@ -91,7 +91,9 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
     ts_prepared.loc[:, "source"] = TS_SOURCE
     ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
+    ts_prepared.loc[
+        :, "scenario_key"
+    ] = "ALL"  # The profile is not varied in different scenarios
 
     return ts_prepared
 
