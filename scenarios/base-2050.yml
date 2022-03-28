@@ -19,7 +19,7 @@ model_structure:
 # parametrize
 
 paths_scalars:
-  - results/_resources/scal_base_2050.csv
+  - results/_resources/scal_costs_efficiencies.csv
   - results/_resources/scal_load_heat.csv
 
 filter_scalars:
