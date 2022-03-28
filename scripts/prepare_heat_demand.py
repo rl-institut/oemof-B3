@@ -106,7 +106,7 @@ def find_regional_files(path, region):
     files_region : list
         List of file names matching region
     """
-    files_region = [file for file in os.listdir(path) if region in file]
+    files_region = [file for file in os.listdir(path) if f"_{region}_" in file]
     files_region = sorted(files_region)
 
     if not files_region:
