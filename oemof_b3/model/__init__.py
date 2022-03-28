@@ -10,3 +10,7 @@ component_attrs_update = load_yaml(os.path.join(here, "component_attrs_update.ym
 bus_attrs_update = load_yaml(os.path.join(here, "bus_attrs_update.yml"))
 
 foreign_keys_update = load_yaml(os.path.join(here, "foreign_keys_update.yml"))
+
+SCOPES = ["scope_full", "scope_el_only"]
+
+scope = {s: load_yaml(os.path.join(here, s + ".yml")) for s in SCOPES}
