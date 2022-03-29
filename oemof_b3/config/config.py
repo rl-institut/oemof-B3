@@ -1,5 +1,14 @@
-import os
 import logging
+import pathlib
+
+from dynaconf import Dynaconf
+
+CONFIG_PATH = pathlib.Path(__file__).parent
+
+settings = Dynaconf(
+    envvar_prefix="DYNACONF",
+    settings_files=[CONFIG_PATH / "settings.yaml", CONFIG_PATH / ".secrets.yaml"],
+)
 
 
 class LevelFilter(logging.Filter):
@@ -11,10 +20,8 @@ class LevelFilter(logging.Filter):
         return record.levelno != self.level
 
 
-DEBUG = os.environ.get("DEBUG", False)
-LOGGING_LEVEL = os.environ.get(
-    "LOGGING_LEVEL", logging.DEBUG if DEBUG else logging.INFO
-)
+DEBUG = settings.get("DEBUG", False)
+LOGGING_LEVEL = settings.get("LOGGING_LEVEL", logging.DEBUG if DEBUG else logging.INFO)
 LOGGING_FOLDER = "logs"
 
 root_logger = logging.getLogger()

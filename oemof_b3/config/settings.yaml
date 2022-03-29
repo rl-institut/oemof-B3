@@ -1,0 +1,6 @@
+
+debug: true
+
+optimize:
+  solver: cbc
+  filename_metadata: datapackage.json
