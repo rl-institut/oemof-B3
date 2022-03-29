@@ -22,8 +22,9 @@ Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and 
 oemof.solph.Model, which is optimized.
 The following constraints are added:
 - `emission_limit`: maximum amount of emissions
-- `equate_flows_by_keyword`: gas-power relation is set. This constraint is only added if
-    'electricity_gas_relation' is added to the scalars. To use this constraint you need to copy
+- `equate_flows_by_keyword`: electricty-gas relation is set (electricity/gas = factor).
+    This constraint is only added if 'electricity_gas_relation' is added to the scalars.
+    To use this constraint you need to copy
     [`equate_flows.py`](https://github.com/oemof/oemof-solph/blob/features/equate-flows/src/oemof/solph/constraints/equate_variables.py)
     of oemof.solph into `/tools` directory of `oemof-B3`.
 The EnergySystem with results, meta-results and parameters is saved.
@@ -152,8 +153,8 @@ def add_electricity_gas_relation_constraints(model, relations):
         suffix = f"{row.carrier}-{row.region}"
         equate_flows_by_keyword(
             model=model,
-            keyword1=f"{EL_KEY}-{suffix}",
-            keyword2=f"{GAS_KEY}-{suffix}",
+            keyword1=f"{GAS_KEY}-{suffix}",
+            keyword2=f"{EL_KEY}-{suffix}",
             factor1=row.var_value,
         )
 
