@@ -157,7 +157,7 @@ def prepare_ror_time_series(filename_ts, region):
         ts_prepared = dp.format_header(
             df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
         )
-        ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
+        ts_prepared.loc[:, "scenario_key"] = "ALL"
         ts_df = pd.concat([ts_df, ts_prepared])
 
     # add additional information as required by template
