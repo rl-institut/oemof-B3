@@ -101,5 +101,7 @@ paths_timeseries:
 
 filter_timeseries:
   scenario_key:
-    ts_2017
-
+    - "Base 2050"
+    - "ALL"
+  timeindex_start:
+    "2017-01-01 00:00:00"

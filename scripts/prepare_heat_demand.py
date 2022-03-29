@@ -106,7 +106,7 @@ def find_regional_files(path, region):
     files_region : list
         List of file names matching region
     """
-    files_region = [file for file in os.listdir(path) if region in file]
+    files_region = [file for file in os.listdir(path) if f"_{region}_" in file]
     files_region = sorted(files_region)
 
     if not files_region:
@@ -495,7 +495,11 @@ if __name__ == "__main__":
                 carrier, holidays, temperature, yearly_demands, building_class
             )
             total_heat_load = postprocess_data(
-                total_heat_load, heat_load_year, region, f"ts_{year}", sc_demand_unit
+                total_heat_load,
+                heat_load_year,
+                region,
+                scenario,
+                sc_demand_unit,
             )
     # aggregate heat demand for different sectors (hh, ghd, i)
     demand_per_sector = dp.filter_df(

@@ -114,9 +114,11 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         ts_total_norm = ts_total_demand / ts_total_demand.sum()
 
         # stack time series and add region
-        ts_stacked = dp.stack_timeseries(ts_total_norm).rename(
-            columns={"var_name": "scenario_key"}
-        )
+        ts_stacked = dp.stack_timeseries(ts_total_norm)
+
+        # The profile is not varied in different scenarios
+        ts_stacked.loc[:, "scenario_key"] = "ALL"
+
         ts_stacked.loc[:, "region"] = region
 
         # add to `df`
