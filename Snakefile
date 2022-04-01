@@ -35,7 +35,7 @@ rule plot_all_scenarios:
 
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group=scenario_groups["base-scenarios"])
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="examples")
 
 
 rule clean:
@@ -299,6 +299,6 @@ rule join_scenario_results:
     input:
         get_scenarios_in_group
     output:
-        "results/joined_scenarios/{scenario_group}/joined/scalars.csv"
+        directory("results/joined_scenarios/{scenario_group}/joined/")
     shell:
         "python scripts/join_scenarios.py {input} {output}"
