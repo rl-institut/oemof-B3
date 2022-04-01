@@ -13,6 +13,9 @@ datetimeindex:
   periods:
     8760
 
+model_structure:
+  model_structure_full
+
 # parametrize
 
 paths_scalars:
