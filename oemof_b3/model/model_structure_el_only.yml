@@ -1,0 +1,40 @@
+regions:
+  - BB
+  - B
+
+links:
+  - BB-B
+
+busses:
+  - ch4
+  - electricity
+  - h2
+  - biomass
+
+components:
+  - biomass-gt
+  - ch4-demand
+  - ch4-excess
+  - ch4-export
+  - ch4-gt
+  - ch4-import
+  - ch4-shortage
+  - electricity-bev_charging
+  - electricity-curtailment
+  - electricity-demand
+  - electricity-electrolyzer
+  - electricity-export
+  - electricity-import
+  - electricity-liion_battery
+  - electricity-shortage
+  - electricity-transmission
+  - h2-cavern
+  - h2-demand
+  - h2-excess
+  - h2-export
+  - h2-gt
+  - h2-import
+  - h2-shortage
+  - hydro-ror
+  - solar-pv
+  - wind-onshore
