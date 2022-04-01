@@ -46,7 +46,7 @@ paths_timeseries:
 
 filter_timeseries:
   scenario_key:
-    - "Base 2050"
+    - "2050-el_eff"
     - "ALL"
   timeindex_start:
     "2017-01-01 00:00:00"
