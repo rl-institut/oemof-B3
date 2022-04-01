@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: base-2050
+name: 2050-el_eff
 
 datetimeindex:
   start:
@@ -19,7 +19,8 @@ model_structure:
 # parametrize
 
 paths_scalars:
-  - raw/split/capacities_potentials.csv
+  - raw/split/capacities.csv
+  - raw/split/potentials.csv
   - raw/split/carrier_costs.csv
   - raw/split/demands.csv
   - raw/split/emission_constraint.csv
@@ -30,7 +31,9 @@ paths_scalars:
 filter_scalars:
   1:
     scenario_key:
-      "Base 2050"
+      - "ALL"
+      - "2050-el_eff"
+      - "2050-base"
 
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv
