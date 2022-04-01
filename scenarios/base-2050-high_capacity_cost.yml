@@ -13,8 +13,8 @@ datetimeindex:
   periods:
     8760
 
-model_scope:
-  scope_full
+model_structure:
+  model_structure_full
 
 # parametrize
 

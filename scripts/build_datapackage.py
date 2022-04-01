@@ -31,7 +31,7 @@ from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.tools.helpers import load_yaml
 
 from oemof_b3.model import (
-    scope,
+    model_structures,
     bus_attrs_update,
     component_attrs_update,
     foreign_keys_update,
@@ -255,7 +255,7 @@ if __name__ == "__main__":
 
     scenario_specs = load_yaml(scenario_specs)
 
-    model_scope = scope[scenario_specs["model_scope"]]
+    model_structure = model_structures[scenario_specs["model_structure"]]
 
     # setup empty EnergyDataPackage
     datetimeindex = pd.date_range(
@@ -271,10 +271,10 @@ if __name__ == "__main__":
         bus_attrs_update=bus_attrs_update,
         component_attrs_update=component_attrs_update,
         name=scenario_specs["name"],
-        regions=model_scope["regions"],
-        links=model_scope["links"],
-        busses=model_scope["busses"],
-        components=model_scope["components"],
+        regions=model_structure["regions"],
+        links=model_structure["links"],
+        busses=model_structure["busses"],
+        components=model_structure["components"],
     )
 
     # parametrize scalars
@@ -283,7 +283,7 @@ if __name__ == "__main__":
     scalars = multi_load_b3_scalars(paths_scalars)
 
     # Replace 'ALL' in the column regions by the actual regions
-    scalars = expand_regions(scalars, model_scope["regions"])
+    scalars = expand_regions(scalars, model_structure["regions"])
 
     # Drop those scalars that do not belong to a specific component
     scalars = scalars.loc[~scalars["name"].isna()]
