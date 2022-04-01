@@ -277,7 +277,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
     sc_filtered = dp.filter_df(sc_filtered, "scenario_key", scenario)
-    if sc_filtered.empty:
+    if sc_filtered.empty or sc_filtered["var_value"].isna().all():
         raise ValueError(
             f"No scalar data found that matches "
             f"scenario='{scenario}', "
