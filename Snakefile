@@ -299,3 +299,26 @@ rule join_scenario_results:
         directory("results/joined_scenarios/{scenario_group}/joined/")
     shell:
         "python scripts/join_scenarios.py {input} {output}"
+
+
+linear_slides = {"A": ("example_base", "example_more_re", 2)}
+
+def extend_scenario_groups(wildcards):
+
+    lb, ub, n = linear_slides[wildcards.name_slide]
+    return [os.path.join("results",scenario,"preprocessed") for scenario in [lb, ub]]
+
+def get_n(wildcards):
+    n = linear_slides[wildcards.name_slide][2]
+    return n
+
+rule build_linear_slide:
+    input:
+        extend_scenario_groups
+    output:
+        directory("results/linear_slides/{name_slide}")
+    params:
+        n=get_n,
+        logfile="logs/{name_slide}.log",
+    shell:
+        "python scripts/build_linear_slide.py {input[0]} {input[1]} {output} {params.n} {params.logfile}"
