@@ -9,6 +9,11 @@ scenario_groups = {
     "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
 }
 
+linear_slides = {"A": ("example_base", "example_more_re", 2)}
+
+wildcard_constraints:
+    subfolder="|".join(list(linear_slides.keys()) + ["scenarios"])
+
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
 
@@ -20,15 +25,15 @@ rule plot_all_resources:
 rule plot_all_examples:
     input:
         expand(
-            "results/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["examples"],
+            "results/scenarios/{example}/plotted/{plot_type}",
+            example=scenario_groups["examples"],
             plot_type=["scalars", "dispatch"],
         )
 
 rule plot_all_scenarios:
     input:
         expand(
-            "results/{scenario}/plotted/{plot_type}",
+            "results/scenarios/{scenario}/plotted/{plot_type}",
             scenario=scenario_groups["base-scenarios"],
             plot_type=["scalars", "dispatch"],
         )
@@ -57,9 +62,9 @@ rule create_input_data_overview:
 
 rule prepare_example:
     input:
-        "examples/{scenario}/preprocessed/"
+        "examples/{example}/preprocessed/"
     output:
-        directory("results/{scenario}/preprocessed")
+        directory("results/scenarios/{example}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
         scenario="|".join(scenario_groups["examples"])
@@ -170,7 +175,7 @@ rule build_datapackage:
         get_paths_scenario_input,
         scenario="scenarios/{scenario}.yml"
     output:
-        directory("results/{scenario}/preprocessed")
+        directory("results/scenarios/{scenario}/preprocessed")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -178,9 +183,9 @@ rule build_datapackage:
 
 rule optimize:
     input:
-        "results/{scenario}/preprocessed"
+        "results/{subfolder}/{scenario}/preprocessed"
     output:
-        directory("results/{scenario}/optimized/")
+        directory("results/{subfolder}/{scenario}/optimized/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -188,9 +193,9 @@ rule optimize:
 
 rule postprocess:
     input:
-        "results/{scenario}/optimized"
+        "results/{subfolder}/{scenario}/optimized"
     output:
-        directory("results/{scenario}/postprocessed/")
+        directory("results/{subfolder}/{scenario}/postprocessed/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -198,17 +203,17 @@ rule postprocess:
 
 rule create_results_table:
     input:
-        "results/{scenario}/postprocessed/"
+        "results/{subfolder}/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/tables/")
+        directory("results/{subfolder}/{scenario}/tables/")
     shell:
         "python scripts/create_results_table.py {input} {output}"
 
 rule plot_dispatch:
     input:
-        "results/{scenario}/postprocessed/"
+        "results/{subfolder}/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/dispatch")
+        directory("results/{subfolder}/{scenario}/plotted/dispatch")
     shell:
         "python scripts/plot_dispatch.py {input} {output}"
 
@@ -223,9 +228,9 @@ rule plot_conv_pp_scalars:
 
 rule plot_scalar_results:
     input:
-        "results/{scenario}/postprocessed/"
+        "results/{subfolder}/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/scalars/")
+        directory("results/{subfolder}/{scenario}/plotted/scalars/")
     shell:
         "python scripts/plot_scalar_results.py {input} {output}"
 
@@ -241,13 +246,13 @@ rule report:
     input:
         template="report/report.md",
         template_interactive="report/report_interactive.md",
-        plots_scalars="results/{scenario}/plotted/scalars",
-        plots_dispatch="results/{scenario}/plotted/dispatch",
+        plots_scalars="results/{subfolder}/{scenario}/plotted/scalars",
+        plots_dispatch="results/{subfolder}/{scenario}/plotted/dispatch",
     output:
-        directory("results/{scenario}/report/")
+        directory("results/{subfolder}/{scenario}/report/")
     params:
         logfile="logs/{scenario}.log",
-        all_plots="results/{scenario}/plotted/",
+        all_plots="results/{subfolder}/{scenario}/plotted/",
     run:
         import os
         import shutil
@@ -301,12 +306,12 @@ rule join_scenario_results:
         "python scripts/join_scenarios.py {input} {output}"
 
 
-linear_slides = {"A": ("example_base", "example_more_re", 2)}
+
 
 def extend_scenario_groups(wildcards):
 
     lb, ub, n = linear_slides[wildcards.name_slide]
-    return [os.path.join("results",scenario,"preprocessed") for scenario in [lb, ub]]
+    return [os.path.join("results", "scenarios", scenario, "preprocessed") for scenario in [lb, ub]]
 
 def get_n(wildcards):
     n = linear_slides[wildcards.name_slide][2]
@@ -316,7 +321,9 @@ rule build_linear_slide:
     input:
         extend_scenario_groups
     output:
-        directory("results/linear_slides/{name_slide}")
+        directory("results/{name_slide}")
+    wildcard_constraints:
+        name_slide="|".join(linear_slides.keys())
     params:
         n=get_n,
         logfile="logs/{name_slide}.log",

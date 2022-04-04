@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
         sample.unstack_components()
 
-        path = os.path.join(destination, str(n_sample))
+        path = os.path.join(destination, str(n_sample), "preprocessed")
 
         sample.basepath = path
 
