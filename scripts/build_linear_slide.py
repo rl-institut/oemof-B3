@@ -56,6 +56,11 @@ if __name__ == "__main__":
     samples = sensitivity.get_linear_slide(n)
 
     for n_sample, sample in samples.items():
-        # TODO get edps and use sample.basepath
-        path = os.path.join(destination, str(n_sample) + ".csv")
-        sample.to_csv(path)
+
+        sample.unstack_components()
+
+        path = os.path.join(destination, str(n_sample))
+
+        sample.basepath = path
+
+        sample.to_csv_dir(path)
