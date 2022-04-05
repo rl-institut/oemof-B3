@@ -156,6 +156,7 @@ def add_electricity_gas_relation_constraints(model, relations):
             keyword1=f"{GAS_KEY}-{suffix}",
             keyword2=f"{EL_KEY}-{suffix}",
             factor1=row.var_value,
+            name=f"equate_flows_{suffix}",
         )
 
 
