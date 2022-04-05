@@ -84,7 +84,7 @@ def get_electricity_gas_relations(scalars):
     -------
     pd.DataFrame
         Contains rows of scalars with 'var_name' `EL_GAS_RELATION`
-    If no factor is given returns None.
+    If no relation is given returns None.
     """
     relations_raw = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     # drop relations that are None
@@ -147,6 +147,20 @@ def add_output_parameters_to_bpchp(parameters, energysystem):
 def add_electricity_gas_relation_constraints(model, relations):
     r"""
     Adds constraint `equate_flows_by_keyword` to `model`.
+
+    The components belonging to one constraint are selected by keywords. The keywords of components powered by any gas
+    start with `GAS_KEY` and such powered with electricity with `EL_KEY`, respectively: <`GAS_KEY`>-<carrier>-<region>.
+    Attention: Although a value is provided for the keywords in the input data (e.g. {"electricity-heat_central-B": 1})
+    this value does not have any effect, at the moment. If a component is not to be taken into account the keyword must
+    not be provided.
+
+    Parameters
+    ----------
+    model : oemof.solph.Model
+        optmization model
+    relations : pd.DataFrame
+        Contains electricity/gas relations in column 'var_value'. Further contains at least columns 'carrier' and
+        'region'.
     """
     for index, row in relations.iterrows():
         # Formulate suffix for keywords <carrier>-<region>
