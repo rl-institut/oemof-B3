@@ -79,7 +79,7 @@ paths_scalars:
   - raw/scalars/carrier_costs.csv
   - raw/scalars/demands.csv
   - raw/scalars/emission_constraint.csv
-  - raw/scalars/gas_el_constraint.csv
+  - raw/scalars/el_gas_constraint.csv
   - results/_resources/scal_costs_efficiencies.csv
   - results/_resources/scal_load_heat.csv
 
