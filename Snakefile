@@ -49,11 +49,11 @@ rule clean:
 
 rule create_input_data_overview:
     input:
-        "raw/{scalars}.csv"
+        "raw/scalars/costs_efficiencies.csv"
     output:
-        "results/_tables/{scalars}_technical_and_cost_assumptions.csv"
+        "results/_tables/technical_and_cost_assumptions_{scenario_key}.csv"
     shell:
-        "python scripts/create_input_data_overview.py {input} {output}"
+        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output}"
 
 rule prepare_example:
     input:
