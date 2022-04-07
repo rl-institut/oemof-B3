@@ -59,6 +59,13 @@ if __name__ == "__main__":
             f"No data in {in_path} for scenario {scenario_key} and variables {variables}."
         )
 
+    # drop duplicates before unstacking
+    duplicated = df[INDEX].duplicated()
+    if duplicated.any():
+        print(f"Data contains duplicates that are dropped {df.loc[duplicated][INDEX]}")
+
+    df = df.loc[~duplicated]
+
     # unstack
     df = df.set_index(INDEX).unstack("var_name")
 
