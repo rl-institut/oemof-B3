@@ -695,6 +695,8 @@ class ScalarProcessor:
         -------
         None
         """
+        assert not data.isna().all(), "Cannot append all NaN data."
+
         _df = data.copy()
 
         if isinstance(_df, pd.Series):

@@ -3,7 +3,7 @@
 
 # build_datapackage
 
-name: low-2050
+name: 2050-el_eff
 
 datetimeindex:
   start:
@@ -19,13 +19,21 @@ model_structure:
 # parametrize
 
 paths_scalars:
-  - results/_resources/scal_low_2050.csv
+  - raw/scalars/capacities.csv
+  - raw/scalars/potentials.csv
+  - raw/scalars/carrier_costs.csv
+  - raw/scalars/demands.csv
+  - raw/scalars/emission_constraint.csv
+  - raw/scalars/el_gas_constraint.csv
+  - results/_resources/scal_costs_efficiencies.csv
   - results/_resources/scal_load_heat.csv
 
 filter_scalars:
   1:
     scenario_key:
-      "Low 2050"
+      - "ALL"
+      - "2050-el_eff"
+      - "2050-base"
 
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv
@@ -38,7 +46,7 @@ paths_timeseries:
 
 filter_timeseries:
   scenario_key:
-    - "Base 2050"
+    - "2050-el_eff"
     - "ALL"
   timeindex_start:
     "2017-01-01 00:00:00"
