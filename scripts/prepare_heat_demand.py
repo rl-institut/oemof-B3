@@ -376,7 +376,7 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
     ).get_bdew_profile()
 
     # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
-    # heat load using gha profile of retail and wholesale (Einzel- und Großhandel)
+    # heat load using gha profile of retail and wholesale (Einzel- und Großhandel) which has lower share of process heat
     heat_load_consumer["ghd" + "_" + carrier] = bdew.HeatBuilding(
         heat_load_consumer.index,
         holidays=holidays,
