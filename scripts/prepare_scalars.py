@@ -3,10 +3,10 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/scalars_{range}_{year}.csv``: path incl. file name of input file with raw scalar data
+    ``raw/scalars/costs_efficiencies.csv``: path incl. file name of input file with raw scalar data
 out_path : str
-    ``results/_resources/scal_{range}.csv``: path incl. file name of output file with prepared
-    scalar data
+    ``results/_resources/scal_costs_efficiencies.csv``: path incl. file name of output file with
+    prepared scalar data
 
 Outputs
 ---------

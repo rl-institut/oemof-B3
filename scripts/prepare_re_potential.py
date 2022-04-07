@@ -15,7 +15,7 @@ filename_kreise : str
     ``raw/lookup_table_brandenburg_kreise.csv``: Path incl. file name of lookup table Kreise and
     NUTS of Brandenburg
 filename_assumptions : str
-    ``raw/scalars_base_2050.csv``: Path incl. file name of assumptions
+    ``raw/scalars/potentials.csv``: Path incl. file name of assumptions
 output_dir : str
     ``results/_resources/RE_potential/``: Path of output directory where power and area potential of
     single areas and of "Landkreise" is saved

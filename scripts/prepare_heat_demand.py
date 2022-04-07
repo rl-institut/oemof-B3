@@ -13,7 +13,7 @@ in_path4 : str
     ``raw/building_class.csv``: path of input file with building classes of all states in Germany
     as .csv
 in_path5 : str
-    ``raw/scalars_base_2050.csv``: path of scalar data as .csv
+    ``raw/scalars/demands.csv``: path of scalar data as .csv
 out_path1 : str
     ``results/_resources/scal_load_heat.csv``: path of output file with aggregated scalar data as
     .csv
