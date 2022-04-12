@@ -3,10 +3,10 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/scalars_{range}_{year}.csv``: path incl. file name of input file with raw scalar data
+    ``raw/scalars/costs_efficiencies.csv``: path incl. file name of input file with raw scalar data
 out_path : str
-    ``results/_resources/scal_{range}.csv``: path incl. file name of output file with prepared
-    scalar data
+    ``results/_resources/scal_costs_efficiencies.csv``: path incl. file name of output file with
+    prepared scalar data
 
 Outputs
 ---------
@@ -77,11 +77,13 @@ def annuise_investment_cost(sc):
         # if some value is None in some scenario key, use the values from Base scenario to fill NaNs
         invest_data = fill_na(invest_data)
 
-        wacc = sc.get_unstacked_var("wacc").iloc[0, 0]
+        # wacc is defined per scenario, ignore other index levels
+        wacc = sc.get_unstacked_var("wacc")
+        wacc.index = wacc.index.get_level_values("scenario_key")
 
-        assert isinstance(wacc, float)
-
-        invest_data["wacc"] = wacc
+        # set wacc per scenario_key
+        scenario_keys = invest_data.index.get_level_values("scenario_key")
+        invest_data["wacc"] = wacc.loc[scenario_keys].values
 
         annuised_investment_cost = invest_data.apply(
             lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"])
