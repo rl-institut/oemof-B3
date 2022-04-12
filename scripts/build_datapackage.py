@@ -242,23 +242,27 @@ def parametrize_sequences(edp, ts, filters):
     return edp
 
 
-def save_additional_scalars(scalars, destination):
-    """Saves additional scalars like the emission limit to `ADDITIONAL_SCALARS_FILE`"""
+def load_additional_scalars(scalars):
+    """Loads additional scalars like the emission limit."""
     # get electricity/gas relations and emission limit
     el_gas_rel = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     emissions = scalars.loc[scalars.var_name == EMISSION_LIMIT]
-
     # get `output_parameters` of backpressure components as they are not take into
     # consideration in oemof.tabular so far. They are added to the components' output flow towards
     # the heat bus in script `optimize.py`.
     bpchp_out = scalars.loc[
         (scalars.tech == "bpchp") & (scalars.var_name == "output_parameters")
     ]
-
     # save all dataframes in one file
     df = pd.concat([el_gas_rel, emissions, bpchp_out])
+
+    return df
+
+
+def save_additional_scalars(additional_scalars, destination):
+    """Saves `additional_scalars` to `ADDITIONAL_SCALARS_FILE` in `destination`"""
     filename = os.path.join(destination, ADDITIONAL_SCALARS_FILE)
-    save_df(df, filename)
+    save_df(additional_scalars, filename)
 
 
 if __name__ == "__main__":
@@ -301,6 +305,9 @@ if __name__ == "__main__":
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, model_structure["regions"])
 
+    # save additional scalars like "emission_limit" to "additional_scalars.csv" in `destination`
+    additional_scalars = load_additional_scalars(scalars=scalars)
+
     # Drop those scalars that do not belong to a specific component
     scalars = scalars.loc[~scalars["name"].isna()]
 
@@ -319,9 +326,7 @@ if __name__ == "__main__":
 
     # save to csv
     edp.to_csv_dir(destination)
-
-    # save additional scalars like "emission_limit" to "additional_scalars.csv" in `destination`
-    save_additional_scalars(scalars=scalars, destination=destination)
+    save_additional_scalars(additional_scalars=additional_scalars, destination=destination)
 
     # add metadata
     edp.infer_metadata(foreign_keys_update=foreign_keys_update)
