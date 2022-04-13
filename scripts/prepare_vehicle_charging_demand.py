@@ -18,14 +18,14 @@ pd.DataFrame
 Description
 -------------
 This script prepares electric vehicle charging demand profiles for the regions Berlin and
-Brandenburg. The profiles have been created before with simBEV
-(https://github.com/rl-institut/simbev). The charging strategy of simBEV data is "greedy", i.e.
-batteries are charged with maximum power until they are fully charged or removed. This script
-applies a charging strategy we refer to as "balanced" for the profiles "home" and "work" during
-specific hours (see global variables). To apply this charging strategy values between
-[`HOME_START`, `HOME_END`] and [`WORK_START`, `WORK_END`] respectively are replaced by the average
-of all these values. We assume that this is a more realistic picture of the future than a charging
-strategy "greedy".
+Brandenburg. The profiles for pkws have been created before with simBEV
+(https://github.com/rl-institut/simbev), other vehicles taken into consideration with constant
+profiles. The charging strategy of simBEV data is "greedy", i.e. batteries are charged with maximum
+power until they are fully charged or removed. This script applies a charging strategy we refer to
+as "balanced" for the profiles "home" and "work" during specific hours (see global variables). To
+apply this, charging strategy values between [`HOME_START`, `HOME_END`] and
+[`WORK_START`, `WORK_END`] respectively are replaced by the average of all these values. We assume
+that this is a more realistic picture of the future than a charging strategy "greedy".
 """
 
 import sys
@@ -44,9 +44,14 @@ WORK_END = "14:00"  # end charging strategy "balanced" for work profile
 REGION_DICT = {"Berlin": "B", "Brandenburg": "BB"}
 
 
-def prepare_vehicle_charging_demand(input_dir, balanced=True):
+def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
     r"""
     Prepares and formats electric vehicle charging demand profiles for regions 'B' and 'BB'.
+
+    The simBEV profiles are pkw charging demand profiles. If `const_share` of the charging demand is
+    given the pkw profile is mixed with a constant profile:
+    pkw_profile * (1 - const_share) + constant_profile * const_share
+        (using specified profiles, i.e. divided by their yearly sum)
 
     The profiles are resampled from 15-min to hourly time steps. If `balanced` is True the profiles
     "work" and "home" are smoothed between [`HOME_START`, `HOME_END`] and
@@ -63,6 +68,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         If True profiles "work" and "home" are smoothed with charging strategy "balanced" with
         :py:func:`smooth_profiles()`.
         Default: True
+    const_share : float
+        If the share of pkw charging demand is given the profile is mixed
+        Default: None
 
     Returns
     -------
@@ -112,6 +120,18 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
 
         # divide by total electricity demand of vehicles
         ts_total_norm = ts_total_demand / ts_total_demand.sum()
+
+        if const_share is not None:
+            # combine pkw profile and constant profile with `const_share`
+            length = len(ts_total_demand)
+            constant_ts_norm = pd.DataFrame(
+                [1 / length for i in range(length)],
+                index=ts_total_demand.index,
+            )
+            ts_total_norm = (
+                ts_total_norm.values * (1 - const_share)
+                + constant_ts_norm.values * const_share
+            )
 
         # stack time series and add region
         ts_stacked = dp.stack_timeseries(ts_total_norm)
@@ -197,6 +217,10 @@ if __name__ == "__main__":
     output_file = sys.argv[2]
 
     time_series = prepare_vehicle_charging_demand(input_dir=input_dir)
+
+    time_series = prepare_vehicle_charging_demand(
+        input_dir=input_dir, const_share=const_share
+    )
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)
