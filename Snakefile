@@ -99,6 +99,7 @@ rule prepare_electricity_demand:
 rule prepare_vehicle_charging_demand:
     input:
         input_dir="raw/time_series/vehicle_charging",
+        scalars="raw/scalars/demands.csv",
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
     shell:
