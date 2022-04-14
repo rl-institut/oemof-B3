@@ -39,7 +39,9 @@ import oemof_b3.tools.data_processing as dp
 # global variables
 TS_VAR_UNIT = "None"
 TS_SOURCE = "https://github.com/rl-institut/simbev"
-TS_COMMENT = "created with simBEV. contains a mix of hourly simBEV and a constant profile"
+TS_COMMENT = (
+    "created with simBEV. contains a mix of hourly simBEV and a constant profile"
+)
 HOME_START = "15:00"  # start charging strategy "balanced" for home profile
 HOME_END = "05:00"  # end charging strategy "balanced" for home profile
 WORK_START = "06:00"  # start charging strategy "balanced" for work profile
@@ -222,6 +224,7 @@ def get_constant_share_of_vehicle_ts(filename):
     pkw_share = scalars.loc[scalars["var_name"] == "bev_pkw_share"].var_value.iloc[0]
     const_share = 1 - pkw_share
     return const_share
+
 
 if __name__ == "__main__":
     input_dir = sys.argv[1]
