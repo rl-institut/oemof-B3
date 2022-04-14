@@ -38,8 +38,8 @@ import oemof_b3.tools.data_processing as dp
 
 # global variables
 TS_VAR_UNIT = "None"
-TS_SOURCE = "created with simBEV"
-TS_COMMENT = "https://github.com/rl-institut/simbev"
+TS_SOURCE = "https://github.com/rl-institut/simbev"
+TS_COMMENT = "created with simBEV. contains a mix of hourly simBEV and a constant profile"
 HOME_START = "15:00"  # start charging strategy "balanced" for home profile
 HOME_END = "05:00"  # end charging strategy "balanced" for home profile
 WORK_START = "06:00"  # start charging strategy "balanced" for work profile
