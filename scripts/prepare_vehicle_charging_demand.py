@@ -5,6 +5,9 @@ Inputs
 input_dir : str
     ``raw/time_series/vehicle_charging``: Path of directory where csv files containing electric
     vehicle charging demand profiles are placed
+scalars_file : str
+    ``raw/scalars/demands.csv``: Path incl. file name of demand scalars including 'bev_pkw_share',
+    the share of pkw electricity charging demand
 output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
@@ -213,11 +216,20 @@ def smooth_profiles(df):
     return df
 
 
+def get_constant_share_of_vehicle_ts(filename):
+    """Reads bev pkw share from `filename` and returns (1 - pkw_share), the constant share"""
+    scalars = dp.load_b3_scalars(filename)
+    pkw_share = scalars.loc[scalars["var_name"] == "bev_pkw_share"].var_value.iloc[0]
+    const_share = 1 - pkw_share
+    return const_share
+
 if __name__ == "__main__":
     input_dir = sys.argv[1]
-    output_file = sys.argv[2]
+    scalars_file = sys.argv[2]
+    output_file = sys.argv[3]
 
-    time_series = prepare_vehicle_charging_demand(input_dir=input_dir)
+    # get constant share of electric charging demand
+    const_share = get_constant_share_of_vehicle_ts(scalars_file)
 
     time_series = prepare_vehicle_charging_demand(
         input_dir=input_dir, const_share=const_share
