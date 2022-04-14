@@ -128,10 +128,11 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
                 [1 / length for i in range(length)],
                 index=ts_total_demand.index,
             )
-            ts_total_norm = (
+            array_ts_total_norm = (
                 ts_total_norm.values * (1 - const_share)
                 + constant_ts_norm.values * const_share
             )
+            ts_total_norm[f"ts_{year}"] = array_ts_total_norm
 
         # stack time series and add region
         ts_stacked = dp.stack_timeseries(ts_total_norm)
