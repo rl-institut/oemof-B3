@@ -32,7 +32,7 @@ from oemof_b3 import colors_odict, labels_dict
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     # pivot
     df_pivot = pd.pivot_table(
-        df, index=["scenario", "region"], columns="name", values="var_value"
+        df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
     )
 
     # rename and aggregate duplicated columns
@@ -132,6 +132,8 @@ def set_hierarchical_xlabels(
     hlines=False,
     bar_xmargin=0.1,
     bar_yinterval=0.1,
+    rotation=0,
+    ha=None,
 ):
     r"""
     adapted from https://linuxtut.com/ 'Draw hierarchical axis labels with matplotlib + pandas'
@@ -143,8 +145,11 @@ def set_hierarchical_xlabels(
 
     assert isinstance(index, pd.MultiIndex)
     labels = ax.set_xticklabels([s for *_, s in index])
-    for lb in labels:
-        lb.set_rotation(0)
+
+    if rotation != 0:
+        for lb in labels:
+            lb.set_rotation(rotation)
+            lb.set_ha(ha)
 
     transform = ax.get_xaxis_transform()
 
@@ -181,7 +186,7 @@ if __name__ == "__main__":
     target = sys.argv[2]
 
     # User input
-    CARRIERS = ["electricity", "heat_central", "heat_decentral"]
+    CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2"]
     REGIONS = ["BB", "B"]  # BE_BB
     MW_TO_W = 1e6
 
@@ -274,7 +279,77 @@ if __name__ == "__main__":
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
+    def plot_invest_out_multi_carrier(carriers):
+        var_name = [f"invest_out_{carrier}" for carrier in carriers]
+        unit = "W"
+        output_path_plot = os.path.join(
+            target, "invest_out_" + "_".join(carriers) + ".png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
+        plot.prepare_data()
+        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        # rotate hierarchical labels
+        ax.texts = []
+        set_hierarchical_xlabels(
+            plot.prepared_scalar_data.index,
+            ax=ax,
+            bar_yinterval=0.2,
+            rotation=20,
+            ha="right",
+        )
+
+        # Move the legend below current axis
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.42),
+            fancybox=True,
+            ncol=4,
+            fontsize=14,
+        )
+        ax.set_title("invest_out " + " ".join(carriers))
+
+        plot.save_plot(output_path_plot)
+
+    def plot_flow_out_multi_carrier(carriers):
+        var_name = [f"flow_out_{carrier}" for carrier in carriers]
+        unit = "W"
+        output_path_plot = os.path.join(
+            target, "flow_out_" + "_".join(carriers) + ".png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
+        plot.prepare_data()
+        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        # rotate hierarchical labels
+        ax.texts = []
+        set_hierarchical_xlabels(
+            plot.prepared_scalar_data.index,
+            ax=ax,
+            bar_yinterval=0.2,
+            rotation=20,
+            ha="right",
+        )
+
+        # Move the legend below current axis
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.42),
+            fancybox=True,
+            ncol=4,
+            fontsize=14,
+        )
+        ax.set_title("invest_out " + " ".join(carriers))
+
+        plot.save_plot(output_path_plot)
+
     plot_capacity()
+    plot_invest_out_multi_carrier(CARRIERS)
+    plot_flow_out_multi_carrier(CARRIERS)
 
     for carrier in CARRIERS:
         plot_storage_capacity(carrier)
