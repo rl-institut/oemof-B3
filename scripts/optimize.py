@@ -105,7 +105,7 @@ if __name__ == "__main__":
             constraints.emission_limit(m, limit=emission_limit)
 
         # tell the model to get the dual variables when solving
-        if config.settings.receive_duals:
+        if config.settings.optimize.receive_duals:
             m.receive_duals()
 
         m.solve(solver=config.settings.optimize.solver)
