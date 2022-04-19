@@ -39,11 +39,21 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     df_pivot = plots.map_labels(df_pivot, labels_dict)
     df_pivot = df_pivot.groupby(level=0, axis=1).sum()
 
-    # define ordering and use concrete_order as keys for colors_odict in plot_scalars()
-    concrete_order = list(
-        label for label in colors_odict.keys() if label in df_pivot.columns
-    )
-    df_pivot = df_pivot[concrete_order]
+    # define ordering and use concrete_order as keys for colors_odict in plot_scalars
+    def sort_by_ranking(to_sort, order):
+        ranking = {key: i for i, key in enumerate(order)}
+        try:
+            concrete_order = [ranking[key] for key in to_sort]
+        except KeyError as e:
+            raise KeyError(f"Missing label for label {e}")
+
+        sorted_list = [x for _, x in sorted(zip(concrete_order, to_sort))]
+
+        return sorted_list
+
+    sorted_labels = sort_by_ranking(df_pivot.columns, colors_odict)
+
+    df_pivot = df_pivot[sorted_labels]
 
     # convert data to SI-Units
     if conv_number is not None:
