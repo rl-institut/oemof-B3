@@ -3,9 +3,13 @@
 __pycache__/
 raw/
 results/
+logs/
 docs/_build
 # Packages
 *.egg
 *.egg-info
 dist
 build
+gurobi.log
+data.open-power-system-data.org/
+/oemof_b3/config/.secrets.yaml

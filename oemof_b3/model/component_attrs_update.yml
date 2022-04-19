@@ -1,0 +1,268 @@
+ch4-demand:
+  carrier: ch4
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: ch4
+    profile: ch4-demand-profile
+
+ch4-import:
+  carrier: ch4
+  tech: import
+  type: shortage
+  foreign_keys:
+    bus: ch4
+  defaults:
+    output_parameters: "{}"
+
+ch4-export:
+  carrier: ch4
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: ch4
+  defaults:
+    input_parameters: "{}"
+
+ch4-shortage:
+  carrier: ch4
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: ch4
+  defaults:
+    output_parameters: "{}"
+
+h2-import:
+  carrier: h2
+  tech: import
+  type: shortage
+  foreign_keys:
+    bus: h2
+  defaults:
+    output_parameters: "{}"
+
+h2-export:
+  carrier: h2
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: h2
+  defaults:
+    input_parameters: "{}"
+
+h2-shortage:
+  carrier: h2
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: h2
+  defaults:
+    output_parameters: "{}"
+
+electricity-electrolyzer:
+  carrier: electricity
+  tech: electrolyzer
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: h2
+  defaults:
+    output_parameters: "{}"
+
+electricity-heatpump_large:
+  carrier: electricity
+  tech: heatpump_large
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+electricity-heatpump_small:
+  carrier: electricity
+  tech: heatpump_small
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: heat_decentral
+    efficiency: efficiency-profile
+  defaults:
+    output_parameters: "{}"
+
+electricity-export:
+  carrier: electricity
+  tech: export
+  type: excess
+  foreign_keys:
+    bus: electricity
+  defaults:
+    input_parameters: "{}"
+
+electricity-import:
+  carrier: electricity
+  tech: import
+  type: shortage
+  foreign_keys:
+    bus: electricity
+  defaults:
+    output_parameters: "{}"
+
+heat_central-demand:
+  carrier: heat_central
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: heat_central
+    profile: heat_central-demand-profile
+
+heat_central-excess:
+  carrier: heat_central
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: heat_central
+  defaults:
+    marginal_cost: 0
+    input_parameters: "{}"
+
+heat_central-shortage:
+  carrier: heat_central
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+heat_central-storage:
+  carrier: heat_central
+  tech: storage
+  type: storage
+  foreign_keys:
+    bus: heat_central
+  defaults:
+    input_parameters: "{}"
+    output_parameters: "{}"
+
+heat_decentral-demand:
+  carrier: heat_decentral
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: heat_decentral
+    profile: heat_decentral-demand-profile
+
+heat_decentral-excess:
+  carrier: heat_decentral
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: heat_decentral
+  defaults:
+    marginal_cost: 0
+    input_parameters: "{}"
+
+heat_decentral-shortage:
+  carrier: heat_decentral
+  tech: shortage
+  type: shortage
+  foreign_keys:
+    bus: heat_decentral
+  defaults:
+    output_parameters: "{}"
+
+heat_decentral-storage:
+  carrier: heat_decentral
+  tech: storage
+  type: storage
+  foreign_keys:
+    bus: heat_decentral
+  defaults:
+    input_parameters: "{}"
+    output_parameters: "{}"
+
+ch4-boiler_large:
+  carrier: ch4
+  tech: boiler_large
+  type: conversion
+  foreign_keys:
+    from_bus: ch4
+    to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+ch4-boiler_small:
+  carrier: ch4
+  tech: boiler_small
+  type: conversion
+  foreign_keys:
+    from_bus: ch4
+    to_bus: heat_decentral
+  defaults:
+    output_parameters: "{}"
+
+ch4-bpchp:
+  carrier: ch4
+  tech: bpchp
+  type: backpressure
+  foreign_keys:
+    fuel_bus: ch4
+    electricity_bus: electricity
+    heat_bus: heat_central
+
+h2-bpchp:
+  carrier: h2
+  tech: bpchp
+  type: backpressure
+  foreign_keys:
+    fuel_bus: h2
+    electricity_bus: electricity
+    heat_bus: heat_central
+
+electricity-pth:
+  carrier: electricity
+  tech: pth
+  type: conversion
+  foreign_keys:
+    from_bus: electricity
+    to_bus: heat_central
+  defaults:
+    output_parameters: "{}"
+
+h2-demand:
+  carrier: h2
+  tech: demand
+  type: load
+  foreign_keys:
+    bus: h2
+    profile: h2-demand-profile
+
+h2-cavern:
+  carrier: h2
+  tech: cavern
+  type: storage
+  foreign_keys:
+    bus: h2
+  defaults:
+    input_parameters: "{}"
+    output_parameters: "{}"
+
+h2-excess:
+  carrier: h2
+  tech: excess
+  type: excess
+  foreign_keys:
+    bus: h2
+  defaults:
+    marginal_cost: 0
+    input_parameters: "{}"
+
+electricity-bev_charging:
+  carrier: electricity
+  tech: bev_charging
+  type: load
+  foreign_keys:
+    bus: electricity
+    profile: electricity-bev_charging-profile

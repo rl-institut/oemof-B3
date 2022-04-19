@@ -1,0 +1,8 @@
+id_scal;scenario_key;name;var_name;carrier;region;tech;type;var_value;var_unit;source;comment
+0;base;None;capacity;biomass;All;gt;conversion;400000.0;;;
+1;base;None;flow_in_biomass;biomass;All;gt;conversion;2692790078.846871;;;
+2;base;None;flow_out_electricity;biomass;All;gt;conversion;1023260209.6668;;;
+3;base;None;summed_variable_costs_in_biomass;biomass;All;gt;conversion;110404393.23272172;;;
+4;base;None;summed_variable_costs_out_electricity;biomass;All;gt;conversion;1432564.29353352;;;
+5;base;None;flow_in_electricity;electricity;All;curtailment;excess;6666117465.739773;;;
+6;base;None;flow_in_electricity;electricity;All;demand;load;33727319999.999924;;;

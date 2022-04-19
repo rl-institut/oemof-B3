@@ -1,0 +1,3 @@
+id_ts;scenario_key;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+int;str;str;str;str;str;str;str;str;str;str
+Numerical index;Key;Region;Variable name;Start of the timeindex;Stop of the timeindex;Time increment;Series;Unit of the variable;Source of the data;Additional information or notes such as the license or scope of validity

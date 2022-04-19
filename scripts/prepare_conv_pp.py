@@ -3,33 +3,36 @@ r"""
 Inputs
 -------
 in_path1 : str
-    path of input file with raw opsd data as .csv
+    ``raw/conventional_power_plants_DE.csv``: path incl. file name of input file with raw OPSD data
 in_path2 : str
-    path of input file with geodata of regions in Germany as .gpgk
+    ``raw/boundaries_germany_nuts3.gpkg``: path incl. file name of input file with geodata of
+    regions in Germany
 in_path3 : str
-    path of input file with names of regions in Berlin and Brandenburg as .yaml
+    ``raw/b3_regions.yaml``: path incl. file name of input file with names of regions in Berlin and
+    Brandenburg
 out_path : str
-    path of output file with prepared data as .csv
+    ``results/_resources/scal_conv_pp.csv``: path incl. file name of output file with prepared data
 
 Outputs
 ---------
 pandas.DataFrame
-    with grouped and aggregated data of conventional power plants in Berlin and Brandenburg.
+    Contains grouped and aggregated data of conventional power plants in Berlin and Brandenburg.
     Data is grouped by region, energy source, technology and chp capability and contains
     net capacity and efficiency.
 
 Description
 -------------
-The script filters the OPSD conventional power plant package for power plants
-in Berlin and Brandenburg. The retrieved data is stored in a new dataframe, aggregated and
-saved as a csv file.
-Only operating power plants are considered.
+The script filters the OPSD conventional power plant package for power plants in the regions Berlin
+and Brandenburg. The retrieved data is stored in a new dataframe, aggregated and saved as a csv file
+in the format of the scalar data template. Only operating power plants are considered.
 """
+
 import sys
 
 import pandas as pd
 import yaml
 
+import oemof_b3.tools.data_processing as dp
 import oemof_b3.tools.geo as geo
 
 if __name__ == "__main__":
@@ -45,8 +48,8 @@ if __name__ == "__main__":
 
     regions_nuts3_de = geo.load_regions_file(in_path2)
 
-    b3_regions_yaml = open(in_path3, "r")
-    b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
+    with open(in_path3, "r", encoding="utf-8") as b3_regions_yaml:
+        b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
     for key, value in b3_regions_content.items():
         b3_regions_list = value
 
@@ -81,6 +84,8 @@ if __name__ == "__main__":
         columns={"name": "region", "capacity_net_bnetza": "capacity_net_el"},
         inplace=True,
     )
+    # treat Waste as Other fuels
+    pp_opsd_b3.replace({"Waste": "Other fuels"}, inplace=True)
 
     # group data by region, energy source, technology and chp capability and
     # aggregate capacity and efficiency
@@ -93,12 +98,64 @@ if __name__ == "__main__":
     b3_agg.loc[
         ("Oder-Spree", "Other fuels", "Steam turbine", "yes"), "efficiency_estimate"
     ] = b3_agg.loc[
-        b3_agg.index.get_level_values("energy_source") == "Waste", "efficiency_estimate"
+        b3_agg.index.get_level_values("energy_source") == "Other fuels",
+        "efficiency_estimate",
     ].mean()
 
     b3_agg.reset_index(
         level=["region", "energy_source", "technology", "chp"], inplace=True
     )
 
+    # rename technologies to oemoflex conventions
+    b3_agg.loc[b3_agg["chp"] == "yes", "technology"] = "bpchp"
+    b3_agg.loc[b3_agg["technology"] == "Steam turbine", "technology"] = "st"
+    b3_agg.loc[b3_agg["technology"] == "Gas turbine", "technology"] = "ocgt"
+    b3_agg.loc[b3_agg["technology"] == "Combined cycle", "technology"] = "ccgt"
+
+    b3_agg.drop(columns=["chp"], inplace=True)
+
+    # change data format to oemof-B3 _scalar_template format
+    conv_scalars = b3_agg.melt(id_vars=["region", "energy_source", "technology"])
+    conv_scalars.rename(
+        columns={
+            "technology": "tech",
+            "variable": "var_name",
+            "value": "var_value",
+            "energy_source": "carrier",
+        },
+        inplace=True,
+    )
+    conv_scalars_prepared = dp.format_header(
+        df=conv_scalars, header=dp.HEADER_B3_SCAL, index_name="id_scal"
+    )
+
+    # add additional information as required by template
+    conv_scalars_prepared.loc[:, "source"] = "OPSD_conv_pp_DE"
+    conv_scalars_prepared.loc[
+        :, "comment"
+    ] = "filename: conventional_power_plants_DE.csv, aggregated based on NUTS3 region"
+    conv_scalars_prepared.loc[:, "scenario_key"] = "Status quo"
+    conv_scalars_prepared.loc[:, "type"] = "None"
+
+    # Set units
+    unit_dict = {"capacity_net_el": "MW", "efficiency_estimate": "None"}
+
+    def set_unit(df, unit_dict):
+        for key, value in unit_dict.items():
+            df.loc[df["var_name"] == key, "var_unit"] = value
+
+    set_unit(conv_scalars_prepared, unit_dict)
+
+    # Rename carriers
+    carrier_dict = {
+        "Biomass and biogas": "biomass",
+        "Hard coal": "hard coal",
+        "Natural gas": "ch4",
+        "Oil": "oil",
+        "Lignite": "lignite",
+        "Other fuels": "other",
+    }
+    conv_scalars_prepared.replace(carrier_dict, inplace=True)
+
     # export prepared conventional power plant data
-    b3_agg.to_csv(out_path, index=False)
+    dp.save_df(conv_scalars_prepared, out_path)

@@ -1,0 +1,3 @@
+id_scal;scenario_key;name;var_name;carrier;region;tech;type;var_value;var_unit;source;comment
+int;str;str;str;str;str;str;str;float or int;str;str;str
+Numerical index;Key;Unique name of the oemof component;Variable name;Energy carrier;Region;Description;oemof.tabular type;Value;Unit of the variable;Source of the data;Additional information or notes such as the license or scope of validity
