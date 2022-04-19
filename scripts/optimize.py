@@ -65,11 +65,6 @@ def get_additional_scalars():
         return None
 
 
-SOLVER = "cbc"
-RECEIVE_DUALS = True
-FILENAME_METADATA = "datapackage.json"
-
-
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
 
@@ -95,7 +90,7 @@ if __name__ == "__main__":
         )
 
         # Reduce number of timestep for debugging
-        if config.settings.debug:
+        if config.settings.optimize.debug:
             es.timeindex = es.timeindex[:3]
 
             logger.info(
