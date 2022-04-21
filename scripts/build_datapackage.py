@@ -243,9 +243,7 @@ def parametrize_sequences(edp, ts, filters):
 
 
 def load_additional_scalars(scalars, filters):
-    """Loads additional scalars like the emission limit and filters by 'scenario_key'.
-    Emission limit is calculated by
-    emission_limit = (emissions_1990 - emissions_not_modeled) * (1 - emission_reduction_factor)"""
+    """Loads additional scalars like the emission limit and filters by 'scenario_key'"""
     # get electricity/gas relations and parameters for the calculation of emission_limit
     el_gas_rel = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     emissions = scalars.loc[scalars.carrier == EMISSION]
@@ -307,8 +305,11 @@ def save_additional_scalars(additional_scalars, destination):
 def calculate_emission_limit(
     emissions_1990, emissions_not_modeled, emission_reduction_factor
 ):
-    """Calculates the emission limit"""
-    return (emissions_1990 - emissions_not_modeled) * (1 - emission_reduction_factor)
+    """Calculates the emission limit.
+    Emission limit is calculated by
+    emissions_1990 * (1 - emission_reduction_factor) - emissions_not_modeled"""
+
+    return emissions_1990 * (1 - emission_reduction_factor) - emissions_not_modeled
 
 
 if __name__ == "__main__":
