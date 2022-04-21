@@ -246,18 +246,18 @@ def load_additional_scalars(scalars, filters):
     """Loads additional scalars like the emission limit and filters by 'scenario_key'.
     Emission limit is calculated by
     emission_limit = (emissions_1990 - emissions_not_modeled) * (1 - emission_reduction_factor)"""
-    # get electricity/gas relations and emission limit
+    # get electricity/gas relations and parameters for the calculation of emission_limit
     el_gas_rel = scalars.loc[scalars.var_name == EL_GAS_RELATION]
     emissions = scalars.loc[scalars.carrier == EMISSION]
 
-    # get `output_parameters` of backpressure components as they are not take into
+    # get `output_parameters` of backpressure components as they are not taken into
     # consideration in oemof.tabular so far. They are added to the components' output flow towards
     # the heat bus in script `optimize.py`.
     bpchp_out = scalars.loc[
         (scalars.tech == "bpchp") & (scalars.var_name == "output_parameters")
     ]
 
-    # save all dataframes in one file
+    # concatenate data for filtering
     df = pd.concat([el_gas_rel, emissions, bpchp_out])
 
     # filter by 'scenario_key'
@@ -283,7 +283,8 @@ def load_additional_scalars(scalars, filters):
         index=[0],
     )
 
-    add_scalars = pd.concat([filtered, emission_limit_df], sort=False)
+    # add emission limit to filtered additional scalars and adapt format of data frame
+    add_scalars = pd.concat([filtered_df, emission_limit_df], sort=False)
     add_scalars.reset_index(inplace=True, drop=True)
     add_scalars.index.name = "id_scal"
 
