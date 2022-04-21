@@ -221,6 +221,35 @@ def filter_df(df, column_name, values, inverse=False):
     return df_filtered
 
 
+def update_filtered_df(df, filters):
+    r"""
+    Accepts an oemof-b3 Dataframe, filters it, subsequently update
+    the result with data filtered with other filters.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+    filters : dict of dict
+
+    Returns
+    -------
+    filtered : pd.DataFrame
+    """
+    assert isinstance(filters, dict)
+    for value in filters.values():
+        assert isinstance(value, dict)
+
+    for iteration, filter in filters.items():
+        filtered = df.copy()
+
+        print(f"Applying filter no {iteration}.")
+
+        for key, value in filter.items():
+            filtered = filter_df(filtered, key, value)
+
+    return filtered
+
+
 def isnull_any(df):
     return df.isna().any().any()
 
