@@ -279,6 +279,7 @@ def load_additional_scalars(scalars, filters):
             "var_value": emission_limit,
             "carrier": "emission",
             "var_unit": "kg_CO2_eq",
+            "scenario_key": "ALL",
         },
         index=[0],
     )
