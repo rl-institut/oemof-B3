@@ -261,17 +261,19 @@ def load_additional_scalars(scalars, filters):
     df = pd.concat([el_gas_rel, emissions, bpchp_out])
 
     # filter by 'scenario_key'
+    filtered_df = pd.DataFrame()
     for id, filt in filters.items():
-        filtered = df.copy()
+        _df = df.copy()
         for key, value in filt.items():
-            filtered = filter_df(filtered, key, value)
+            _filtered = filter_df(_df, key, value)
+            filtered_df = pd.concat([filtered_df, _filtered])
 
     # calculate emission limit and add to data frame
-    filtered_ = filtered.copy().set_index("var_name")
+    _filtered_df = filtered_df.copy().set_index("var_name")
     emission_limit = (
-        filtered_.at["emissions_1990", "var_value"]
-        - filtered_.at["emissions_not_modeled", "var_value"]
-    ) * (1 - filtered_.at["emission_reduction_factor", "var_value"])
+        _filtered_df.at["emissions_1990", "var_value"]
+        - _filtered_df.at["emissions_not_modeled", "var_value"]
+    ) * (1 - _filtered_df.at["emission_reduction_factor", "var_value"])
 
     emission_limit_df = pd.DataFrame(
         {
