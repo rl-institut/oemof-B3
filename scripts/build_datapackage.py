@@ -268,12 +268,13 @@ def load_additional_scalars(scalars, filters):
             _filtered = filter_df(_df, key, value)
             filtered_df = pd.concat([filtered_df, _filtered])
 
-    # calculate emission limit and add to data frame
+    # calculate emission limit and prepare data frame
     _filtered_df = filtered_df.copy().set_index("var_name")
-    emission_limit = (
-        _filtered_df.at["emissions_1990", "var_value"]
-        - _filtered_df.at["emissions_not_modeled", "var_value"]
-    ) * (1 - _filtered_df.at["emission_reduction_factor", "var_value"])
+    emission_limit = calculate_emission_limit(
+        _filtered_df.at["emissions_1990", "var_value"],
+        _filtered_df.at["emissions_not_modeled", "var_value"],
+        _filtered_df.at["emission_reduction_factor", "var_value"],
+    )
 
     emission_limit_df = pd.DataFrame(
         {
@@ -298,6 +299,13 @@ def save_additional_scalars(additional_scalars, destination):
     """Saves `additional_scalars` to `ADDITIONAL_SCALARS_FILE` in `destination`"""
     filename = os.path.join(destination, ADDITIONAL_SCALARS_FILE)
     save_df(additional_scalars, filename)
+
+
+def calculate_emission_limit(
+    emissions_1990, emissions_not_modeled, emission_reduction_factor
+):
+    """Calculates the emission limit"""
+    return (emissions_1990 - emissions_not_modeled) * (1 - emission_reduction_factor)
 
 
 if __name__ == "__main__":
