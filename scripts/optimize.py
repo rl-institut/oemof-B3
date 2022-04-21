@@ -32,6 +32,7 @@ The EnergySystem with results, meta-results and parameters is saved.
 """
 import os
 import sys
+import numpy as np
 
 from oemof.solph import EnergySystem, Model, constraints
 from oemof.outputlib import processing
@@ -67,7 +68,7 @@ def get_emission_limit(scalars):
     emission_df = drop_values_by_keyword(emission_df_raw)
 
     # return None if no emission limit is given ('None' or entry missing)
-    if emission_df.empty:
+    if emission_df.empty or emission_df.at["emission_limit", "var_value"] is np.nan:
         print("No emission limit will be set.")
         return None
     else:

@@ -268,13 +268,16 @@ def load_additional_scalars(scalars, filters):
             _filtered = filter_df(_df, key, value)
             filtered_df = pd.concat([filtered_df, _filtered])
 
-    # calculate emission limit and prepare data frame
+    # calculate emission limit and prepare data frame in case all necessary data is available
     _filtered_df = filtered_df.copy().set_index("var_name")
-    emission_limit = calculate_emission_limit(
-        _filtered_df.at["emissions_1990", "var_value"],
-        _filtered_df.at["emissions_not_modeled", "var_value"],
-        _filtered_df.at["emission_reduction_factor", "var_value"],
-    )
+    try:
+        emission_limit = calculate_emission_limit(
+            _filtered_df.at["emissions_1990", "var_value"],
+            _filtered_df.at["emissions_not_modeled", "var_value"],
+            _filtered_df.at["emission_reduction_factor", "var_value"],
+        )
+    except KeyError:
+        emission_limit = None
 
     emission_limit_df = pd.DataFrame(
         {
