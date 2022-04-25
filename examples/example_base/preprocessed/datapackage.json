@@ -60,11 +60,6 @@
                         "name": "loss",
                         "type": "integer",
                         "format": "default"
-                    },
-                    {
-                        "name": "limit_direction",
-                        "type": "boolean",
-                        "format": "default"
                     }
                 ],
                 "missingValues": [
