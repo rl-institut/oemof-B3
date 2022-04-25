@@ -229,7 +229,9 @@ def update_filtered_df(df, filters):
     Parameters
     ----------
     df : pd.DataFrame
+        Scalar data in oemof-b3 format to filter
     filters : dict of dict
+        Several filters to be applied subsequently
 
     Returns
     -------
