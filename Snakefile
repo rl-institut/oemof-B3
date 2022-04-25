@@ -6,7 +6,7 @@ HTTP = HTTPRemoteProvider()
 
 scenario_groups = {
     "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
-    "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
+    "base-scenarios": ["2050-el_eff"],
 }
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
@@ -35,7 +35,7 @@ rule plot_all_scenarios:
 
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="examples")
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="base-scenarios")
 
 
 rule clean:
@@ -49,11 +49,11 @@ rule clean:
 
 rule create_input_data_overview:
     input:
-        "raw/{scalars}.csv"
+        "raw/scalars/costs_efficiencies.csv"
     output:
-        "results/_tables/{scalars}_technical_and_cost_assumptions.csv"
+        "results/_tables/technical_and_cost_assumptions_{scenario_key}.csv"
     shell:
-        "python scripts/create_input_data_overview.py {input} {output}"
+        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output}"
 
 rule prepare_example:
     input:
@@ -106,12 +106,9 @@ rule prepare_vehicle_charging_demand:
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/scalars_{range}_{year}.csv",
+        raw_scalars="raw/scalars/costs_efficiencies.csv",
     output:
-        "results/_resources/scal_{range}_{year}.csv"
-    wildcard_constraints:
-        range=("base|high|low"),
-        year=("2040|2050"),
+        "results/_resources/scal_costs_efficiencies.csv"
     shell:
         "python scripts/prepare_scalars.py {input.raw_scalars} {output}"
 
@@ -121,7 +118,7 @@ rule prepare_heat_demand:
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
         building_class="raw/building_class.csv",
-        scalars="raw/scalars_base_2050.csv",
+        scalars="raw/scalars/demands.csv",
     output:
         scalars="results/_resources/scal_load_heat.csv",
         timeseries="results/_resources/ts_load_heat.csv",
@@ -134,7 +131,7 @@ rule prepare_re_potential:
         pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         kreise="raw/lookup_table_brandenburg_kreise.csv",
-        assumptions="raw/scalars_base_2050.csv",
+        assumptions="raw/scalars/potentials.csv",
     output:
         directory("results/_resources/RE_potential/")
     shell:

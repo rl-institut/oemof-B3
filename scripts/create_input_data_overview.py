@@ -3,9 +3,10 @@ r"""
 Inputs
 ------
 in_path : str
-    ``raw/{scalars}.csv``: path to raw scalar data.
+    ``raw/raw/scalars/costs_efficiencies.csv.csv``: path to raw scalar data.
 out_path : str
-    ``results/_tables/{scalars}_technical_and_cost_assumptions.csv``: target path for the table.
+    ``results/_tables/technical_and_cost_assumptions_{scenario_key}.csv``: target path for
+    the table.
 
 Outputs
 -------
@@ -23,7 +24,6 @@ import pandas as pd
 from oemof_b3 import labels_dict
 import oemof_b3.tools.data_processing as dp
 
-SCENARIO_KEY = "Base 2050"
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
 DECIMALS = {
@@ -41,12 +41,13 @@ VAR_NAMES = {
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
-    out_path = sys.argv[2]
+    scenario_key = sys.argv[2]
+    out_path = sys.argv[3]
 
     df = dp.load_b3_scalars(in_path)
 
     # filter for data within the scenario key defined above
-    df = df.loc[df["scenario_key"] == SCENARIO_KEY]
+    df = df.loc[df["scenario_key"] == scenario_key]
 
     # filter for the variables defined above
     variables = [item for sublist in VAR_NAMES.values() for item in sublist]
@@ -55,8 +56,15 @@ if __name__ == "__main__":
     # Raise error if DataFrame is empty
     if df.empty:
         raise ValueError(
-            f"No data in {in_path} for scenario {SCENARIO_KEY} and variables {variables}."
+            f"No data in {in_path} for scenario {scenario_key} and variables {variables}."
         )
+
+    # drop duplicates before unstacking
+    duplicated = df[INDEX].duplicated()
+    if duplicated.any():
+        print(f"Data contains duplicates that are dropped {df.loc[duplicated][INDEX]}")
+
+    df = df.loc[~duplicated]
 
     # unstack
     df = df.set_index(INDEX).unstack("var_name")
