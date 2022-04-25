@@ -239,15 +239,27 @@ def update_filtered_df(df, filters):
     for value in filters.values():
         assert isinstance(value, dict)
 
-    for iteration, filter in filters.items():
-        filtered = df.copy()
+    # Prepare empty dataframe to be updated with filtered data
+    filtered_updated = pd.DataFrame(columns=HEADER_B3_SCAL)
+    filtered_updated.index.name = "id_scal"
 
+    for iteration, filter in filters.items():
         print(f"Applying filter no {iteration}.")
 
+        # Create copy to filter from
+        filtered = df.copy()
         for key, value in filter.items():
             filtered = filter_df(filtered, key, value)
 
-    return filtered
+        # Update result with new filtered data
+        filtered_updated = merge_a_into_b(
+            filtered,
+            filtered_updated,
+            how="outer",
+            on=["name", "region", "carrier", "tech", "var_name"],
+        )
+
+    return filtered_updated
 
 
 def isnull_any(df):
