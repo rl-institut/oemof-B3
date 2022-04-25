@@ -22,6 +22,7 @@ paths_scalars:
   - raw/scalars/capacities.csv
   - raw/scalars/potentials.csv
   - raw/scalars/carrier_costs.csv
+  - raw/scalars/import_export_prices.csv
   - raw/scalars/demands.csv
   - raw/scalars/emission_constraint.csv
   - raw/scalars/el_gas_constraint.csv
