@@ -100,35 +100,32 @@ class ScalarPlot:
             self.prepared_scalar_data.empty
             or (self.prepared_scalar_data == 0).all().all()
         ):
-            return None
+            print("Data is empty or all zero")
+            return None, None
 
-        try:
-            fig, ax = plt.subplots()
-            plot_grouped_bar(
-                ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
-            )
-            ax.set_title(title)
-            # Shrink current axis's height by 10% on the bottom
-            box = ax.get_position()
-            ax.set_position(
-                [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
-            )
-            set_hierarchical_xlabels(self.prepared_scalar_data.index)
-            # Put a legend below current axis
-            ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.18),
-                fancybox=True,
-                ncol=4,
-                fontsize=14,
-            )
+        fig, ax = plt.subplots()
+        plot_grouped_bar(
+            ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
+        )
+        ax.set_title(title)
+        # Shrink current axis's height by 10% on the bottom
+        box = ax.get_position()
+        ax.set_position(
+            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
+        )
+        set_hierarchical_xlabels(self.prepared_scalar_data.index)
+        # Put a legend below current axis
+        ax.legend(
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.18),
+            fancybox=True,
+            ncol=4,
+            fontsize=14,
+        )
 
-            self.plotted = True
+        self.plotted = True
 
-            return fig, ax
-
-        except:  # noqa E722
-            print("Could not plot.")
+        return fig, ax
 
     def save_plot(self, output_path_plot):
         if self.plotted:
@@ -301,27 +298,31 @@ if __name__ == "__main__":
         plot.prepare_data()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
-        # rotate hierarchical labels
-        ax.texts = []
-        set_hierarchical_xlabels(
-            plot.prepared_scalar_data.index,
-            ax=ax,
-            bar_yinterval=0.2,
-            rotation=20,
-            ha="right",
-        )
+        try:
+            # rotate hierarchical labels
+            ax.texts = []
+            set_hierarchical_xlabels(
+                plot.prepared_scalar_data.index,
+                ax=ax,
+                bar_yinterval=0.2,
+                rotation=20,
+                ha="right",
+            )
 
-        # Move the legend below current axis
-        ax.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, -0.42),
-            fancybox=True,
-            ncol=4,
-            fontsize=14,
-        )
-        ax.set_title("invest_out " + " ".join(carriers))
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.42),
+                fancybox=True,
+                ncol=4,
+                fontsize=14,
+            )
+            ax.set_title("invest_out " + " ".join(carriers))
 
-        plot.save_plot(output_path_plot)
+            plot.save_plot(output_path_plot)
+
+        except:  # noqa 722
+            print("Could not plot.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -335,27 +336,30 @@ if __name__ == "__main__":
         plot.prepare_data()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
-        # rotate hierarchical labels
-        ax.texts = []
-        set_hierarchical_xlabels(
-            plot.prepared_scalar_data.index,
-            ax=ax,
-            bar_yinterval=0.2,
-            rotation=20,
-            ha="right",
-        )
+        try:
+            # rotate hierarchical labels
+            # ax.texts = []
+            set_hierarchical_xlabels(
+                plot.prepared_scalar_data.index,
+                ax=ax,
+                bar_yinterval=0.2,
+                rotation=20,
+                ha="right",
+            )
 
-        # Move the legend below current axis
-        ax.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, -0.42),
-            fancybox=True,
-            ncol=4,
-            fontsize=14,
-        )
-        ax.set_title("invest_out " + " ".join(carriers))
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.42),
+                fancybox=True,
+                ncol=4,
+                fontsize=14,
+            )
+            ax.set_title("invest_out " + " ".join(carriers))
 
-        plot.save_plot(output_path_plot)
+            plot.save_plot(output_path_plot)
+        except:  # noqa 722
+            print("Could not plot.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
