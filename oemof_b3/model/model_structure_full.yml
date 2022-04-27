@@ -14,7 +14,6 @@ busses:
   - biomass
 
 components:
-  - biomass-gt
   - ch4-boiler_large
   - ch4-boiler_small
   - ch4-bpchp
