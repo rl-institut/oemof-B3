@@ -118,9 +118,8 @@ rule prepare_cop_timeseries:
         weather="raw/weatherdata"
     output:
         ts_efficiency_small="results/_resources/ts_efficiency_heatpump_small.csv",
-        ts_efficiency_large="results/_resources/ts_efficiency_heatpump_large.csv"
     shell:
-         "python scripts/prepare_cop_timeseries.py {input.scalars} {input.weather} {output.ts_efficiency_small} {output.ts_efficiency_large}"
+         "python scripts/prepare_cop_timeseries.py {input.scalars} {input.weather} {output.ts_efficiency_small}"
 
 rule prepare_heat_demand:
     input:
