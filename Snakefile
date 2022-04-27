@@ -112,6 +112,16 @@ rule prepare_scalars:
     shell:
         "python scripts/prepare_scalars.py {input.raw_scalars} {output}"
 
+rule prepare_cop_timeseries:
+    input:
+        scalars="raw/scalars/capacities.csv",
+        weather="raw/weatherdata"
+    output:
+        ts_efficiency_small="results/_resources/ts_efficiency_heatpump_small.csv",
+        ts_efficiency_large="results/_resources/ts_efficiency_heatpump_large.csv"
+    shell:
+         "python scripts/prepare_cop_timeseries.py {input.scalars} {input.weather} {output.ts_efficiency_small} {output.ts_efficiency_large}"
+
 rule prepare_heat_demand:
     input:
         weather="raw/weatherdata",
