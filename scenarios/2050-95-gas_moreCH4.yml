@@ -34,6 +34,7 @@ filter_scalars:
       - "ALL"
       - "2050-gas_moreCH4"
       - "2050-base"
+      - "reduction_95"
 
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv
