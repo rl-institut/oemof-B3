@@ -9,7 +9,6 @@ busses:
   - ch4
   - electricity
   - h2
-  - biomass
 
 components:
   - ch4-demand
