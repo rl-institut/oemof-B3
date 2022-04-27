@@ -13,7 +13,7 @@ in_path4 : str
     ``raw/building_class.csv``: path of input file with building classes of all states in Germany
     as .csv
 in_path5 : str
-    ``raw/scalars_base_2050.csv``: path of scalar data as .csv
+    ``raw/scalars/demands.csv``: path of scalar data as .csv
 out_path1 : str
     ``results/_resources/scal_load_heat.csv``: path of output file with aggregated scalar data as
     .csv
@@ -376,12 +376,13 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
     ).get_bdew_profile()
 
     # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
-    # heat load
+    # heat load using gha profile of retail and wholesale (Einzel- und Großhandel)
+    # which has lower share of process heat
     heat_load_consumer["ghd" + "_" + carrier] = bdew.HeatBuilding(
         heat_load_consumer.index,
         holidays=holidays,
         temperature=temperature,
-        shlp_type="ghd",
+        shlp_type="GHA",
         wind_class=0,
         annual_heat_demand=yearly_demands["ghd" + "_" + carrier][0],
         name="ghd",
