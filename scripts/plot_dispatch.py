@@ -108,7 +108,7 @@ if __name__ == "__main__":
             )
 
             if df_time_filtered.empty:
-                print("Data is empty, cannot plot.")
+                print(f"Data for bus '{bus_name}' is empty, cannot plot.")
                 continue
 
             # plot time filtered data
