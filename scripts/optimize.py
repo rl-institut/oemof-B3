@@ -26,7 +26,7 @@ import os
 import sys
 
 from oemof.solph import EnergySystem, Model, constraints
-from oemof.outputlib import processing
+from oemof.solph import processing
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
