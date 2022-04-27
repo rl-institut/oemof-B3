@@ -106,6 +106,11 @@ if __name__ == "__main__":
             df_demand_time_filtered = plots.filter_timeseries(
                 df_demand, start_date, end_date
             )
+
+            if df_time_filtered.empty:
+                print("Data is empty, cannot plot.")
+                continue
+
             # plot time filtered data
             plots.plot_dispatch(
                 ax=ax,
