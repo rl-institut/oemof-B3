@@ -354,7 +354,7 @@ if __name__ == "__main__":
                 ncol=4,
                 fontsize=14,
             )
-            ax.set_title("invest_out " + " ".join(carriers))
+            ax.set_title("flow_out " + " ".join(carriers))
 
             plot.save_plot(output_path_plot)
         except:  # noqa 722
