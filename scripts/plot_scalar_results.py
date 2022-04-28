@@ -194,7 +194,6 @@ if __name__ == "__main__":
 
     # User input
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2"]
-    REGIONS = ["BB", "B"]  # BE_BB
     MW_TO_W = 1e6
 
     # create the directory plotted where all plots are saved
@@ -213,7 +212,7 @@ if __name__ == "__main__":
         output_path_plot = os.path.join(target, var_name + ".png")
 
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.select_data(var_name=var_name)
         plot.prepare_data()
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
@@ -224,7 +223,7 @@ if __name__ == "__main__":
         output_path_plot = os.path.join(target, var_name + ".png")
 
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.select_data(var_name=var_name)
         plot.prepare_data()
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
@@ -236,7 +235,7 @@ if __name__ == "__main__":
         unit = "Wh"
 
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS, carrier=carrier)
+        plot.select_data(var_name=var_name, carrier=carrier)
         plot.prepare_data()
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
@@ -248,7 +247,7 @@ if __name__ == "__main__":
         unit = "Wh"
 
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS, carrier=carrier)
+        plot.select_data(var_name=var_name, carrier=carrier)
         plot.prepare_data()
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
@@ -260,7 +259,7 @@ if __name__ == "__main__":
         unit = "Wh"
 
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.select_data(var_name=var_name)
         plot.selected_scalars = dp.filter_df(
             plot.selected_scalars,
             "type",
@@ -278,7 +277,7 @@ if __name__ == "__main__":
         unit = "Wh"
 
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.select_data(var_name=var_name)
         plot.selected_scalars = dp.filter_df(
             plot.selected_scalars, "type", ["storage", "asymmetric_storage"]
         )
@@ -293,7 +292,7 @@ if __name__ == "__main__":
             target, "invest_out_" + "_".join(carriers) + ".png"
         )
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
@@ -331,7 +330,7 @@ if __name__ == "__main__":
             target, "flow_out_" + "_".join(carriers) + ".png"
         )
         plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name, region=REGIONS)
+        plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
