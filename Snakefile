@@ -6,7 +6,7 @@ HTTP = HTTPRemoteProvider()
 
 scenario_groups = {
     "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
-    "base-scenarios": ["2050-el_eff"],
+    "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")]
 }
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
@@ -29,13 +29,13 @@ rule plot_all_scenarios:
     input:
         expand(
             "results/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["base-scenarios"],
+            scenario=scenario_groups["all-scenarios"],
             plot_type=["scalars", "dispatch"],
         )
 
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="base-scenarios")
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="all-scenarios")
 
 
 rule clean:
