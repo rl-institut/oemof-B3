@@ -114,7 +114,7 @@ if __name__ == "__main__":
             )
 
             if df_time_filtered.empty:
-                logger.warn(f"Data for bus '{bus_name}' is empty, cannot plot.")
+                logger.warning(f"Data for bus '{bus_name}' is empty, cannot plot.")
                 continue
 
             # plot time filtered data
