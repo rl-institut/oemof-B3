@@ -49,6 +49,7 @@ import pandas as pd
 from demandlib import bdew
 
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
 
 
 def get_shares_from_hh_distribution(path, region):
@@ -297,8 +298,8 @@ def get_heat_demand(scalars, scenario, carrier, region):
         sc_filtered_consumer = sc_filtered[sc_filtered["tech"].str.contains(consumer)]
 
         if len(sc_filtered_consumer) > 1:
-            print(
-                f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
+            logger.warning(
+                f"There is duplicate demand of carrier '{carrier}', consumer "
                 f"'{consumer}', region '{region}' and scenario '{scenario}' in {in_path5}."
                 + "\n"
                 + "The demand is going to be summed up. "
@@ -447,6 +448,9 @@ if __name__ == "__main__":
     in_path5 = sys.argv[5]  # path to csv with b3 scalars
     out_path1 = sys.argv[6]
     out_path2 = sys.argv[7]
+    logfile = sys.argv[8]
+
+    logger = config.add_snake_logger(logfile, "prepare_heat_demand")
 
     CARRIERS = ["heat_central", "heat_decentral"]
 

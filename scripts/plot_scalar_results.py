@@ -17,6 +17,7 @@ Description
 -------------
 The result scalars of all scenarios are plotted in a single plot.
 """
+import logging
 import os
 import sys
 
@@ -27,6 +28,10 @@ from oemoflex.tools.plots import plot_grouped_bar
 
 from oemof_b3.tools import data_processing as dp
 from oemof_b3 import colors_odict, labels_dict
+from oemof_b3.config import config
+
+
+logger = logging.getLogger()
 
 
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
@@ -80,7 +85,7 @@ class ScalarPlot:
             self.selected_scalars = dp.filter_df(self.selected_scalars, key, value)
 
         if self.selected_scalars.empty:
-            print("No data to plot.")
+            logger.info("No data to plot.")
 
         return self.selected_scalars
 
@@ -100,7 +105,7 @@ class ScalarPlot:
             self.prepared_scalar_data.empty
             or (self.prepared_scalar_data == 0).all().all()
         ):
-            print("Data is empty or all zero")
+            logger.warning("Data is empty or all zero")
             return None, None
 
         fig, ax = plt.subplots()
@@ -130,7 +135,7 @@ class ScalarPlot:
     def save_plot(self, output_path_plot):
         if self.plotted:
             plt.savefig(output_path_plot, bbox_inches="tight")
-            print(f"User info: Plot has been saved to: {output_path_plot}.")
+            logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
 def set_hierarchical_xlabels(
@@ -189,8 +194,10 @@ def set_hierarchical_xlabels(
 
 if __name__ == "__main__":
     scalars_path = os.path.join(sys.argv[1], "scalars.csv")
-
     target = sys.argv[2]
+    logfile = sys.argv[3]
+
+    logger = config.add_snake_logger(logfile, "plot_scalar_results")
 
     # User input
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2"]
@@ -322,7 +329,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except:  # noqa 722
-            print("Could not plot.")
+            logger.warning("Could not plot.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -359,7 +366,7 @@ if __name__ == "__main__":
 
             plot.save_plot(output_path_plot)
         except:  # noqa 722
-            print("Could not plot.")
+            logger.warning("Could not plot.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)

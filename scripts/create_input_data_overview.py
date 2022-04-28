@@ -23,6 +23,8 @@ import pandas as pd
 
 from oemof_b3 import labels_dict
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
+
 
 REGION = "ALL"
 INDEX = ["carrier", "tech", "var_name"]
@@ -43,6 +45,9 @@ if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     scenario_key = sys.argv[2]
     out_path = sys.argv[3]
+    logfile = sys.argv[4]
+
+    logger = config.add_snake_logger(logfile, "create_input_data_overview")
 
     df = dp.load_b3_scalars(in_path)
 
@@ -62,7 +67,9 @@ if __name__ == "__main__":
     # drop duplicates before unstacking
     duplicated = df[INDEX].duplicated()
     if duplicated.any():
-        print(f"Data contains duplicates that are dropped {df.loc[duplicated][INDEX]}")
+        logger.warning(
+            f"Data contains duplicates that are dropped {df.loc[duplicated][INDEX]}"
+        )
 
     df = df.loc[~duplicated]
 

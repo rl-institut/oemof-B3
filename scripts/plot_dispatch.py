@@ -34,11 +34,15 @@ import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
 from oemof_b3 import labels_dict, colors_odict
+from oemof_b3.config import config
 
 
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
+    logfile = sys.argv[3]
+
+    logger = config.add_snake_logger(logfile, "plot_dispatch")
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(plotted):
@@ -108,7 +112,7 @@ if __name__ == "__main__":
             )
 
             if df_time_filtered.empty:
-                print(f"Data for bus '{bus_name}' is empty, cannot plot.")
+                logger.warn(f"Data for bus '{bus_name}' is empty, cannot plot.")
                 continue
 
             # plot time filtered data
