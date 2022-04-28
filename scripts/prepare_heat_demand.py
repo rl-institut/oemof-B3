@@ -19,6 +19,8 @@ out_path1 : str
     .csv
 out_path2 : str
     ``results/_resources/ts_load_heat.csv``: path of output file with timeseries data as .csv
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------

@@ -7,6 +7,8 @@ scalars_path : str
 target : str
     ``results/{scenario}/plotted/scalars/``: path where a new directory is
     created and the plots are saved.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------

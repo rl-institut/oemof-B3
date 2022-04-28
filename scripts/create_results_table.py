@@ -6,6 +6,8 @@ in_path : str
     ``results/{scenario}/postprocessed/scalars.csv``: path to scalar results.
 out_path : str
     ``results/{scenario}/tables/``: target path for results tables.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 -------

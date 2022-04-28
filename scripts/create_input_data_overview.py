@@ -7,6 +7,8 @@ in_path : str
 out_path : str
     ``results/_tables/technical_and_cost_assumptions_{scenario_key}.csv``: target path for
     the table.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 -------
