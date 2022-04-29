@@ -6,6 +6,8 @@ in_path : str
     ``results/{scenario}/postprocessed/scalars.csv``: path to scalar results.
 out_path : str
     ``results/{scenario}/tables/``: target path for results tables.
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 -------
@@ -22,6 +24,7 @@ import numpy as np
 import pandas as pd
 
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
 
 
 def create_production_table(scalars, carrier):
@@ -80,6 +83,9 @@ def create_demand_table(scalars):
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
+    logfile = sys.argv[3]
+
+    logger = config.add_snake_logger(logfile, "create_results_table")
 
     scalars = pd.read_csv(os.path.join(in_path, "scalars.csv"))
 
@@ -94,7 +100,7 @@ if __name__ == "__main__":
             df = create_production_table(scalars, carrier)
             dp.save_df(df, os.path.join(out_path, f"production_table_{carrier}.csv"))
         except:  # noqa E722
-            print(f"Could not create production table for carrier {carrier}.")
+            logger.info(f"Could not create production table for carrier {carrier}.")
             continue
 
     df = create_demand_table(scalars)
