@@ -22,10 +22,73 @@ import os
 import sys
 import itertools
 import pandas as pd
-import scripts.prepare_heat_demand as phd
+import numpy as np
 import oemof_b3.tools.data_processing as dp
 
 # from oemof.thermal.compression_heatpumps_and_chillers import calc_cops
+
+
+def find_regional_files(path, region):
+    """
+    This function returns a list of file names in a directory that match the specified region.
+
+    Parameters
+    ----------
+    path : str
+        Path to data
+
+    region : str
+        Region (eg. Brandenburg)
+
+    Returns
+    -------
+    files_region : list
+        List of file names matching region
+    """
+    files_region = [file for file in os.listdir(path) if f"_{region}_" in file]
+    files_region = sorted(files_region)
+
+    if not files_region:
+        raise FileNotFoundError(
+            f"No data of region {region} could be found in directory: {path}."
+        )
+
+    return files_region
+
+
+def get_year(file_name):
+    """
+    This function returns a year from file name
+
+    Parameters
+    ----------
+    file_name : str
+        Name of file with year in it
+
+    Returns
+    -------
+    year : int
+        Year
+    """
+    # Add array with years to be searched for in file name
+    years_search_array = np.arange(1990, 2051)
+    newline = "\n"
+
+    year_in_file = [
+        year_searched
+        for year_searched in years_search_array
+        if str(year_searched) in file_name
+    ]
+    if len(year_in_file) == 1:
+        year = year_in_file[0]
+    else:
+        raise ValueError(
+            f"Your file {file_name} is missing a year or has multiple years "
+            f"in its name." + newline + "Please provide data for a single year "
+            "with that year in the file name."
+        )
+
+    return year
 
 
 def calc_cops(temp_high, temp_low, quality_grade):
@@ -108,11 +171,11 @@ if __name__ == "__main__":
     final_cops = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
     for region, scenario in itertools.product(regions, scenarios):
-        weather_file_names = phd.find_regional_files(in_path2, region)
+        weather_file_names = find_regional_files(in_path2, region)
 
         for weather_file_name in weather_file_names:
             # Read year from weather file name
-            year = phd.get_year(weather_file_name)
+            year = get_year(weather_file_name)
 
             # Read temperature from weather data
             path_weather_data = os.path.join(in_path2, weather_file_name)
