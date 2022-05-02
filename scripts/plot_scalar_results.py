@@ -334,7 +334,7 @@ if __name__ == "__main__":
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
-        unit = "W"
+        unit = "Wh"
         output_path_plot = os.path.join(
             target, "flow_out_" + "_".join(carriers) + ".png"
         )
@@ -369,13 +369,50 @@ if __name__ == "__main__":
         except:  # noqa 722
             logger.warning("Could not plot.")
 
+    def plot_demands(carriers):
+        var_name = [f"flow_in_{carrier}" for carrier in carriers]
+        tech = "demand"
+        unit = "Wh"
+        output_path_plot = os.path.join(target, "demand_" + "_".join(carriers) + ".png")
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, tech=tech)
+        plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        plot.prepare_data()
+        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        try:
+            # rotate hierarchical labels
+            ax.texts.clear()
+            set_hierarchical_xlabels(
+                plot.prepared_scalar_data.index,
+                ax=ax,
+                bar_yinterval=0.2,
+                rotation=20,
+                ha="right",
+            )
+
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.42),
+                fancybox=True,
+                ncol=4,
+                fontsize=14,
+            )
+            ax.set_title("demand " + " ".join(carriers))
+
+            plot.save_plot(output_path_plot)
+        except:  # noqa 722
+            logger.warning("Could not plot.")
+
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
+    plot_demands(CARRIERS)
 
-    for carrier in CARRIERS:
-        plot_storage_capacity(carrier)
-        plot_invest_out(carrier)
-        plot_storage_invest(carrier)
-        plot_flow_out(carrier)
-        plot_storage_out(carrier)
+    # for carrier in CARRIERS:
+    #     plot_storage_capacity(carrier)
+    #     plot_invest_out(carrier)
+    #     plot_storage_invest(carrier)
+    #     plot_flow_out(carrier)
+    #     plot_storage_out(carrier)
