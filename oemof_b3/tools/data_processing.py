@@ -643,6 +643,45 @@ def round_setting_int(df, decimals):
     return _df
 
 
+def postprocess_data(df_postprocessed, df_year, region, scenario, unit):
+    """
+    This function postprocesses DataFrames by stacking time series and adding it to result
+    DataFrame
+
+    Parameters
+    ----------
+    df_postprocessed : pd.Dataframe
+        Empty Dataframe as result DataFrame
+    df_year : pd.Dataframe
+        DataFrame with total normalized data in year to be processed
+    region : str
+        Region (eg. Brandenburg)
+    scenario : str
+        Scenario e.g. "base
+    unit : str
+        Unit of total demands (eg. GWh)
+
+    Returns
+    -------
+    df_postprocessed : pd.DataFrame
+         DataFrame that contains stacked heat load profile
+
+    """
+    # Stack time series with total heat load in year
+    df_year_stacked = stack_timeseries(df_year)
+
+    df_year_stacked["region"] = region
+    df_year_stacked["scenario_key"] = scenario
+    df_year_stacked["var_unit"] = unit[0]
+
+    # Append stacked heat load of year to stacked time series with total heat loads
+    df_postprocessed = pd.concat(
+        [df_postprocessed, df_year_stacked], ignore_index=True, sort=False
+    )
+
+    return df_postprocessed
+
+
 class ScalarProcessor:
     r"""
     This class allows to filter and unstack scalar data in a way that makes processing simpler.

@@ -404,44 +404,6 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
     return heat_load_total
 
 
-def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, unit):
-    """
-    This function stacks time series of heat load profile and addes it to result DataFrame
-
-    Parameters
-    ----------
-    heat_load_postprocessed : pd.Dataframe
-        Empty Dataframe as result DataFrame
-    heat_load_year : pd.Dataframe
-        DataFrame with total normalized heat load in year to be processed
-    region : str
-        Region (eg. Brandenburg)
-    scenario : str
-        Scenario e.g. "base
-    unit : str
-        Unit of total demands (eg. GWh)
-
-    Returns
-    -------
-    heat_load_postprocessed : pd.DataFrame
-         DataFrame that contains stacked heat load profile
-
-    """
-    # Stack time series with total heat load in year
-    heat_load_year_stacked = dp.stack_timeseries(heat_load_year)
-
-    heat_load_year_stacked["region"] = region
-    heat_load_year_stacked["scenario_key"] = scenario
-    heat_load_year_stacked["var_unit"] = unit[0]
-
-    # Append stacked heat load of year to stacked time series with total heat loads
-    heat_load_postprocessed = pd.concat(
-        [heat_load_postprocessed, heat_load_year_stacked], ignore_index=True, sort=False
-    )
-
-    return heat_load_postprocessed
-
-
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
@@ -501,7 +463,7 @@ if __name__ == "__main__":
             heat_load_year = calculate_heat_load(
                 carrier, holidays, temperature, yearly_demands, building_class
             )
-            total_heat_load = postprocess_data(
+            total_heat_load = dp.postprocess_data(
                 total_heat_load,
                 heat_load_year,
                 region,
