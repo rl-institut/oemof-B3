@@ -6,7 +6,7 @@ HTTP = HTTPRemoteProvider()
 
 scenario_groups = {
     "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
-    "base-scenarios": ["2050-el_eff"],
+    "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")]
 }
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
@@ -25,17 +25,21 @@ rule plot_all_examples:
             plot_type=["scalars", "dispatch"],
         )
 
-rule plot_all_scenarios:
+rule process_all_scenarios:
     input:
-        expand(
+        plots=expand(
             "results/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["base-scenarios"],
+            scenario=scenario_groups["all-scenarios"],
             plot_type=["scalars", "dispatch"],
+        ),
+        tables=expand(
+            "results/{scenario}/tables",
+            scenario=scenario_groups["all-scenarios"],
         )
 
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="base-scenarios")
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="all-scenarios")
 
 
 rule clean:
@@ -52,8 +56,10 @@ rule create_input_data_overview:
         "raw/scalars/costs_efficiencies.csv"
     output:
         "results/_tables/technical_and_cost_assumptions_{scenario_key}.csv"
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output}"
+        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output} {params.logfile}"
 
 rule prepare_example:
     input:
@@ -131,8 +137,10 @@ rule prepare_heat_demand:
     output:
         scalars="results/_resources/scal_load_heat.csv",
         timeseries="results/_resources/ts_load_heat.csv",
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries}"
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries} {params.logfile}"
 
 rule prepare_re_potential:
     input:
@@ -202,16 +210,20 @@ rule create_results_table:
         "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/tables/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/create_results_table.py {input} {output}"
+        "python scripts/create_results_table.py {input} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/plotted/dispatch")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/plot_dispatch.py {input} {output}"
+        "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
 
 rule plot_conv_pp_scalars:
     input:
@@ -226,8 +238,10 @@ rule plot_scalar_results:
         "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/plotted/scalars/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/plot_scalar_results.py {input} {output}"
+        "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
 rule plot_joined_scalars:
     input:

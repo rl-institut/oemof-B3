@@ -8,6 +8,8 @@ postprocessed : str
 plotted : str
     ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
     the plots are saved
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -34,11 +36,15 @@ import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
 from oemof_b3 import labels_dict, colors_odict
+from oemof_b3.config import config
 
 
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
+    logfile = sys.argv[3]
+
+    logger = config.add_snake_logger(logfile, "plot_dispatch")
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(plotted):
@@ -106,6 +112,11 @@ if __name__ == "__main__":
             df_demand_time_filtered = plots.filter_timeseries(
                 df_demand, start_date, end_date
             )
+
+            if df_time_filtered.empty:
+                logger.warning(f"Data for bus '{bus_name}' is empty, cannot plot.")
+                continue
+
             # plot time filtered data
             plots.plot_dispatch(
                 ax=ax,
