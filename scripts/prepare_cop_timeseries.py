@@ -135,10 +135,13 @@ if __name__ == "__main__":
                 header=0,
             )
 
+            # Sink temperature: Surface + warm water heating
             temp_high = [
                 50
-            ]  # Temperature Surface + warm water heating Todo: To be updated
+            ]  # TODO https://www.buderus.de/de/waermepumpe/vorlauftemperatur
+            # Source temperature: Ambient temperature
             temp_low = temperature["temp_air"]
+            # Quality grade of an air/water heat pump
             quality_grade = 0.4
 
             cops = pd.DataFrame(
