@@ -20,9 +20,8 @@ The script calculates cop timeseries of small-scale air-water heat pumps for dec
 import datetime
 import os
 import sys
-import pandas as pd
-import numpy as np
 import itertools
+import pandas as pd
 import scripts.prepare_heat_demand as phd
 import oemof_b3.tools.data_processing as dp
 
