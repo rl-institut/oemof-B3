@@ -15,23 +15,23 @@ Battery,#9467bd
 Battery out,#9467bd
 Battery in,#9467bd
 
-H2 Cavern,orchid
+H2 cavern,orchid
 BEV,gold
 
-El. Transmission in,#8c564b
-El. Transmission out,#8c564b
+El. transmission in,#8c564b
+El. transmission out,#8c564b
 
 El. shortage,#cfcfcf
 Curtailment,#cfcfcf
 
 El. demand,#000000
-El. Export,#8c564b
-El. Import,#8c564b
+El. export,#8c564b
+El. import,#8c564b
 BEV charging,#000000
 
-H2 Backpressure CHP,magenta
-CH4 Backpressure CHP,brown
-CH4 Extraction CHP,darkred
+H2 backpressure CHP,magenta
+CH4 backpressure CHP,brown
+CH4 extraction CHP,darkred
 
 Heat cen. demand,#000000
 Heat cen. excess,#7f7f7f
@@ -46,7 +46,7 @@ Heat dec. storage out,#9467bd
 Heat dec. storage in,#9467bd
 Heat dec. storage,#9467bd
 
-CH4 Boiler,#d62728
+CH4 boiler,#d62728
 Heat pump (DH),#2ca02c
 Heat pump (domestic),#2ca00c
 res. PtH,#ff7f0e
@@ -63,5 +63,5 @@ Oil,#9467bd
 Other,#7f7f7f
 CH4 shortage,#cfcfcf
 CH4 demand,saddlebrown
-H2 Import,green
-H2 Demand,darkgreen
+H2 import,green
+H2 demand,darkgreen
