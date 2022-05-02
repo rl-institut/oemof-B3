@@ -93,19 +93,6 @@ if __name__ == "__main__":
     in_path2 = sys.argv[2]  # path to weather data
     out_path = sys.argv[3]  # path to timeseries of cops of small-scale heat pumps
 
-    #################### To be deleted ####################
-    # path_this_file = os.path.realpath(__file__)
-    # raw_data = os.path.abspath(
-    #     os.path.join(path_this_file, os.pardir, os.pardir, "raw")
-    # )
-    #
-    # in_path1 = os.path.join(raw_data, "scalars", "capacities.csv")
-    # in_path2 = os.path.join(raw_data, "weatherdata")
-    # out_path = os.path.join(
-    #     os.pardir, "results", "_resources", "ts_efficiency_heatpump_small.csv"
-    # )
-    #######################################################
-
     # Read state heat demands of ghd and hh sectors
     sc = dp.load_b3_scalars(in_path1)
 
