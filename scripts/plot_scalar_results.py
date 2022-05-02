@@ -308,7 +308,7 @@ if __name__ == "__main__":
 
         try:
             # rotate hierarchical labels
-            ax.texts = []
+            ax.texts.clear()
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
@@ -346,7 +346,7 @@ if __name__ == "__main__":
 
         try:
             # rotate hierarchical labels
-            # ax.texts = []
+            ax.texts.clear()
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
