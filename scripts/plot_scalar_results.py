@@ -179,20 +179,32 @@ def set_hierarchical_xlabels(
     assert isinstance(index, pd.MultiIndex)
     labels = ax.set_xticklabels([s for *_, s in index])
 
-    if rotation != 0:
-        for lb in labels:
-            lb.set_rotation(rotation)
-            lb.set_ha(ha)
-
     transform = ax.get_xaxis_transform()
 
     n_levels = index.nlevels
     n_intervals = len(index.codes) - 1
+
     if isinstance(bar_yinterval, (float, int)):
         bar_yinterval = [bar_yinterval] * n_intervals
 
     elif len(bar_yinterval) != n_intervals:
-        raise ValueError("Wrong length for bar_yinterval. Must be either 1 or ")
+        raise ValueError(
+            "Must either pass one value for bar_yinterval or a list of values that matches the"
+            "number of index levels minus one."
+        )
+
+    if isinstance(rotation, (float, int)):
+        rotation = [rotation] * n_levels
+
+    elif len(rotation) != n_levels:
+        raise ValueError(
+            "Number of values for rotation must be 1 or match number of index levels."
+        )
+
+    if rotation[0] != 0:
+        for lb in labels:
+            lb.set_rotation(rotation[0])
+            lb.set_ha(ha)
 
     for i in range(1, n_levels):
         bar_ypos = -sum(bar_yinterval[:i])
@@ -207,6 +219,7 @@ def set_hierarchical_xlabels(
                 bar_ypos - 0.02,
                 index.levels[-i - 1][code],
                 transform=transform,
+                rotation=rotation[i],
                 ha="center",
                 va="top",
             )
@@ -416,7 +429,7 @@ if __name__ == "__main__":
                 plot.prepared_scalar_data.index,
                 ax=ax,
                 bar_yinterval=[0.4, 0.1],
-                rotation=90,
+                rotation=[90, 20, 40],
                 ha="right",
                 hlines=True,
             )
@@ -433,7 +446,7 @@ if __name__ == "__main__":
 
             plot.save_plot(output_path_plot)
         except:  # noqa 722
-            logger.warning("Could not plot.")
+            logger.warning("Could not plot demands.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
