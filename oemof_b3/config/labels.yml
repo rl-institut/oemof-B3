@@ -1,19 +1,19 @@
 biomass-gt: Biomass GT
 biomass-st: Biomass ST
-ch4-boiler: CH4 Boiler
-ch4-bpchp: CH4 Backpressure CHP
-ch4-extchp: CH4 Extraction CHP
+ch4-boiler: CH4 boiler
+ch4-bpchp: CH4 backpressure CHP
+ch4-extchp: CH4 extraction CHP
 ch4-gt: CH4 GT
 electricity-bev_charging: BEV charging
 electricity-curtailment: Curtailment
 electricity-demand: El. demand
 electricity-electrolyzer: Electrolyzer
-electricity-export: El. Export
-electricity-import: El. Import
+electricity-export: El. export
+electricity-import: El. import
 electricity-liion_battery: Battery
 electricity-pth: res. PtH
 electricity-shortage: El. shortage
-electricity-transmission: El. Transmission
+electricity-transmission: El. transmission
 electricity-heatpump_large: Heat pump (DH)
 electricity-heatpump_small: Heat pump (domestic)
 h2-gt: H2 GT
@@ -22,15 +22,15 @@ heat_decentral-demand: Heat dec. demand
 hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
-h2-bpchp: H2 Backpressure CHP
-h2-cavern: H2 Cavern
-ch4-export: CH4 Export
-ch4-import: CH4 Import
-h2-demand: H2 Demand
-h2-export: H2 Export
-h2-import: H2 Import
-h2-excess: H2 Export
-h2-shortage: H2 Import
+h2-bpchp: H2 backpressure CHP
+h2-cavern: H2 cavern
+ch4-export: CH4 export
+ch4-import: CH4 import
+h2-demand: H2 demand
+h2-export: H2 export
+h2-import: H2 import
+h2-excess: H2 export
+h2-shortage: H2 import
 ch4-excess: CH4 excess
 ch4-shortage: CH4 shortage
 ch4-demand: CH4 demand
