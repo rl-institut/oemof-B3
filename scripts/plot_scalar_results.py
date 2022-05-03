@@ -354,18 +354,19 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=0.2,
-                rotation=20,
+                bar_yinterval=[0.4, 0.1],
+                rotation=[70, 0, 70],
                 ha="right",
             )
 
             # Move the legend below current axis
             ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.42),
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
                 fancybox=True,
-                ncol=4,
+                ncol=2,
                 fontsize=14,
+                hlines=True,
             )
             ax.set_title("invest_out " + " ".join(carriers))
 
@@ -392,17 +393,18 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=0.2,
-                rotation=20,
+                bar_yinterval=[0.4, 0.1],
+                rotation=[70, 0, 70],
                 ha="right",
+                hlines=True,
             )
 
             # Move the legend below current axis
             ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.42),
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
                 fancybox=True,
-                ncol=4,
+                ncol=2,
                 fontsize=14,
             )
             ax.set_title("flow_out " + " ".join(carriers))
@@ -429,17 +431,17 @@ if __name__ == "__main__":
                 plot.prepared_scalar_data.index,
                 ax=ax,
                 bar_yinterval=[0.4, 0.1],
-                rotation=[90, 20, 40],
+                rotation=[70, 0, 70],
                 ha="right",
                 hlines=True,
             )
 
             # Move the legend below current axis
             ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.42),
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
                 fancybox=True,
-                ncol=4,
+                ncol=1,
                 fontsize=14,
             )
             ax.set_title("demand " + " ".join(carriers))
