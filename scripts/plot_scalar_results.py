@@ -49,6 +49,25 @@ def aggregate_regions(df):
     return _df
 
 
+def draw_standalone_legend(c_dict):
+    import matplotlib.patches as mpatches
+
+    fig = plt.figure(figsize=(14, 14))
+    patches = [
+        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
+    ]
+    fig.legend(
+        patches,
+        c_dict.keys(),
+        loc="center",
+        ncol=4,
+        fontsize=14,
+        frameon=False,
+    )
+    plt.tight_layout()
+    return fig
+
+
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     # pivot
     df_pivot = pd.pivot_table(
@@ -428,6 +447,9 @@ if __name__ == "__main__":
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
     plot_demands(CARRIERS)
+
+    fig = draw_standalone_legend(colors_odict)
+    plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
