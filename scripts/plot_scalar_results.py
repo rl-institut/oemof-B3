@@ -186,15 +186,25 @@ def set_hierarchical_xlabels(
 
     transform = ax.get_xaxis_transform()
 
-    for i in range(1, len(index.codes)):
+    n_levels = index.nlevels
+    n_intervals = len(index.codes) - 1
+    if isinstance(bar_yinterval, (float, int)):
+        bar_yinterval = [bar_yinterval] * n_intervals
+
+    elif len(bar_yinterval) != n_intervals:
+        raise ValueError("Wrong length for bar_yinterval. Must be either 1 or ")
+
+    for i in range(1, n_levels):
+        bar_ypos = -sum(bar_yinterval[:i])
         xpos0 = -0.5  # Coordinates on the left side of the target group
+
         for (*_, code), codes_iter in groupby(zip(*index.codes[:-i])):
             xpos1 = xpos0 + sum(
                 1 for _ in codes_iter
             )  # Coordinates on the right side of the target group
             ax.text(
                 (xpos0 + xpos1) / 2,
-                (bar_yinterval * (-i - 0.1)),
+                bar_ypos - 0.02,
                 index.levels[-i - 1][code],
                 transform=transform,
                 ha="center",
@@ -204,7 +214,7 @@ def set_hierarchical_xlabels(
                 ax.add_line(
                     Line2D(
                         [xpos0 + bar_xmargin, xpos1 - bar_xmargin],
-                        [bar_yinterval * -i] * 2,
+                        [bar_ypos],
                         transform=transform,
                         color="k",
                         clip_on=False,
@@ -405,9 +415,10 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=0.2,
-                rotation=20,
+                bar_yinterval=[0.4, 0.1],
+                rotation=90,
                 ha="right",
+                hlines=True,
             )
 
             # Move the legend below current axis
