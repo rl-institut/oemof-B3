@@ -3,3 +3,6 @@ optimize:
   solver: cbc
   debug: true
   receive_duals: false
+
+plot_scalar_results:
+  agg_regions: true
