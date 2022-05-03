@@ -49,7 +49,14 @@ def aggregate_regions(df):
     return _df
 
 
-def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
+def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e-3):
+    # drop data that is almost zero
+    def _drop_near_zeros(df, tolerance):
+        df = df.loc[abs(df["var_value"]) > tolerance]
+        return df
+
+    df = _drop_near_zeros(df, tolerance)
+
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
