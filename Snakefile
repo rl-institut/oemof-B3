@@ -129,7 +129,7 @@ rule prepare_heat_demand:
         scalars="results/_resources/scal_load_heat.csv",
         timeseries="results/_resources/ts_load_heat.csv",
     params:
-        logfile="logs/{scenario}.log"
+        logfile="logs/prepare_heat_demand.log"
     shell:
         "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries} {params.logfile}"
 
