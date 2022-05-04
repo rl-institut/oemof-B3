@@ -657,7 +657,7 @@ def postprocess_data(df_postprocessed, df_year, region, scenario, unit):
     region : str
         Region (eg. Brandenburg)
     scenario : str
-        Scenario e.g. "base
+        Scenario e.g. "ALL"
     unit : str
         Unit of total demands (eg. GWh)
 

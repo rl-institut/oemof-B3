@@ -258,7 +258,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     scalars : DataFrame
         Dataframe with scalars
     scenario : str
-        Scenario e.g. "base"
+        Scenario e.g. "2040-el_eff"
     carrier : str
          Name of carrier (eg.: heat_central, heat_decentral)
     region : str
