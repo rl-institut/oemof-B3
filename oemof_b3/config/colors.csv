@@ -18,42 +18,42 @@ Battery in,#b494d1
 H2 Cavern,#00fed0
 BEV,#e0b415
 
-El. Transmission in,#8c564b
-El. Transmission out,#c49a91
+El. Transmission in,#65748b
+El. Transmission out,#9da8b8
 
-El. shortage,#cfcfcf
-Curtailment,#cfe2f3
+El. shortage,#595959
+Curtailment,#DBDBDB
 
 El. demand,#052b61
-El. Export,#8c564b
-El. Import,#c49a91
+El. Export,#9da8b8
+El. Import,#65748b
 BEV charging,#a3830f
 
-H2 Backpressure CHP,#24dab9
+H2 Backpressure CHP,#22d6dd
 CH4 Backpressure CHP,#abd14f
 CH4 Extraction CHP,#9fb56b
 
-Heat cen. demand,#850400
-Heat cen. excess,#ffd8d6
-Heat cen. shortage,#7f7f7f
+Heat cen. demand,#ad0600
+Heat cen. excess,#DBDBDB
+Heat cen. shortage,#595959
 Heat cen. storage in,#ff6b66
 Heat cen. storage,#ff0800
 Heat cen. storage out,#b20600
 Heat dec. demand,#6c3404
-Heat dec. excess,#cee8fd
-Heat dec. shortage,#b9b9b9
+Heat dec. excess,#DBDBDB
+Heat dec. shortage,#595959
 Heat dec. storage out,#c45e08
 Heat dec. storage in,#f9ac6c
 Heat dec. storage,#f2740a
 
 CH4 Boiler,#f92774
-Heat pump (DH),#2ca02c
-Heat pump (domestic),#62d242
-res. PtH,#dfec28
+Heat pump (DH),#c500ff
+Heat pump (domestic),#ff00fb
+res. PtH,#ffa605
 
-CH4 excess,#e9fdba
+CH4 excess,#DBDBDB
 
-Electrolyzer,#00cfff
+Electrolyzer,#0099ff
 
 Biomass,#2ca02c
 CH4,#bcf927
@@ -61,7 +61,7 @@ Hard coal,black
 Lignite,saddlebrown
 Oil,#9467bd
 Other,#7f7f7f
-CH4 shortage,#728c76
+CH4 shortage,#595959
 CH4 demand,#1c2801
 H2 Import,#4b818c
 H2 Demand,#00705c
