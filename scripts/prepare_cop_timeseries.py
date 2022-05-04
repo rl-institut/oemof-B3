@@ -221,4 +221,11 @@ if __name__ == "__main__":
                 ["-"],
             )
 
+    # Rearrange stacked time series
+    final_cops = dp.format_header(
+        df=final_cops,
+        header=dp.HEADER_B3_TS,
+        index_name="id_ts",
+    )
+
     dp.save_df(final_cops, out_path)
