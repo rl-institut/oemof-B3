@@ -211,7 +211,7 @@ if __name__ == "__main__":
                 )
             )
 
-            cops["air-water"] = calc_cops(temp_high, temp_low, QUALITY_GRADE)
+            cops["efficiency-profile"] = calc_cops(temp_high, temp_low, QUALITY_GRADE)
 
             final_cops = dp.postprocess_data(
                 final_cops,
