@@ -175,7 +175,7 @@ if __name__ == "__main__":
     sc = dp.load_b3_scalars(in_path1)
 
     # Filter sc for heat demand
-    sc_filtered = dp.filter_df(sc, "carrier", ["heat_central", "heat_decentral"])
+    sc_filtered = dp.filter_df(sc, "carrier", "heat_decentral")
 
     # Get regions from heat demand
     regions = sc_filtered.loc[:, "region"].unique()
