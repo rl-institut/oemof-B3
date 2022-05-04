@@ -4,6 +4,10 @@ optimize:
   debug: true
   receive_duals: false
 
+
+plot_scalar_results:
+  agg_regions: true
+
 prepare_cop_timeseries:
   quality_grade: 0.4
   scenario: "ALL"

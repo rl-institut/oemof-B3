@@ -36,7 +36,27 @@ from oemof_b3.config import config
 logger = logging.getLogger()
 
 
-def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
+def aggregate_regions(df):
+    # this is a work-around to use the dataprocessing function for postprocessed data,
+    # which is in a similar but not in the same format as preprocessed oemof_b3 resources.
+    _df = df.copy()
+    _df.reset_index(inplace=True)
+    _df = _df.rename(columns={"scenario": "scenario_key"})
+    _df = dp.aggregate_scalars(_df, "region")
+    _df = _df.rename(columns={"scenario_key": "scenario"})
+    _df["name"] = _df.apply(lambda x: x["carrier"] + "-" + x["tech"], 1)
+    _df = _df.set_index("scenario")
+    return _df
+
+
+def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e-3):
+    # drop data that is almost zero
+    def _drop_near_zeros(df, tolerance):
+        df = df.loc[abs(df["var_value"]) > tolerance]
+        return df
+
+    df = _drop_near_zeros(df, tolerance)
+
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
@@ -91,9 +111,15 @@ class ScalarPlot:
 
         return self.selected_scalars
 
-    def prepare_data(self):
+    def prepare_data(self, agg_regions=False):
+
+        self.prepared_scalar_data = self.selected_scalars.copy()
+
+        if agg_regions:
+            self.prepared_scalar_data = aggregate_regions(self.prepared_scalar_data)
+
         self.prepared_scalar_data = prepare_scalar_data(
-            df=self.selected_scalars,
+            df=self.prepared_scalar_data,
             colors_odict=colors_odict,
             labels_dict=labels_dict,
             conv_number=MW_TO_W,
@@ -160,24 +186,47 @@ def set_hierarchical_xlabels(
     assert isinstance(index, pd.MultiIndex)
     labels = ax.set_xticklabels([s for *_, s in index])
 
-    if rotation != 0:
-        for lb in labels:
-            lb.set_rotation(rotation)
-            lb.set_ha(ha)
-
     transform = ax.get_xaxis_transform()
 
-    for i in range(1, len(index.codes)):
+    n_levels = index.nlevels
+    n_intervals = len(index.codes) - 1
+
+    if isinstance(bar_yinterval, (float, int)):
+        bar_yinterval = [bar_yinterval] * n_intervals
+
+    elif len(bar_yinterval) != n_intervals:
+        raise ValueError(
+            "Must either pass one value for bar_yinterval or a list of values that matches the"
+            "number of index levels minus one."
+        )
+
+    if isinstance(rotation, (float, int)):
+        rotation = [rotation] * n_levels
+
+    elif len(rotation) != n_levels:
+        raise ValueError(
+            "Number of values for rotation must be 1 or match number of index levels."
+        )
+
+    if rotation[0] != 0:
+        for lb in labels:
+            lb.set_rotation(rotation[0])
+            lb.set_ha(ha)
+
+    for i in range(1, n_levels):
+        bar_ypos = -sum(bar_yinterval[:i])
         xpos0 = -0.5  # Coordinates on the left side of the target group
+
         for (*_, code), codes_iter in groupby(zip(*index.codes[:-i])):
             xpos1 = xpos0 + sum(
                 1 for _ in codes_iter
             )  # Coordinates on the right side of the target group
             ax.text(
                 (xpos0 + xpos1) / 2,
-                (bar_yinterval * (-i - 0.1)),
+                bar_ypos - 0.02,
                 index.levels[-i - 1][code],
                 transform=transform,
+                rotation=rotation[i],
                 ha="center",
                 va="top",
             )
@@ -185,7 +234,7 @@ def set_hierarchical_xlabels(
                 ax.add_line(
                     Line2D(
                         [xpos0 + bar_xmargin, xpos1 - bar_xmargin],
-                        [bar_yinterval * -i] * 2,
+                        [bar_ypos],
                         transform=transform,
                         color="k",
                         clip_on=False,
@@ -222,7 +271,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
@@ -233,7 +282,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
@@ -245,7 +294,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -257,7 +306,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -275,7 +324,7 @@ if __name__ == "__main__":
             ["storage", "asymmetric_storage", "link"],
             inverse=True,
         )
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -290,7 +339,7 @@ if __name__ == "__main__":
         plot.selected_scalars = dp.filter_df(
             plot.selected_scalars, "type", ["storage", "asymmetric_storage"]
         )
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -303,27 +352,28 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
             # rotate hierarchical labels
-            ax.texts = []
+            ax.texts.clear()
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=0.2,
-                rotation=20,
+                bar_yinterval=[0.4, 0.1],
+                rotation=[70, 0, 70],
                 ha="right",
             )
 
             # Move the legend below current axis
             ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.42),
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
                 fancybox=True,
-                ncol=4,
+                ncol=2,
                 fontsize=14,
+                hlines=True,
             )
             ax.set_title("invest_out " + " ".join(carriers))
 
@@ -334,33 +384,34 @@ if __name__ == "__main__":
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
-        unit = "W"
+        unit = "Wh"
         output_path_plot = os.path.join(
             target, "flow_out_" + "_".join(carriers) + ".png"
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
             # rotate hierarchical labels
-            # ax.texts = []
+            ax.texts.clear()
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=0.2,
-                rotation=20,
+                bar_yinterval=[0.4, 0.1],
+                rotation=[70, 0, 70],
                 ha="right",
+                hlines=True,
             )
 
             # Move the legend below current axis
             ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.42),
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
                 fancybox=True,
-                ncol=4,
+                ncol=2,
                 fontsize=14,
             )
             ax.set_title("flow_out " + " ".join(carriers))
@@ -369,13 +420,51 @@ if __name__ == "__main__":
         except:  # noqa 722
             logger.warning("Could not plot.")
 
+    def plot_demands(carriers):
+        var_name = [f"flow_in_{carrier}" for carrier in carriers]
+        tech = "demand"
+        unit = "Wh"
+        output_path_plot = os.path.join(target, "demand_" + "_".join(carriers) + ".png")
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, tech=tech)
+        plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        try:
+            # rotate hierarchical labels
+            ax.texts.clear()
+            set_hierarchical_xlabels(
+                plot.prepared_scalar_data.index,
+                ax=ax,
+                bar_yinterval=[0.4, 0.1],
+                rotation=[70, 0, 70],
+                ha="right",
+                hlines=True,
+            )
+
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
+                fancybox=True,
+                ncol=1,
+                fontsize=14,
+            )
+            ax.set_title("demand " + " ".join(carriers))
+
+            plot.save_plot(output_path_plot)
+        except:  # noqa 722
+            logger.warning("Could not plot demands.")
+
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
+    plot_demands(CARRIERS)
 
-    for carrier in CARRIERS:
-        plot_storage_capacity(carrier)
-        plot_invest_out(carrier)
-        plot_storage_invest(carrier)
-        plot_flow_out(carrier)
-        plot_storage_out(carrier)
+    # for carrier in CARRIERS:
+    #     plot_storage_capacity(carrier)
+    #     plot_invest_out(carrier)
+    #     plot_storage_invest(carrier)
+    #     plot_flow_out(carrier)
+    #     plot_storage_out(carrier)

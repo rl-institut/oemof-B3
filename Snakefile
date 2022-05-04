@@ -138,7 +138,7 @@ rule prepare_heat_demand:
         scalars="results/_resources/scal_load_heat.csv",
         timeseries="results/_resources/ts_load_heat.csv",
     params:
-        logfile="logs/{scenario}.log"
+        logfile="logs/prepare_heat_demand.log"
     shell:
         "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries} {params.logfile}"
 
@@ -248,8 +248,10 @@ rule plot_joined_scalars:
         "results/joined_scenarios/{scenario_list}/joined/"
     output:
         directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+    params:
+        logfile="logs/{scenario_list}.log"
     shell:
-        "python scripts/plot_scalar_results.py {input} {output}"
+        "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
 rule report:
     input:
