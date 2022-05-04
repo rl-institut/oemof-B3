@@ -15,6 +15,17 @@ pandas.DataFrame
 Description
 -------------
 The script calculates cop timeseries of small-scale air-water heat pumps for decentralized use.
+
+The quality grade `QUALITY_GRADE` of the air-source heat pump is assumed to be 0.4 according to:
+VDE ETG Energietechnik, VDE-Studie “Potenziale für Strom im Wärmemarkt bis 2050 - Wärmeversorgung
+in flexiblen Energieversorgungssystemen mit hohen Anteilen an erneuerbaren Energien”. 2015.
+(http://www.energiedialog2050.de/BASE/DOWNLOADS/VDE_ST_ETG_Warmemarkt_RZ-web.pdf)
+
+The high temperature of the heat pump `temp_high` is assumed to be 50 °C
+According to the guidebooks of leading manufacturers, such as that of Buderus
+https://www.buderus.de/de/waermepumpe/vorlauftemperatur, a heat pump is operated efficiently up to
+a temperature of 50 °C. Furthermore, this value is close to the specification of the temperature
+of a modern radiator in the given guidebook.
 """
 
 import datetime
@@ -152,23 +163,23 @@ def calc_cops(temp_high, temp_low, quality_grade):
 
 
 if __name__ == "__main__":
-    in_path1 = sys.argv[1]  # path to csv with b3 capacities
+    in_path1 = sys.argv[1]  # path to csv with b3 demands
     in_path2 = sys.argv[2]  # path to weather data
     out_path = sys.argv[3]  # path to timeseries of cops of small-scale heat pumps
 
-    # Read state heat demands of ghd and hh sectors
     # Get constants
     # Quality grade of an air/water heat pump
     QUALITY_GRADE = config.settings.prepare_cop_timeseries.quality_grade
     # Set Scenario to "ALL" because the COP is independent of the scenarios
     SCENARIO = config.settings.prepare_cop_timeseries.scenario
 
+    # Read scalar demand
     sc = dp.load_b3_scalars(in_path1)
 
-    # Filter sc for heat pump capacities
-    sc_filtered = dp.filter_df(sc, "tech", ["heatpump_small"])
+    # Filter sc for heat demand
+    sc_filtered = dp.filter_df(sc, "carrier", ["heat_central", "heat_decentral"])
 
-    # get regions from data
+    # Get regions from heat demand
     regions = sc_filtered.loc[:, "region"].unique()
 
     # Create empty data frame for results / output
@@ -190,9 +201,7 @@ if __name__ == "__main__":
             )
 
             # Sink temperature: Surface + warm water heating
-            temp_high = [
-                50
-            ]  # TODO https://www.buderus.de/de/waermepumpe/vorlauftemperatur
+            temp_high = [50]
             # Source temperature: Ambient temperature
             temp_low = temperature["temp_air"]
 
