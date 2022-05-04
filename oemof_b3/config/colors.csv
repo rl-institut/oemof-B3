@@ -18,18 +18,18 @@ Battery in,#b494d1
 H2 cavern,#00fed0
 BEV,#e0b415
 
-El. transmission in,#8c564b
-El. transmission out,#c49a91
+El. transmission in,#65748b
+El. transmission out,#9da8b8
 
 El. shortage,#595959
 Curtailment,#DBDBDB
 
 El. demand,#052b61
-El. export,#8c564b
-El. import,#c49a91
+El. export,#9da8b8
+El. import,#65748b
 BEV charging,#a3830f
 
-H2 backpressure CHP,#24dab9
+H2 backpressure CHP,#22d6dd
 CH4 backpressure CHP,#abd14f
 CH4 extraction CHP,#9fb56b
 
@@ -47,9 +47,9 @@ Heat dec. storage in,#f9ac6c
 Heat dec. storage,#f2740a
 
 CH4 boiler,#f92774
-Heat pump (DH),#2ca02c
-Heat pump (domestic),#62d242
-res. PtH,#dfec28
+Heat pump (DH),#c500ff
+Heat pump (domestic),#ff00fb
+res. PtH,#ffa605
 
 CH4 excess,#DBDBDB
 
@@ -62,7 +62,7 @@ Lignite,saddlebrown
 Oil,#9467bd
 Other,#7f7f7f
 
-CH4 shortage,#728c76
+CH4 shortage,#595959
 CH4 demand,#1c2801
 H2 import,#4b818c
 H2 demand,#00705c
