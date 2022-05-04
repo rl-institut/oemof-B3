@@ -25,7 +25,7 @@ LOGGING_LEVEL = settings.get("LOGGING_LEVEL", logging.DEBUG if DEBUG else loggin
 LOGGING_FOLDER = "logs"
 
 root_logger = logging.getLogger()
-root_logger.setLevel(logging.DEBUG)
+root_logger.setLevel(LOGGING_LEVEL)
 
 stream_formatter = logging.Formatter("%(levelname)s - %(message)s")
 stream_handler = logging.StreamHandler()

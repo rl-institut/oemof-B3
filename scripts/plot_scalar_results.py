@@ -36,6 +36,38 @@ from oemof_b3.config import config
 logger = logging.getLogger()
 
 
+def aggregate_regions(df):
+    # this is a work-around to use the dataprocessing function for postprocessed data,
+    # which is in a similar but not in the same format as preprocessed oemof_b3 resources.
+    _df = df.copy()
+    _df.reset_index(inplace=True)
+    _df = _df.rename(columns={"scenario": "scenario_key"})
+    _df = dp.aggregate_scalars(_df, "region")
+    _df = _df.rename(columns={"scenario_key": "scenario"})
+    _df["name"] = _df.apply(lambda x: x["carrier"] + "-" + x["tech"], 1)
+    _df = _df.set_index("scenario")
+    return _df
+
+
+def draw_standalone_legend(c_dict):
+    import matplotlib.patches as mpatches
+
+    fig = plt.figure(figsize=(14, 14))
+    patches = [
+        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
+    ]
+    fig.legend(
+        patches,
+        c_dict.keys(),
+        loc="center",
+        ncol=4,
+        fontsize=14,
+        frameon=False,
+    )
+    plt.tight_layout()
+    return fig
+
+
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number):
     # pivot
     df_pivot = pd.pivot_table(
@@ -91,9 +123,15 @@ class ScalarPlot:
 
         return self.selected_scalars
 
-    def prepare_data(self):
+    def prepare_data(self, agg_regions=False):
+
+        self.prepared_scalar_data = self.selected_scalars.copy()
+
+        if agg_regions:
+            self.prepared_scalar_data = aggregate_regions(self.prepared_scalar_data)
+
         self.prepared_scalar_data = prepare_scalar_data(
-            df=self.selected_scalars,
+            df=self.prepared_scalar_data,
             colors_odict=colors_odict,
             labels_dict=labels_dict,
             conv_number=MW_TO_W,
@@ -222,7 +260,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
@@ -233,7 +271,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=var_name)
         plot.save_plot(output_path_plot)
 
@@ -245,7 +283,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -257,7 +295,7 @@ if __name__ == "__main__":
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -275,7 +313,7 @@ if __name__ == "__main__":
             ["storage", "asymmetric_storage", "link"],
             inverse=True,
         )
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -290,7 +328,7 @@ if __name__ == "__main__":
         plot.selected_scalars = dp.filter_df(
             plot.selected_scalars, "type", ["storage", "asymmetric_storage"]
         )
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.draw_plot(unit=unit, title=title)
         plot.save_plot(output_path_plot)
 
@@ -303,7 +341,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -341,7 +379,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -377,7 +415,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
-        plot.prepare_data()
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -409,6 +447,9 @@ if __name__ == "__main__":
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
     plot_demands(CARRIERS)
+
+    fig = draw_standalone_legend(colors_odict)
+    plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
