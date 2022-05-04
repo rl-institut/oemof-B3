@@ -3,3 +3,7 @@ optimize:
   solver: cbc
   debug: true
   receive_duals: false
+
+prepare_cop_timeseries:
+  quality_grade: 0.4
+  scenario: "ALL"

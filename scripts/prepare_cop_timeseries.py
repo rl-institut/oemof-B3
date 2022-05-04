@@ -20,12 +20,12 @@ The script calculates cop timeseries of small-scale air-water heat pumps for dec
 import datetime
 import os
 import sys
-import itertools
 import pandas as pd
 import numpy as np
 import oemof_b3.tools.data_processing as dp
 
 # from oemof.thermal.compression_heatpumps_and_chillers import calc_cops
+from oemof_b3.config import config
 
 
 def find_regional_files(path, region):
@@ -157,6 +157,12 @@ if __name__ == "__main__":
     out_path = sys.argv[3]  # path to timeseries of cops of small-scale heat pumps
 
     # Read state heat demands of ghd and hh sectors
+    # Get constants
+    # Quality grade of an air/water heat pump
+    QUALITY_GRADE = config.settings.prepare_cop_timeseries.quality_grade
+    # Set Scenario to "ALL" because the COP is independent of the scenarios
+    SCENARIO = config.settings.prepare_cop_timeseries.scenario
+
     sc = dp.load_b3_scalars(in_path1)
 
     # Filter sc for heat pump capacities
@@ -165,12 +171,10 @@ if __name__ == "__main__":
     # get regions from data
     regions = sc_filtered.loc[:, "region"].unique()
 
-    scenarios = sc_filtered.loc[:, "scenario_key"].unique()
-
     # Create empty data frame for results / output
     final_cops = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
-    for region, scenario in itertools.product(regions, scenarios):
+    for region in regions:
         weather_file_names = find_regional_files(in_path2, region)
 
         for weather_file_name in weather_file_names:
@@ -191,8 +195,6 @@ if __name__ == "__main__":
             ]  # TODO https://www.buderus.de/de/waermepumpe/vorlauftemperatur
             # Source temperature: Ambient temperature
             temp_low = temperature["temp_air"]
-            # Quality grade of an air/water heat pump
-            quality_grade = 0.4
 
             cops = pd.DataFrame(
                 index=pd.date_range(
@@ -202,13 +204,13 @@ if __name__ == "__main__":
                 )
             )
 
-            cops["air-water"] = calc_cops(temp_high, temp_low, quality_grade)
+            cops["air-water"] = calc_cops(temp_high, temp_low, QUALITY_GRADE)
 
             final_cops = dp.postprocess_data(
                 final_cops,
                 cops,
                 region,
-                scenario,
+                SCENARIO,
                 ["-"],
             )
 
