@@ -34,8 +34,6 @@ import sys
 import pandas as pd
 import numpy as np
 import oemof_b3.tools.data_processing as dp
-
-# from oemof.thermal.compression_heatpumps_and_chillers import calc_cops
 from oemof_b3.config import config
 
 
