@@ -24,7 +24,7 @@ El. transmission out,#9da8b8
 El. shortage,#595959
 Curtailment,#DBDBDB
 
-El. demand,#052b61
+El. demand,#3e89f4
 El. export,#9da8b8
 El. import,#65748b
 BEV charging,#a3830f
@@ -33,13 +33,13 @@ H2 backpressure CHP,#22d6dd
 CH4 backpressure CHP,#abd14f
 CH4 extraction CHP,#9fb56b
 
-Heat cen. demand,#ad0600
+Heat cen. demand,#ff0800
 Heat cen. excess,#DBDBDB
 Heat cen. shortage,#595959
 Heat cen. storage in,#ff6b66
 Heat cen. storage,#ff0800
 Heat cen. storage out,#b20600
-Heat dec. demand,#6c3404
+Heat dec. demand,#f2740a
 Heat dec. excess,#DBDBDB
 Heat dec. shortage,#595959
 Heat dec. storage out,#c45e08
@@ -63,6 +63,6 @@ Oil,#9467bd
 Other,#7f7f7f
 
 CH4 shortage,#595959
-CH4 demand,#1c2801
+CH4 demand,#bcf927
 H2 import,#4b818c
-H2 demand,#00705c
+H2 demand,#00fed0
