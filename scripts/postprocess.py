@@ -21,13 +21,14 @@ Description
 -------------
 The script performs the postprocessing of optimization results.
 """
+import os
 import sys
+import pandas as pd
 
 from oemof.solph import EnergySystem
 from oemoflex.model.datapackage import ResultsDataPackage
 
 from oemof_b3.config import config
-
 
 if __name__ == "__main__":
 
@@ -50,6 +51,10 @@ if __name__ == "__main__":
         rdp.set_scenario_name(scenario_name)
 
         rdp.to_csv_dir(destination)
+
+        pd.Series({"objective": es.meta_results["objective"]}).to_csv(
+            os.path.join(destination, "objective.csv")
+        )
 
     except:  # noqa: E722
         logger.exception(
