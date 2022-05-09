@@ -112,13 +112,13 @@ if __name__ == "__main__":
     for carrier in ["electricity", "heat_central", "heat_decentral", "h2"]:
         try:
             df = create_production_table(scalars, carrier)
-            dp.save_df(df, os.path.join(out_path, f"production_table_{carrier}.csv"))
+            dp.save_df(df, os.path.join(out_path, f"production_{carrier}.csv"))
         except:  # noqa E722
             logger.info(f"Could not create production table for carrier {carrier}.")
             continue
 
     df = create_demand_table(scalars)
-    dp.save_df(df, os.path.join(out_path, "sink_table.csv"))
+    dp.save_df(df, os.path.join(out_path, "demands.csv"))
 
     df = create_total_system_cost_table(scalars)
     dp.save_df(df, os.path.join(out_path, "total_system_cost.csv"))
