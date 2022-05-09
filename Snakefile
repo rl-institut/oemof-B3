@@ -175,16 +175,16 @@ rule build_datapackage:
         logfile="logs/{scenario}.log"
     shell:
         "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
-
-rule optimize:
-    input:
-        "results/{scenario}/preprocessed"
-    output:
-        directory("results/{scenario}/optimized/")
-    params:
-        logfile="logs/{scenario}.log"
-    shell:
-        "python scripts/optimize.py {input} {output} {params.logfile}"
+#
+# rule optimize:
+#     input:
+#         "results/{scenario}/preprocessed"
+#     output:
+#         directory("results/{scenario}/optimized/")
+#     params:
+#         logfile="logs/{scenario}.log"
+#     shell:
+#         "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
@@ -203,6 +203,16 @@ rule create_results_table:
         directory("results/{scenario}/tables/")
     params:
         logfile="logs/{scenario}.log"
+    shell:
+        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+
+rule create_joined_results_table:
+    input:
+        "results/joined_scenarios/{scenario_group}/joined/"
+    output:
+        directory("results/joined_scenarios/{scenario_group}/joined_tables/")
+    params:
+        logfile="logs/{scenario_group}.log"
     shell:
         "python scripts/create_results_table.py {input} {output} {params.logfile}"
 
