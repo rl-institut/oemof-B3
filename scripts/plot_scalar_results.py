@@ -178,12 +178,22 @@ class ScalarPlot:
             logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
+def get_auto_bar_yinterval(index, space_per_letter):
+
+    label_len_max = [
+        max([len(v) for v in index.get_level_values(i)]) for i in index.names
+    ]
+
+    bar_yinterval = [space_per_letter * i for i in label_len_max][:-1]
+    return bar_yinterval
+
+
 def set_hierarchical_xlabels(
     index,
     ax=None,
     hlines=False,
     bar_xmargin=0.1,
-    bar_yinterval=0.1,
+    bar_yinterval=None,
     rotation=0,
     ha=None,
 ):
@@ -202,6 +212,10 @@ def set_hierarchical_xlabels(
 
     n_levels = index.nlevels
     n_intervals = len(index.codes) - 1
+
+    if bar_yinterval is None:
+        SPACE_PER_LETTER = 0.05
+        bar_yinterval = get_auto_bar_yinterval(index, SPACE_PER_LETTER)
 
     if isinstance(bar_yinterval, (float, int)):
         bar_yinterval = [bar_yinterval] * n_intervals
@@ -414,7 +428,6 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
                 rotation=[70, 0, 70],
                 ha="right",
                 hlines=True,
