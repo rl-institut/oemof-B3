@@ -80,6 +80,20 @@ def create_demand_table(scalars):
     return df
 
 
+def create_total_system_cost_table(scalars):
+    df = scalars.copy()
+
+    df = dp.filter_df(df, "var_name", "total_system_cost")
+
+    df = df.set_index(["scenario_key", "var_name"])
+
+    df = df.loc[:, ["var_value"]]
+
+    df = dp.round_setting_int(df, decimals={col: 0 for col in df.columns})
+
+    return df
+
+
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
@@ -105,3 +119,6 @@ if __name__ == "__main__":
 
     df = create_demand_table(scalars)
     dp.save_df(df, os.path.join(out_path, "sink_table.csv"))
+
+    df = create_total_system_cost_table(scalars)
+    dp.save_df(df, os.path.join(out_path, "total_system_cost.csv"))
