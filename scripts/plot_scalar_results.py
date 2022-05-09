@@ -127,6 +127,18 @@ class ScalarPlot:
 
         return self.prepared_scalar_data
 
+    def swap_levels(self, swaplevels=(0, 2)):
+
+        if self.prepared_scalar_data is None:
+            raise Warning("No prepared data found")
+
+        else:
+            self.prepared_scalar_data = self.prepared_scalar_data.swaplevel(
+                *swaplevels
+            ).sort_index(level=0)
+
+        return self.prepared_scalar_data
+
     def draw_plot(self, unit, title):
         # do not plot if the data is empty or all zeros.
         if (
@@ -353,6 +365,7 @@ if __name__ == "__main__":
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -392,6 +405,7 @@ if __name__ == "__main__":
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -429,6 +443,7 @@ if __name__ == "__main__":
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
