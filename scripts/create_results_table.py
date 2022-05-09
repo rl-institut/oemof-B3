@@ -47,7 +47,7 @@ def create_production_table(scalars, carrier):
 
     df = df.loc[~df[f"flow_out_{carrier}"].isna()]
 
-    df.index = df.index.droplevel(["name", "scenario_key", "type"])
+    df.index = df.index.droplevel(["name", "type"])
 
     df.loc[:, "FLH"] = df.loc[:, f"flow_out_{carrier}"] / df.loc[
         :, ["capacity", f"invest_out_{carrier}"]
@@ -71,7 +71,7 @@ def create_demand_table(scalars):
 
     df = dp.filter_df(df, "type", ["excess", "load"])
 
-    df = df.set_index(["region", "carrier", "tech", "var_name"])
+    df = df.set_index(["scenario_key", "region", "carrier", "tech", "var_name"])
 
     df = df.loc[:, ["var_value"]]
 
