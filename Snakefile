@@ -246,11 +246,11 @@ rule plot_scalar_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_list}/joined/"
+        "results/joined_scenarios/{scenario_group}/joined/"
     output:
-        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
     params:
-        logfile="logs/{scenario_list}.log"
+        logfile="logs/{scenario_group}.log"
     shell:
         "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
