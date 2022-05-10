@@ -379,8 +379,8 @@ if __name__ == "__main__":
 
             plot.save_plot(output_path_plot)
 
-        except:  # noqa 722
-            logger.warning("Could not plot.")
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -417,8 +417,9 @@ if __name__ == "__main__":
             ax.set_title("flow_out " + " ".join(carriers))
 
             plot.save_plot(output_path_plot)
-        except:  # noqa 722
-            logger.warning("Could not plot.")
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_flow_out_multi_carrier: {e}.")
 
     def plot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -454,8 +455,9 @@ if __name__ == "__main__":
             ax.set_title("demand " + " ".join(carriers))
 
             plot.save_plot(output_path_plot)
-        except:  # noqa 722
-            logger.warning("Could not plot demands.")
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_demands: {e}.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
