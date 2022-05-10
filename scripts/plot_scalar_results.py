@@ -375,7 +375,7 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("invest_out " + " ".join(carriers))
+            ax.set_title("Invested capacity")
 
             plot.save_plot(output_path_plot)
 
@@ -414,7 +414,7 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("flow_out " + " ".join(carriers))
+            ax.set_title("Summed energy")
 
             plot.save_plot(output_path_plot)
 
@@ -452,7 +452,7 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.set_title("demand " + " ".join(carriers))
+            ax.set_title("Demand")
 
             plot.save_plot(output_path_plot)
 
