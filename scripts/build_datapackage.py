@@ -38,6 +38,7 @@ from oemof_b3.model import (
 )
 from oemof_b3.tools.data_processing import (
     filter_df,
+    update_filtered_df,
     load_b3_scalars,
     load_b3_timeseries,
     unstack_timeseries,
@@ -170,23 +171,11 @@ def parametrize_scalars(edp, scalars, filters):
     """
     edp.stack_components()
 
-    for id, filt in filters.items():
-        filtered = scalars.copy()
+    filtered = update_filtered_df(scalars, filters)
 
-        for key, value in filt.items():
+    filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
 
-            filtered = filter_df(filtered, key, value)
-
-        filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
-
-        duplicated = filtered.loc[filtered.index.duplicated()]
-
-        if duplicated.any():
-            raise ValueError(f"There are duplicates in the scalar data: {duplicated}")
-
-        update_with_checks(edp.data["component"], filtered)
-
-        logger.info(f"Updated DataPackage with scalars filtered by {filt}.")
+    update_with_checks(edp.data["component"], filtered)
 
     edp.unstack_components()
 
@@ -258,12 +247,7 @@ def load_additional_scalars(scalars, filters):
     df = pd.concat([el_gas_rel, emissions, bpchp_out])
 
     # filter by 'scenario_key'
-    filtered_df = pd.DataFrame()
-    for id, filt in filters.items():
-        _df = df.copy()
-        for key, value in filt.items():
-            _filtered = filter_df(_df, key, value)
-            filtered_df = pd.concat([filtered_df, _filtered])
+    filtered_df = update_filtered_df(df, filters)
 
     # calculate emission limit and prepare data frame in case all necessary data is available
     _filtered_df = filtered_df.copy().set_index("var_name")
