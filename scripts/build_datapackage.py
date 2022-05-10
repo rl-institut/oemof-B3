@@ -49,11 +49,6 @@ from oemof_b3.config import config
 
 logger = logging.getLogger()
 
-# global variables
-EL_GAS_RELATION = "electricity_gas_relation"
-EMISSION = "emission"
-ADDITIONAL_SCALARS_FILE = "additional_scalars.csv"
-
 
 def multi_load(paths, load_func):
     if isinstance(paths, list):
@@ -245,8 +240,12 @@ def parametrize_sequences(edp, ts, filters):
 def load_additional_scalars(scalars, filters):
     """Loads additional scalars like the emission limit and filters by 'scenario_key'"""
     # get electricity/gas relations and parameters for the calculation of emission_limit
-    el_gas_rel = scalars.loc[scalars.var_name == EL_GAS_RELATION]
-    emissions = scalars.loc[scalars.carrier == EMISSION]
+    el_gas_rel = scalars.loc[
+        scalars.var_name == config.settings.build_datapackage.el_gas_relation
+    ]
+    emissions = scalars.loc[
+        scalars.carrier == config.settings.build_datapackage.emission
+    ]
 
     # get `output_parameters` of backpressure components as they are not taken into
     # consideration in oemof.tabular so far. They are added to the components' output flow towards
@@ -297,8 +296,10 @@ def load_additional_scalars(scalars, filters):
 
 
 def save_additional_scalars(additional_scalars, destination):
-    """Saves `additional_scalars` to `ADDITIONAL_SCALARS_FILE` in `destination`"""
-    filename = os.path.join(destination, ADDITIONAL_SCALARS_FILE)
+    """Saves `additional_scalars` to additional_scalar_file in `destination`"""
+    filename = os.path.join(
+        destination, config.settings.build_datapackage.additional_scalars_file
+    )
     save_df(additional_scalars, filename)
 
 
