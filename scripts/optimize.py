@@ -35,7 +35,7 @@ import sys
 import numpy as np
 
 from oemof.solph import EnergySystem, Model, constraints
-from oemof.outputlib import processing
+from oemof.solph import processing
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -215,7 +215,7 @@ if __name__ == "__main__":
         )
 
         # Reduce number of timestep for debugging
-        if config.settings.debug:
+        if config.settings.optimize.debug:
             es.timeindex = es.timeindex[:3]
 
             logger.info(
@@ -236,6 +236,10 @@ if __name__ == "__main__":
             add_electricity_gas_relation_constraints(
                 model=m, relations=el_gas_relations
             )
+
+        # tell the model to get the dual variables when solving
+        if config.settings.optimize.receive_duals:
+            m.receive_duals()
 
         m.solve(solver=config.settings.optimize.solver)
     except:  # noqa: E722

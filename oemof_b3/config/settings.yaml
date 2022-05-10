@@ -1,6 +1,8 @@
-
-debug: true
-
 optimize:
-  solver: cbc
   filename_metadata: datapackage.json
+  solver: cbc
+  debug: true
+  receive_duals: false
+
+plot_scalar_results:
+  agg_regions: true
