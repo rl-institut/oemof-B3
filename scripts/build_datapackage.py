@@ -171,9 +171,17 @@ def parametrize_scalars(edp, scalars, filters):
     """
     edp.stack_components()
 
+    # apply filters subsequently
     filtered = update_filtered_df(scalars, filters)
 
+    # set index to component name and var_name
     filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
+
+    # check if there are duplicates after setting index
+    duplicated = filtered.loc[filtered.index.duplicated()]
+
+    if duplicated.any():
+        raise ValueError(f"There are duplicates in the scalar data: {duplicated}")
 
     update_with_checks(edp.data["component"], filtered)
 
