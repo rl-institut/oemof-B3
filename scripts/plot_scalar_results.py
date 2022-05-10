@@ -364,6 +364,7 @@ if __name__ == "__main__":
                 bar_yinterval=[0.4, 0.1],
                 rotation=[70, 0, 70],
                 ha="right",
+                hlines=True,
             )
 
             # Move the legend below current axis
@@ -373,7 +374,6 @@ if __name__ == "__main__":
                 fancybox=True,
                 ncol=2,
                 fontsize=14,
-                hlines=True,
             )
             ax.set_title("invest_out " + " ".join(carriers))
 
