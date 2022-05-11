@@ -141,7 +141,7 @@ class ScalarPlot:
 
         return self.prepared_scalar_data
 
-    def swap_levels(self, swaplevels=(0, 2)):
+    def swap_levels(self, swaplevels=(0, 1)):
 
         if self.prepared_scalar_data is None:
             raise Warning("No prepared data found")
@@ -415,7 +415,7 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                rotation=[70, 0, 70],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -457,7 +457,7 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                rotation=[70, 0, 70],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -495,7 +495,7 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                rotation=[70, 0, 70],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
