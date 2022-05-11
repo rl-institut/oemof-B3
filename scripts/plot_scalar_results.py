@@ -57,10 +57,24 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
 
     df = _drop_near_zeros(df, tolerance)
 
+    if df.empty:
+        return df
+
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
     )
+
+    def drop_constant_multiindex_levels(df):
+        _df = df.copy()
+        drop_levels = [
+            name for name in _df.index.names if len(_df.index.unique(name)) <= 1
+        ]
+        _df.index = _df.index.droplevel(drop_levels)
+        return _df
+
+    # Drop levels that are all the same, e.g. 'ALL' for aggregated regions
+    df_pivot = drop_constant_multiindex_levels(df_pivot)
 
     # rename and aggregate duplicated columns
     df_pivot = plots.map_labels(df_pivot, labels_dict)
@@ -183,7 +197,12 @@ def set_hierarchical_xlabels(
 
     ax = ax or plt.gca()
 
-    assert isinstance(index, pd.MultiIndex)
+    if not isinstance(index, pd.MultiIndex):
+        logging.info(
+            "Index is not a pd.MultiIndex. Need a multiindex to set hierarchical labels."
+        )
+        return None
+
     labels = ax.set_xticklabels([s for *_, s in index])
 
     transform = ax.get_xaxis_transform()
@@ -361,9 +380,10 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                bar_yinterval=[0.4],
+                rotation=[70, 70],
                 ha="right",
+                hlines=True,
             )
 
             # Move the legend below current axis
@@ -373,14 +393,13 @@ if __name__ == "__main__":
                 fancybox=True,
                 ncol=2,
                 fontsize=14,
-                hlines=True,
             )
-            ax.set_title("invest_out " + " ".join(carriers))
+            ax.set_title("Invested capacity")
 
             plot.save_plot(output_path_plot)
 
-        except:  # noqa 722
-            logger.warning("Could not plot.")
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -390,6 +409,9 @@ if __name__ == "__main__":
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="type", values="storage", inverse=True
+        )
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
@@ -400,8 +422,8 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                bar_yinterval=[0.4],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -414,11 +436,12 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("flow_out " + " ".join(carriers))
+            ax.set_title("Summed energy")
 
             plot.save_plot(output_path_plot)
-        except:  # noqa 722
-            logger.warning("Could not plot.")
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_flow_out_multi_carrier: {e}.")
 
     def plot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -437,8 +460,8 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                bar_yinterval=[0.4],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -451,11 +474,12 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.set_title("demand " + " ".join(carriers))
+            ax.set_title("Demand")
 
             plot.save_plot(output_path_plot)
-        except:  # noqa 722
-            logger.warning("Could not plot demands.")
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_demands: {e}.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
