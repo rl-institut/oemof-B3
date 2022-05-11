@@ -390,6 +390,9 @@ if __name__ == "__main__":
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="type", values="storage", inverse=True
+        )
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
