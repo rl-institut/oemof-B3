@@ -180,6 +180,7 @@ class ScalarPlot:
             logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
+# TODO: This function could move to oemoflex once it is more mature
 def set_hierarchical_xlabels(
     index,
     ax=None,
