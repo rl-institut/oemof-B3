@@ -165,7 +165,22 @@ def load_b3_timeseries(path, sep=";"):
     return df
 
 
-def multi_load(paths, load_func):
+def _multi_load(paths, load_func):
+    r"""
+    Wraps a load_func to allow loading several dataframes at once.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+    load_func : func
+        A function that is able to load data from a single path
+
+    Returns
+    -------
+    result : pd.DataFrame
+        DataFrame containing the concatenated results
+    """
     if isinstance(paths, list):
         pass
     elif isinstance(paths, str):
@@ -184,11 +199,35 @@ def multi_load(paths, load_func):
 
 
 def multi_load_b3_scalars(paths):
-    return multi_load(paths, load_b3_scalars)
+    r"""
+    Loads scalars from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_scalars)
 
 
 def multi_load_b3_timeseries(paths):
-    return multi_load(paths, load_b3_timeseries)
+    r"""
+    Loads stacked timeseries from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_timeseries)
 
 
 def save_df(df, path):
