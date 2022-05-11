@@ -57,10 +57,24 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
 
     df = _drop_near_zeros(df, tolerance)
 
+    if df.empty:
+        return df
+
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
     )
+
+    def drop_constant_multiindex_levels(df):
+        _df = df.copy()
+        drop_levels = [
+            name for name in _df.index.names if len(_df.index.unique(name)) <= 1
+        ]
+        _df.index = _df.index.droplevel(drop_levels)
+        return _df
+
+    # Drop levels that are all the same, e.g. 'ALL' for aggregated regions
+    df_pivot = drop_constant_multiindex_levels(df_pivot)
 
     # rename and aggregate duplicated columns
     df_pivot = plots.map_labels(df_pivot, labels_dict)
@@ -183,7 +197,12 @@ def set_hierarchical_xlabels(
 
     ax = ax or plt.gca()
 
-    assert isinstance(index, pd.MultiIndex)
+    if not isinstance(index, pd.MultiIndex):
+        logging.info(
+            "Index is not a pd.MultiIndex. Need a multiindex to set hierarchical labels."
+        )
+        return None
+
     labels = ax.set_xticklabels([s for *_, s in index])
 
     transform = ax.get_xaxis_transform()
@@ -361,8 +380,8 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                bar_yinterval=[0.4],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -403,8 +422,8 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                bar_yinterval=[0.4],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -441,8 +460,8 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                bar_yinterval=[0.4],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
