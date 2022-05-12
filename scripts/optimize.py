@@ -32,9 +32,10 @@ The EnergySystem with results, meta-results and parameters is saved.
 """
 import os
 import sys
+import numpy as np
 
 from oemof.solph import EnergySystem, Model, constraints
-from oemof.outputlib import processing
+from oemof.solph import processing
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -44,12 +45,6 @@ from oemof.tabular.facades import TYPEMAP
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.equate_flows import equate_flows_by_keyword
 from oemof_b3.config import config
-
-# global variables
-EL_GAS_RELATION = "electricity_gas_relation"
-EMISSION_LIMIT = "emission_limit"
-EL_KEY = "electricity"  # prefix of keywords for gas electricity relation
-GAS_KEY = "gas"  # prefix of keywords for gas electricity relation
 
 
 def drop_values_by_keyword(df, keyword="None"):
@@ -67,7 +62,7 @@ def get_emission_limit(scalars):
     emission_df = drop_values_by_keyword(emission_df_raw)
 
     # return None if no emission limit is given ('None' or entry missing)
-    if emission_df.empty:
+    if emission_df.empty or emission_df.at["emission_limit", "var_value"] is np.nan:
         print("No emission limit will be set.")
         return None
     else:
@@ -86,7 +81,9 @@ def get_electricity_gas_relations(scalars):
         Contains rows of scalars with 'var_name' `EL_GAS_RELATION`
     If no relation is given returns None.
     """
-    relations_raw = scalars.loc[scalars.var_name == EL_GAS_RELATION]
+    relations_raw = scalars.loc[
+        scalars.var_name == config.settings.optimize.el_gas_relation
+    ]
     # drop relations that are None
     relations = drop_values_by_keyword(relations_raw)
     if relations.empty:
@@ -168,8 +165,8 @@ def add_electricity_gas_relation_constraints(model, relations):
         suffix = f"{row.carrier}-{row.region}"
         equate_flows_by_keyword(
             model=model,
-            keyword1=f"{GAS_KEY}-{suffix}",
-            keyword2=f"{EL_KEY}-{suffix}",
+            keyword1=f"{config.settings.optimize.gas_key}-{suffix}",
+            keyword2=f"{config.settings.optimize.el_key}-{suffix}",
             factor1=row.var_value,
             name=f"equate_flows_{suffix}",
         )
@@ -214,7 +211,7 @@ if __name__ == "__main__":
         )
 
         # Reduce number of timestep for debugging
-        if config.settings.debug:
+        if config.settings.optimize.debug:
             es.timeindex = es.timeindex[:3]
 
             logger.info(
@@ -235,6 +232,10 @@ if __name__ == "__main__":
             add_electricity_gas_relation_constraints(
                 model=m, relations=el_gas_relations
             )
+
+        # tell the model to get the dual variables when solving
+        if config.settings.optimize.receive_duals:
+            m.receive_duals()
 
         m.solve(solver=config.settings.optimize.solver)
     except:  # noqa: E722
