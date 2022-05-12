@@ -254,7 +254,7 @@ def load_additional_scalars(scalars, filters):
     # concatenate data for filtering
     df = pd.concat([el_gas_rel, emissions, bpchp_out])
 
-    # filter by 'scenario_key'
+    # subsequently apply filters
     filtered_df = update_filtered_df(df, filters)
 
     # calculate emission limit and prepare data frame in case all necessary data is available
