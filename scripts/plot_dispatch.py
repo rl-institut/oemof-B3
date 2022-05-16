@@ -79,6 +79,10 @@ if __name__ == "__main__":
         MW_to_W = 1e6
         data = data * MW_to_W
 
+        # change colors for demand in colors_odict to black
+        for i in df_demand.columns:
+            colors_odict[i] = "#000000"
+
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
             df=df, df_demand=df_demand, unit="W", colors_odict=colors_odict
