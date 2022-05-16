@@ -1,6 +1,6 @@
 ,Color
-PV,#feff01
-Wind on,#1f77b4
+PV,#fcca00
+Wind on,#9BE3F3
 Wind off,#73baec
 Biomass ST,#2ca02c
 Biomass GT,#007000
@@ -13,7 +13,7 @@ Nuclear ST,pink
 
 Battery,#9467bd
 Battery out,#683e8e
-Battery in,#b494d1
+Battery in,#9467bd
 
 H2 cavern,#00fed0
 BEV,#e0b415
@@ -29,16 +29,16 @@ El. export,#9da8b8
 El. import,#65748b
 BEV charging,#a3830f
 
-H2 backpressure CHP,#22d6dd
-CH4 backpressure CHP,#abd14f
+H2 backpressure CHP,#5bc5c8
+CH4 backpressure CHP,#82e456
 CH4 extraction CHP,#9fb56b
 
 Heat cen. demand,#ff0800
 Heat cen. excess,#DBDBDB
 Heat cen. shortage,#595959
-Heat cen. storage in,#ff6b66
+Heat cen. storage in,#f87286
 Heat cen. storage,#ff0800
-Heat cen. storage out,#b20600
+Heat cen. storage out,#ce829e
 Heat dec. demand,#f2740a
 Heat dec. excess,#DBDBDB
 Heat dec. shortage,#595959
@@ -46,14 +46,14 @@ Heat dec. storage out,#c45e08
 Heat dec. storage in,#f9ac6c
 Heat dec. storage,#f2740a
 
-CH4 boiler,#f92774
-Heat pump (DH),#c500ff
-Heat pump (domestic),#ff00fb
+CH4 boiler,#cc3833
+Heat pump (DH),#c591d4
+Heat pump (domestic),#edabec
 res. PtH,#ffa605
 
 CH4 excess,#DBDBDB
 
-Electrolyzer,#0099ff
+Electrolyzer,#54AAE3
 
 Biomass,#2ca02c
 CH4,#bcf927
