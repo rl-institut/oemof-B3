@@ -144,7 +144,10 @@ class ScalarPlot:
     def swap_levels(self, swaplevels=(0, 1)):
 
         if self.prepared_scalar_data is None:
-            raise Warning("No prepared data found")
+            logger.warning("No prepared data found")
+
+        elif not isinstance(self.prepared_scalar_data.index, pd.MultiIndex):
+            logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
 
         else:
             self.prepared_scalar_data = self.prepared_scalar_data.swaplevel(
