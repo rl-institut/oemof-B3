@@ -165,6 +165,71 @@ def load_b3_timeseries(path, sep=";"):
     return df
 
 
+def _multi_load(paths, load_func):
+    r"""
+    Wraps a load_func to allow loading several dataframes at once.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+    load_func : func
+        A function that is able to load data from a single path
+
+    Returns
+    -------
+    result : pd.DataFrame
+        DataFrame containing the concatenated results
+    """
+    if isinstance(paths, list):
+        pass
+    elif isinstance(paths, str):
+        return load_func(paths)
+    else:
+        raise ValueError(f"{paths} has to be either list of paths or path.")
+
+    dfs = []
+    for path in paths:
+        df = load_func(path)
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+
+    return result
+
+
+def multi_load_b3_scalars(paths):
+    r"""
+    Loads scalars from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_scalars)
+
+
+def multi_load_b3_timeseries(paths):
+    r"""
+    Loads stacked timeseries from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_timeseries)
+
+
 def save_df(df, path):
     """
     This function saves data to a csv file.
@@ -359,6 +424,52 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
 
     return df_aggregated
+
+
+def expand_regions(scalars, regions, where="ALL"):
+    r"""
+    Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
+    Returns scalars with new rows included for each region in those places where region equals
+    `where`.
+
+    Parameters
+    ----------
+    scalars : pd.DataFrame
+        Data in oemof_b3 format to expand
+    regions : list
+        List of regions
+    where : str
+        Key that should be expanded
+    Returns
+    -------
+    sc_with_region : pd.DataFrame
+        Data with expanded regions in oemof_b3 format
+    """
+    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
+
+    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
+
+    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
+
+    if sc_wo_region.empty:
+        return sc_with_region
+
+    for region in regions:
+        regionalized = sc_wo_region.copy()
+
+        regionalized["name"] = regionalized.apply(
+            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+        )
+
+        regionalized["region"] = region
+
+        sc_with_region = sc_with_region.append(regionalized)
+
+    sc_with_region = sc_with_region.reset_index(drop=True)
+
+    sc_with_region.index.name = "id_scal"
+
+    return sc_with_region
 
 
 def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
