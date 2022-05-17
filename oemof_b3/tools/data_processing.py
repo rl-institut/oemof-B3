@@ -286,6 +286,28 @@ def filter_df(df, column_name, values, inverse=False):
     return df_filtered
 
 
+def multi_filter_df(df, **kwargs):
+    r"""
+    Applies several filters in a row to a DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data in oemof_b3 format.
+    kwargs : Additional keyword arguments
+        Filters to apply
+
+    Returns
+    -------
+    filtered_df : pd.DataFrame
+        Filtered data
+    """
+    filtered_df = df.copy()
+    for key, value in kwargs.items():
+        filtered_df = filter_df(filtered_df, key, value)
+    return filtered_df
+
+
 def update_filtered_df(df, filters):
     r"""
     Accepts an oemof-b3 Dataframe, filters it, subsequently update
@@ -313,10 +335,8 @@ def update_filtered_df(df, filters):
     for iteration, filter in filters.items():
         print(f"Applying set of filters no {iteration}.")
 
-        # Create copy to filter from
-        filtered = df.copy()
-        for key, value in filter.items():
-            filtered = filter_df(filtered, key, value)
+        # Apply set of filters
+        filtered = multi_filter_df(df, **filter)
 
         # Update result with new filtered data
         filtered_updated = merge_a_into_b(
