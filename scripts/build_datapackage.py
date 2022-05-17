@@ -38,6 +38,7 @@ from oemof_b3.model import (
 )
 from oemof_b3.tools.data_processing import (
     filter_df,
+    update_filtered_df,
     multi_load_b3_scalars,
     multi_load_b3_timeseries,
     unstack_timeseries,
@@ -97,23 +98,19 @@ def parametrize_scalars(edp, scalars, filters):
     """
     edp.stack_components()
 
-    for id, filt in filters.items():
-        filtered = scalars.copy()
+    # apply filters subsequently
+    filtered = update_filtered_df(scalars, filters)
 
-        for key, value in filt.items():
+    # set index to component name and var_name
+    filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
 
-            filtered = filter_df(filtered, key, value)
+    # check if there are duplicates after setting index
+    duplicated = filtered.loc[filtered.index.duplicated()]
 
-        filtered = filtered.set_index(["name", "var_name"]).loc[:, "var_value"]
+    if duplicated.any():
+        raise ValueError(f"There are duplicates in the scalar data: {duplicated}")
 
-        duplicated = filtered.loc[filtered.index.duplicated()]
-
-        if duplicated.any():
-            raise ValueError(f"There are duplicates in the scalar data: {duplicated}")
-
-        update_with_checks(edp.data["component"], filtered)
-
-        logger.info(f"Updated DataPackage with scalars filtered by {filt}.")
+    update_with_checks(edp.data["component"], filtered)
 
     edp.unstack_components()
 
@@ -164,12 +161,75 @@ def parametrize_sequences(edp, ts, filters):
     return edp
 
 
-def save_emission_limit():
-    """Saves emission limit to `destination`"""
-    emission_scalars = scalars.loc[scalars["carrier"] == "emission"]
-    filename = os.path.join(destination, "additional_scalars.csv")
-    save_df(emission_scalars, filename)
-    return
+def load_additional_scalars(scalars, filters):
+    """Loads additional scalars like the emission limit and filters by 'scenario_key'"""
+    # get electricity/gas relations and parameters for the calculation of emission_limit
+    el_gas_rel = scalars.loc[
+        scalars.var_name == config.settings.build_datapackage.el_gas_relation
+    ]
+    emissions = scalars.loc[
+        scalars.carrier == config.settings.build_datapackage.emission
+    ]
+
+    # get `output_parameters` of backpressure components as they are not taken into
+    # consideration in oemof.tabular so far. They are added to the components' output flow towards
+    # the heat bus in script `optimize.py`.
+    bpchp_out = scalars.loc[
+        (scalars.tech == "bpchp") & (scalars.var_name == "output_parameters")
+    ]
+
+    # concatenate data for filtering
+    df = pd.concat([el_gas_rel, emissions, bpchp_out])
+
+    # subsequently apply filters
+    filtered_df = update_filtered_df(df, filters)
+
+    # calculate emission limit and prepare data frame in case all necessary data is available
+    _filtered_df = filtered_df.copy().set_index("var_name")
+    try:
+        emission_limit = calculate_emission_limit(
+            _filtered_df.at["emissions_1990", "var_value"],
+            _filtered_df.at["emissions_not_modeled", "var_value"],
+            _filtered_df.at["emission_reduction_factor", "var_value"],
+        )
+    except KeyError:
+        emission_limit = None
+
+    emission_limit_df = pd.DataFrame(
+        {
+            "var_name": "emission_limit",
+            "var_value": emission_limit,
+            "carrier": "emission",
+            "var_unit": "kg_CO2_eq",
+            "scenario_key": "ALL",
+        },
+        index=[0],
+    )
+
+    # add emission limit to filtered additional scalars and adapt format of data frame
+    add_scalars = pd.concat([filtered_df, emission_limit_df], sort=False)
+    add_scalars.reset_index(inplace=True, drop=True)
+    add_scalars.index.name = "id_scal"
+
+    return add_scalars
+
+
+def save_additional_scalars(additional_scalars, destination):
+    """Saves `additional_scalars` to additional_scalar_file in `destination`"""
+    filename = os.path.join(
+        destination, config.settings.build_datapackage.additional_scalars_file
+    )
+    save_df(additional_scalars, filename)
+
+
+def calculate_emission_limit(
+    emissions_1990, emissions_not_modeled, emission_reduction_factor
+):
+    """Calculates the emission limit.
+    Emission limit is calculated by
+    emissions_1990 * (1 - emission_reduction_factor) - emissions_not_modeled"""
+
+    return emissions_1990 * (1 - emission_reduction_factor) - emissions_not_modeled
 
 
 if __name__ == "__main__":
@@ -212,11 +272,16 @@ if __name__ == "__main__":
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, model_structure["regions"])
 
+    # get filters for scalars
+    filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
+
+    # load additional scalars like "emission_limit" and filter by `filters` in 'scenario_key'
+    additional_scalars = load_additional_scalars(scalars=scalars, filters=filters)
+
     # Drop those scalars that do not belong to a specific component
     scalars = scalars.loc[~scalars["name"].isna()]
 
-    filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
-
+    # filter and parametrize scalars
     edp = parametrize_scalars(edp, scalars, filters)
 
     # parametrize timeseries
@@ -230,9 +295,9 @@ if __name__ == "__main__":
 
     # save to csv
     edp.to_csv_dir(destination)
-
-    # add emission limit to `destination`
-    save_emission_limit()
+    save_additional_scalars(
+        additional_scalars=additional_scalars, destination=destination
+    )
 
     # add metadata
     edp.infer_metadata(foreign_keys_update=foreign_keys_update)
