@@ -47,7 +47,7 @@ def create_production_table(scalars, carrier):
 
     df = df.loc[~df[f"flow_out_{carrier}"].isna()]
 
-    df.index = df.index.droplevel(["name", "scenario_key", "type"])
+    df.index = df.index.droplevel(["name", "type"])
 
     df.loc[:, "FLH"] = df.loc[:, f"flow_out_{carrier}"] / df.loc[
         :, ["capacity", f"invest_out_{carrier}"]
@@ -71,7 +71,21 @@ def create_demand_table(scalars):
 
     df = dp.filter_df(df, "type", ["excess", "load"])
 
-    df = df.set_index(["region", "carrier", "tech", "var_name"])
+    df = df.set_index(["scenario_key", "region", "carrier", "tech", "var_name"])
+
+    df = df.loc[:, ["var_value"]]
+
+    df = dp.round_setting_int(df, decimals={col: 0 for col in df.columns})
+
+    return df
+
+
+def create_total_system_cost_table(scalars):
+    df = scalars.copy()
+
+    df = dp.filter_df(df, "var_name", "total_system_cost")
+
+    df = df.set_index(["scenario_key", "var_name"])
 
     df = df.loc[:, ["var_value"]]
 
@@ -98,10 +112,13 @@ if __name__ == "__main__":
     for carrier in ["electricity", "heat_central", "heat_decentral", "h2"]:
         try:
             df = create_production_table(scalars, carrier)
-            dp.save_df(df, os.path.join(out_path, f"production_table_{carrier}.csv"))
+            dp.save_df(df, os.path.join(out_path, f"production_{carrier}.csv"))
         except:  # noqa E722
             logger.info(f"Could not create production table for carrier {carrier}.")
             continue
 
     df = create_demand_table(scalars)
-    dp.save_df(df, os.path.join(out_path, "sink_table.csv"))
+    dp.save_df(df, os.path.join(out_path, "demands.csv"))
+
+    df = create_total_system_cost_table(scalars)
+    dp.save_df(df, os.path.join(out_path, "total_system_cost.csv"))

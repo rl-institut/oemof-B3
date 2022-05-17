@@ -206,6 +206,16 @@ rule create_results_table:
     shell:
         "python scripts/create_results_table.py {input} {output} {params.logfile}"
 
+rule create_joined_results_table:
+    input:
+        "results/joined_scenarios/{scenario_group}/joined/"
+    output:
+        directory("results/joined_scenarios/{scenario_group}/joined_tables/")
+    params:
+        logfile="logs/{scenario_group}.log"
+    shell:
+        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+
 rule plot_dispatch:
     input:
         "results/{scenario}/postprocessed/"
@@ -236,11 +246,11 @@ rule plot_scalar_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_list}/joined/"
+        "results/joined_scenarios/{scenario_group}/joined/"
     output:
-        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
     params:
-        logfile="logs/{scenario_list}.log"
+        logfile="logs/{scenario_group}.log"
     shell:
         "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
