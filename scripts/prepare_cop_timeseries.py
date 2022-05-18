@@ -42,6 +42,8 @@ from oemof_b3.config import config
 def find_regional_files(path, region):
     """
     This function returns a list of file names in a directory that match the specified region.
+    It is a duplicate of the find_regional_files function in prepare_heat_demand.py
+    and hence could be moved to data_processing.py in future after some refactoring.
 
     Parameters
     ----------
@@ -70,6 +72,8 @@ def find_regional_files(path, region):
 def get_year(file_name):
     """
     This function returns a year from file name
+    It is a duplicate of the get_year function in prepare_heat_demand.py
+    and hence could be moved to data_processing.py in future after some refactoring.
 
     Parameters
     ----------
