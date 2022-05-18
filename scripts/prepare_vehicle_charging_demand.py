@@ -6,8 +6,8 @@ input_dir : str
     ``raw/time_series/vehicle_charging``: Path of directory where csv files containing electric
     vehicle charging demand profiles are placed
 scalars_file : str
-    ``raw/scalars/demands.csv``: Path incl. file name of demand scalars including 'bev_pkw_share',
-    the share of pkw electricity charging demand
+    ``raw/scalars/demands.csv``: Path incl. file name of demand scalars including 'bev_car_share',
+    the share of passenger car electricity charging demand
 output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
@@ -21,7 +21,7 @@ pd.DataFrame
 Description
 -------------
 This script prepares electric vehicle charging demand profiles for the regions Berlin and
-Brandenburg. The profiles for pkws have been created before with simBEV
+Brandenburg. The profiles for passenger cars have been created before with simBEV
 (https://github.com/rl-institut/simbev), other vehicles taken into consideration with constant
 profiles. The charging strategy of simBEV data is "greedy", i.e. batteries are charged with maximum
 power until they are fully charged or removed. This script applies a charging strategy we refer to
@@ -53,9 +53,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
     r"""
     Prepares and formats electric vehicle charging demand profiles for regions 'B' and 'BB'.
 
-    The simBEV profiles are pkw charging demand profiles. If `const_share` of the charging demand is
-    given the pkw profile is mixed with a constant profile:
-    pkw_profile * (1 - const_share) + constant_profile * const_share
+    The simBEV profiles are passenger cars charging demand profiles. If `const_share` of the
+    charging demand is given this hourly profile is mixed with a constant profile:
+    car_profile * (1 - const_share) + constant_profile * const_share
         (using specified profiles, i.e. divided by their yearly sum)
 
     The profiles are resampled from 15-min to hourly time steps. If `balanced` is True the profiles
@@ -74,7 +74,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
         :py:func:`smooth_profiles()`.
         Default: True
     const_share : float
-        If the share of pkw charging demand is given the profile is mixed
+        If given the passenger car charging profile is mixed with a constant profile.
         Default: None
 
     Returns
@@ -127,7 +127,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
         ts_total_norm = ts_total_demand / ts_total_demand.sum()
 
         if const_share is not None:
-            # combine pkw profile and constant profile with `const_share`
+            # combine car profile and constant profile with `const_share`
             length = len(ts_total_demand)
             constant_ts_norm = pd.DataFrame(
                 [1 / length for i in range(length)],
@@ -219,10 +219,10 @@ def smooth_profiles(df):
 
 
 def get_constant_share_of_vehicle_ts(filename):
-    """Reads bev pkw share from `filename` and returns (1 - pkw_share), the constant share"""
+    """Reads electric car share from `filename` and returns (1 - car_share), the constant share"""
     scalars = dp.load_b3_scalars(filename)
-    pkw_share = scalars.loc[scalars["var_name"] == "bev_pkw_share"].var_value.iloc[0]
-    const_share = 1 - pkw_share
+    car_share = scalars.loc[scalars["var_name"] == "bev_car_share"].var_value.iloc[0]
+    const_share = 1 - car_share
     return const_share
 
 
