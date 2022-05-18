@@ -12,20 +12,20 @@ CH4 GT,#bcf927
 Nuclear ST,pink
 
 Battery,#9467bd
-Battery out,#683e8e
+Battery out,#9467bd
 Battery in,#9467bd
 
 H2 cavern,#00fed0
 BEV,#e0b415
 
-El. transmission in,#718b65
+El. transmission in,#c1cebb
 El. transmission out,#c1cebb
 
-El. shortage,#595959
+El. shortage,#DBDBDB
 Curtailment,#DBDBDB
 
 El. demand,#3e89f4
-El. export,#9da8b8
+El. export,#65748b
 El. import,#65748b
 BEV charging,#a3830f
 
@@ -35,14 +35,14 @@ CH4 extraction CHP,#9fb56b
 
 Heat cen. demand,#ff0800
 Heat cen. excess,#DBDBDB
-Heat cen. shortage,#595959
+Heat cen. shortage,#DBDBDB
 Heat cen. storage in,#f87286
 Heat cen. storage,#ff0800
-Heat cen. storage out,#ce829e
+Heat cen. storage out,#f87286
 Heat dec. demand,#f2740a
 Heat dec. excess,#DBDBDB
-Heat dec. shortage,#595959
-Heat dec. storage out,#c45e08
+Heat dec. shortage,#DBDBDB
+Heat dec. storage out,#f9ac6c
 Heat dec. storage in,#f9ac6c
 Heat dec. storage,#f2740a
 
@@ -62,7 +62,7 @@ Lignite,saddlebrown
 Oil,#9467bd
 Other,#7f7f7f
 
-CH4 shortage,#595959
+CH4 shortage,#DBDBDB
 CH4 import,#cfcfcf
 CH4 demand,#bcf927
 H2 import,#4b818c
