@@ -130,7 +130,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
             # combine car profile and constant profile with `const_share`
             length = len(ts_total_demand)
             constant_ts_norm = pd.DataFrame(
-                [1 / length for i in range(length)],
+                [1/length] * length,
                 index=ts_total_demand.index,
             )
             array_ts_total_norm = (
