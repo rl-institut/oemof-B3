@@ -124,6 +124,8 @@ rule prepare_cop_timeseries:
         weather="raw/weatherdata"
     output:
         ts_efficiency_small="results/_resources/ts_efficiency_heatpump_small.csv",
+    params:
+        logfile="logs/prepare_cop_timeseries.log"
     shell:
          "python scripts/prepare_cop_timeseries.py {input.scalars} {input.weather} {output.ts_efficiency_small}"
 

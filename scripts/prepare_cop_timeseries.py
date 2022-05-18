@@ -6,6 +6,8 @@ in_path1 : str
     ``raw/weatherdata``: path of input directory with weather data
 in_path2 : str
     ``raw/scalars/capacities.csv``: path of scalar data as .csv
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
