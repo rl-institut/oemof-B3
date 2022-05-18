@@ -191,6 +191,7 @@ if __name__ == "__main__":
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
+    # TODO: Check if oemoflex' function can be imported and used here
     plot_grouped_bar(ax, df_pivot, color_dict, unit)
 
     plt.savefig(target, bbox_inches="tight")

@@ -24,14 +24,14 @@ import os
 import sys
 
 import matplotlib.pyplot as plt
+import numpy as np
 import oemoflex.tools.plots as plots
 import pandas as pd
 from oemoflex.tools.plots import plot_grouped_bar
 
-from oemof_b3.tools import data_processing as dp
 from oemof_b3 import colors_odict, labels_dict
 from oemof_b3.config import config
-
+from oemof_b3.tools import data_processing as dp
 
 logger = logging.getLogger()
 
@@ -57,10 +57,24 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
 
     df = _drop_near_zeros(df, tolerance)
 
+    if df.empty:
+        return df
+
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
     )
+
+    def drop_constant_multiindex_levels(df):
+        _df = df.copy()
+        drop_levels = [
+            name for name in _df.index.names if len(_df.index.unique(name)) <= 1
+        ]
+        _df.index = _df.index.droplevel(drop_levels)
+        return _df
+
+    # Drop levels that are all the same, e.g. 'ALL' for aggregated regions
+    df_pivot = drop_constant_multiindex_levels(df_pivot)
 
     # rename and aggregate duplicated columns
     df_pivot = plots.map_labels(df_pivot, labels_dict)
@@ -127,6 +141,21 @@ class ScalarPlot:
 
         return self.prepared_scalar_data
 
+    def swap_levels(self, swaplevels=(0, 1)):
+
+        if self.prepared_scalar_data is None:
+            logger.warning("No prepared data found")
+
+        elif not isinstance(self.prepared_scalar_data.index, pd.MultiIndex):
+            logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
+
+        else:
+            self.prepared_scalar_data = self.prepared_scalar_data.swaplevel(
+                *swaplevels
+            ).sort_index(level=0)
+
+        return self.prepared_scalar_data
+
     def draw_plot(self, unit, title):
         # do not plot if the data is empty or all zeros.
         if (
@@ -166,12 +195,30 @@ class ScalarPlot:
             logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
+def get_auto_bar_yinterval(index, space_per_letter, rotation):
+    # set intervals according to maximal length of labels
+    label_len_max = [
+        max([len(v) for v in index.get_level_values(i)]) for i in index.names
+    ]
+
+    bar_yinterval = [space_per_letter * i for i in label_len_max][:-1]
+
+    # if there is rotation, reduce the interval
+    bar_yinterval = [
+        interval * abs(np.sin(rotation)) + space_per_letter
+        for interval, rotation in zip(bar_yinterval, rotation)
+    ]
+
+    return bar_yinterval
+
+
+# TODO: This function could move to oemoflex once it is more mature
 def set_hierarchical_xlabels(
     index,
     ax=None,
     hlines=False,
     bar_xmargin=0.1,
-    bar_yinterval=0.1,
+    bar_yinterval=None,
     rotation=0,
     ha=None,
 ):
@@ -183,13 +230,30 @@ def set_hierarchical_xlabels(
 
     ax = ax or plt.gca()
 
-    assert isinstance(index, pd.MultiIndex)
+    if not isinstance(index, pd.MultiIndex):
+        logging.info(
+            "Index is not a pd.MultiIndex. Need a multiindex to set hierarchical labels."
+        )
+        return None
+
     labels = ax.set_xticklabels([s for *_, s in index])
 
     transform = ax.get_xaxis_transform()
 
     n_levels = index.nlevels
     n_intervals = len(index.codes) - 1
+
+    if isinstance(rotation, (float, int)):
+        rotation = [rotation] * n_levels
+
+    elif len(rotation) != n_levels:
+        raise ValueError(
+            "Number of values for rotation must be 1 or match number of index levels."
+        )
+
+    if bar_yinterval is None:
+        SPACE_PER_LETTER = 0.05
+        bar_yinterval = get_auto_bar_yinterval(index, SPACE_PER_LETTER, rotation)
 
     if isinstance(bar_yinterval, (float, int)):
         bar_yinterval = [bar_yinterval] * n_intervals
@@ -198,14 +262,6 @@ def set_hierarchical_xlabels(
         raise ValueError(
             "Must either pass one value for bar_yinterval or a list of values that matches the"
             "number of index levels minus one."
-        )
-
-    if isinstance(rotation, (float, int)):
-        rotation = [rotation] * n_levels
-
-    elif len(rotation) != n_levels:
-        raise ValueError(
-            "Number of values for rotation must be 1 or match number of index levels."
         )
 
     if rotation[0] != 0:
@@ -353,6 +409,7 @@ if __name__ == "__main__":
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -361,9 +418,9 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                rotation=[70, 70],
                 ha="right",
+                hlines=True,
             )
 
             # Move the legend below current axis
@@ -373,14 +430,13 @@ if __name__ == "__main__":
                 fancybox=True,
                 ncol=2,
                 fontsize=14,
-                hlines=True,
             )
-            ax.set_title("invest_out " + " ".join(carriers))
+            ax.set_title("Invested capacity")
 
             plot.save_plot(output_path_plot)
 
-        except:  # noqa 722
-            logger.warning("Could not plot.")
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -390,8 +446,12 @@ if __name__ == "__main__":
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="type", values="storage", inverse=True
+        )
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -400,8 +460,7 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -414,11 +473,12 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("flow_out " + " ".join(carriers))
+            ax.set_title("Summed energy")
 
             plot.save_plot(output_path_plot)
-        except:  # noqa 722
-            logger.warning("Could not plot.")
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_flow_out_multi_carrier: {e}.")
 
     def plot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -429,6 +489,7 @@ if __name__ == "__main__":
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -437,8 +498,7 @@ if __name__ == "__main__":
             set_hierarchical_xlabels(
                 plot.prepared_scalar_data.index,
                 ax=ax,
-                bar_yinterval=[0.4, 0.1],
-                rotation=[70, 0, 70],
+                rotation=[70, 70],
                 ha="right",
                 hlines=True,
             )
@@ -451,11 +511,12 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.set_title("demand " + " ".join(carriers))
+            ax.set_title("Demand")
 
             plot.save_plot(output_path_plot)
-        except:  # noqa 722
-            logger.warning("Could not plot demands.")
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_demands: {e}.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)

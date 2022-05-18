@@ -165,6 +165,71 @@ def load_b3_timeseries(path, sep=";"):
     return df
 
 
+def _multi_load(paths, load_func):
+    r"""
+    Wraps a load_func to allow loading several dataframes at once.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+    load_func : func
+        A function that is able to load data from a single path
+
+    Returns
+    -------
+    result : pd.DataFrame
+        DataFrame containing the concatenated results
+    """
+    if isinstance(paths, list):
+        pass
+    elif isinstance(paths, str):
+        return load_func(paths)
+    else:
+        raise ValueError(f"{paths} has to be either list of paths or path.")
+
+    dfs = []
+    for path in paths:
+        df = load_func(path)
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+
+    return result
+
+
+def multi_load_b3_scalars(paths):
+    r"""
+    Loads scalars from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_scalars)
+
+
+def multi_load_b3_timeseries(paths):
+    r"""
+    Loads stacked timeseries from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_timeseries)
+
+
 def save_df(df, path):
     """
     This function saves data to a csv file.
@@ -219,6 +284,73 @@ def filter_df(df, column_name, values, inverse=False):
     df_filtered = _df.loc[where]
 
     return df_filtered
+
+
+def multi_filter_df(df, **kwargs):
+    r"""
+    Applies several filters in a row to a DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data in oemof_b3 format.
+    kwargs : Additional keyword arguments
+        Filters to apply
+
+    Returns
+    -------
+    filtered_df : pd.DataFrame
+        Filtered data
+    """
+    filtered_df = df.copy()
+    for key, value in kwargs.items():
+        filtered_df = filter_df(filtered_df, key, value)
+    return filtered_df
+
+
+def update_filtered_df(df, filters):
+    r"""
+    Accepts an oemof-b3 Dataframe, filters it, subsequently update
+    the result with data filtered with other filters.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Scalar data in oemof-b3 format to filter
+    filters : dict of dict
+        Several filters to be applied subsequently
+
+    Returns
+    -------
+    filtered : pd.DataFrame
+    """
+    assert isinstance(filters, dict)
+    for value in filters.values():
+        assert isinstance(value, dict)
+
+    # Prepare empty dataframe to be updated with filtered data
+    filtered_updated = pd.DataFrame(columns=HEADER_B3_SCAL)
+    filtered_updated.index.name = "id_scal"
+
+    for iteration, filter in filters.items():
+        print(f"Applying set of filters no {iteration}.")
+
+        # Apply set of filters
+        filtered = multi_filter_df(df, **filter)
+
+        # Update result with new filtered data
+        filtered_updated = merge_a_into_b(
+            filtered,
+            filtered_updated,
+            how="outer",
+            on=["name", "region", "carrier", "tech", "var_name"],
+            verbose=False,
+        )
+
+        # inform about filtering updating
+        print(f"Updated data with data filtered by {filter}")
+
+    return filtered_updated
 
 
 def isnull_any(df):
@@ -314,7 +446,53 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
-def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
+def expand_regions(scalars, regions, where="ALL"):
+    r"""
+    Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
+    Returns scalars with new rows included for each region in those places where region equals
+    `where`.
+
+    Parameters
+    ----------
+    scalars : pd.DataFrame
+        Data in oemof_b3 format to expand
+    regions : list
+        List of regions
+    where : str
+        Key that should be expanded
+    Returns
+    -------
+    sc_with_region : pd.DataFrame
+        Data with expanded regions in oemof_b3 format
+    """
+    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
+
+    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
+
+    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
+
+    if sc_wo_region.empty:
+        return sc_with_region
+
+    for region in regions:
+        regionalized = sc_wo_region.copy()
+
+        regionalized["name"] = regionalized.apply(
+            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+        )
+
+        regionalized["region"] = region
+
+        sc_with_region = sc_with_region.append(regionalized)
+
+    sc_with_region = sc_with_region.reset_index(drop=True)
+
+    sc_with_region.index.name = "id_scal"
+
+    return sc_with_region
+
+
+def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
     r"""
     Writes scalar data from df_a into df_b, according to 'on'. Where df_a provides no data,
     the values of df_b are used. If how='outer', data from df_a that is not in df_b will be
@@ -351,24 +529,27 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
     set_index_a = set(map(tuple, pd.Index(_df_a.loc[:, on].replace(np.nan, "NaN"))))
     set_index_b = set(map(tuple, pd.Index(_df_b.loc[:, on].replace(np.nan, "NaN"))))
 
-    a_not_b = set_index_a.difference(set_index_b)
-    if a_not_b:
-        if how == "left":
-            print(
-                f"There are {len(a_not_b)} elements in df_a but not in df_b"
-                f" and are lost (choose how='outer' to keep them): {a_not_b}"
-            )
-        elif how == "outer":
-            print(
-                f"There are {len(a_not_b)} elements in df_a that are"
-                f" added to df_b: {a_not_b}"
-            )
+    if verbose:
+        a_not_b = set_index_a.difference(set_index_b)
+        if a_not_b:
+            if how == "left":
+                print(
+                    f"There are {len(a_not_b)} elements in df_a but not in df_b"
+                    f" and are lost (choose how='outer' to keep them): {a_not_b}"
+                )
+            elif how == "outer":
+                print(
+                    f"There are {len(a_not_b)} elements in df_a that are"
+                    f" added to df_b: {a_not_b}"
+                )
 
-    a_and_b = set_index_a.intersection(set_index_b)
-    print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+        a_and_b = set_index_a.intersection(set_index_b)
+        print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
 
-    b_not_a = set_index_b.difference(set_index_a)
-    print(f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}")
+        b_not_a = set_index_b.difference(set_index_a)
+        print(
+            f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}"
+        )
 
     # Merge a with b, ignoring all data in b
     merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
