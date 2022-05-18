@@ -10,6 +10,7 @@ from oemof_b3.tools.data_processing import (
     load_b3_timeseries,
     save_df,
     filter_df,
+    update_filtered_df,
     aggregate_scalars,
     check_consistency_timeindex,
     merge_a_into_b,
@@ -22,6 +23,18 @@ path_file_sc = os.path.join(
     os.path.abspath(os.path.join(this_path, os.pardir)),
     "_files",
     "oemof_b3_resources_scalars.csv",
+)
+
+path_file_sc_scenarios = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_scalars_scenarios.csv",
+)
+
+path_file_sc_update_scenarios_expected = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_scalars_update_scenarios_expected.csv",
 )
 
 path_file_sc_mixed_types = os.path.join(
@@ -264,6 +277,21 @@ def test_filter_df_sc_raises_error():
 
     with pytest.raises(KeyError):
         filter_df(df, "something", ["conversion"])
+
+
+def test_update_filtered_df():
+
+    df = load_b3_scalars(path_file_sc_scenarios)
+    df_filtered_expected = load_b3_scalars(path_file_sc_update_scenarios_expected)
+
+    filters = {
+        1: {"scenario_key": "2050-base", "var_name": ["capacity_cost", "efficiency"]},
+        2: {"scenario_key": "2050-eff", "var_name": ["capacity_cost", "efficiency"]},
+    }
+
+    df_filtered = update_filtered_df(df, filters)
+
+    pd.testing.assert_frame_equal(df_filtered_expected, df_filtered, check_dtype=False)
 
 
 def test_filter_df_ts():

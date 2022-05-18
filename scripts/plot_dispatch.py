@@ -8,6 +8,8 @@ postprocessed : str
 plotted : str
     ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
     the plots are saved
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -34,11 +36,15 @@ import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
 from oemof_b3 import labels_dict, colors_odict
+from oemof_b3.config import config
 
 
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
+    logfile = sys.argv[3]
+
+    logger = config.add_snake_logger(logfile, "plot_dispatch")
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(plotted):
@@ -61,6 +67,10 @@ if __name__ == "__main__":
 
         data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
+        # convert data to SI-unit
+        MW_to_W = 1e6
+        data = data * MW_to_W
+
         # prepare dispatch data
         df, df_demand = plots.prepare_dispatch_data(
             data,
@@ -68,10 +78,6 @@ if __name__ == "__main__":
             demand_name="demand",
             labels_dict=labels_dict,
         )
-
-        # convert data to SI-unit
-        MW_to_W = 1e6
-        data = data * MW_to_W
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
@@ -106,6 +112,11 @@ if __name__ == "__main__":
             df_demand_time_filtered = plots.filter_timeseries(
                 df_demand, start_date, end_date
             )
+
+            if df_time_filtered.empty:
+                logger.warning(f"Data for bus '{bus_name}' is empty, cannot plot.")
+                continue
+
             # plot time filtered data
             plots.plot_dispatch(
                 ax=ax,
