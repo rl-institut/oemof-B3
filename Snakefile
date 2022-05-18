@@ -109,7 +109,7 @@ rule prepare_vehicle_charging_demand:
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
     shell:
-        "python scripts/prepare_vehicle_charging_demand.py {input.input_dir} {output}"
+        "python scripts/prepare_vehicle_charging_demand.py {input.input_dir} {input.scalars} {output}"
 
 rule prepare_scalars:
     input:
