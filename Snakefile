@@ -120,7 +120,7 @@ rule prepare_scalars:
 
 rule prepare_cop_timeseries:
     input:
-        scalars="raw/scalars/capacities.csv",
+        scalars="raw/scalars/demands.csv",
         weather="raw/weatherdata"
     output:
         ts_efficiency_small="results/_resources/ts_efficiency_heatpump_small.csv",
