@@ -105,9 +105,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
             path,
             index_col=1,
             sep=";",
-            decimal=",",
+            decimal=".",
             parse_dates=True,
-            thousands=".",
+            thousands=",",
         ).drop(columns=["Unnamed: 0"], axis=1)
         ts = ts_raw[ts_raw.index.year == year]
 
