@@ -40,6 +40,10 @@ import os
 import oemof_b3.tools.data_processing as dp
 from oemof_b3.config import config
 
+# dummy logger for tests
+import logging
+logger = logging.getLogger('dummy')
+
 # global variables
 TS_VAR_UNIT = "None"
 TS_SOURCE = "https://github.com/rl-institut/simbev"
