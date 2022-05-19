@@ -42,7 +42,8 @@ from oemof_b3.config import config
 
 # dummy logger for tests
 import logging
-logger = logging.getLogger('dummy')
+
+logger = logging.getLogger("dummy")
 
 # global variables
 TS_VAR_UNIT = "None"
