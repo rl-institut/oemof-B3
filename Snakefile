@@ -105,10 +105,13 @@ rule prepare_electricity_demand:
 rule prepare_vehicle_charging_demand:
     input:
         input_dir="raw/time_series/vehicle_charging",
+        scalars="raw/scalars/demands.csv",
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
+    params:
+        logfile="logs/prepare_vehicle_charging_demand.log"
     shell:
-        "python scripts/prepare_vehicle_charging_demand.py {input.input_dir} {output}"
+        "python scripts/prepare_vehicle_charging_demand.py {input.input_dir} {input.scalars} {output} {params.logfile}"
 
 rule prepare_scalars:
     input:
