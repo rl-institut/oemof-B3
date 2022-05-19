@@ -11,6 +11,8 @@ scalars_file : str
 output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
+logfile : str
+    ``logs/prepare_vehicle_charging_demand.log``: path to logfile
 
 Outputs
 ---------
@@ -34,7 +36,9 @@ that this is a more realistic picture of the future than a charging strategy "gr
 import sys
 import pandas as pd
 import os
+
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
 
 # global variables
 TS_VAR_UNIT = "None"
@@ -90,6 +94,17 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
         split_filename = os.path.splitext(os.path.basename(filename))[0].split("_")
         r, y = split_filename[2], int(split_filename[3])
         return r, y
+
+    if const_share is not None:
+        logger.info(
+            f"Passenger car charging profile is mixed with constant share of "
+            f"{int(const_share*100)} %."
+        )
+    if balanced:
+        logger.info(
+            f"Passenger car charging profiles have charging strategy 'balanced': 'home' between "
+            f"{HOME_START} and {HOME_END}, 'work' between {WORK_START} and {WORK_END}."
+        )
 
     # initialize data frame
     df = pd.DataFrame()
@@ -230,6 +245,9 @@ if __name__ == "__main__":
     input_dir = sys.argv[1]
     scalars_file = sys.argv[2]
     output_file = sys.argv[3]
+    logfile = sys.argv[4]
+
+    logger = config.add_snake_logger(logfile, "prepare_vehicle_charging_demand")
 
     # get constant share of electric charging demand
     const_share = get_constant_share_of_vehicle_ts(scalars_file)
