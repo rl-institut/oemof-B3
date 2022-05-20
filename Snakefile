@@ -67,7 +67,7 @@ rule prepare_example:
         directory("results/scenarios/{example}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
-        scenario="|".join(scenario_groups["examples"])
+        example="|".join(scenario_groups["examples"])
     run:
         import shutil
         shutil.copytree(src=input[0], dst=output[0])
