@@ -13,12 +13,14 @@ in_path4 : str
     ``raw/building_class.csv``: path of input file with building classes of all states in Germany
     as .csv
 in_path5 : str
-    ``raw/scalars_base_2050.csv``: path of scalar data as .csv
+    ``raw/scalars/demands.csv``: path of scalar data as .csv
 out_path1 : str
     ``results/_resources/scal_load_heat.csv``: path of output file with aggregated scalar data as
     .csv
 out_path2 : str
     ``results/_resources/ts_load_heat.csv``: path of output file with timeseries data as .csv
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -49,6 +51,7 @@ import pandas as pd
 from demandlib import bdew
 
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
 
 
 def get_shares_from_hh_distribution(path, region):
@@ -297,8 +300,8 @@ def get_heat_demand(scalars, scenario, carrier, region):
         sc_filtered_consumer = sc_filtered[sc_filtered["tech"].str.contains(consumer)]
 
         if len(sc_filtered_consumer) > 1:
-            print(
-                f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
+            logger.warning(
+                f"There is duplicate demand of carrier '{carrier}', consumer "
                 f"'{consumer}', region '{region}' and scenario '{scenario}' in {in_path5}."
                 + "\n"
                 + "The demand is going to be summed up. "
@@ -376,12 +379,13 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
     ).get_bdew_profile()
 
     # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
-    # heat load
+    # heat load using gha profile of retail and wholesale (Einzel- und Großhandel)
+    # which has lower share of process heat
     heat_load_consumer["ghd" + "_" + carrier] = bdew.HeatBuilding(
         heat_load_consumer.index,
         holidays=holidays,
         temperature=temperature,
-        shlp_type="ghd",
+        shlp_type="GHA",
         wind_class=0,
         annual_heat_demand=yearly_demands["ghd" + "_" + carrier][0],
         name="ghd",
@@ -446,6 +450,9 @@ if __name__ == "__main__":
     in_path5 = sys.argv[5]  # path to csv with b3 scalars
     out_path1 = sys.argv[6]
     out_path2 = sys.argv[7]
+    logfile = sys.argv[8]
+
+    logger = config.add_snake_logger(logfile, "prepare_heat_demand")
 
     CARRIERS = ["heat_central", "heat_decentral"]
 

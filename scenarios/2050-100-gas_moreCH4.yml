@@ -19,12 +19,13 @@ model_structure:
 # parametrize
 
 paths_scalars:
-  - raw/split/capacities.csv
-  - raw/split/potentials.csv
-  - raw/split/carrier_costs.csv
-  - raw/split/demands.csv
-  - raw/split/emission_constraint.csv
-  - raw/split/gas_el_constraint.csv
+  - raw/scalars/capacities.csv
+  - raw/scalars/potentials.csv
+  - raw/scalars/carrier_costs.csv
+  - raw/scalars/import_export_prices.csv
+  - raw/scalars/demands.csv
+  - raw/scalars/emission_constraint.csv
+  - raw/scalars/el_gas_constraint.csv
   - results/_resources/scal_costs_efficiencies.csv
   - results/_resources/scal_load_heat.csv
 
@@ -34,6 +35,7 @@ filter_scalars:
       - "ALL"
       - "2050-gas_moreCH4"
       - "2050-base"
+      - "reduction_100"
 
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv

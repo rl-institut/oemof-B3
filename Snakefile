@@ -6,7 +6,7 @@ HTTP = HTTPRemoteProvider()
 
 scenario_groups = {
     "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
-    "base-scenarios": ["base-2050","base-2050-high_capacity_cost"],
+    "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")]
 }
 
 linear_slides = {"A": ("example_base", "example_more_re", 2)}
@@ -30,17 +30,21 @@ rule plot_all_examples:
             plot_type=["scalars", "dispatch"],
         )
 
-rule plot_all_scenarios:
+rule process_all_scenarios:
     input:
-        expand(
+        plots=expand(
             "results/scenarios/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["base-scenarios"],
+            scenario=scenario_groups["all-scenarios"],
             plot_type=["scalars", "dispatch"],
+        ),
+        tables=expand(
+            "results/scenarios/{scenario}/tables",
+            scenario=scenario_groups["all-scenarios"],
         )
 
 rule plot_grouped_scenarios:
     input:
-        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="examples")
+        expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="all-scenarios")
 
 
 rule clean:
@@ -54,11 +58,13 @@ rule clean:
 
 rule create_input_data_overview:
     input:
-        "raw/{scalars}.csv"
+        "raw/scalars/costs_efficiencies.csv"
     output:
-        "results/_tables/{scalars}_technical_and_cost_assumptions.csv"
+        "results/_tables/technical_and_cost_assumptions_{scenario_key}.csv"
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/create_input_data_overview.py {input} {output}"
+        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output} {params.logfile}"
 
 rule prepare_example:
     input:
@@ -77,7 +83,6 @@ rule prepare_conv_pp:
         opsd="raw/conventional_power_plants_DE.csv",
         gpkg="raw/boundaries_germany_nuts3.gpkg",
         b3_regions="raw/b3_regions.yaml",
-        script="scripts/prepare_conv_pp.py"
     output:
         "results/_resources/scal_conv_pp.csv"
     shell:
@@ -88,39 +93,38 @@ rule prepare_feedin:
         wind_feedin="raw/time_series/ninja_wind_country_DE_current_merra-2_nuts-2_corrected.csv",
         pv_feedin="raw/time_series/ninja_pv_country_DE_merra-2_nuts-2_corrected.csv",
         ror_feedin="raw/time_series/DIW_Hydro_availability.csv",
-        script="scripts/prepare_feedin.py"
     output:
         "results/_resources/ts_feedin.csv"
     shell:
-        "python {input.script} {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
+        "python scripts/prepare_feedin.py {input.wind_feedin} {input.pv_feedin} {input.ror_feedin} {output}"
 
 rule prepare_electricity_demand:
     input:
         opsd_url=HTTP.remote("https://data.open-power-system-data.org/time_series/2020-10-06/time_series_60min_singleindex.csv",
                             keep_local=True),
-        script="scripts/prepare_electricity_demand.py"
     output:
         "results/_resources/ts_load_electricity.csv"
     shell:
-        "python {input.script} {input.opsd_url} {output}"
+        "python scripts/prepare_electricity_demand.py {input.opsd_url} {output}"
 
 rule prepare_vehicle_charging_demand:
     input:
         input_dir="raw/time_series/vehicle_charging",
-        script="scripts/prepare_vehicle_charging_demand.py"
+        scalars="raw/scalars/demands.csv",
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
+    params:
+        logfile="logs/prepare_vehicle_charging_demand.log"
     shell:
-        "python {input.script} {input.input_dir} {output}"
+        "python scripts/prepare_vehicle_charging_demand.py {input.input_dir} {input.scalars} {output} {params.logfile}"
 
 rule prepare_scalars:
     input:
-        raw_scalars="raw/split/costs_efficiencies.csv",
-        script="scripts/prepare_scalars.py",
+        raw_scalars="raw/scalars/costs_efficiencies.csv",
     output:
         "results/_resources/scal_costs_efficiencies.csv"
     shell:
-        "python {input.script} {input.raw_scalars} {output}"
+        "python scripts/prepare_scalars.py {input.raw_scalars} {output}"
 
 rule prepare_heat_demand:
     input:
@@ -128,13 +132,14 @@ rule prepare_heat_demand:
         distribution_hh="raw/distribution_households.csv",
         holidays="raw/holidays.csv",
         building_class="raw/building_class.csv",
-        scalars="raw/split/demands.csv",
-        script="scripts/prepare_heat_demand.py",
+        scalars="raw/scalars/demands.csv",
     output:
         scalars="results/_resources/scal_load_heat.csv",
         timeseries="results/_resources/ts_load_heat.csv",
+    params:
+        logfile="logs/prepare_heat_demand.log"
     shell:
-        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries}"
+        "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries} {params.logfile}"
 
 rule prepare_re_potential:
     input:
@@ -142,22 +147,20 @@ rule prepare_re_potential:
         pv_road_railway="raw/area_potential/2021-05-18_pv_road_railway_brandenburg_kreise_epsg32633.csv",
         wind="raw/area_potential/2021-05-18_wind_brandenburg_kreise_epsg32633.csv",
         kreise="raw/lookup_table_brandenburg_kreise.csv",
-        assumptions="raw/split/potentials.csv",
-        script="scripts/prepare_re_potential.py"
+        assumptions="raw/scalars/potentials.csv",
     output:
         directory("results/_resources/RE_potential/")
     shell:
-        "python {input.script} {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output}"
+        "python scripts/prepare_re_potential.py {input.pv_agriculture} {input.pv_road_railway} {input.wind} {input.kreise} {input.assumptions} {output}"
 
 rule process_re_potential:
     input:
         input_dir="results/_resources/RE_potential/",
-        script="scripts/process_re_potential.py"
     output:
         scalars="results/_resources/scal_power_potential_wind_pv.csv",
         table="results/_tables/potential_wind_pv_kreise.csv",
     shell:
-        "python {input.script} {input.input_dir} {output.scalars} {output.table}"
+        "python scripts/process_re_potential.py {input.input_dir} {output.scalars} {output.table}"
 
 def get_paths_scenario_input(wildcards):
     scenario_specs = load_yaml(f"scenarios/{wildcards.scenario}.yml")
@@ -206,41 +209,58 @@ rule create_results_table:
         "results/{subfolder}/{scenario}/postprocessed/"
     output:
         directory("results/{subfolder}/{scenario}/tables/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/create_results_table.py {input} {output}"
+        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+
+rule create_joined_results_table:
+    input:
+        "results/joined_scenarios/{scenario_group}/joined/"
+    output:
+        directory("results/joined_scenarios/{scenario_group}/joined_tables/")
+    params:
+        logfile="logs/{scenario_group}.log"
+    shell:
+        "python scripts/create_results_table.py {input} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
         "results/{subfolder}/{scenario}/postprocessed/"
     output:
         directory("results/{subfolder}/{scenario}/plotted/dispatch")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/plot_dispatch.py {input} {output}"
+        "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
 
 rule plot_conv_pp_scalars:
     input:
         data="results/_resources/{resource}.csv",
-        script="scripts/plot_conv_pp_scalars.py"
     output:
         "results/_resources/plots/{resource}-{var_name}.png"
     shell:
-        "python {input.script} {input.data} {wildcards.var_name} {output}"
+        "python scripts/plot_conv_pp_scalars.py {input.data} {wildcards.var_name} {output}"
 
 rule plot_scalar_results:
     input:
         "results/{subfolder}/{scenario}/postprocessed/"
     output:
         directory("results/{subfolder}/{scenario}/plotted/scalars/")
+    params:
+        logfile="logs/{scenario}.log"
     shell:
-        "python scripts/plot_scalar_results.py {input} {output}"
+        "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_list}/joined/"
+        "results/joined_scenarios/{scenario_group}/joined/"
     output:
-        directory("results/joined_scenarios/{scenario_list}/joined_plotted/")
+        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
+    params:
+        logfile="logs/{scenario_group}.log"
     shell:
-        "python scripts/plot_scalar_results.py {input} {output}"
+        "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
 rule report:
     input:
