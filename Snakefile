@@ -9,10 +9,10 @@ scenario_groups = {
     "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")]
 }
 
-linear_slides = {"A": ("example_base", "example_more_re", 2)}
+sensitivities = {"A": ("example_base", "example_more_re", 2)}
 
 wildcard_constraints:
-    subfolder="|".join(list(linear_slides.keys()) + ["scenarios"])
+    subfolder="|".join(list(sensitivities.keys()) + ["scenarios"])
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
@@ -325,27 +325,23 @@ rule join_scenario_results:
     shell:
         "python scripts/join_scenarios.py {input} {output}"
 
-
-
-
 def extend_scenario_groups(wildcards):
-
-    lb, ub, n = linear_slides[wildcards.name_slide]
+    lb, ub, n = sensitivities[wildcards.sensitivity]
     return [os.path.join("results", "scenarios", scenario, "preprocessed") for scenario in [lb, ub]]
 
 def get_n(wildcards):
-    n = linear_slides[wildcards.name_slide][2]
+    n = sensitivities[wildcards.sensitivity][2]
     return n
 
-rule build_linear_slide:
+rule build_sensitivity:
     input:
         extend_scenario_groups
     output:
-        directory("results/{name_slide}")
+        directory("results/{sensitivity}")
     wildcard_constraints:
-        name_slide="|".join(linear_slides.keys())
+        sensitivity="|".join(sensitivities.keys())
     params:
         n=get_n,
-        logfile="logs/{name_slide}.log",
+        logfile="logs/{sensitivity}.log",
     shell:
-        "python scripts/build_linear_slide.py {input[0]} {input[1]} {output} {params.n} {params.logfile}"
+        "python scripts/build_sensitivity.py {input[0]} {input[1]} {output} {params.n} {params.logfile}"
