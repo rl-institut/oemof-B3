@@ -12,7 +12,7 @@ scenario_groups = {
 sensitivities = {"A": ("example_base", "example_more_re", 2)}
 
 wildcard_constraints:
-    subfolder="|".join(list(sensitivities.keys()) + ["scenarios"])
+    subfolder="|".join([os.path.join("sensitivities/", item) for item in list(sensitivities.keys())] + ["scenarios"])
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
@@ -337,7 +337,7 @@ rule build_sensitivity:
     input:
         extend_scenario_groups
     output:
-        directory("results/{sensitivity}")
+        directory("results/sensitivities/{sensitivity}")
     wildcard_constraints:
         sensitivity="|".join(sensitivities.keys())
     params:
