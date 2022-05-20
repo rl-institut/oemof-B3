@@ -44,8 +44,8 @@ if __name__ == "__main__":
     if not os.path.exists(destination):
         os.mkdir(destination)
 
-    lb = EnergyDataPackage.from_csv_dir(path_lb)
-    ub = EnergyDataPackage.from_csv_dir(path_ub)
+    lb = EnergyDataPackage.from_metadata(os.path.join(path_lb, "datapackage.json"))
+    ub = EnergyDataPackage.from_metadata(os.path.join(path_ub, "datapackage.json"))
 
     lb.stack_components()
     ub.stack_components()
