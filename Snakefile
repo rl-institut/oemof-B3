@@ -345,3 +345,20 @@ rule build_sensitivity:
         logfile="logs/{sensitivity}.log",
     shell:
         "python scripts/build_sensitivity.py {input[0]} {input[1]} {output} {params.n} {params.logfile}"
+
+
+def get_sample_of_sensitivity(wildcards):
+    return [
+        os.path.join("results", "sensitivities", wildcards.sensitivity, sample, "postprocessed")
+        for sample in os.listdir(os.path.join("results", "sensitivities", wildcards.sensitivity))
+        if not (sample == ".snakemake_timestamp" or sample == "joined")
+    ]
+
+
+rule join_sensitivity_results:
+    input:
+        get_sample_of_sensitivity
+    output:
+        directory("results/sensitivities/{sensitivity}/joined/")
+    shell:
+        "python scripts/join_scenarios.py {input} {output}"
