@@ -9,7 +9,7 @@ scenario_groups = {
     "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")]
 }
 
-sensitivities = {"A": ("example_base", "example_more_re", 2)}
+sensitivities = {"A": ("2050-gas_lessCH4", "2050-gas_moreCH4", 2)}
 
 wildcard_constraints:
     subfolder="|".join([os.path.join("sensitivities/", item) for item in list(sensitivities.keys())] + ["scenarios"])
