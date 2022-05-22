@@ -26,6 +26,7 @@ import sys
 from oemof_b3.config import config
 from oemoflex.model.datapackage import EnergyDataPackage
 from oemoflex.model.variations import EDPSensitivity
+from oemof_b3.model import foreign_keys_update
 
 
 if __name__ == "__main__":
@@ -64,3 +65,5 @@ if __name__ == "__main__":
         sample.basepath = path
 
         sample.to_csv_dir(path)
+
+        sample.infer_metadata(foreign_keys_update)
