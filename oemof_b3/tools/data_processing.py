@@ -824,43 +824,35 @@ def round_setting_int(df, decimals):
     return _df
 
 
-def postprocess_data(df_postprocessed, df_year, region, scenario, unit):
+def prepare_b3_timeseries(df_year, **kwargs):
     """
     This function postprocesses DataFrames by stacking time series and adding it to result
     DataFrame
 
     Parameters
     ----------
-    df_postprocessed : pd.Dataframe
-        Empty Dataframe as result DataFrame
     df_year : pd.Dataframe
         DataFrame with total normalized data in year to be processed
-    region : str
-        Region (eg. Brandenburg)
-    scenario : str
-        Scenario e.g. "ALL"
-    unit : str
-        Unit of total demands (eg. GWh)
+    kwargs : Additional keyword arguments
+        time series data (region, scenario key and unit)
 
     Returns
     -------
-    df_postprocessed : pd.DataFrame
-         DataFrame that contains stacked heat load profile
+    df_stacked : pd.DataFrame
+         DataFrame that contains stacked time series
 
     """
-    # Stack time series with total heat load in year
+    # Stack time series with data of a year
     df_year_stacked = stack_timeseries(df_year)
 
-    df_year_stacked["region"] = region
-    df_year_stacked["scenario_key"] = scenario
-    df_year_stacked["var_unit"] = unit[0]
+    # Add region, scenario key and unit to stacked time series
+    for key, value in kwargs.items():
+        df_year_stacked[key] = value
 
-    # Append stacked heat load of year to stacked time series with total heat loads
-    df_postprocessed = pd.concat(
-        [df_postprocessed, df_year_stacked], ignore_index=True, sort=False
-    )
+    # Make sure that header is in correct format
+    df_year_stacked = format_header(df_year_stacked, HEADER_B3_TS, "id_ts")
 
-    return df_postprocessed
+    return df_year_stacked
 
 
 class ScalarProcessor:
