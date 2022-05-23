@@ -824,6 +824,38 @@ def round_setting_int(df, decimals):
     return _df
 
 
+def prepare_b3_timeseries(df_year, **kwargs):
+    """
+    This function takes time series in column format, stacks them, assigns
+    values to additional columns and formats the header in order to prepare data in a b3 time
+    series format
+
+    Parameters
+    ----------
+    df_year : pd.Dataframe
+        DataFrame with total normalized data in year to be processed
+    kwargs : Additional keyword arguments
+        time series data (region, scenario key and unit)
+
+    Returns
+    -------
+    df_stacked : pd.DataFrame
+         DataFrame that contains stacked time series
+
+    """
+    # Stack time series with data of a year
+    df_year_stacked = stack_timeseries(df_year)
+
+    # Add region, scenario key and unit to stacked time series
+    for key, value in kwargs.items():
+        df_year_stacked[key] = value
+
+    # Make sure that header is in correct format
+    df_year_stacked = format_header(df_year_stacked, HEADER_B3_TS, "id_ts")
+
+    return df_year_stacked
+
+
 class ScalarProcessor:
     r"""
     This class allows to filter and unstack scalar data in a way that makes processing simpler.
