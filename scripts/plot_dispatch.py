@@ -145,8 +145,30 @@ if __name__ == "__main__":
             ax.set_position(
                 [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
             )
+
+
+            # Simplify legend. As there is only one color per technology, there should
+            # be only one label per technology.
+            simple_labels_dict = {'Battery': ['Battery out', 'Battery in'],
+                                  'El. transmission external': ['El. import', 'El. export'],
+                                  'El. transmission B-BB': ['El. transmission in', 'El. transmission out'],
+                                  'El. mismatch': ['El. shortage', 'Curtailment'],
+                                  'Heat cen. storage': ['Heat cen. storage out', 'Heat cen. storage in'],
+                                  'Heat cen. mismatch': ['Heat cen. excess', 'Heat cen. shortage'],
+                                  'Heat dec. storage': ['Heat dec. storage out', 'Heat dec. storage in'],
+                                  'Heat dec. mismatch': ['Heat dec. excess', 'Heat dec. shortage'],
+                                  }
+            h, l = ax.get_legend_handles_labels()
+
+            for key, value in simple_labels_dict.items():
+                if value[0] in l and value[1] in l:
+                    l = [key if item == value[0] else '_Hidden' if item == value[1] else item for item in l]
+
             # Put a legend below current axis
+
             ax.legend(
+                handles= h,
+                labels = l,
                 loc="upper center",
                 bbox_to_anchor=(0.5, -0.1),
                 fancybox=True,
