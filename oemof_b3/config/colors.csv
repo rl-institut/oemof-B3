@@ -18,15 +18,15 @@ Battery in,#9467bd
 H2 cavern,#00fed0
 BEV,#e0b415
 
-El. transmission in,#c1cebb
-El. transmission out,#c1cebb
+El. transmission in,#9eb295
+El. transmission out,#9eb295
 
 El. shortage,#DBDBDB
 Curtailment,#DBDBDB
 
 El. demand,#3e89f4
-El. export,#65748b
-El. import,#65748b
+El. export,#9DA8B8
+El. import,#9DA8B8
 BEV charging,#a3830f
 
 H2 backpressure CHP,#5bc5c8
