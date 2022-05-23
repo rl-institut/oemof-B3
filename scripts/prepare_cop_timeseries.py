@@ -222,13 +222,16 @@ if __name__ == "__main__":
 
             cops["efficiency-profile"] = calc_cops(temp_high, temp_low, QUALITY_GRADE)
 
-            final_cops = dp.postprocess_data(
-                final_cops,
-                cops,
-                region,
-                SCENARIO,
-                ["-"],
-            )
+            cops_ts_info = {
+                "region": region,
+                "scenario_key": SCENARIO,
+                "var_unit": ["-"],
+            }
+
+            cops = dp.prepare_b3_timeseries(cops, **cops_ts_info)
+
+            # Append stacked cop of year to stacked time series with final cops
+            final_cops = pd.concat([final_cops, cops], ignore_index=True, sort=False)
 
     # Rearrange stacked time series
     final_cops = dp.format_header(
