@@ -826,8 +826,9 @@ def round_setting_int(df, decimals):
 
 def prepare_b3_timeseries(df_year, **kwargs):
     """
-    This function postprocesses DataFrames by stacking time series and adding it to result
-    DataFrame
+    This function takes time series in column format, stacks them, assigns
+    values to additional columns and formats the header in order to prepare data in a b3 time
+    series format
 
     Parameters
     ----------
