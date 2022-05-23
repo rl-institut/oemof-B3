@@ -30,6 +30,7 @@ The following constraints are added:
 The EnergySystem with results, meta-results and parameters is saved.
 
 """
+import logging
 import os
 import sys
 import numpy as np
@@ -45,6 +46,9 @@ from oemof.tabular.facades import TYPEMAP
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.equate_flows import equate_flows_by_keyword
 from oemof_b3.config import config
+
+
+logger = logging.getLogger()
 
 
 def drop_values_by_keyword(df, keyword="None"):
@@ -127,16 +131,23 @@ def add_output_parameters_to_bpchp(parameters, energysystem):
     # rename column 'name' as is collides with iterrows()
     parameters.rename(columns={"name": "name_"}, inplace=True)
     for i, element in parameters.iterrows():
-        # get heat bus the component is connected to
-        bus = energysystem.groups[element.name_].heat_bus
+        if element.name_ in energysystem.groups:
+            # get heat bus the component is connected to
+            bus = energysystem.groups[element.name_].heat_bus
 
-        # get keyword and boolean value
-        split_str = element.var_value.split('"')
-        keyword = split_str[1]
-        value = bool(split_str[2].split("}")[0].split()[1])
+            # get keyword and boolean value
+            split_str = element.var_value.split('"')
+            keyword = split_str[1]
+            value = bool(split_str[2].split("}")[0].split()[1])
 
-        # set keyword as attribute with value
-        setattr(energysystem.groups[element.name_].outputs.data[bus], keyword, value)
+            # set keyword as attribute with value
+            setattr(
+                energysystem.groups[element.name_].outputs.data[bus], keyword, value
+            )
+        else:
+            logging.warning(
+                f"No element '{element.name_}' in EnergySystem. Cannot add output_parameters."
+            )
 
     return energysystem
 
