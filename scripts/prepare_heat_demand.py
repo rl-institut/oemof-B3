@@ -463,13 +463,22 @@ if __name__ == "__main__":
             heat_load_year = calculate_heat_load(
                 carrier, holidays, temperature, yearly_demands, building_class
             )
-            total_heat_load = dp.postprocess_data(
-                total_heat_load,
-                heat_load_year,
-                region,
-                scenario,
-                sc_demand_unit,
+
+            heat_load_ts_info = {
+                "region": region,
+                "scenario_key": scenario,
+                "var_unit": sc_demand_unit,
+            }
+
+            heat_load_year = dp.prepare_b3_timeseries(
+                heat_load_year, **heat_load_ts_info
             )
+
+            # Append stacked heat load of year to stacked time series with total heat load
+            total_heat_load = pd.concat(
+                [total_heat_load, heat_load_year], ignore_index=True, sort=False
+            )
+
     # aggregate heat demand for different sectors (hh, ghd, i)
     demand_per_sector = dp.filter_df(
         sc, "tech", ["demand_hh", "demand_ghd", "demand_i"]
