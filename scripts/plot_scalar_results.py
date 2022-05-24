@@ -189,6 +189,33 @@ class ScalarPlot:
 
         return fig, ax
 
+    def draw_subplots(self, unit, title, facet_level=0):
+        # do not plot if the data is empty or all zeros.
+        if (
+            self.prepared_scalar_data.empty
+            or (self.prepared_scalar_data == 0).all().all()
+        ):
+            logger.warning("Data is empty or all zero")
+            return None, None
+
+        fig = plt.figure()
+
+        grouped = self.prepared_scalar_data.groupby(level=facet_level)
+        n_facets = len(grouped)
+
+        for i, (facet_name, df) in enumerate(grouped):
+            ax = fig.add_subplot(n_facets, 1, i + 1)
+
+            plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
+
+            ax.get_legend().remove()
+
+        ax.set_title(title)
+
+        self.plotted = True
+
+        return fig, ax
+
     def save_plot(self, output_path_plot):
         if self.plotted:
             plt.savefig(output_path_plot, bbox_inches="tight")
@@ -518,9 +545,27 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot_demands: {e}.")
 
+    def subplot_flow_out_multi_carrier(carriers):
+        var_name = [f"flow_out_{carrier}" for carrier in carriers]
+        unit = "Wh"
+        output_path_plot = os.path.join(
+            target, "flow_out_" + "_".join(carriers) + "_subplots.png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="type", values="storage", inverse=True
+        )
+        plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+        plot.draw_subplots(unit=unit, title=var_name)
+        plot.save_plot(output_path_plot)
+
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
+    subplot_flow_out_multi_carrier(CARRIERS)
     plot_demands(CARRIERS)
 
     # for carrier in CARRIERS:
