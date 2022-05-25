@@ -492,7 +492,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -534,7 +534,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_flow_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -572,7 +572,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_demands: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def subplot_invest_out_multi_carrier(carriers):
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
@@ -595,7 +595,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def subplot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -619,7 +619,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def subplot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -644,7 +644,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
