@@ -586,11 +586,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+        plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
         plt.suptitle("Invested capacity", fontsize="x-large")
 
         try:
-            ax.texts.clear()
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -610,11 +609,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+        plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
         plt.suptitle("Demand", fontsize="x-large")
 
         try:
-            ax.texts.clear()
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -636,7 +634,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, axs = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+        plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
         plt.suptitle("Summed energy", fontsize="x-large")
 
         try:
@@ -649,8 +647,10 @@ if __name__ == "__main__":
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
-    subplot_flow_out_multi_carrier(CARRIERS)
     plot_demands(CARRIERS)
+    subplot_invest_out_multi_carrier(CARRIERS)
+    subplot_flow_out_multi_carrier(CARRIERS)
+    subplot_demands(CARRIERS)
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
