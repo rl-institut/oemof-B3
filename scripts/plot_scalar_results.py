@@ -586,7 +586,9 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(target, "demand_" + "_".join(carriers) + "_subplots.png")
+        output_path_plot = os.path.join(
+            target, "demand_" + "_".join(carriers) + "_subplots.png"
+        )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
