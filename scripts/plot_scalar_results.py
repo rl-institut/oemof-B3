@@ -573,19 +573,10 @@ if __name__ == "__main__":
         plot.swap_levels()
 
         fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
-        plt.suptitle("Invested capacity", x=0.533, fontsize="x-large")
+        plt.suptitle("Invested capacity", fontsize="x-large")
 
         try:
             ax.texts.clear()
-
-            # Move the legend below current axis
-            ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.3),
-                fancybox=True,
-                ncol=3,
-                fontsize=14,
-            )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -606,19 +597,10 @@ if __name__ == "__main__":
         plot.swap_levels()
 
         fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
-        plt.suptitle("Demand", x=0.533, fontsize="x-large")
+        plt.suptitle("Demand", fontsize="x-large")
 
         try:
             ax.texts.clear()
-
-            # Move the legend below current axis
-            ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.3),
-                fancybox=True,
-                ncol=3,
-                fontsize=14,
-            )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -641,19 +623,10 @@ if __name__ == "__main__":
         plot.swap_levels()
 
         fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
-        plt.suptitle("Summed energy", x=0.533, fontsize="x-large")
+        plt.suptitle("Summed energy", fontsize="x-large")
 
         try:
             ax.texts.clear()
-
-            # Move the legend below current axis
-            ax.legend(
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.3),
-                fancybox=True,
-                ncol=3,
-                fontsize=14,
-            )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
