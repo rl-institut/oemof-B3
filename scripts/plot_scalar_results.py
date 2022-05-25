@@ -563,8 +563,25 @@ if __name__ == "__main__":
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
-        plot.draw_subplots(unit=unit, title=var_name)
-        plot.save_plot(output_path_plot)
+
+        fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+
+        try:
+            ax.texts.clear()
+
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.3),
+                fancybox=True,
+                ncol=3,
+                fontsize=14,
+            )
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
