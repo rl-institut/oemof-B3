@@ -217,9 +217,7 @@ class ScalarPlot:
 
             plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
 
-            for subtitle in title:
-                if facet_name in subtitle:
-                    ax.set_title(subtitle)
+            ax.set_title(facet_name)
 
             # rotate xticklabels
             labels = ax.get_xticklabels()
@@ -234,6 +232,8 @@ class ScalarPlot:
                 ncol=1,
                 fontsize=14,
             )
+
+        fig.suptitle(title, fontsize="x-large")
 
         self.plotted = True
 
@@ -586,8 +586,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
-        plt.suptitle("Invested capacity", fontsize="x-large")
+        plot.draw_subplots(unit=unit, title="Invested capacity", figsize=(11, 11))
 
         try:
             plt.tight_layout()
@@ -609,8 +608,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
-        plt.suptitle("Demand", fontsize="x-large")
+        plot.draw_subplots(unit=unit, title="Demand", figsize=(11, 11))
 
         try:
             plt.tight_layout()
@@ -634,8 +632,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
-        plt.suptitle("Summed energy", fontsize="x-large")
+        plot.draw_subplots(unit=unit, title="Summed energy", figsize=(11, 11))
 
         try:
             plt.tight_layout()
