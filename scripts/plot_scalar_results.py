@@ -549,6 +549,39 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot_demands: {e}.")
 
+    def subplot_invest_out_multi_carrier(carriers):
+        var_name = [f"invest_out_{carrier}" for carrier in carriers]
+        unit = "W"
+        output_path_plot = os.path.join(
+            target, "invest_out_" + "_".join(carriers) + "_subplots.png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+
+        fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+        plt.suptitle("Invested capacity", x=0.533, fontsize="x-large")
+
+        try:
+            ax.texts.clear()
+
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper center",
+                bbox_to_anchor=(0.5, -0.3),
+                fancybox=True,
+                ncol=3,
+                fontsize=14,
+            )
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
+
+
     def subplot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
