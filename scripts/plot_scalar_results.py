@@ -189,7 +189,9 @@ class ScalarPlot:
 
         return fig, ax
 
-    def draw_subplots(self, unit, title, figsize=None, facet_level=0):
+    def draw_subplots(
+        self, unit, title, figsize=None, facet_level=0, rotation=45, ha="right"
+    ):
         # do not plot if the data is empty or all zeros.
         if (
             self.prepared_scalar_data.empty
@@ -218,6 +220,12 @@ class ScalarPlot:
             for subtitle in title:
                 if facet_name in subtitle:
                     ax.set_title(subtitle)
+
+            # rotate xticklabels
+            labels = ax.get_xticklabels()
+            for lb in labels:
+                lb.set_rotation(rotation)
+                lb.set_ha(ha)
 
             ax.legend(
                 loc="center left",
