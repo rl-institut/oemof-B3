@@ -189,6 +189,62 @@ class ScalarPlot:
 
         return fig, ax
 
+    def draw_subplots(
+        self, unit, title, figsize=None, facet_level=0, rotation=45, ha="right"
+    ):
+        # do not plot if the data is empty or all zeros.
+        if (
+            self.prepared_scalar_data.empty
+            or (self.prepared_scalar_data == 0).all().all()
+        ):
+            logger.warning("Data is empty or all zero")
+            return None, None
+
+        # Set fig size to default size if no fig size is passed
+        if not figsize:
+            figsize = plt.rcParams.get("figure.figsize")
+
+        fig = plt.figure(figsize=figsize)
+
+        grouped = self.prepared_scalar_data.groupby(level=facet_level)
+        n_facets = len(grouped)
+
+        for i, (facet_name, df) in enumerate(grouped):
+            df = df.reset_index(level=[0], drop=True)
+            df = df.loc[:, (df != 0).any(axis=0)]
+
+            ax = fig.add_subplot(n_facets, 1, i + 1)
+
+            plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
+
+            ax.set_title(facet_name)
+
+            # rotate xticklabels
+            labels = ax.get_xticklabels()
+            for lb in labels:
+                lb.set_rotation(rotation)
+                lb.set_ha(ha)
+
+            ax.legend(
+                loc="center left",
+                bbox_to_anchor=(1.0, 0, 0, 1),
+                fancybox=True,
+                ncol=1,
+                fontsize=14,
+            )
+
+        fig.suptitle(title, fontsize="x-large")
+
+        self.plotted = True
+
+        # show only ticklabels of last plot
+        axs = fig.get_axes()
+
+        for ax in axs[:-1]:
+            ax.tick_params(labelbottom=False)
+
+        return fig, axs
+
     def save_plot(self, output_path_plot):
         if self.plotted:
             plt.savefig(output_path_plot, bbox_inches="tight")
@@ -436,7 +492,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
@@ -478,7 +534,7 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_flow_out_multi_carrier: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -516,12 +572,82 @@ if __name__ == "__main__":
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot_demands: {e}.")
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    def subplot_invest_out_multi_carrier(carriers):
+        var_name = [f"invest_out_{carrier}" for carrier in carriers]
+        unit = "W"
+        output_path_plot = os.path.join(
+            target, "invest_out_" + "_".join(carriers) + "_subplots.png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+
+        plot.draw_subplots(unit=unit, title="Invested capacity", figsize=(11, 11))
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    def subplot_demands(carriers):
+        var_name = [f"flow_in_{carrier}" for carrier in carriers]
+        tech = "demand"
+        unit = "Wh"
+        output_path_plot = os.path.join(
+            target, "demand_" + "_".join(carriers) + "_subplots.png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name, tech=tech)
+        plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+
+        plot.draw_subplots(unit=unit, title="Demand", figsize=(11, 11))
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    def subplot_flow_out_multi_carrier(carriers):
+        var_name = [f"flow_out_{carrier}" for carrier in carriers]
+        unit = "Wh"
+        output_path_plot = os.path.join(
+            target, "flow_out_" + "_".join(carriers) + "_subplots.png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="type", values="storage", inverse=True
+        )
+        plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+
+        plot.draw_subplots(unit=unit, title="Summed energy", figsize=(11, 11))
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
     plot_demands(CARRIERS)
+    subplot_invest_out_multi_carrier(CARRIERS)
+    subplot_flow_out_multi_carrier(CARRIERS)
+    subplot_demands(CARRIERS)
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
