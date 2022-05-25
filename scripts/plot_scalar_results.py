@@ -581,7 +581,6 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
 
-
     def subplot_demands(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
@@ -614,7 +613,6 @@ if __name__ == "__main__":
 
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot_invest_out_multi_carrier: {e}.")
-
 
     def subplot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
