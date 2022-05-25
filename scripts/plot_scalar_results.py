@@ -565,6 +565,7 @@ if __name__ == "__main__":
         plot.swap_levels()
 
         fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+        plt.suptitle("Summed energy", x=0.533, fontsize="x-large")
 
         try:
             ax.texts.clear()
