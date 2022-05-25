@@ -237,7 +237,13 @@ class ScalarPlot:
 
         self.plotted = True
 
-        return fig, ax
+        # show only ticklabels of last plot
+        axs = fig.get_axes()
+
+        for ax in axs[:-1]:
+            ax.tick_params(labelbottom=False)
+
+        return fig, axs
 
     def save_plot(self, output_path_plot):
         if self.plotted:
@@ -630,11 +636,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, ax = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=var_name, figsize=(11, 11))
         plt.suptitle("Summed energy", fontsize="x-large")
 
         try:
-            ax.texts.clear()
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
