@@ -208,13 +208,16 @@ class ScalarPlot:
         n_facets = len(grouped)
 
         for i, (facet_name, df) in enumerate(grouped):
+            df = df.reset_index(level=[0], drop=True)
             ax = fig.add_subplot(n_facets, 1, i + 1)
 
             plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
 
             ax.get_legend().remove()
 
-            ax.set_title(title[i])
+            for subtitle in title:
+                if facet_name in subtitle:
+                    ax.set_title(subtitle)
 
         self.plotted = True
 
