@@ -189,7 +189,7 @@ class ScalarPlot:
 
         return fig, ax
 
-    def draw_subplots(self, unit, title, facet_level=0):
+    def draw_subplots(self, unit, title, figsize=None, facet_level=0):
         # do not plot if the data is empty or all zeros.
         if (
             self.prepared_scalar_data.empty
@@ -198,7 +198,11 @@ class ScalarPlot:
             logger.warning("Data is empty or all zero")
             return None, None
 
-        fig = plt.figure()
+        # Set fig size to default size if no fig size is passed
+        if not figsize:
+            figsize = plt.rcParams.get("figure.figsize")
+
+        fig = plt.figure(figsize=figsize)
 
         grouped = self.prepared_scalar_data.groupby(level=facet_level)
         n_facets = len(grouped)
@@ -210,7 +214,7 @@ class ScalarPlot:
 
             ax.get_legend().remove()
 
-        ax.set_title(title)
+            ax.set_title(title[i])
 
         self.plotted = True
 
