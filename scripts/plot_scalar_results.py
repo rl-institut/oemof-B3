@@ -206,11 +206,21 @@ class ScalarPlot:
 
         fig = plt.figure(figsize=figsize)
 
+        def set_index_full_product(df):
+            r"""
+            Ensures that the the MultiIndex covers the full product of the levels.
+            """
+            index_full_product = pd.MultiIndex.from_product(df.index.levels)
+            return df.reindex(index_full_product)
+
+        self.prepared_scalar_data = set_index_full_product(self.prepared_scalar_data)
+
         grouped = self.prepared_scalar_data.groupby(level=facet_level)
         n_facets = len(grouped)
 
         for i, (facet_name, df) in enumerate(grouped):
             df = df.reset_index(level=[0], drop=True)
+            df = df.fillna(0)
             df = df.loc[:, (df != 0).any(axis=0)]
 
             ax = fig.add_subplot(n_facets, 1, i + 1)
