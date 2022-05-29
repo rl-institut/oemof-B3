@@ -60,10 +60,16 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
     if df.empty:
         return df
 
+    # remember order of scenarios
+    scenario_order = df.index.unique()
+
     # pivot
     df_pivot = pd.pivot_table(
         df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
     )
+
+    # restore order of scenarios after pivoting
+    df_pivot = df_pivot.reindex(scenario_order, level="scenario")
 
     def drop_constant_multiindex_levels(df):
         _df = df.copy()
@@ -150,9 +156,7 @@ class ScalarPlot:
             logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
 
         else:
-            self.prepared_scalar_data = self.prepared_scalar_data.swaplevel(
-                *swaplevels
-            ).sort_index(level=0)
+            self.prepared_scalar_data = self.prepared_scalar_data.swaplevel(*swaplevels)
 
         return self.prepared_scalar_data
 
@@ -476,6 +480,7 @@ if __name__ == "__main__":
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
+        plot.prepared_scalar_data.sort_index(level=0, inplace=True)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -518,6 +523,7 @@ if __name__ == "__main__":
         plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
+        plot.prepared_scalar_data.sort_index(level=0, inplace=True)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
@@ -556,6 +562,7 @@ if __name__ == "__main__":
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
+        plot.prepared_scalar_data.sort_index(level=0, inplace=True)
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
