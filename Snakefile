@@ -254,11 +254,13 @@ rule plot_scalar_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_group}/joined/"
+        "results/{joined_scenarios}/{scenario_group}/joined/"
     output:
-        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
+        directory("results/{joined_scenarios}/{scenario_group}/joined_plotted/")
     params:
         logfile="logs/{scenario_group}.log"
+    wildcard_constraints:
+        joined_scenarios="joined_scenarios|sensitivities"
     shell:
         "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
@@ -351,7 +353,7 @@ def get_sample_of_sensitivity(wildcards):
     return [
         os.path.join("results", "sensitivities", wildcards.sensitivity, sample, "postprocessed")
         for sample in os.listdir(os.path.join("results", "sensitivities", wildcards.sensitivity))
-        if not (sample == ".snakemake_timestamp" or sample == "joined")
+        if not (sample == ".snakemake_timestamp" or sample == "joined" or sample == "joined_plotted")
     ]
 
 
