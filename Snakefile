@@ -12,7 +12,7 @@ scenario_groups = {
 sensitivities = {"A": ("2050-gas_lessCH4", "2050-gas_moreCH4", 2)}
 
 wildcard_constraints:
-    subfolder="|".join([os.path.join("sensitivities/", item) for item in list(sensitivities.keys())] + ["scenarios"])
+    single_scenarios="|".join([os.path.join("sensitivities/", item) for item in list(sensitivities.keys())] + ["scenarios"])
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
@@ -186,9 +186,9 @@ rule build_datapackage:
 
 rule optimize:
     input:
-        "results/{subfolder}/{scenario}/preprocessed"
+        "results/{single_scenarios}/{scenario}/preprocessed"
     output:
-        directory("results/{subfolder}/{scenario}/optimized/")
+        directory("results/{single_scenarios}/{scenario}/optimized/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -196,9 +196,9 @@ rule optimize:
 
 rule postprocess:
     input:
-        "results/{subfolder}/{scenario}/optimized"
+        "results/{single_scenarios}/{scenario}/optimized"
     output:
-        directory("results/{subfolder}/{scenario}/postprocessed/")
+        directory("results/{single_scenarios}/{scenario}/postprocessed/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -206,9 +206,9 @@ rule postprocess:
 
 rule create_results_table:
     input:
-        "results/{subfolder}/{scenario}/postprocessed/"
+        "results/{single_scenarios}/{scenario}/postprocessed/"
     output:
-        directory("results/{subfolder}/{scenario}/tables/")
+        directory("results/{single_scenarios}/{scenario}/tables/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -226,9 +226,9 @@ rule create_joined_results_table:
 
 rule plot_dispatch:
     input:
-        "results/{subfolder}/{scenario}/postprocessed/"
+        "results/{single_scenarios}/{scenario}/postprocessed/"
     output:
-        directory("results/{subfolder}/{scenario}/plotted/dispatch")
+        directory("results/{single_scenarios}/{scenario}/plotted/dispatch")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -244,9 +244,9 @@ rule plot_conv_pp_scalars:
 
 rule plot_scalar_results:
     input:
-        "results/{subfolder}/{scenario}/postprocessed/"
+        "results/{single_scenarios}/{scenario}/postprocessed/"
     output:
-        directory("results/{subfolder}/{scenario}/plotted/scalars/")
+        directory("results/{single_scenarios}/{scenario}/plotted/scalars/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -266,13 +266,13 @@ rule report:
     input:
         template="report/report.md",
         template_interactive="report/report_interactive.md",
-        plots_scalars="results/{subfolder}/{scenario}/plotted/scalars",
-        plots_dispatch="results/{subfolder}/{scenario}/plotted/dispatch",
+        plots_scalars="results/{single_scenarios}/{scenario}/plotted/scalars",
+        plots_dispatch="results/{single_scenarios}/{scenario}/plotted/dispatch",
     output:
-        directory("results/{subfolder}/{scenario}/report/")
+        directory("results/{single_scenarios}/{scenario}/report/")
     params:
         logfile="logs/{scenario}.log",
-        all_plots="results/{subfolder}/{scenario}/plotted/",
+        all_plots="results/{single_scenarios}/{scenario}/plotted/",
     run:
         import os
         import shutil
