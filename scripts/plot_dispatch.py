@@ -161,24 +161,24 @@ if __name__ == "__main__":
                 "Heat dec. storage": ["Heat dec. storage out", "Heat dec. storage in"],
                 "Heat dec. mismatch": ["Heat dec. excess", "Heat dec. shortage"],
             }
-            h, l = ax.get_legend_handles_labels()
+            handles, labels = ax.get_legend_handles_labels()
 
             for key, value in simple_labels_dict.items():
-                if value[0] in l and value[1] in l:
-                    l = [
+                if value[0] in labels and value[1] in labels:
+                    labels = [
                         key
                         if item == value[0]
                         else "_Hidden"
                         if item == value[1]
                         else item
-                        for item in l
+                        for item in labels
                     ]
 
             # Put a legend below current axis
 
             ax.legend(
-                handles=h,
-                labels=l,
+                handles=handles,
+                labels=labels,
                 loc="upper center",
                 bbox_to_anchor=(0.5, -0.1),
                 fancybox=True,
