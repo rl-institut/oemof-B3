@@ -302,13 +302,13 @@ def test_filter_df_ts():
     # Read stacked time series
     df = load_b3_timeseries(path_file_ts_stacked)
 
-    df_BE_BB = filter_df(df, "region", ["BE_BB"])
+    df_BE_BB = filter_df(df, "region", ["BE"])
 
     # Load expected filtered stacked time series
     path_file_filtered_ts = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "oemof_b3_resources_timeseries_stacked_filtered_BE_BB.csv",
+        "oemof_b3_resources_timeseries_stacked_filtered_BE.csv",
     )
     df_filtered_ts_expected = load_b3_timeseries(path_file_filtered_ts)
 
