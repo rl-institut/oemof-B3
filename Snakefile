@@ -9,6 +9,11 @@ scenario_groups = {
     "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")]
 }
 
+sensitivities = {"A": ("2050-gas_lessCH4", "2050-gas_moreCH4", 2)}
+
+wildcard_constraints:
+    single_scenarios="|".join([os.path.join("sensitivities/", item) for item in list(sensitivities.keys())] + ["scenarios"])
+
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
 
@@ -20,20 +25,20 @@ rule plot_all_resources:
 rule plot_all_examples:
     input:
         expand(
-            "results/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["examples"],
+            "results/scenarios/{example}/plotted/{plot_type}",
+            example=scenario_groups["examples"],
             plot_type=["scalars", "dispatch"],
         )
 
 rule process_all_scenarios:
     input:
         plots=expand(
-            "results/{scenario}/plotted/{plot_type}",
+            "results/scenarios/{scenario}/plotted/{plot_type}",
             scenario=scenario_groups["all-scenarios"],
             plot_type=["scalars", "dispatch"],
         ),
         tables=expand(
-            "results/{scenario}/tables",
+            "results/scenarios/{scenario}/tables",
             scenario=scenario_groups["all-scenarios"],
         )
 
@@ -63,12 +68,12 @@ rule create_input_data_overview:
 
 rule prepare_example:
     input:
-        "examples/{scenario}/preprocessed/"
+        "examples/{example}/preprocessed/"
     output:
-        directory("results/{scenario}/preprocessed")
+        directory("results/scenarios/{example}/preprocessed")
     wildcard_constraints:
         # necessary to distinguish from those scenarios that are not pre-fabricated
-        scenario="|".join(scenario_groups["examples"])
+        example="|".join(scenario_groups["examples"])
     run:
         import shutil
         shutil.copytree(src=input[0], dst=output[0])
@@ -184,7 +189,7 @@ rule build_datapackage:
         get_paths_scenario_input,
         scenario="scenarios/{scenario}.yml"
     output:
-        directory("results/{scenario}/preprocessed")
+        directory("results/scenarios/{scenario}/preprocessed")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -192,9 +197,9 @@ rule build_datapackage:
 
 rule optimize:
     input:
-        "results/{scenario}/preprocessed"
+        "results/{single_scenarios}/{scenario}/preprocessed"
     output:
-        directory("results/{scenario}/optimized/")
+        directory("results/{single_scenarios}/{scenario}/optimized/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -202,9 +207,9 @@ rule optimize:
 
 rule postprocess:
     input:
-        "results/{scenario}/optimized"
+        "results/{single_scenarios}/{scenario}/optimized"
     output:
-        directory("results/{scenario}/postprocessed/")
+        directory("results/{single_scenarios}/{scenario}/postprocessed/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -212,9 +217,9 @@ rule postprocess:
 
 rule create_results_table:
     input:
-        "results/{scenario}/postprocessed/"
+        "results/{single_scenarios}/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/tables/")
+        directory("results/{single_scenarios}/{scenario}/tables/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -232,9 +237,9 @@ rule create_joined_results_table:
 
 rule plot_dispatch:
     input:
-        "results/{scenario}/postprocessed/"
+        "results/{single_scenarios}/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/dispatch")
+        directory("results/{single_scenarios}/{scenario}/plotted/dispatch")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -250,9 +255,9 @@ rule plot_conv_pp_scalars:
 
 rule plot_scalar_results:
     input:
-        "results/{scenario}/postprocessed/"
+        "results/{single_scenarios}/{scenario}/postprocessed/"
     output:
-        directory("results/{scenario}/plotted/scalars/")
+        directory("results/{single_scenarios}/{scenario}/plotted/scalars/")
     params:
         logfile="logs/{scenario}.log"
     shell:
@@ -260,11 +265,13 @@ rule plot_scalar_results:
 
 rule plot_joined_scalars:
     input:
-        "results/joined_scenarios/{scenario_group}/joined/"
+        "results/{joined_scenarios}/{scenario_group}/joined/"
     output:
-        directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
+        directory("results/{joined_scenarios}/{scenario_group}/joined_plotted/")
     params:
         logfile="logs/{scenario_group}.log"
+    wildcard_constraints:
+        joined_scenarios="joined_scenarios|sensitivities"
     shell:
         "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
@@ -272,13 +279,13 @@ rule report:
     input:
         template="report/report.md",
         template_interactive="report/report_interactive.md",
-        plots_scalars="results/{scenario}/plotted/scalars",
-        plots_dispatch="results/{scenario}/plotted/dispatch",
+        plots_scalars="results/{single_scenarios}/{scenario}/plotted/scalars",
+        plots_dispatch="results/{single_scenarios}/{scenario}/plotted/dispatch",
     output:
-        directory("results/{scenario}/report/")
+        directory("results/{single_scenarios}/{scenario}/report/")
     params:
         logfile="logs/{scenario}.log",
-        all_plots="results/{scenario}/plotted/",
+        all_plots="results/{single_scenarios}/{scenario}/plotted/",
     run:
         import os
         import shutil
@@ -328,5 +335,43 @@ rule join_scenario_results:
         get_scenarios_in_group
     output:
         directory("results/joined_scenarios/{scenario_group}/joined/")
+    shell:
+        "python scripts/join_scenarios.py {input} {output}"
+
+def extend_scenario_groups(wildcards):
+    lb, ub, n = sensitivities[wildcards.sensitivity]
+    return [os.path.join("results", "scenarios", scenario, "preprocessed") for scenario in [lb, ub]]
+
+def get_n(wildcards):
+    n = sensitivities[wildcards.sensitivity][2]
+    return n
+
+rule build_sensitivity:
+    input:
+        extend_scenario_groups
+    output:
+        directory("results/sensitivities/{sensitivity}")
+    wildcard_constraints:
+        sensitivity="|".join(sensitivities.keys())
+    params:
+        n=get_n,
+        logfile="logs/{sensitivity}.log",
+    shell:
+        "python scripts/build_sensitivity.py {input[0]} {input[1]} {output} {params.n} {params.logfile}"
+
+
+def get_sample_of_sensitivity(wildcards):
+    return [
+        os.path.join("results", "sensitivities", wildcards.sensitivity, sample, "postprocessed")
+        for sample in os.listdir(os.path.join("results", "sensitivities", wildcards.sensitivity))
+        if not (sample == ".snakemake_timestamp" or sample == "joined" or sample == "joined_plotted")
+    ]
+
+
+rule join_sensitivity_results:
+    input:
+        get_sample_of_sensitivity
+    output:
+        directory("results/sensitivities/{sensitivity}/joined/")
     shell:
         "python scripts/join_scenarios.py {input} {output}"
