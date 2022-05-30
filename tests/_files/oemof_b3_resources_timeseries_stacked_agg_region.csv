@@ -1,10 +1,10 @@
 id_ts;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
-0;ALL;biomass-st_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
-1;ALL;ch4-gt_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
-2;ALL;electricity-curtailment_in_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
-3;ALL;electricity-demand_in_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[3779589.614281981, 3740897.5602432936, 3607680.4021416325];;;
-4;ALL;electricity-liion-battery_in_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
-6;ALL;electricity-liion-battery_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[1765010.4, 2388758.0, 2579009.0];;;
-7;ALL;electricity-shortage_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
-8;ALL;solar-pv_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
-9;ALL;wind-onshore_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[2290228.0, 1602282.2, 1190995.6];;;
+0;All;biomass-st_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
+1;All;ch4-gt_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
+2;All;electricity-curtailment_in_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
+3;All;electricity-demand_in_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[3779589.614281981, 3740897.5602432936, 3607680.4021416325];;;
+4;All;electricity-liion-battery_in_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
+5;All;electricity-liion-battery_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[1765010.4, 2388758.0, 2579009.0];;;
+6;All;electricity-shortage_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
+7;All;solar-pv_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[0.0, 0.0, 0.0];;;
+8;All;wind-onshore_out_electricity;2019-01-01 00:00:00;2019-01-01 02:00:00;H;[2290228.0, 1602282.2, 1190995.6];;;
