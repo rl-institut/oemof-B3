@@ -152,7 +152,7 @@ if __name__ == "__main__":
             simple_labels_dict = {'Battery': ['Battery out', 'Battery in'],
                                   'El. transmission external': ['El. import', 'El. export'],
                                   'El. transmission B-BB': ['El. transmission in', 'El. transmission out'],
-                                  'El. mismatch': ['El. shortage', 'Curtailment'],
+                                  'El. shortage / curtailment': ['El. shortage', 'Curtailment'],
                                   'Heat cen. storage': ['Heat cen. storage out', 'Heat cen. storage in'],
                                   'Heat cen. mismatch': ['Heat cen. excess', 'Heat cen. shortage'],
                                   'Heat dec. storage': ['Heat dec. storage out', 'Heat dec. storage in'],
