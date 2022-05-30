@@ -1,65 +1,56 @@
 ,Color
-PV,#fcca00
-Wind on,#9BE3F3
-Wind off,#73baec
-Biomass ST,#2ca02c
-Biomass GT,#007000
-Hydro reservoir,#3c52f7
-Hydro ROR,#2837a9
+PV,#e2c319
+Wind on,#19c5e5
+Hydro reservoir,#4a19e5
+Hydro ROR,#6d19e5
+H2 GT,#19e5e5
+CH4 GT,#96e519
 
-H2 GT,#00F7FF
-CH4 GT,#bcf927
-Nuclear ST,pink
+Battery,#b41de6
+Battery out,#b41de6
+Battery in,#b41de6
 
-Battery,#9467bd
-Battery out,#9467bd
-Battery in,#9467bd
+H2 cavern,#19e5c0
+BEV,#e55c19
 
-H2 cavern,#00fed0
-BEV,#e0b415
+El. transmission in,#9db69a
+El. transmission out,#9db69a
 
-El. transmission in,#9eb295
-El. transmission out,#9eb295
-
-El. shortage,#DBDBDB
-Curtailment,#DBDBDB
+El. shortage,#DADADA
+Curtailment,#DADADA
 
 El. demand,#3e89f4
-El. export,#9DA8B8
-El. import,#9DA8B8
-BEV charging,#a3830f
+El. export,#9ca4b8
+El. import,#9ca4b8
+BEV charging,#e55c19
 
-H2 backpressure CHP,#5bc5c8
-CH4 backpressure CHP,#82e456
-CH4 extraction CHP,#9fb56b
+H2 backpressure CHP,#19e5ba
+CH4 backpressure CHP,#1de519
+CH4 extraction CHP,#c0e519
 
 Heat cen. demand,#ff0800
 Heat cen. excess,#DBDBDB
 Heat cen. shortage,#DBDBDB
-Heat cen. storage in,#f87286
-Heat cen. storage,#ff0800
-Heat cen. storage out,#f87286
+Heat cen. storage in,#e2c319
+Heat cen. storage,#e2c319
+Heat cen. storage out,#e2c319
 Heat dec. demand,#f2740a
 Heat dec. excess,#DBDBDB
 Heat dec. shortage,#DBDBDB
-Heat dec. storage out,#f9ac6c
-Heat dec. storage in,#f9ac6c
-Heat dec. storage,#f2740a
+Heat dec. storage out,#e2c319
+Heat dec. storage in,#e2c319
+Heat dec. storage,#e2c319
 
-CH4 boiler,#be4541
-Heat pump (DH),#c591d4
-Heat pump (domestic),#f3c9f2
-res. PtH,#ffa605
+CH4 boiler,#e5194d
+Heat pump (DH),#da19e5
+Heat pump (domestic),#f288e3
+res. PtH,#e58a19
 
 CH4 excess,#DBDBDB
 
-Electrolyzer,#54AAE3
-
-Biomass,#2ca02c
+Electrolyzer,#1984e5
 CH4,#bcf927
-Hard coal,black
-Lignite,saddlebrown
-Oil,#9467bd
+
 Other,#7f7f7f
 
 CH4 shortage,#DBDBDB
@@ -67,3 +58,12 @@ CH4 import,#cfcfcf
 CH4 demand,#bcf927
 H2 import,#4b818c
 H2 demand,#00fed0
+
+Wind off,#73baec
+Biomass,#2ca02c
+Biomass ST,#2ca02c
+Biomass GT,#007000
+Hard coal,black
+Lignite,saddlebrown
+Oil,#9467bd
+Nuclear ST,pink
