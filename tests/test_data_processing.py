@@ -12,6 +12,7 @@ from oemof_b3.tools.data_processing import (
     filter_df,
     update_filtered_df,
     aggregate_scalars,
+    aggregate_timeseries,
     check_consistency_timeindex,
     merge_a_into_b,
 )
@@ -375,7 +376,6 @@ def test_df_agg_sc():
     )
 
 
-@pytest.mark.skip(reason="Timeseries aggregation is not implemented yet.")
 def test_df_agg_ts():
     """
     This test checks whether a time series is aggregated by a key
@@ -384,7 +384,7 @@ def test_df_agg_ts():
     df = load_b3_timeseries(path_file_ts_stacked)
 
     # Aggregate by region
-    df_agg_by_region = df  # TODO: implement: aggregate_timeseries(df, "region")
+    df_agg_by_region = aggregate_timeseries(df, "region")
 
     # Load expected filtered stacked time series
     path_file_agg_ts = os.path.join(

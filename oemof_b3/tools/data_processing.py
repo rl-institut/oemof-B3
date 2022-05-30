@@ -47,6 +47,17 @@ def sort_values(df, reset_index=True):
     return _df
 
 
+def sum_series(series):
+    """
+    Enables ndarray summing into one list
+    """
+    summed_series = sum(series)
+    if isinstance(summed_series, np.ndarray):
+        return summed_series.tolist()
+    else:
+        return summed_series
+
+
 def get_list_diff(list_a, list_b):
     r"""
     Returns all items of list_a that are not in list_b.
@@ -380,6 +391,41 @@ def aggregate_units(units):
         return unique_units[0]
 
 
+def aggregate_data(df, groupby, agg_method=None):
+    r"""
+    This functions aggregates data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame in oemof-B3-resources format.
+    groupby : list
+        The columns to group df by
+    agg_method : dict
+        Dictionary to specify aggregation method.
+
+    Returns
+    -------
+    df_aggregated : pd.DataFrame
+        Aggregated data.
+    """
+    # When any of the groupby columns has empty entries, print a warning
+    _df_groupby = df[groupby]
+    if isnull_any(_df_groupby):
+        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
+        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
+
+        for item in columns_with_nan:
+            groupby.remove(item)
+        df.drop(columns_with_nan, axis=1)
+
+        print("Removed the columns containing NaN from the DataFrame.")
+
+    # Groupby and aggregate
+    return df.groupby(groupby, sort=False).agg(agg_method)
+
+
 def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     r"""
     This functions aggregates scalar data in oemof-B3-resources format and sums up
@@ -419,20 +465,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
             "var_unit": aggregate_units,
         }
 
-    # When any of the groupby columns has empty entries, print a warning
-    _df_groupby = _df[groupby]
-    if isnull_any(_df_groupby):
-        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
-        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
-
-        for item in columns_with_nan:
-            groupby.remove(item)
-        _df.drop(columns_with_nan, axis=1)
-
-        print("Removed the columns containing NaN from the DataFrame.")
-
-    # Groupby and aggregate
-    df_aggregated = _df.groupby(groupby, sort=False).agg(agg_method)
+    df_aggregated = aggregate_data(df, groupby, agg_method)
 
     # Assign "ALL" to the columns that where aggregated.
     for col in columns_to_aggregate:
@@ -442,6 +475,66 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     df_aggregated.reset_index(inplace=True)
 
     df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
+
+    return df_aggregated
+
+
+def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
+    r"""
+    This functions aggregates timeseries data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame in oemof-B3-resources format.
+    columns_to_aggregate : string or list
+        The columns to sum together ('region', 'carrier', 'tech' or 'type).
+    agg_method : dict
+        Dictionary to specify aggregation method.
+
+    Returns
+    -------
+    df_aggregated : pd.DataFrame
+        Aggregated data.
+    """
+    _df = df.copy()
+
+    _df = format_header(_df, HEADER_B3_TS, "id_ts")
+    _df.series = _df.series.apply(lambda x: np.array(x))
+
+    if not isinstance(columns_to_aggregate, list):
+        columns_to_aggregate = [columns_to_aggregate]
+
+    # Define the columns that are split and thus not aggregated
+    groupby = [
+        "scenario_key",
+        "region",
+        "var_name",
+        "timeindex_start",
+        "timeindex_stop",
+        "timeindex_resolution",
+    ]
+
+    groupby = list(set(groupby).difference(set(columns_to_aggregate)))
+
+    # Define how to aggregate if
+    if not agg_method:
+        agg_method = {
+            "series": sum_series,
+            "var_unit": aggregate_units,
+        }
+
+    df_aggregated = aggregate_data(_df, groupby, agg_method)
+
+    # Assign "ALL" to the columns that where aggregated.
+    for col in columns_to_aggregate:
+        df_aggregated[col] = "All"
+
+    # Reset the index
+    df_aggregated.reset_index(inplace=True)
+
+    df_aggregated = format_header(df_aggregated, HEADER_B3_TS, "id_ts")
 
     return df_aggregated
 
