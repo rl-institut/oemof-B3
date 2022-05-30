@@ -634,6 +634,27 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
+    def subplot_flow_in_multi_carrier(carriers):
+        var_name = [f"flow_in_{carrier}" for carrier in carriers]
+        unit = "Wh"
+        output_path_plot = os.path.join(
+            target, "flow_in_" + "_".join(carriers) + "_subplots.png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+
+        plot.draw_subplots(unit=unit, title="Demand", figsize=(11, 11))
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
     def subplot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
@@ -665,6 +686,7 @@ if __name__ == "__main__":
     subplot_invest_out_multi_carrier(CARRIERS)
     subplot_flow_out_multi_carrier(CARRIERS)
     subplot_demands(CARRIERS)
+    subplot_flow_in_multi_carrier(CARRIERS)
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
