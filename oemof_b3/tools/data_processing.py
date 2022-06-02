@@ -419,20 +419,8 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
             "var_unit": aggregate_units,
         }
 
-    # When any of the groupby columns has empty entries, print a warning
-    _df_groupby = _df[groupby]
-    if isnull_any(_df_groupby):
-        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
-        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
-
-        for item in columns_with_nan:
-            groupby.remove(item)
-        _df.drop(columns_with_nan, axis=1)
-
-        print("Removed the columns containing NaN from the DataFrame.")
-
     # Groupby and aggregate
-    df_aggregated = _df.groupby(groupby, sort=False).agg(agg_method)
+    df_aggregated = _df.groupby(groupby, sort=False, dropna=False).agg(agg_method)
 
     # Assign "ALL" to the columns that where aggregated.
     for col in columns_to_aggregate:
