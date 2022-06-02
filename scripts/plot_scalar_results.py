@@ -691,6 +691,7 @@ if __name__ == "__main__":
     subplot_flow_out_multi_carrier(CARRIERS)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
+
     def plot_demands_stacked_carriers(carriers):
         carriers.append("ch4")
         scenarios = np.unique(scalars.index.values)
