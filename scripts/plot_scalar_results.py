@@ -691,6 +691,75 @@ if __name__ == "__main__":
     subplot_flow_out_multi_carrier(CARRIERS)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
+    def plot_demands_stacked_carriers(carriers):
+        carriers.append("ch4")
+        scenarios = np.unique(scalars.index.values)
+        var_name = [f"flow_in_{carrier}" for carrier in carriers]
+        tech = "demand"
+        unit = "Wh"
+        output_path_plot = os.path.join(
+            target, "demand_stacked_carriers_" + "_".join(carriers) + ".png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="tech", values=tech, inverse=False
+        )
+        plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        plot.prepared_scalar_data = aggregate_regions(plot.selected_scalars)
+
+        plot.prepared_scalar_data = plot.prepared_scalar_data.reset_index()
+        plot.prepared_scalar_data = plot.prepared_scalar_data.set_index(
+            ["scenario", "var_name"]
+        )
+
+        plot.prepared_scalar_data = plot.prepared_scalar_data.filter(
+            items=["var_value"]
+        )
+        plot.prepared_scalar_data = plot.prepared_scalar_data.unstack("var_name")
+
+        column_names = plot.prepared_scalar_data.columns
+        plot.prepared_scalar_data = plot.prepared_scalar_data.T.reset_index(drop=True).T
+
+        for column_num, column_name in enumerate(column_names):
+            plot.prepared_scalar_data.rename(
+                columns={column_num: column_name[1] + "-demand"}, inplace=True
+            )
+
+        # rename and aggregate duplicated columns
+        plot.prepared_scalar_data = plots.map_labels(
+            plot.prepared_scalar_data, labels_dict
+        )
+
+        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        try:
+            # rotate hierarchical labels
+            ax.texts.clear()
+            set_hierarchical_xlabels(
+                plot.prepared_scalar_data.index,
+                ax=ax,
+                rotation=[70, 70],
+                ha="right",
+                hlines=True,
+            )
+
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
+                fancybox=True,
+                ncol=2,
+                fontsize=14,
+            )
+            ax.set_title("Demand")
+
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    plot_demands_stacked_carriers(CARRIERS)
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
