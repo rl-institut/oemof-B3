@@ -37,11 +37,10 @@ import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 import warnings
 
-warnings.filterwarnings("ignore")
-
 from oemof_b3 import labels_dict, colors_odict
 from oemof_b3.config import config
 
+warnings.filterwarnings("ignore")
 
 def reduce_labels(ax, simple_labels_dict):
     """
