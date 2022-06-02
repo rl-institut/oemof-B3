@@ -49,6 +49,25 @@ def aggregate_regions(df):
     return _df
 
 
+def draw_standalone_legend(c_dict):
+    import matplotlib.patches as mpatches
+
+    fig = plt.figure(figsize=(14, 14))
+    patches = [
+        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
+    ]
+    fig.legend(
+        patches,
+        c_dict.keys(),
+        loc="center",
+        ncol=4,
+        fontsize=14,
+        frameon=False,
+    )
+    plt.tight_layout()
+    return fig
+
+
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e-3):
     # drop data that is almost zero
     def _drop_near_zeros(df, tolerance):
@@ -683,16 +702,7 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
-    plot_capacity()
-    plot_invest_out_multi_carrier(CARRIERS)
-    plot_flow_out_multi_carrier(CARRIERS)
-    plot_demands(CARRIERS)
-    subplot_invest_out_multi_carrier(CARRIERS)
-    subplot_flow_out_multi_carrier(CARRIERS)
-    subplot_demands(CARRIERS)
-    subplot_energy_usage_multi_carrier(CARRIERS)
-
-    def plot_demands_stacked_carriers(carriers):
+        def plot_demands_stacked_carriers(carriers):
         carriers.append("ch4")
         scenarios = np.unique(scalars.index.values)
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
@@ -760,8 +770,23 @@ if __name__ == "__main__":
 
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
-
+    
+    
+    plot_capacity()
+    plot_invest_out_multi_carrier(CARRIERS)
+    plot_flow_out_multi_carrier(CARRIERS)
+    plot_demands(CARRIERS)
+    subplot_invest_out_multi_carrier(CARRIERS)
+    subplot_flow_out_multi_carrier(CARRIERS)
+    subplot_demands(CARRIERS)
+    subplot_energy_usage_multi_carrier(CARRIERS)
     plot_demands_stacked_carriers(CARRIERS)
+
+    standalone_legend = False
+    if standalone_legend:
+        fig = draw_standalone_legend(colors_odict)
+        plt.savefig(os.path.join(target, "legend.png"))
+
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
