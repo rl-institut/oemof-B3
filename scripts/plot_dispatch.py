@@ -28,6 +28,7 @@ The static plots are saved as pdf-files and the interactive plotly plots as html
 in a new directory called plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
+
 import sys
 import os
 import pandas as pd
@@ -37,6 +38,34 @@ import matplotlib.dates as mdates
 
 from oemof_b3 import labels_dict, colors_odict
 from oemof_b3.config import config
+
+
+def reduce_labels(ax, simple_labels_dict):
+    """
+    Replaces two labels by one as defined in a dictionary.
+
+    Parameters
+    ----------
+    ax: matplotlib.axes
+        The axes containing the plot for which the labels shall be simplified
+    simple_labels_dict:
+        dictionary which contains the simplified label as a key
+        and for every key a list of two labels
+        which shall be replaced by the simplified label as value
+
+    Returns
+    -------
+
+    """
+    handles, labels = ax.get_legend_handles_labels()
+
+    for key, value in simple_labels_dict.items():
+        if value[0] in labels and value[1] in labels:
+            labels = [
+                key if item == value[0] else "_Hidden" if item == value[1] else item
+                for item in labels
+            ]
+    return handles, labels
 
 
 if __name__ == "__main__":
@@ -78,6 +107,10 @@ if __name__ == "__main__":
             demand_name="demand",
             labels_dict=labels_dict,
         )
+
+        # change colors for demand in colors_odict to black
+        for i in df_demand.columns:
+            colors_odict[i] = "#000000"
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
@@ -141,8 +174,32 @@ if __name__ == "__main__":
             ax.set_position(
                 [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
             )
+
+            # Simplify legend. As there is only one color per technology, there should
+            # be only one label per technology.
+            simple_labels_dict = {
+                "Battery": ["Battery out", "Battery in"],
+                "El. transmission external": ["El. import", "El. export"],
+                "El. transmission B-BB": [
+                    "El. transmission in",
+                    "El. transmission out",
+                ],
+                "El. shortage / curtailment": ["El. shortage", "Curtailment"],
+                "Heat cen. storage": ["Heat cen. storage out", "Heat cen. storage in"],
+                "Heat cen. mismatch": ["Heat cen. excess", "Heat cen. shortage"],
+                "Heat dec. storage": ["Heat dec. storage out", "Heat dec. storage in"],
+                "Heat dec. mismatch": ["Heat dec. excess", "Heat dec. shortage"],
+            }
+
+            handles, labels = reduce_labels(
+                ax=ax, simple_labels_dict=simple_labels_dict
+            )
+
             # Put a legend below current axis
+
             ax.legend(
+                handles=handles,
+                labels=labels,
                 loc="upper center",
                 bbox_to_anchor=(0.5, -0.1),
                 fancybox=True,
