@@ -375,6 +375,17 @@ def test_df_agg_sc():
     )
 
 
+def test_df_agg_sc_with_nan():
+    """
+    This test checks whether scalars containing nan are aggregated by a key
+    """
+
+    df = load_b3_scalars(path_file_sc)
+    df["carrier"].iloc[1] = np.nan
+    df_agg_by_region = aggregate_scalars(df, "region")
+    assert np.isnan(df_agg_by_region["carrier"].iloc[1])
+
+
 @pytest.mark.skip(reason="Timeseries aggregation is not implemented yet.")
 def test_df_agg_ts():
     """
