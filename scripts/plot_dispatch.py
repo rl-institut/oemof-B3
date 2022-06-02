@@ -28,6 +28,10 @@ The static plots are saved as pdf-files and the interactive plotly plots as html
 in a new directory called plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
+import warnings
+
+warnings.filterwarnings("ignore")
+
 import sys
 import os
 import pandas as pd
