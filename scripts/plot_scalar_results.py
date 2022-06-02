@@ -753,6 +753,7 @@ if __name__ == "__main__":
                 fontsize=14,
             )
             ax.set_title("Demand")
+            plt.xticks(rotation=45, ha="right")
 
             plot.save_plot(output_path_plot)
 
