@@ -42,6 +42,7 @@ from oemof_b3.config import config
 
 warnings.filterwarnings("ignore")
 
+
 def reduce_labels(ax, simple_labels_dict):
     """
     Replaces two labels by one as defined in a dictionary.
