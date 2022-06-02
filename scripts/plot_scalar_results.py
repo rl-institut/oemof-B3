@@ -702,9 +702,8 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
-        def plot_demands_stacked_carriers(carriers):
+    def plot_demands_stacked_carriers(carriers):
         carriers.append("ch4")
-        scenarios = np.unique(scalars.index.values)
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
@@ -770,8 +769,7 @@ if __name__ == "__main__":
 
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
-    
-    
+
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
@@ -786,7 +784,6 @@ if __name__ == "__main__":
     if standalone_legend:
         fig = draw_standalone_legend(colors_odict)
         plt.savefig(os.path.join(target, "legend.png"))
-
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
