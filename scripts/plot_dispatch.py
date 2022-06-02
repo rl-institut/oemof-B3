@@ -35,7 +35,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
-import warnings
 
 from oemof_b3 import labels_dict, colors_odict
 from oemof_b3.config import config
