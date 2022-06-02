@@ -49,6 +49,25 @@ def aggregate_regions(df):
     return _df
 
 
+def draw_standalone_legend(c_dict):
+    import matplotlib.patches as mpatches
+
+    fig = plt.figure(figsize=(14, 14))
+    patches = [
+        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
+    ]
+    fig.legend(
+        patches,
+        c_dict.keys(),
+        loc="center",
+        ncol=4,
+        fontsize=14,
+        frameon=False,
+    )
+    plt.tight_layout()
+    return fig
+
+
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e-3):
     # drop data that is almost zero
     def _drop_near_zeros(df, tolerance):
@@ -691,6 +710,9 @@ if __name__ == "__main__":
     subplot_flow_out_multi_carrier(CARRIERS)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
+
+    fig = draw_standalone_legend(colors_odict)
+    plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
