@@ -711,8 +711,10 @@ if __name__ == "__main__":
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
 
-    fig = draw_standalone_legend(colors_odict)
-    plt.savefig(os.path.join(target, "legend.png"))
+    standalone_legend = False
+    if standalone_legend:
+        fig = draw_standalone_legend(colors_odict)
+        plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
