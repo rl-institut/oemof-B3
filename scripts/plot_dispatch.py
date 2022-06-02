@@ -28,9 +28,6 @@ The static plots are saved as pdf-files and the interactive plotly plots as html
 in a new directory called plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
-import warnings
-
-warnings.filterwarnings("ignore")
 
 import sys
 import os
@@ -38,6 +35,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from oemof_b3 import labels_dict, colors_odict
 from oemof_b3.config import config
@@ -52,7 +52,8 @@ def reduce_labels(ax, simple_labels_dict):
     ax: matplotlib.axes
         The axes containing the plot for which the labels shall be simplified
     simple_labels_dict:
-        dictionary which contains the simplified label as a key and for every key a list of two labels
+        dictionary which contains the simplified label as a key
+        and for every key a list of two labels
         which shall be replaced by the simplified label as value
 
     Returns
