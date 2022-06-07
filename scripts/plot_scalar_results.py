@@ -712,25 +712,35 @@ if __name__ == "__main__":
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+        # Show only demands
         plot.selected_scalars = dp.filter_df(
             plot.selected_scalars, column_name="tech", values=tech, inverse=False
         )
+        # Remove "flow_in_" from var_name
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        # Aggregate regions
         plot.prepared_scalar_data = aggregate_regions(plot.selected_scalars)
-
+        # Drop index
         plot.prepared_scalar_data = plot.prepared_scalar_data.reset_index()
+        # Set index to "scenario" and "var_name"
         plot.prepared_scalar_data = plot.prepared_scalar_data.set_index(
             ["scenario", "var_name"]
         )
 
+        # Show only var_value of prepared scalar data
         plot.prepared_scalar_data = plot.prepared_scalar_data.filter(
             items=["var_value"]
         )
+        # Unstack prepared and filtered data regarding carriers
         plot.prepared_scalar_data = plot.prepared_scalar_data.unstack("var_name")
 
+        # Get names of data's columns
         column_names = plot.prepared_scalar_data.columns
+        # Reset multiindex
         plot.prepared_scalar_data = plot.prepared_scalar_data.T.reset_index(drop=True).T
 
+        # Rename the columns to their respective energy carrier and append "-demand" to match
+        # the naming convention
         for column_num, column_name in enumerate(column_names):
             plot.prepared_scalar_data.rename(
                 columns={column_num: column_name[1] + "-demand"}, inplace=True
