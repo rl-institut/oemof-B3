@@ -397,6 +397,8 @@ if __name__ == "__main__":
 
     # User input
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2"]
+    CARRIERS_WO_CH4 = CARRIERS.copy()
+    CARRIERS_WO_CH4.append("ch4")
     MW_TO_W = 1e6
 
     # create the directory plotted where all plots are saved
@@ -703,7 +705,6 @@ if __name__ == "__main__":
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_demands_stacked_carriers(carriers):
-        carriers.append("ch4")
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
@@ -778,7 +779,7 @@ if __name__ == "__main__":
     subplot_flow_out_multi_carrier(CARRIERS)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
-    plot_demands_stacked_carriers(CARRIERS)
+    plot_demands_stacked_carriers(CARRIERS_WO_CH4)
 
     standalone_legend = False
     if standalone_legend:
