@@ -744,16 +744,6 @@ if __name__ == "__main__":
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
         try:
-            # rotate hierarchical labels
-            ax.texts.clear()
-            set_hierarchical_xlabels(
-                plot.prepared_scalar_data.index,
-                ax=ax,
-                rotation=[70, 70],
-                ha="right",
-                hlines=True,
-            )
-
             # Move the legend below current axis
             ax.legend(
                 loc="upper left",
