@@ -774,10 +774,10 @@ if __name__ == "__main__":
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
-    plot_demands(CARRIERS)
+    plot_demands(CARRIERS_WO_CH4)
     subplot_invest_out_multi_carrier(CARRIERS)
     subplot_flow_out_multi_carrier(CARRIERS)
-    subplot_demands(CARRIERS)
+    subplot_demands(CARRIERS_WO_CH4)
     subplot_energy_usage_multi_carrier(CARRIERS)
     plot_demands_stacked_carriers(CARRIERS_WO_CH4)
 
