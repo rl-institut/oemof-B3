@@ -760,7 +760,7 @@ if __name__ == "__main__":
                 loc="upper left",
                 bbox_to_anchor=(1, 1),
                 fancybox=True,
-                ncol=2,
+                ncol=1,
                 fontsize=14,
             )
             ax.set_title("Demand")
