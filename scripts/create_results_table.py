@@ -39,7 +39,12 @@ def create_production_table(scalars, carrier):
 
     df = scalars.copy()
 
-    df = dp.aggregate_scalars(df, "region")
+    agg_method = {
+        "var_value": sum,
+        "name": lambda x: "None",
+    }
+
+    df = dp.aggregate_scalars(df, "region", agg_method=agg_method)
 
     df = dp.filter_df(df, "var_name", VAR_NAMES)
 
@@ -65,7 +70,12 @@ def create_demand_table(scalars):
 
     var_name = "flow_in_"
 
-    df = dp.aggregate_scalars(df, "region")
+    agg_method = {
+        "var_value": sum,
+        "name": lambda x: "None",
+    }
+
+    df = dp.aggregate_scalars(df, "region", agg_method=agg_method)
 
     df = df.loc[df["var_name"].str.contains(var_name)]
 
