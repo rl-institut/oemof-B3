@@ -319,6 +319,48 @@ def multi_filter_df(df, **kwargs):
     return filtered_df
 
 
+def multi_filter_df_simultaneously(df, inverse=False, **kwargs):
+    r"""
+    Applies several filters simultaneously to a DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data in oemof_b3 format.
+    inverse : bool
+        If True, matching entries are dropped
+        and the rest of the DataFrame kept.
+    kwargs : Additional keyword arguments
+        Filters to apply
+
+    Returns
+    -------
+    filtered_df : pd.DataFrame
+        Filtered data
+    """
+    _df = df.copy()
+
+    all_wheres = []
+
+    for key, value in kwargs.items():
+        if isinstance(value, list):
+            where = _df[key].isin(value)
+
+        else:
+            where = _df[key] == value
+
+        all_wheres.append(where)
+
+    all_wheres = pd.concat(all_wheres, 1).all(1)
+
+    if inverse:
+        all_wheres = ~all_wheres
+
+    df_filtered = _df.loc[all_wheres]
+
+    return df_filtered
+
+
 def update_filtered_df(df, filters):
     r"""
     Accepts an oemof-b3 Dataframe, filters it, subsequently update
