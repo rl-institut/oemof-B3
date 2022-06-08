@@ -423,7 +423,7 @@ def aggregate_data(df, groupby, agg_method=None):
         print("Removed the columns containing NaN from the DataFrame.")
 
     # Groupby and aggregate
-    return df.groupby(groupby, sort=False).agg(agg_method)
+    return df.groupby(groupby, sort=False, dropna=False).agg(agg_method)
 
 
 def aggregate_scalars(df, columns_to_aggregate, agg_method=None):

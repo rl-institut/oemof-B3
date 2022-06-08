@@ -49,6 +49,25 @@ def aggregate_regions(df):
     return _df
 
 
+def draw_standalone_legend(c_dict):
+    import matplotlib.patches as mpatches
+
+    fig = plt.figure(figsize=(14, 14))
+    patches = [
+        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
+    ]
+    fig.legend(
+        patches,
+        c_dict.keys(),
+        loc="center",
+        ncol=4,
+        fontsize=14,
+        frameon=False,
+    )
+    plt.tight_layout()
+    return fig
+
+
 def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e-3):
     # drop data that is almost zero
     def _drop_near_zeros(df, tolerance):
@@ -378,6 +397,8 @@ if __name__ == "__main__":
 
     # User input
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2"]
+    CARRIERS_WO_CH4 = CARRIERS.copy()
+    CARRIERS_WO_CH4.append("ch4")
     MW_TO_W = 1e6
 
     # create the directory plotted where all plots are saved
@@ -683,14 +704,87 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
+    def plot_demands_stacked_carriers(carriers):
+        var_name = [f"flow_in_{carrier}" for carrier in carriers]
+        tech = "demand"
+        unit = "Wh"
+        output_path_plot = os.path.join(
+            target, "demand_stacked_carriers_" + "_".join(carriers) + ".png"
+        )
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+        # Show only demands
+        plot.selected_scalars = dp.filter_df(
+            plot.selected_scalars, column_name="tech", values=tech, inverse=False
+        )
+        # Remove "flow_in_" from var_name
+        plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+        # Aggregate regions
+        plot.prepared_scalar_data = aggregate_regions(plot.selected_scalars)
+        # Drop index
+        plot.prepared_scalar_data = plot.prepared_scalar_data.reset_index()
+        # Set index to "scenario" and "var_name"
+        plot.prepared_scalar_data = plot.prepared_scalar_data.set_index(
+            ["scenario", "var_name"]
+        )
+
+        # Show only var_value of prepared scalar data
+        plot.prepared_scalar_data = plot.prepared_scalar_data.filter(
+            items=["var_value"]
+        )
+        # Unstack prepared and filtered data regarding carriers
+        plot.prepared_scalar_data = plot.prepared_scalar_data.unstack("var_name")
+
+        # Get names of data's columns
+        column_names = plot.prepared_scalar_data.columns
+        # Reset multiindex
+        plot.prepared_scalar_data = plot.prepared_scalar_data.T.reset_index(drop=True).T
+
+        # Rename the columns to their respective energy carrier and append "-demand" to match
+        # the naming convention
+        for column_num, column_name in enumerate(column_names):
+            plot.prepared_scalar_data.rename(
+                columns={column_num: column_name[1] + "-demand"}, inplace=True
+            )
+
+        # rename and aggregate duplicated columns
+        plot.prepared_scalar_data = plots.map_labels(
+            plot.prepared_scalar_data, labels_dict
+        )
+
+        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        try:
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
+                fancybox=True,
+                ncol=1,
+                fontsize=14,
+            )
+            ax.set_title("Demand")
+            plt.xticks(rotation=45, ha="right")
+
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
     plot_capacity()
     plot_invest_out_multi_carrier(CARRIERS)
     plot_flow_out_multi_carrier(CARRIERS)
-    plot_demands(CARRIERS)
+    plot_demands(CARRIERS_WO_CH4)
     subplot_invest_out_multi_carrier(CARRIERS)
     subplot_flow_out_multi_carrier(CARRIERS)
-    subplot_demands(CARRIERS)
+    subplot_demands(CARRIERS_WO_CH4)
     subplot_energy_usage_multi_carrier(CARRIERS)
+    plot_demands_stacked_carriers(CARRIERS_WO_CH4)
+
+    standalone_legend = False
+    if standalone_legend:
+        fig = draw_standalone_legend(colors_odict)
+        plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:
     #     plot_storage_capacity(carrier)
