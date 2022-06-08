@@ -42,7 +42,11 @@ def aggregate_regions(df):
     _df = df.copy()
     _df.reset_index(inplace=True)
     _df = _df.rename(columns={"scenario": "scenario_key"})
-    _df = dp.aggregate_scalars(_df, "region")
+    agg_method = {
+        "var_value": sum,
+        "name": lambda x: "None",
+    }
+    _df = dp.aggregate_scalars(_df, "region", agg_method=agg_method)
     _df = _df.rename(columns={"scenario_key": "scenario"})
     _df["name"] = _df.apply(lambda x: x["carrier"] + "-" + x["tech"], 1)
     _df = _df.set_index("scenario")
