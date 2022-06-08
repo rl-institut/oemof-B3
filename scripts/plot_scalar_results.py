@@ -396,9 +396,8 @@ if __name__ == "__main__":
     logger = config.add_snake_logger(logfile, "plot_scalar_results")
 
     # User input
-    CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2"]
-    CARRIERS_WO_CH4 = CARRIERS.copy()
-    CARRIERS_WO_CH4.append("ch4")
+    CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2", "ch4"]
+    CARRIERS_WO_CH4 = ["electricity", "heat_central", "heat_decentral", "h2"]
     MW_TO_W = 1e6
 
     # create the directory plotted where all plots are saved
@@ -772,14 +771,14 @@ if __name__ == "__main__":
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     plot_capacity()
-    plot_invest_out_multi_carrier(CARRIERS)
-    plot_flow_out_multi_carrier(CARRIERS)
-    plot_demands(CARRIERS_WO_CH4)
-    subplot_invest_out_multi_carrier(CARRIERS)
-    subplot_flow_out_multi_carrier(CARRIERS)
-    subplot_demands(CARRIERS_WO_CH4)
+    plot_invest_out_multi_carrier(CARRIERS_WO_CH4)
+    plot_flow_out_multi_carrier(CARRIERS_WO_CH4)
+    plot_demands(CARRIERS)
+    subplot_invest_out_multi_carrier(CARRIERS_WO_CH4)
+    subplot_flow_out_multi_carrier(CARRIERS_WO_CH4)
+    subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
-    plot_demands_stacked_carriers(CARRIERS_WO_CH4)
+    plot_demands_stacked_carriers(CARRIERS)
 
     standalone_legend = False
     if standalone_legend:
