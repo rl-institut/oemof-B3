@@ -410,18 +410,6 @@ def aggregate_data(df, groupby, agg_method=None):
     df_aggregated : pd.DataFrame
         Aggregated data.
     """
-    # When any of the groupby columns has empty entries, print a warning
-    _df_groupby = df[groupby]
-    if isnull_any(_df_groupby):
-        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
-        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
-
-        for item in columns_with_nan:
-            groupby.remove(item)
-        df.drop(columns_with_nan, axis=1)
-
-        print("Removed the columns containing NaN from the DataFrame.")
-
     # Groupby and aggregate
     return df.groupby(groupby, sort=False, dropna=False).agg(agg_method)
 
