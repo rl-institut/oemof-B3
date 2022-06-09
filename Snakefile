@@ -7,10 +7,10 @@ HTTP = HTTPRemoteProvider()
 scenario_groups = {
     "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
     "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")],
-    "all-postprocessed": [
+    "all-optimized": [
         scenario for scenario in os.listdir("results")
         if (
-                os.path.exists(os.path.join("results", scenario, "postprocessed"))
+                os.path.exists(os.path.join("results", scenario, "optimized", "es_dump.oemof"))
                 and not "example_" in scenario
         )
     ]
@@ -32,16 +32,18 @@ rule plot_all_examples:
             plot_type=["scalars", "dispatch"],
         )
 
+ALL_SCENARIOS = scenario_groups["all-scenarios"]
+PLOT_TYPE = ["scalars", "dispatch"]
 rule process_all_scenarios:
     input:
         plots=expand(
             "results/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["all-scenarios"],
-            plot_type=["scalars", "dispatch"],
+            scenario=ALL_SCENARIOS,
+            plot_type=PLOT_TYPE,
         ),
         tables=expand(
             "results/{scenario}/tables",
-            scenario=scenario_groups["all-scenarios"],
+            scenario=ALL_SCENARIOS,
         )
 
 rule plot_grouped_scenarios:
