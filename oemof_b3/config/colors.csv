@@ -3,8 +3,8 @@ PV,#e2c319
 Wind on,#19c5e5
 Hydro reservoir,#4a19e5
 Hydro ROR,#6d19e5
-H2 GT,#19e5e5
-CH4 GT,#96e519
+H2 GT,#75CCF0
+CH4 GT,#71EFA4
 
 Battery,#b41de6
 Battery out,#b41de6
@@ -24,8 +24,8 @@ El. export,#737a8c
 El. import,#737a8c
 BEV charging,#e55c19
 
-H2 backpressure CHP,#19e5ba
-CH4 backpressure CHP,#1de519
+H2 backpressure CHP,#0F8A8A
+CH4 backpressure CHP,#128E10
 CH4 extraction CHP,#c0e519
 
 Heat cen. demand,#ff0800
@@ -42,13 +42,13 @@ Heat dec. storage in,#e2c319
 Heat dec. storage,#e2c319
 
 CH4 boiler,#e5194d
-Heat pump (DH),#da19e5
+Heat pump (DH),#9912A1
 Heat pump (domestic),#f288e3
 res. PtH,#e58a19
 
 CH4 excess,#DBDBDB
 
-Electrolyzer,#1984e5
+Electrolyzer,#15B2BC
 CH4,#bcf927
 
 Other,#7f7f7f
@@ -56,7 +56,7 @@ Other,#7f7f7f
 CH4 shortage,#DBDBDB
 CH4 import,#cfcfcf
 CH4 demand,#bcf927
-H2 import,#4b818c
+H2 import,#3B5054
 H2 demand,#00fed0
 
 Wind off,#73baec
