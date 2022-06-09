@@ -32,16 +32,18 @@ rule plot_all_examples:
             plot_type=["scalars", "dispatch"],
         )
 
+ALL_SCENARIOS = scenario_groups["all-scenarios"]
+PLOT_TYPE = ["scalars", "dispatch"]
 rule process_all_scenarios:
     input:
         plots=expand(
             "results/{scenario}/plotted/{plot_type}",
-            scenario=scenario_groups["all-scenarios"],
-            plot_type=["scalars", "dispatch"],
+            scenario=ALL_SCENARIOS,
+            plot_type=PLOT_TYPE,
         ),
         tables=expand(
             "results/{scenario}/tables",
-            scenario=scenario_groups["all-scenarios"],
+            scenario=ALL_SCENARIOS,
         )
 
 rule plot_grouped_scenarios:
