@@ -247,8 +247,13 @@ if __name__ == "__main__":
         # tell the model to get the dual variables when solving
         if config.settings.optimize.receive_duals:
             m.receive_duals()
+        print(config.settings.optimize.solve_kwargs)
+        m.solve(
+            solver=config.settings.optimize.solver,
+            solve_kwargs=config.settings.optimize.solve_kwargs,
+            cmdline_options=config.settings.optimize.cmdline_options,
+        )
 
-        m.solve(solver=config.settings.optimize.solver)
     except:  # noqa: E722
         logger.exception(
             f"Could not optimize energysystem for datapackage from '{preprocessed}'."
