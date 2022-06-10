@@ -4,6 +4,7 @@
 # build_datapackage
 
 name: 2050-el_eff
+label: Efficiency-Scenario
 
 datetimeindex:
   start:
