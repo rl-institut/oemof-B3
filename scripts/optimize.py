@@ -248,7 +248,18 @@ if __name__ == "__main__":
         if config.settings.optimize.receive_duals:
             m.receive_duals()
 
-        m.solve(solver=config.settings.optimize.solver)
+        logger.info(
+            f"Solving with solver '{config.settings.optimize.solver}' "
+            f"using solve_kwargs '{config.settings.optimize.solve_kwargs}' "
+            f"and cmdline_options '{config.settings.optimize.cmdline_options}'."
+        )
+
+        m.solve(
+            solver=config.settings.optimize.solver,
+            solve_kwargs=config.settings.optimize.solve_kwargs,
+            cmdline_options=config.settings.optimize.cmdline_options,
+        )
+
     except:  # noqa: E722
         logger.exception(
             f"Could not optimize energysystem for datapackage from '{preprocessed}'."

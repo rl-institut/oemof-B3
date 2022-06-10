@@ -6,6 +6,12 @@ build_datapackage:
 optimize:
   filename_metadata: datapackage.json
   solver: cbc
+  solve_kwargs:
+    logfile: solver_logfile.log
+    tee: True
+    keepfiles: True
+  cmdline_options:
+    AllowableGap: 0.01
   debug: true
   receive_duals: false
   el_gas_relation: electricity_gas_relation  # appears in build_datapackage as well
