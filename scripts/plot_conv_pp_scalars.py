@@ -27,32 +27,13 @@ import oemoflex.tools.plots as plots
 import pandas as pd
 
 import oemof_b3.tools.data_processing as dp
-from oemof_b3 import colors_odict, labels_to_german
+from oemof_b3.config.config import LABELS, COLORS
 
 # User input
 # converting from MW to W
 conv_number = 1e6
 german_translation = True
 unit = "W"
-
-
-# GENERAL
-c_to_cl = {
-    "biomass": "Biomass",
-    "ch4": "CH4",
-    "hard coal": "Hard coal",
-    "oil": "Oil",
-    "lignite": "Lignite",
-    "other": "Other",
-}
-
-cl_to_gcl = labels_to_german
-
-c_to_gcl = {carrier: cl_to_gcl[cl] for carrier, cl in c_to_cl.items()}
-
-colors_odict_german = {
-    cl_to_gcl[cl]: color for cl, color in colors_odict.items() if cl in cl_to_gcl
-}
 
 
 def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, label_mapping):
@@ -175,23 +156,16 @@ if __name__ == "__main__":
     # Load scalar data
     df_conv_pp_scalars = dp.load_b3_scalars(resources)
 
-    if german_translation:
-        label_mapping = c_to_gcl
-        color_dict = colors_odict_german
-    else:
-        label_mapping = c_to_cl
-        color_dict = colors_odict
-
     df_pivot = prepare_conv_pp_scalars(
         df_conv_pp_scalars=df_conv_pp_scalars,
         var_name=var_name,
         conv_number=conv_number,
-        label_mapping=label_mapping,
+        label_mapping=LABELS,
     )
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # TODO: Check if oemoflex' function can be imported and used here
-    plot_grouped_bar(ax, df_pivot, color_dict, unit)
+    plot_grouped_bar(ax, df_pivot, COLORS, unit)
 
     plt.savefig(target, bbox_inches="tight")

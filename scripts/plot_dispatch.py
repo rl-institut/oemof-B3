@@ -36,7 +36,7 @@ import matplotlib.pyplot as plt
 import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
-from oemof_b3 import labels_dict, colors_odict
+from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config
 
 
@@ -105,16 +105,16 @@ if __name__ == "__main__":
             data,
             bus_name=bus_name,
             demand_name="demand",
-            labels_dict=labels_dict,
+            labels_dict=LABELS,
         )
 
         # change colors for demand in colors_odict to black
         for i in df_demand.columns:
-            colors_odict[i] = "#000000"
+            COLORS[i] = "#000000"
 
         # interactive plotly dispatch plot
         fig_plotly = plots.plot_dispatch_plotly(
-            df=df, df_demand=df_demand, unit="W", colors_odict=colors_odict
+            df=df, df_demand=df_demand, unit="W", colors_odict=COLORS
         )
         file_name = bus_name + "_dispatch_interactive" + ".html"
         fig_plotly.write_html(
@@ -156,7 +156,7 @@ if __name__ == "__main__":
                 df=df_time_filtered,
                 df_demand=df_demand_time_filtered,
                 unit="W",
-                colors_odict=colors_odict,
+                colors_odict=COLORS,
             )
 
             plt.grid()

@@ -1,0 +1,44 @@
+electricity-liion_battery: Batterie in
+biomass-gt: Biomass GT
+biomass-st: Biomass ST
+biomass: Biomasse
+ch4-bpchp: CH4 Backpressure CHP
+ch4-boiler: CH4 Boiler
+ch4-excess: CH4 Excess
+ch4-extchp: CH4 Extraction CHP
+ch4-gt: CH4 GT
+electricity-curtailment: Curtailment
+electricity-demand: El. demand
+electricity-import: El. import
+electricity-export: El. export
+electricity-bev_charging: BEV charging
+electricity-electrolyzer: Electrolyzer
+electricity-heatpump_large: Wärmepumpe (groß)
+electricity-heatpump_small: Wärmepumpe (Haushalt)
+h2-gt: H2 GT
+h2-bpchp: H2 Backpressure CHP
+h2-cavern: H2 Cavern
+hard coal: Steinkohle
+heat-demand: Heat Demand
+heat-excess: Heat Excess
+heat-storage: Heat Storage
+heat_central-excess: Heat Central Excess
+heat_central-storage: Heat Central Storage
+heat_central-shortage: Heat Central Shortage
+heat_central-demand: Heat Central Demand
+heat_decentral-excess: Heat Decentral Excess
+heat_decentral-storage: Heat Decentral Storage
+heat_decentral-shortage: Heat Decentral Shortage
+heat_decentral-demand: Heat Decentral Demand
+hydro-ror: Hydro ROR
+hydro-reservoir: Hydro Reservoir
+lignite: Braunkohle
+nuclear: Nuclear ST
+# oil: Öl  Raises error as "oil" is in "boiler" -> duplicate mappings
+other: Andere
+solar-pv: PV
+electricity-pth: res. PtH
+electricity-shortage: Shortage
+electricity-transmission: Transmission
+wind-offshore: Wind off
+wind-onshore: Wind on
