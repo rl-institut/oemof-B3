@@ -247,7 +247,13 @@ if __name__ == "__main__":
         # tell the model to get the dual variables when solving
         if config.settings.optimize.receive_duals:
             m.receive_duals()
-        print(config.settings.optimize.solve_kwargs)
+
+        logger.info(
+            f"Solving with solver '{config.settings.optimize.solver}' "
+            f"using solve_kwargs '{config.settings.optimize.solve_kwargs}' "
+            f"and cmdline_options '{config.settings.optimize.cmdline_options}'."
+        )
+
         m.solve(
             solver=config.settings.optimize.solver,
             solve_kwargs=config.settings.optimize.solve_kwargs,
