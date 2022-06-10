@@ -248,6 +248,10 @@ if __name__ == "__main__":
         if config.settings.optimize.receive_duals:
             m.receive_duals()
 
+        # save solver log to scenario specific location
+        solve_kwargs = config.settings.optimize.solve_kwargs
+        solve_kwargs["logfile"] = logfile.split(".")[0] + "_solver_log.log"
+
         logger.info(
             f"Solving with solver '{config.settings.optimize.solver}' "
             f"using solve_kwargs '{config.settings.optimize.solve_kwargs}' "

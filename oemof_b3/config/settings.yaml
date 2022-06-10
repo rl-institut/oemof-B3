@@ -7,7 +7,6 @@ optimize:
   filename_metadata: datapackage.json
   solver: cbc
   solve_kwargs:
-    logfile: solver_logfile.log
     tee: True
     keepfiles: True
   cmdline_options:
