@@ -735,8 +735,14 @@ if __name__ == "__main__":
         plot.prepared_scalar_data = plot.prepared_scalar_data.filter(
             items=["var_value"]
         )
+
+        # Remember index to apply it after unstacking
+        index = plot.prepared_scalar_data.index.get_level_values(0).unique()
         # Unstack prepared and filtered data regarding carriers
         plot.prepared_scalar_data = plot.prepared_scalar_data.unstack("var_name")
+
+        # Reindex to keep previous scenario order
+        plot.prepared_scalar_data = plot.prepared_scalar_data.reindex(index)
 
         # Get names of data's columns
         column_names = plot.prepared_scalar_data.columns
