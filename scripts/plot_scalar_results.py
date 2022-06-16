@@ -646,11 +646,33 @@ if __name__ == "__main__":
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+
+        # replacing invest_out_<carrier> with <carrier> to subplot by carrier
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
         plot.draw_subplots(unit=unit, title="Invested capacity", figsize=(11, 11))
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    def subplot_storage_invest_multi_carrier(carriers):
+        var_name = "invest"
+        unit = "Wh"
+        output_path_plot = os.path.join(target, "storage_invest.png")
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+
+        # replacing invest with <carrier> to subplot by carrier
+        plot.selected_scalars["var_name"] = plot.selected_scalars["carrier"]
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
 
         try:
             plt.tight_layout()
@@ -808,6 +830,7 @@ if __name__ == "__main__":
     plot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     plot_demands(CARRIERS)
     subplot_invest_out_multi_carrier(CARRIERS_WO_CH4)
+    subplot_storage_invest_multi_carrier(CARRIERS_WO_CH4)
     subplot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
