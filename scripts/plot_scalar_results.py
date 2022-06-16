@@ -672,7 +672,7 @@ if __name__ == "__main__":
         plot.selected_scalars["var_name"] = plot.selected_scalars["carrier"]
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
-        plot.draw_subplots(unit=unit, title="Invested capacity", figsize=(11, 11))
+        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
 
         try:
             plt.tight_layout()
