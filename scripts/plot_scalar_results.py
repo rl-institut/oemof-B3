@@ -640,7 +640,8 @@ if __name__ == "__main__":
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
         unit = "W"
         output_path_plot = os.path.join(
-            target, "invested_capacity_invest_out_" + "_".join(carriers) + "_subplots.png"
+            target,
+            "invested_capacity_invest_out_" + "_".join(carriers) + "_subplots.png",
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
