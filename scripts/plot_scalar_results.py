@@ -520,7 +520,7 @@ if __name__ == "__main__":
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
         unit = "W"
         output_path_plot = os.path.join(
-            target, "invest_out_" + "_".join(carriers) + ".png"
+            target, "energy_usage_invest_out_" + "_".join(carriers) + ".png"
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
@@ -559,7 +559,7 @@ if __name__ == "__main__":
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
         output_path_plot = os.path.join(
-            target, "flow_out_" + "_".join(carriers) + ".png"
+            target, "summed_energy_flow_out_" + "_".join(carriers) + ".png"
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
@@ -640,7 +640,7 @@ if __name__ == "__main__":
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
         unit = "W"
         output_path_plot = os.path.join(
-            target, "invest_out_" + "_".join(carriers) + "_subplots.png"
+            target, "invested_capacity_invest_out_" + "_".join(carriers) + "_subplots.png"
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
@@ -683,7 +683,7 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         unit = "Wh"
         output_path_plot = os.path.join(
-            target, "flow_in_" + "_".join(carriers) + "_subplots.png"
+            target, "energy_usage_flow_in_" + "_".join(carriers) + "_subplots.png"
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
@@ -708,7 +708,7 @@ if __name__ == "__main__":
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
         output_path_plot = os.path.join(
-            target, "flow_out_" + "_".join(carriers) + "_subplots.png"
+            target, "summed_energy_flow_out_" + "_".join(carriers) + "_subplots.png"
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
