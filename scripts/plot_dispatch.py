@@ -161,8 +161,8 @@ if __name__ == "__main__":
 
             plt.grid()
             plt.title(bus_name + " dispatch", pad=20, fontdict={"size": 22})
-            plt.xlabel("Date", loc="right", fontdict={"size": 17})
-            plt.ylabel("Power", loc="top", fontdict={"size": 17})
+            plt.xlabel("Date", loc="center", fontdict={"size": 17})
+            plt.ylabel("Power", loc="center", fontdict={"size": 17})
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
             # format x-axis representing the dates
