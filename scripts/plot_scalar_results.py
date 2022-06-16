@@ -252,7 +252,14 @@ class ScalarPlot:
             r"""
             Ensures that the the MultiIndex covers the full product of the levels.
             """
-            index_full_product = pd.MultiIndex.from_product(df.index.levels)
+            # df.index.levels messes up the order of the levels, but we want to keep it
+            ordered_levels = [
+                df.index.get_level_values(level).unique()
+                for level in range(df.index.nlevels)
+            ]
+
+            index_full_product = pd.MultiIndex.from_product(ordered_levels)
+
             return df.reindex(index_full_product)
 
         self.prepared_scalar_data = set_index_full_product(self.prepared_scalar_data)
