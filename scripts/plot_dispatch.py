@@ -201,7 +201,7 @@ if __name__ == "__main__":
                 handles=handles,
                 labels=labels,
                 loc="upper center",
-                bbox_to_anchor=(0.5, -0.1),
+                bbox_to_anchor=(0.5, -0.25),
                 fancybox=True,
                 ncol=4,
                 fontsize=14,
