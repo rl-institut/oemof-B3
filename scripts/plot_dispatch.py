@@ -210,7 +210,7 @@ if __name__ == "__main__":
             # remove year from xticks
             formatter = mdates.DateFormatter("%m-%d")
             ax.xaxis.set_major_formatter(formatter)
-            locator = mdates.WeekdayLocator()
+            locator = mdates.AutoDateLocator()
             ax.xaxis.set_major_locator(locator)
 
             fig.tight_layout()
