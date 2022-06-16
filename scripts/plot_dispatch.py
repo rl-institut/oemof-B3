@@ -207,6 +207,12 @@ if __name__ == "__main__":
                 fontsize=14,
             )
 
+            # remove year from xticks
+            formatter = mdates.DateFormatter("%m-%d")
+            ax.xaxis.set_major_formatter(formatter)
+            locator = mdates.WeekdayLocator()
+            ax.xaxis.set_major_locator(locator)
+
             fig.tight_layout()
             file_name = bus_name + "_" + start_date[5:7] + ".pdf"
             plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
