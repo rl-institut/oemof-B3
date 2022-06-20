@@ -591,7 +591,6 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("Summed energy")
 
             plot.save_plot(output_path_plot)
 
