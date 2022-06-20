@@ -783,6 +783,8 @@ if __name__ == "__main__":
         )
 
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
+        # Reset plot title
+        ax.set_title("")
 
         try:
             # Move the legend below current axis
