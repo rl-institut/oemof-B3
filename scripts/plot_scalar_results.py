@@ -487,10 +487,24 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.save_plot(output_path_plot)
         fig, ax = plot.draw_plot(unit=unit, title=None)
+        try:
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
+                fancybox=True,
+                ncol=1,
+                fontsize=14,
+            )
+            plt.xticks(rotation=45, ha="right")
 
             add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_invest_out(carrier):
         var_name = f"invest_out_{carrier}"
