@@ -558,7 +558,7 @@ if __name__ == "__main__":
             inverse=True,
         )
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit)
+        plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_storage_out(carrier):
