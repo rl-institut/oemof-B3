@@ -487,8 +487,10 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
+
+            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
 
     def plot_invest_out(carrier):
         var_name = f"invest_out_{carrier}"
@@ -498,7 +500,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=None)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_storage_capacity(carrier):
@@ -510,7 +512,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=None)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_storage_invest(carrier):
@@ -592,6 +594,8 @@ if __name__ == "__main__":
                 fontsize=14,
             )
 
+            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
@@ -634,6 +638,8 @@ if __name__ == "__main__":
                 fontsize=14,
             )
 
+            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
@@ -672,6 +678,8 @@ if __name__ == "__main__":
                 fontsize=14,
             )
 
+            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
@@ -690,7 +698,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, plot.selected_scalars)
 
         try:
             plt.tight_layout()
@@ -712,7 +723,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, plot.selected_scalars)
 
         try:
             plt.tight_layout()
@@ -737,7 +751,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, plot.selected_scalars)
 
         try:
             plt.tight_layout()
@@ -761,7 +778,10 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, plot.selected_scalars)
 
         try:
             plt.tight_layout()
@@ -825,6 +845,7 @@ if __name__ == "__main__":
         )
 
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
         # Reset plot title
         ax.set_title("")
 
@@ -838,6 +859,8 @@ if __name__ == "__main__":
                 fontsize=14,
             )
             plt.xticks(rotation=45, ha="right")
+
+            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
 
             plot.save_plot(output_path_plot)
 
