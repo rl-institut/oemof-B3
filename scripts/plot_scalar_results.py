@@ -147,6 +147,48 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
     return df_pivot
 
 
+# Add vertical line in plot
+def add_vertical_line_in_plot(ax, df):
+    _df = df.copy()
+
+    index_length = len(_df.index)
+    count_el = []
+    count_gas = []
+
+    # Get index positions of el and gas scenarios
+    for pos, x in enumerate(list(_df.index)):
+        # Case for single index
+        if isinstance(x, (list, tuple)):
+            if "el" in x[1]:
+                count_el.append(pos)
+            elif "moreCH4" in x[1] or "lessCH4" in x[1]:
+                count_gas.append(pos)
+        # Case for multi index
+        else:
+            if "el" in x:
+                count_el.append(pos)
+            elif "moreCH4" in x or "lessCH4" in x:
+                count_gas.append(pos)
+
+    # If they are in order (el first followed by gas)
+    if [*count_el, *count_gas] == list(np.arange(0, index_length)):
+        # Make second x-axis for vertical line
+        ax_n = ax.twiny()
+
+        # Pseudo plot for correct distribution of x-ticks
+        ax_n.plot(
+            np.arange(index_length * 2),
+            np.zeros((index_length * 2, len(_df.columns))),
+            alpha=0,
+        )
+        # Plot vertical line on secondary x-axis
+        ax_n.axvline(x=(len(count_el) * 2) - 0.5, color="black", linewidth=1)
+
+        # Reset ticks and tick labels of secondary x-axis
+        ax_n.tick_params(width=0)
+        ax_n.set_xticklabels([])
+
+
 def load_scalars(path):
     df = pd.read_csv(path, sep=",", index_col=0)
     return df
