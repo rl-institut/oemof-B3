@@ -717,7 +717,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
             add_vertical_line_in_plot(ax, plot.selected_scalars)
@@ -743,7 +743,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
             add_vertical_line_in_plot(ax, plot.selected_scalars)
@@ -772,7 +772,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
             add_vertical_line_in_plot(ax, plot.selected_scalars)
@@ -800,7 +800,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
             add_vertical_line_in_plot(ax, plot.selected_scalars)
