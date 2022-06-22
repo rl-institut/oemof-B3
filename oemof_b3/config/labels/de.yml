@@ -3,27 +3,27 @@ biomass-gt: Biomass GT
 biomass-st: Biomass DT
 biomass: Biomasse
 ch4-boiler: CH4 Boiler
-ch4-bpchp: CH4 Backpressure KWK
+ch4-bpchp: CH4 KWK (Gegendruck)
 ch4-demand: CH4 Bedarf
 ch4-excess: CH4 Überschuss
 ch4-export: CH4 Export
-ch4-extchp: CH4 Extraction KWK
+ch4-extchp: CH4 KWK (Entnahmekond.)
 ch4-gt: CH4 GT
 ch4-import: CH4 Import
 ch4-shortage: CH4 Shortage
-electricity-bev_charging: BEV charging
-electricity-curtailment: Curtailment
-electricity-demand: El. demand
-electricity-electrolyzer: Electrolyzer
-electricity-export: El. export
+electricity-bev_charging: BEV
+electricity-curtailment: Abregelung
+electricity-demand: Strombedarf
+electricity-electrolyzer: Elektrolyse
+electricity-export: Stromexport
 electricity-heatpump_large: Wärmepumpe (groß)
 electricity-heatpump_small: Wärmepumpe (Haushalt)
-electricity-import: El. import
+electricity-import: Stromimport
 electricity-liion_battery: Batterie
 electricity-pth: res. PtH
-electricity-shortage: El. Shortage
-electricity-transmission: El. Transmission
-h2-bpchp: H2 Backpressure KWK
+electricity-shortage: Strom
+electricity-transmission: Stromübertragung
+h2-bpchp: H2 KWK (Gegendruck)
 h2-cavern: H2 Kaverne
 h2-demand: H2 Bedarf
 h2-excess: H2 Überschuss
@@ -36,15 +36,15 @@ heat_central-demand: zen. Wärmebedarf
 heat_central-excess: zen. Wärmeüberschuss
 heat_central-shortage: zen. Wärme Shortage
 heat_central-storage: zen. Wärmespeicher
-heat_decentral-demand: dec. Wärmebedarf
-heat_decentral-excess: dec. Wärmeüberschuss
-heat_decentral-shortage: dec. Wärme Shortage
-heat_decentral-storage: dec. Wärmespeicher
-hydro-reservoir: Hydro Reservoir
+heat_decentral-demand: dez. Wärmebedarf
+heat_decentral-excess: dez. Wärmeüberschuss
+heat_decentral-shortage: dez. Wärme Shortage
+heat_decentral-storage: dez. Wärmespeicher
+hydro-reservoir: Reservoir
 hydro-ror: Laufwasserkraft
 lignite: Braunkohle
-nuclear-st: Nuclear DT
+nuclear-st: Kernkraftwerk
 other: Andere
 solar-pv: PV
-wind-offshore: Wind off
-wind-onshore: Wind on
+wind-offshore: Wind Offshore
+wind-onshore: Wind Onshore
