@@ -475,10 +475,10 @@ if __name__ == "__main__":
     scalars = load_scalars(scalars_path)
     scalars = set_scenario_labels(scalars)
 
-    def plot_capacity():
+    def plot_capacities():
         var_name = "capacity"
         unit = "W"
-        output_path_plot = os.path.join(target, var_name + ".png")
+        output_path_plot = os.path.join(target, "capacities.png")
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
@@ -574,9 +574,7 @@ if __name__ == "__main__":
     def plot_invest_out_multi_carrier(carriers):
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
         unit = "W"
-        output_path_plot = os.path.join(
-            target, "energy_usage_invest_out_" + "_".join(carriers) + ".png"
-        )
+        output_path_plot = os.path.join(target, "energy_usage.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
@@ -616,9 +614,7 @@ if __name__ == "__main__":
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "summed_energy_flow_out_" + "_".join(carriers) + ".png"
-        )
+        output_path_plot = os.path.join(target, "summed_energy.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars = dp.filter_df(
@@ -662,7 +658,7 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(target, "demand_" + "_".join(carriers) + ".png")
+        output_path_plot = os.path.join(target, "demands.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
@@ -704,7 +700,7 @@ if __name__ == "__main__":
         unit = "W"
         output_path_plot = os.path.join(
             target,
-            "invested_capacity_invest_out_" + "_".join(carriers) + "_subplots.png",
+            "invested_capacity_subplots.png",
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
@@ -730,7 +726,7 @@ if __name__ == "__main__":
     def subplot_storage_invest_multi_carrier(carriers):
         var_name = "invest"
         unit = "Wh"
-        output_path_plot = os.path.join(target, "storage_invest.png")
+        output_path_plot = os.path.join(target, "storage_invest_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
 
@@ -751,9 +747,7 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "demand_" + "_".join(carriers) + "_subplots.png"
-        )
+        output_path_plot = os.path.join(target, "demands_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
@@ -776,9 +770,7 @@ if __name__ == "__main__":
     def subplot_energy_usage_multi_carrier(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "energy_usage_flow_in_" + "_".join(carriers) + "_subplots.png"
-        )
+        output_path_plot = os.path.join(target, "energy_usage_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         # exclude storage charging
@@ -805,9 +797,7 @@ if __name__ == "__main__":
     def subplot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "summed_energy_flow_out_" + "_".join(carriers) + "_subplots.png"
-        )
+        output_path_plot = os.path.join(target, "summed_energy_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars = dp.filter_df(
@@ -834,9 +824,7 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "demand_stacked_carriers_" + "_".join(carriers) + ".png"
-        )
+        output_path_plot = os.path.join(target, "demands_stacked.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         # Show only demands
@@ -906,7 +894,7 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
-    plot_capacity()
+    plot_capacities()
     plot_invest_out_multi_carrier(CARRIERS_WO_CH4)
     plot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     plot_demands(CARRIERS)
