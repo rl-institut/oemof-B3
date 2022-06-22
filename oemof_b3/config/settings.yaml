@@ -1,3 +1,6 @@
+
+labels: de
+
 build_datapackage:
   el_gas_relation: electricity_gas_relation  # appears in optimize as well
   emission: emission

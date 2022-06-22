@@ -30,7 +30,7 @@ import pandas as pd
 from oemoflex.tools.plots import plot_grouped_bar
 from oemoflex.tools.helpers import load_yaml
 
-from oemof_b3 import colors_odict, labels_dict
+from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config
 from oemof_b3.tools import data_processing as dp
 
@@ -220,8 +220,8 @@ class ScalarPlot:
 
         self.prepared_scalar_data = prepare_scalar_data(
             df=self.prepared_scalar_data,
-            colors_odict=colors_odict,
-            labels_dict=labels_dict,
+            colors_odict=COLORS,
+            labels_dict=LABELS,
             conv_number=MW_TO_W,
         )
 
@@ -250,9 +250,7 @@ class ScalarPlot:
             return None, None
 
         fig, ax = plt.subplots()
-        plot_grouped_bar(
-            ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
-        )
+        plot_grouped_bar(ax, self.prepared_scalar_data, COLORS, unit=unit, stacked=True)
         ax.set_title(title)
         # Shrink current axis's height by 10% on the bottom
         box = ax.get_position()
@@ -316,7 +314,7 @@ class ScalarPlot:
 
             ax = fig.add_subplot(n_facets, 1, i + 1)
 
-            plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
+            plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
 
             ax.set_title(facet_name)
 
@@ -476,9 +474,6 @@ if __name__ == "__main__":
     # Load scalar data
     scalars = load_scalars(scalars_path)
     scalars = set_scenario_labels(scalars)
-
-    # To obey flake8
-    colors_odict = colors_odict
 
     def plot_capacity():
         var_name = "capacity"
@@ -713,6 +708,8 @@ if __name__ == "__main__":
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+
+        # replacing invest_out_<carrier> with <carrier> to subplot by carrier
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
@@ -722,6 +719,26 @@ if __name__ == "__main__":
         for ax in axs:
             add_vertical_line_in_plot(ax, plot.selected_scalars)
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    def subplot_storage_invest_multi_carrier(carriers):
+        var_name = "invest"
+        unit = "Wh"
+        output_path_plot = os.path.join(target, "storage_invest.png")
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+
+        # replacing invest with <carrier> to subplot by carrier
+        plot.selected_scalars["var_name"] = plot.selected_scalars["carrier"]
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+        plot.draw_subplots(unit=unit, title=None, figsize=(11, 11))
 
         try:
             plt.tight_layout()
@@ -863,9 +880,7 @@ if __name__ == "__main__":
             )
 
         # rename and aggregate duplicated columns
-        plot.prepared_scalar_data = plots.map_labels(
-            plot.prepared_scalar_data, labels_dict
-        )
+        plot.prepared_scalar_data = plots.map_labels(plot.prepared_scalar_data, LABELS)
 
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
@@ -896,6 +911,7 @@ if __name__ == "__main__":
     plot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     plot_demands(CARRIERS)
     subplot_invest_out_multi_carrier(CARRIERS_WO_CH4)
+    subplot_storage_invest_multi_carrier(CARRIERS_WO_CH4)
     subplot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
@@ -903,7 +919,7 @@ if __name__ == "__main__":
 
     standalone_legend = False
     if standalone_legend:
-        fig = draw_standalone_legend(colors_odict)
+        fig = draw_standalone_legend(COLORS)
         plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:
