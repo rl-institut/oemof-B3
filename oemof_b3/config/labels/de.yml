@@ -1,44 +1,50 @@
-electricity-liion_battery: Batterie in
+# oil: Öl  Raises error as "oil" is in "boiler" -> duplicate mappings
 biomass-gt: Biomass GT
-biomass-st: Biomass ST
+biomass-st: Biomass DT
 biomass: Biomasse
-ch4-bpchp: CH4 Backpressure CHP
 ch4-boiler: CH4 Boiler
-ch4-excess: CH4 Excess
-ch4-extchp: CH4 Extraction CHP
+ch4-bpchp: CH4 Backpressure KWK
+ch4-demand: CH4 Bedarf
+ch4-excess: CH4 Überschuss
+ch4-export: CH4 Export
+ch4-extchp: CH4 Extraction KWK
 ch4-gt: CH4 GT
+ch4-import: CH4 Import
+ch4-shortage: CH4 Shortage
+electricity-bev_charging: BEV charging
 electricity-curtailment: Curtailment
 electricity-demand: El. demand
-electricity-import: El. import
-electricity-export: El. export
-electricity-bev_charging: BEV charging
 electricity-electrolyzer: Electrolyzer
+electricity-export: El. export
 electricity-heatpump_large: Wärmepumpe (groß)
 electricity-heatpump_small: Wärmepumpe (Haushalt)
+electricity-import: El. import
+electricity-liion_battery: Batterie
+electricity-pth: res. PtH
+electricity-shortage: El. Shortage
+electricity-transmission: El. Transmission
+h2-bpchp: H2 Backpressure KWK
+h2-cavern: H2 Kaverne
+h2-demand: H2 Bedarf
+h2-excess: H2 Überschuss
+h2-export: H2 Export
 h2-gt: H2 GT
-h2-bpchp: H2 Backpressure CHP
-h2-cavern: H2 Cavern
 hard coal: Steinkohle
-heat-demand: Heat Demand
-heat-excess: Heat Excess
-heat-storage: Heat Storage
-heat_central-excess: Heat Central Excess
-heat_central-storage: Heat Central Storage
-heat_central-shortage: Heat Central Shortage
-heat_central-demand: Heat Central Demand
-heat_decentral-excess: Heat Decentral Excess
-heat_decentral-storage: Heat Decentral Storage
-heat_decentral-shortage: Heat Decentral Shortage
-heat_decentral-demand: Heat Decentral Demand
-hydro-ror: Hydro ROR
+h2-import: H2 Import
+h2-shortage: H2 Import
+heat_central-demand: zen. Wärmebedarf
+heat_central-excess: zen. Wärmeüberschuss
+heat_central-shortage: zen. Wärme Shortage
+heat_central-storage: zen. Wärmespeicher
+heat_decentral-demand: dec. Wärmebedarf
+heat_decentral-excess: dec. Wärmeüberschuss
+heat_decentral-shortage: dec. Wärme Shortage
+heat_decentral-storage: dec. Wärmespeicher
 hydro-reservoir: Hydro Reservoir
+hydro-ror: Laufwasserkraft
 lignite: Braunkohle
-nuclear: Nuclear ST
-# oil: Öl  Raises error as "oil" is in "boiler" -> duplicate mappings
+nuclear-st: Nuclear DT
 other: Andere
 solar-pv: PV
-electricity-pth: res. PtH
-electricity-shortage: Shortage
-electricity-transmission: Transmission
 wind-offshore: Wind off
 wind-onshore: Wind on
