@@ -30,7 +30,7 @@ import pandas as pd
 from oemoflex.tools.plots import plot_grouped_bar
 from oemoflex.tools.helpers import load_yaml
 
-from oemof_b3 import colors_odict, labels_dict
+from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config
 from oemof_b3.tools import data_processing as dp
 
@@ -178,8 +178,8 @@ class ScalarPlot:
 
         self.prepared_scalar_data = prepare_scalar_data(
             df=self.prepared_scalar_data,
-            colors_odict=colors_odict,
-            labels_dict=labels_dict,
+            colors_odict=COLORS,
+            labels_dict=LABELS,
             conv_number=MW_TO_W,
         )
 
@@ -208,9 +208,7 @@ class ScalarPlot:
             return None, None
 
         fig, ax = plt.subplots()
-        plot_grouped_bar(
-            ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
-        )
+        plot_grouped_bar(ax, self.prepared_scalar_data, COLORS, unit=unit, stacked=True)
         ax.set_title(title)
         # Shrink current axis's height by 10% on the bottom
         box = ax.get_position()
@@ -274,7 +272,7 @@ class ScalarPlot:
 
             ax = fig.add_subplot(n_facets, 1, i + 1)
 
-            plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
+            plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
 
             ax.set_title(facet_name)
 
@@ -433,9 +431,6 @@ if __name__ == "__main__":
     # Load scalar data
     scalars = load_scalars(scalars_path)
     scalars = set_scenario_labels(scalars)
-
-    # To obey flake8
-    colors_odict = colors_odict
 
     def plot_capacity():
         var_name = "capacity"
@@ -802,9 +797,7 @@ if __name__ == "__main__":
             )
 
         # rename and aggregate duplicated columns
-        plot.prepared_scalar_data = plots.map_labels(
-            plot.prepared_scalar_data, labels_dict
-        )
+        plot.prepared_scalar_data = plots.map_labels(plot.prepared_scalar_data, LABELS)
 
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
 
@@ -838,7 +831,7 @@ if __name__ == "__main__":
 
     standalone_legend = False
     if standalone_legend:
-        fig = draw_standalone_legend(colors_odict)
+        fig = draw_standalone_legend(COLORS)
         plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:

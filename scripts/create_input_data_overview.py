@@ -23,7 +23,7 @@ import sys
 
 import pandas as pd
 
-from oemof_b3 import labels_dict
+from oemof_b3.config.config import LABELS
 import oemof_b3.tools.data_processing as dp
 from oemof_b3.config import config
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     # map names
     df["Technology"] = df.index.map(lambda x: "-".join(x))
-    df.loc[:, "Technology"].replace(labels_dict, inplace=True)
+    df.loc[:, "Technology"].replace(LABELS, inplace=True)
     df.set_index("Technology", inplace=True, drop=True)
     df = df.sort_index()
 
