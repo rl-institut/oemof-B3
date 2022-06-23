@@ -331,6 +331,7 @@ class ScalarPlot:
                 ncol=1,
                 fontsize=14,
             )
+            ax.tick_params("both", labelsize=TICK_LABEL_SIZE)
 
         fig.suptitle(title, fontsize="x-large")
 
