@@ -147,46 +147,21 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
     return df_pivot
 
 
-# Add vertical line in plot
-def add_vertical_line_in_plot(ax, df):
-    _df = df.copy()
+def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
+    r"""
+    Add vertical line to axes.
+    """
+    spacing = 1
 
-    index_length = len(_df.index)
-    count_el = []
-    count_gas = []
+    # # Make second x-axis for vertical line
+    ax_n = ax.twiny()
 
-    # Get index positions of el and gas scenarios
-    for pos, x in enumerate(list(_df.index)):
-        # Case for single index
-        if isinstance(x, (list, tuple)):
-            if "el" in x[1]:
-                count_el.append(pos)
-            elif "moreCH4" in x[1] or "lessCH4" in x[1]:
-                count_gas.append(pos)
-        # Case for multi index
-        else:
-            if "el" in x:
-                count_el.append(pos)
-            elif "moreCH4" in x or "lessCH4" in x:
-                count_gas.append(pos)
+    # Plot vertical line on secondary x-axis
+    ax_n.axvline(x=position * spacing, color=color, linewidth=linewidth)
 
-    # If they are in order (el first followed by gas)
-    if [*count_el, *count_gas] == list(np.arange(0, index_length)):
-        # Make second x-axis for vertical line
-        ax_n = ax.twiny()
-
-        # Pseudo plot for correct distribution of x-ticks
-        ax_n.plot(
-            np.arange(index_length * 2),
-            np.zeros((index_length * 2, len(_df.columns))),
-            alpha=0,
-        )
-        # Plot vertical line on secondary x-axis
-        ax_n.axvline(x=(len(count_el) * 2) - 0.5, color="black", linewidth=1)
-
-        # Reset ticks and tick labels of secondary x-axis
-        ax_n.tick_params(width=0)
-        ax_n.set_xticklabels([])
+    # Reset ticks and tick labels of secondary x-axis
+    ax_n.tick_params(width=0)
+    ax_n.set_xticklabels([])
 
 
 def load_scalars(path):
@@ -497,7 +472,7 @@ if __name__ == "__main__":
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
             plt.xticks(rotation=45, ha="right")
 
-            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -605,7 +580,7 @@ if __name__ == "__main__":
             )
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
-            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -648,7 +623,7 @@ if __name__ == "__main__":
             )
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
-            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -689,7 +664,7 @@ if __name__ == "__main__":
             )
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
-            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -714,7 +689,7 @@ if __name__ == "__main__":
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
-            add_vertical_line_in_plot(ax, plot.selected_scalars)
+            add_vertical_line_in_plot(ax, position=6)
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
@@ -758,7 +733,7 @@ if __name__ == "__main__":
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
-            add_vertical_line_in_plot(ax, plot.selected_scalars)
+            add_vertical_line_in_plot(ax, position=6)
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
@@ -785,7 +760,7 @@ if __name__ == "__main__":
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
-            add_vertical_line_in_plot(ax, plot.selected_scalars)
+            add_vertical_line_in_plot(ax, position=6)
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
@@ -811,7 +786,7 @@ if __name__ == "__main__":
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         for ax in axs:
-            add_vertical_line_in_plot(ax, plot.selected_scalars)
+            add_vertical_line_in_plot(ax, position=6)
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
@@ -888,7 +863,7 @@ if __name__ == "__main__":
             ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
             plt.xticks(rotation=45, ha="right")
 
-            add_vertical_line_in_plot(ax, plot.prepared_scalar_data)
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
