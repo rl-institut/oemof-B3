@@ -160,9 +160,8 @@ if __name__ == "__main__":
             )
 
             plt.grid()
-            plt.title(bus_name + " dispatch", pad=20, fontdict={"size": 22})
-            plt.xlabel("Date", loc="right", fontdict={"size": 17})
-            plt.ylabel("Power", loc="top", fontdict={"size": 17})
+            plt.xlabel("Date (mm-dd)", loc="center", fontdict={"size": 17})
+            plt.ylabel("Power", loc="center", fontdict={"size": 17})
             plt.xticks(fontsize=14)
             plt.yticks(fontsize=14)
             # format x-axis representing the dates
@@ -201,11 +200,17 @@ if __name__ == "__main__":
                 handles=handles,
                 labels=labels,
                 loc="upper center",
-                bbox_to_anchor=(0.5, -0.1),
+                bbox_to_anchor=(0.5, -0.25),
                 fancybox=True,
                 ncol=4,
                 fontsize=14,
             )
+
+            # remove year from xticks
+            formatter = mdates.DateFormatter("%m-%d")
+            ax.xaxis.set_major_formatter(formatter)
+            locator = mdates.AutoDateLocator()
+            ax.xaxis.set_major_locator(locator)
 
             fig.tight_layout()
             file_name = bus_name + "_" + start_date[5:7] + ".pdf"
