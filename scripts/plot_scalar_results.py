@@ -153,15 +153,8 @@ def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
     """
     spacing = 1
 
-    # # Make second x-axis for vertical line
-    ax_n = ax.twiny()
-
     # Plot vertical line on secondary x-axis
-    ax_n.axvline(x=position * spacing, color=color, linewidth=linewidth)
-
-    # Reset ticks and tick labels of secondary x-axis
-    ax_n.tick_params(width=0)
-    ax_n.set_xticklabels([])
+    ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
 
 
 def load_scalars(path):
