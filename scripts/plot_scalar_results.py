@@ -816,6 +816,9 @@ if __name__ == "__main__":
             items=["var_value"]
         )
 
+        # Convert to SI units
+        plot.prepared_scalar_data *= MW_TO_W
+
         # Remember index to apply it after unstacking
         index = plot.prepared_scalar_data.index.get_level_values(0).unique()
         # Unstack prepared and filtered data regarding carriers
