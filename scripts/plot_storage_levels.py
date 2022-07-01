@@ -37,6 +37,7 @@ import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
 from oemof_b3.config import config
+from oemof_b3.tools import data_processing as dp
 
 
 def reduce_labels(ax, simple_labels_dict):
@@ -65,6 +66,35 @@ def reduce_labels(ax, simple_labels_dict):
                 for item in labels
             ]
     return handles, labels
+
+
+def get_component_from_tuple(tuple):
+    # Dummy implementation because for this application, component is always first in tuple.
+    return tuple[0]
+
+
+def get_region_carrier_tech_from_component_name(component_name):
+    DELIMITER = "-"
+
+    region, carrier, tech = component_name.split(DELIMITER)
+
+    return region, carrier, tech
+
+
+def results_ts_to_oemof_b3(df):
+    _df = df.copy()
+
+    _df.columns = df.columns.droplevel(2).map(get_component_from_tuple)
+
+    _df = dp.stack_timeseries(_df)
+
+    _df["region"], carrier, tech = zip(
+        *_df["var_name"].map(get_region_carrier_tech_from_component_name)
+    )
+
+    _df["var_name"] = ["-".join([c, t]) for c, t in zip(carrier, tech)]
+
+    return _df
 
 
 if __name__ == "__main__":
@@ -106,6 +136,13 @@ if __name__ == "__main__":
         (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
         (f"{year}-01-01 00:00:00", f"{year}-12-31 23:00:00"),
     ]
+
+    # aggregate time series
+    data = results_ts_to_oemof_b3(data)
+
+    data = dp.aggregate_timeseries(data, "region")
+
+    data = dp.unstack_timeseries(data)
 
     for start_date, end_date in timeframe:
         fig, ax = plt.subplots(figsize=(12, 5))
