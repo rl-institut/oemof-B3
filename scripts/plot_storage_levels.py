@@ -97,6 +97,12 @@ def results_ts_to_oemof_b3(df):
     return _df
 
 
+def normalize_to_max(ts):
+    max = ts.max()
+    ts_norm = ts / max
+    return ts_norm
+
+
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
@@ -143,6 +149,8 @@ if __name__ == "__main__":
     data = dp.aggregate_timeseries(data, "region")
 
     data = dp.unstack_timeseries(data)
+
+    data = normalize_to_max(data)
 
     for start_date, end_date in timeframe:
         fig, ax = plt.subplots(figsize=(12, 5))
