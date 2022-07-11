@@ -30,7 +30,7 @@ import pandas as pd
 from oemoflex.tools.plots import plot_grouped_bar
 from oemoflex.tools.helpers import load_yaml
 
-from oemof_b3 import colors_odict, labels_dict
+from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config
 from oemof_b3.tools import data_processing as dp
 
@@ -147,6 +147,16 @@ def prepare_scalar_data(df, colors_odict, labels_dict, conv_number, tolerance=1e
     return df_pivot
 
 
+def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
+    r"""
+    Add vertical line to axes.
+    """
+    spacing = 1
+
+    # Plot vertical line on secondary x-axis
+    ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
+
+
 def load_scalars(path):
     df = pd.read_csv(path, sep=",", index_col=0)
     return df
@@ -178,8 +188,8 @@ class ScalarPlot:
 
         self.prepared_scalar_data = prepare_scalar_data(
             df=self.prepared_scalar_data,
-            colors_odict=colors_odict,
-            labels_dict=labels_dict,
+            colors_odict=COLORS,
+            labels_dict=LABELS,
             conv_number=MW_TO_W,
         )
 
@@ -208,9 +218,7 @@ class ScalarPlot:
             return None, None
 
         fig, ax = plt.subplots()
-        plot_grouped_bar(
-            ax, self.prepared_scalar_data, colors_odict, unit=unit, stacked=True
-        )
+        plot_grouped_bar(ax, self.prepared_scalar_data, COLORS, unit=unit, stacked=True)
         ax.set_title(title)
         # Shrink current axis's height by 10% on the bottom
         box = ax.get_position()
@@ -274,7 +282,7 @@ class ScalarPlot:
 
             ax = fig.add_subplot(n_facets, 1, i + 1)
 
-            plot_grouped_bar(ax, df, colors_odict, unit=unit, stacked=True)
+            plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
 
             ax.set_title(facet_name)
 
@@ -291,6 +299,7 @@ class ScalarPlot:
                 ncol=1,
                 fontsize=14,
             )
+            ax.tick_params("both", labelsize=TICK_LABEL_SIZE)
 
         fig.suptitle(title, fontsize="x-large")
 
@@ -425,6 +434,7 @@ if __name__ == "__main__":
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2", "ch4"]
     CARRIERS_WO_CH4 = ["electricity", "heat_central", "heat_decentral", "h2"]
     MW_TO_W = 1e6
+    TICK_LABEL_SIZE = 12
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
@@ -434,19 +444,33 @@ if __name__ == "__main__":
     scalars = load_scalars(scalars_path)
     scalars = set_scenario_labels(scalars)
 
-    # To obey flake8
-    colors_odict = colors_odict
-
-    def plot_capacity():
+    def plot_capacities():
         var_name = "capacity"
         unit = "W"
-        output_path_plot = os.path.join(target, var_name + ".png")
+        output_path_plot = os.path.join(target, "capacities.png")
 
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=var_name)
-        plot.save_plot(output_path_plot)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
+        try:
+            # Move the legend below current axis
+            ax.legend(
+                loc="upper left",
+                bbox_to_anchor=(1, 1),
+                fancybox=True,
+                ncol=1,
+                fontsize=14,
+            )
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            plt.xticks(rotation=45, ha="right")
+
+            add_vertical_line_in_plot(ax, position=6)
+
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_invest_out(carrier):
         var_name = f"invest_out_{carrier}"
@@ -456,7 +480,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=var_name)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_storage_capacity(carrier):
@@ -468,7 +492,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=title)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_storage_invest(carrier):
@@ -480,7 +504,7 @@ if __name__ == "__main__":
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, carrier=carrier)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=title)
+        plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_flow_out(carrier):
@@ -498,7 +522,7 @@ if __name__ == "__main__":
             inverse=True,
         )
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=title)
+        plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_storage_out(carrier):
@@ -513,22 +537,20 @@ if __name__ == "__main__":
             plot.selected_scalars, "type", ["storage", "asymmetric_storage"]
         )
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        plot.draw_plot(unit=unit, title=title)
+        plot.draw_plot(unit=unit, title=None)
         plot.save_plot(output_path_plot)
 
     def plot_invest_out_multi_carrier(carriers):
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
         unit = "W"
-        output_path_plot = os.path.join(
-            target, "invest_out_" + "_".join(carriers) + ".png"
-        )
+        output_path_plot = os.path.join(target, "energy_usage.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
         plot.prepared_scalar_data.sort_index(level=0, inplace=True)
-        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
 
         try:
             # rotate hierarchical labels
@@ -549,7 +571,9 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("Invested capacity")
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -559,9 +583,7 @@ if __name__ == "__main__":
     def plot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "flow_out_" + "_".join(carriers) + ".png"
-        )
+        output_path_plot = os.path.join(target, "summed_energy.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars = dp.filter_df(
@@ -571,7 +593,7 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
         plot.prepared_scalar_data.sort_index(level=0, inplace=True)
-        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
 
         try:
             # rotate hierarchical labels
@@ -592,7 +614,9 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.set_title("Summed energy")
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -603,14 +627,14 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(target, "demand_" + "_".join(carriers) + ".png")
+        output_path_plot = os.path.join(target, "demands.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
         plot.prepared_scalar_data.sort_index(level=0, inplace=True)
-        fig, ax = plot.draw_plot(unit=unit, title=var_name)
+        fig, ax = plot.draw_plot(unit=unit, title=None)
 
         try:
             # rotate hierarchical labels
@@ -631,7 +655,9 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.set_title("Demand")
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
@@ -642,15 +668,42 @@ if __name__ == "__main__":
         var_name = [f"invest_out_{carrier}" for carrier in carriers]
         unit = "W"
         output_path_plot = os.path.join(
-            target, "invest_out_" + "_".join(carriers) + "_subplots.png"
+            target,
+            "invested_capacity_subplots.png",
         )
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
+
+        # replacing invest_out_<carrier> with <carrier> to subplot by carrier
         plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title="Invested capacity", figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, position=6)
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+
+        try:
+            plt.tight_layout()
+            plot.save_plot(output_path_plot)
+
+        except Exception as e:  # noqa 722
+            logger.warning(f"Could not plot {output_path_plot}: {e}.")
+
+    def subplot_storage_invest_multi_carrier(carriers):
+        var_name = "invest"
+        unit = "Wh"
+        output_path_plot = os.path.join(target, "storage_invest_subplots.png")
+        plot = ScalarPlot(scalars)
+        plot.select_data(var_name=var_name)
+
+        # replacing invest with <carrier> to subplot by carrier
+        plot.selected_scalars["var_name"] = plot.selected_scalars["carrier"]
+        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
+        plot.swap_levels()
+        plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
         try:
             plt.tight_layout()
@@ -663,16 +716,18 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "demand_" + "_".join(carriers) + "_subplots.png"
-        )
+        output_path_plot = os.path.join(target, "demands_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name, tech=tech)
         plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title="Demand", figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, position=6)
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
             plt.tight_layout()
@@ -684,9 +739,7 @@ if __name__ == "__main__":
     def subplot_energy_usage_multi_carrier(carriers):
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "flow_in_" + "_".join(carriers) + "_subplots.png"
-        )
+        output_path_plot = os.path.join(target, "energy_usage_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         # exclude storage charging
@@ -697,7 +750,11 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title="Energy usage", figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, position=6)
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
             plt.tight_layout()
@@ -709,9 +766,7 @@ if __name__ == "__main__":
     def subplot_flow_out_multi_carrier(carriers):
         var_name = [f"flow_out_{carrier}" for carrier in carriers]
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "flow_out_" + "_".join(carriers) + "_subplots.png"
-        )
+        output_path_plot = os.path.join(target, "summed_energy_subplots.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         plot.selected_scalars = dp.filter_df(
@@ -721,7 +776,11 @@ if __name__ == "__main__":
         plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
         plot.swap_levels()
 
-        plot.draw_subplots(unit=unit, title="Summed energy", figsize=(11, 11))
+        fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+
+        for ax in axs:
+            add_vertical_line_in_plot(ax, position=6)
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
 
         try:
             plt.tight_layout()
@@ -734,9 +793,7 @@ if __name__ == "__main__":
         var_name = [f"flow_in_{carrier}" for carrier in carriers]
         tech = "demand"
         unit = "Wh"
-        output_path_plot = os.path.join(
-            target, "demand_stacked_carriers_" + "_".join(carriers) + ".png"
-        )
+        output_path_plot = os.path.join(target, "demands_stacked.png")
         plot = ScalarPlot(scalars)
         plot.select_data(var_name=var_name)
         # Show only demands
@@ -759,6 +816,9 @@ if __name__ == "__main__":
             items=["var_value"]
         )
 
+        # Convert to SI units
+        plot.prepared_scalar_data *= MW_TO_W
+
         # Remember index to apply it after unstacking
         index = plot.prepared_scalar_data.index.get_level_values(0).unique()
         # Unstack prepared and filtered data regarding carriers
@@ -780,11 +840,12 @@ if __name__ == "__main__":
             )
 
         # rename and aggregate duplicated columns
-        plot.prepared_scalar_data = plots.map_labels(
-            plot.prepared_scalar_data, labels_dict
-        )
+        plot.prepared_scalar_data = plots.map_labels(plot.prepared_scalar_data, LABELS)
 
         fig, ax = plot.draw_plot(unit=unit, title=var_name)
+
+        # Reset plot title
+        ax.set_title("")
 
         try:
             # Move the legend below current axis
@@ -795,19 +856,22 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.set_title("Demand")
+            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
             plt.xticks(rotation=45, ha="right")
+
+            add_vertical_line_in_plot(ax, position=6)
 
             plot.save_plot(output_path_plot)
 
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
-    plot_capacity()
+    plot_capacities()
     plot_invest_out_multi_carrier(CARRIERS_WO_CH4)
     plot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     plot_demands(CARRIERS)
     subplot_invest_out_multi_carrier(CARRIERS_WO_CH4)
+    subplot_storage_invest_multi_carrier(CARRIERS_WO_CH4)
     subplot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     subplot_demands(CARRIERS)
     subplot_energy_usage_multi_carrier(CARRIERS)
@@ -815,7 +879,7 @@ if __name__ == "__main__":
 
     standalone_legend = False
     if standalone_legend:
-        fig = draw_standalone_legend(colors_odict)
+        fig = draw_standalone_legend(COLORS)
         plt.savefig(os.path.join(target, "legend.png"))
 
     # for carrier in CARRIERS:

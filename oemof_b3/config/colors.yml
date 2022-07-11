@@ -1,0 +1,61 @@
+solar-pv: "#e2c319"
+wind-onshore: "#19c5e5"
+hydro-reservoir: "#4a19e5"
+hydro-ror: "#6d19e5"
+h2-gt: "#75CCF0"
+ch4-gt: "#71EFA4"
+
+electricity-liion_battery: "#b41de6"
+
+h2-cavern: "#19e5c0"
+bev_charging: "#e55c19"
+
+electricity-transmission: "#9db69a"
+
+electricity-shortage: "#DADADA"
+electricity-curtailment: "#DADADA"
+
+electricity-demand: "#3e89f4"
+electricity-export: "#737a8c"
+electricity-import: "#737a8c"
+electricity-bev_charging: "#e55c19"
+
+h2-bpchp: "#0F8A8A"
+ch4-bpchp: "#128E10"
+ch4-extchp: "#c0e519"
+
+heat_central-demand: "#ff0800"
+heat_central-excess: "#DBDBDB"
+heat_central-shortage: "#DBDBDB"
+heat_central-storage: "#e2c319"
+heat_decentral-demand: "#f2740a"
+heat_decentral-excess: "#DBDBDB"
+heat_decentral-shortage: "#DBDBDB"
+heat_decentral-storage: "#e2c319"
+
+ch4-boiler: "#e5194d"
+electricity-heatpump_large: "#9912A1"
+electricity-heatpump_small: "#f288e3"
+electricity-pth: "#e58a19"
+
+ch4-excess: "#DBDBDB"
+
+electricity-electrolyzer: "#15B2BC"
+ch4: "#bcf927"
+
+other: "#7f7f7f"
+
+ch4-shortage: "#DBDBDB"
+ch4-import: "#cfcfcf"
+ch4-demand: "#bcf927"
+h2-import: "#3B5054"
+h2-demand: "#00fed0"
+
+wind-offshore: "#73baec"
+biomass: "#2ca02c"
+biomass-gt: "#2ca02c"
+biomass-st: "#007000"
+hard coal: "black"
+lignite: "saddlebrown"
+oil: "#9467bd"
+nuclear: "pink"
