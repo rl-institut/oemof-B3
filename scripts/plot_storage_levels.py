@@ -37,6 +37,7 @@ import oemoflex.tools.plots as plots
 import matplotlib.dates as mdates
 
 from oemof_b3.config import config
+from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.tools import data_processing as dp
 
 
@@ -103,14 +104,17 @@ def normalize_to_max(ts):
     return ts_norm
 
 
-def multiplot_df(df, figsize=None, sharex=True, **kwargs):
+def multiplot_df(df, figsize=None, sharex=True, colors=None, **kwargs):
     n_cols = len(df.columns)
 
     fig, axs = plt.subplots(n_cols, 1, figsize=figsize, sharex=sharex)
 
+    if colors:
+        assert all(name_col in colors for name_col in df.columns)
+
     for ax, (name_col, series) in zip(axs, df.iteritems()):
 
-        ax.plot(series, **kwargs)
+        ax.plot(series, color=colors[name_col], **kwargs)
 
         ax.set_ylabel(name_col, rotation=0, ha="right")
 
@@ -142,7 +146,6 @@ if __name__ == "__main__":
     carriers = ["electricity", "heat_central", "heat_decentral"]
 
     # convert data to SI-unit
-
     data = data * MW_to_W
 
     # prepare data
@@ -166,6 +169,9 @@ if __name__ == "__main__":
 
     data = normalize_to_max(data)
 
+    # relabel data
+    data = plots.map_labels(data, LABELS)
+
     for start_date, end_date in timeframe:
 
         # filter timeseries
@@ -176,7 +182,9 @@ if __name__ == "__main__":
 
         plt.rcParams.update({"font.size": 14})
 
-        fig, axs = multiplot_df(df_time_filtered, figsize=(9, 5), linewidth=1)
+        fig, axs = multiplot_df(
+            df_time_filtered, figsize=(9, 5), linewidth=1, colors=COLORS
+        )
 
         plt.subplots_adjust(hspace=0.1)
 
