@@ -103,6 +103,20 @@ def normalize_to_max(ts):
     return ts_norm
 
 
+def multiplot_df(df, figsize=None, sharex=True, **kwargs):
+    n_cols = len(df.columns)
+
+    fig, axs = plt.subplots(n_cols, 1, figsize=figsize, sharex=sharex)
+
+    for ax, (name_col, series) in zip(axs, df.iteritems()):
+
+        ax.plot(series, **kwargs)
+
+        ax.set_ylabel(name_col, rotation=0, ha="right")
+
+    return fig, axs
+
+
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
@@ -153,7 +167,6 @@ if __name__ == "__main__":
     data = normalize_to_max(data)
 
     for start_date, end_date in timeframe:
-        fig, ax = plt.subplots(figsize=(12, 5))
 
         # filter timeseries
         df_time_filtered = plots.filter_timeseries(data, start_date, end_date)
@@ -161,33 +174,18 @@ if __name__ == "__main__":
         if df_time_filtered.empty:
             logger.warning(f"Data in '{STORAGE_LEVEL_FILE}' is empty, cannot plot.")
 
-        # plot time filtered data
-        df_time_filtered.plot()
+        plt.rcParams.update({"font.size": 14})
 
-        plt.grid()
+        fig, axs = multiplot_df(df_time_filtered, figsize=(9, 5), linewidth=1)
+
+        plt.subplots_adjust(hspace=0.1)
+
         plt.xlabel("Date", fontdict={"size": 17})
-        plt.ylabel("Storage level", fontdict={"size": 17})
-        plt.xticks(fontsize=14)
-        plt.yticks(fontsize=14)
+
         # format x-axis representing the dates
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-        ax.xaxis.set_major_locator(mdates.WeekdayLocator())
+        ax = axs[-1]
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
 
-        # Shrink current axis's height by 10% on the bottom
-        box = ax.get_position()
-        ax.set_position(
-            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
-        )
-
-        # # Put a legend below current axis
-        plt.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, -0.15),
-            fancybox=True,
-            ncol=1,
-            fontsize=14,
-        )
-
-        fig.tight_layout()
         file_name = "storage_level" + "_" + start_date[5:7] + end_date[5:7] + IMAGETYPE
         plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
