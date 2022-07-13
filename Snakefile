@@ -199,15 +199,15 @@ rule build_datapackage:
     shell:
         "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
-# rule optimize:
-#     input:
-#         "results/{scenario}/preprocessed"
-#     output:
-#         directory("results/{scenario}/optimized/")
-#     params:
-#         logfile="logs/{scenario}.log"
-#     shell:
-#         "python scripts/optimize.py {input} {output} {params.logfile}"
+rule optimize:
+    input:
+        "results/{scenario}/preprocessed"
+    output:
+        directory("results/{scenario}/optimized/")
+    params:
+        logfile="logs/{scenario}.log"
+    shell:
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
