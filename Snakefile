@@ -199,15 +199,15 @@ rule build_datapackage:
     shell:
         "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
-# rule optimize:
-#     input:
-#         "results/{scenario}/preprocessed"
-#     output:
-#         directory("results/{scenario}/optimized/")
-#     params:
-#         logfile="logs/{scenario}.log"
-#     shell:
-#         "python scripts/optimize.py {input} {output} {params.logfile}"
+rule optimize:
+    input:
+        "results/{scenario}/preprocessed"
+    output:
+        directory("results/{scenario}/optimized/")
+    params:
+        logfile="logs/{scenario}.log"
+    shell:
+        "python scripts/optimize.py {input} {output} {params.logfile}"
 
 rule postprocess:
     input:
@@ -248,6 +248,16 @@ rule plot_dispatch:
         logfile="logs/{scenario}.log"
     shell:
         "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
+
+rule plot_storage_level:
+    input:
+        "results/{scenario}/postprocessed/"
+    output:
+        directory("results/{scenario}/plotted/storage_level")
+    params:
+        logfile="logs/{scenario}.log"
+    shell:
+        "python scripts/plot_storage_levels.py {input} {output} {params.logfile}"
 
 rule plot_conv_pp_scalars:
     input:
