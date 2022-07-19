@@ -79,6 +79,130 @@ def prepare_dispatch_data(bus_file):
     return df, df_demand, bus_name
 
 
+def plot_dispatch_data(df, df_demand):
+    """
+    This function contains the plotting of dispatch data
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+        Dataframe with data to be plotted
+    df_demand: pd.DataFrame
+        Dataframe with demand
+
+    Returns
+    -------
+
+    """
+    # change colors for demand in colors_odict to black
+    for i in df_demand.columns:
+        COLORS[i] = "#000000"
+
+    # interactive plotly dispatch plot
+    fig_plotly = plots.plot_dispatch_plotly(
+        df=df, df_demand=df_demand, unit="W", colors_odict=COLORS
+    )
+    file_name = bus_name + "_dispatch_interactive" + ".html"
+    fig_plotly.write_html(
+        file=os.path.join(plotted, file_name),
+        # The following parameters are set according to
+        # https://plotly.github.io/plotly.py-docs/generated/plotly.io.write_html.html
+        # The files are much smaller now because a script tag containing the plotly.js source
+        # code (~3MB) is not included in the output anymore. It is refered to plotlyjs via a
+        # link in div of the plot.
+        include_plotlyjs="cdn",
+        full_html=False,
+    )
+
+    # normal dispatch plot
+    # plot one winter and one summer month
+    # select timeframe
+    year = df.index[0].year
+    timeframe = [
+        (f"{year}-01-01 00:00:00", f"{year}-01-31 23:00:00"),
+        (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
+    ]
+
+    for start_date, end_date in timeframe:
+        fig, ax = plt.subplots(figsize=(12, 5))
+
+        # filter timeseries
+        df_time_filtered = plots.filter_timeseries(df, start_date, end_date)
+        df_demand_time_filtered = plots.filter_timeseries(
+            df_demand, start_date, end_date
+        )
+
+        if df_time_filtered.empty:
+            logger.warning(f"Data for bus '{bus_name}' is empty, cannot plot.")
+            continue
+
+        # plot time filtered data
+        plots.plot_dispatch(
+            ax=ax,
+            df=df_time_filtered,
+            df_demand=df_demand_time_filtered,
+            unit="W",
+            colors_odict=COLORS,
+        )
+
+        plt.grid()
+        plt.xlabel("Date (mm-dd)", loc="center", fontdict={"size": 17})
+        plt.ylabel("Power", loc="center", fontdict={"size": 17})
+        plt.xticks(fontsize=14)
+        plt.yticks(fontsize=14)
+        # format x-axis representing the dates
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
+        plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator())
+
+        # Shrink current axis's height by 10% on the bottom
+        box = ax.get_position()
+        ax.set_position(
+            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
+        )
+
+        # Simplify legend. As there is only one color per technology, there should
+        # be only one label per technology.
+        simple_labels_dict = {
+            "Battery": ["Battery out", "Battery in"],
+            "El. transmission external": ["El. import", "El. export"],
+            "El. transmission B-BB": [
+                "El. transmission in",
+                "El. transmission out",
+            ],
+            "El. shortage / curtailment": ["El. shortage", "Curtailment"],
+            "Heat cen. storage": ["Heat cen. storage out", "Heat cen. storage in"],
+            "Heat cen. mismatch": ["Heat cen. excess", "Heat cen. shortage"],
+            "Heat dec. storage": ["Heat dec. storage out", "Heat dec. storage in"],
+            "Heat dec. mismatch": ["Heat dec. excess", "Heat dec. shortage"],
+        }
+
+        handles, labels = reduce_labels(ax=ax, simple_labels_dict=simple_labels_dict)
+
+        # Put a legend below current axis
+
+        ax.legend(
+            handles=handles,
+            labels=labels,
+            loc="upper center",
+            bbox_to_anchor=(0.5, -0.25),
+            fancybox=True,
+            ncol=4,
+            fontsize=14,
+        )
+
+        # remove year from xticks
+        formatter = mdates.DateFormatter("%m-%d")
+        ax.xaxis.set_major_formatter(formatter)
+        locator = mdates.AutoDateLocator()
+        ax.xaxis.set_major_locator(locator)
+
+        fig.tight_layout()
+        file_name = bus_name + "_" + start_date[5:7] + ".pdf"
+        plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
+        file_name = bus_name + "_" + start_date[5:7] + ".png"
+        plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
+
+
 def reduce_labels(ax, simple_labels_dict):
     """
     Replaces two labels by one as defined in a dictionary.
@@ -129,114 +253,5 @@ if __name__ == "__main__":
     ]
 
     for bus_file in selected_bus_files:
-
-        # change colors for demand in colors_odict to black
-        for i in df_demand.columns:
-            COLORS[i] = "#000000"
-
-        # interactive plotly dispatch plot
-        fig_plotly = plots.plot_dispatch_plotly(
-            df=df, df_demand=df_demand, unit="W", colors_odict=COLORS
-        )
-        file_name = bus_name + "_dispatch_interactive" + ".html"
-        fig_plotly.write_html(
-            file=os.path.join(plotted, file_name),
-            # The following parameters are set according to
-            # https://plotly.github.io/plotly.py-docs/generated/plotly.io.write_html.html
-            # The files are much smaller now because a script tag containing the plotly.js source
-            # code (~3MB) is not included in the output anymore. It is refered to plotlyjs via a
-            # link in div of the plot.
-            include_plotlyjs="cdn",
-            full_html=False,
-        )
-
-        # normal dispatch plot
-        # plot one winter and one summer month
-        # select timeframe
-        year = data.index[0].year
-        timeframe = [
-            (f"{year}-01-01 00:00:00", f"{year}-01-31 23:00:00"),
-            (f"{year}-07-01 00:00:00", f"{year}-07-31 23:00:00"),
-        ]
-
-        for start_date, end_date in timeframe:
-            fig, ax = plt.subplots(figsize=(12, 5))
-
-            # filter timeseries
-            df_time_filtered = plots.filter_timeseries(df, start_date, end_date)
-            df_demand_time_filtered = plots.filter_timeseries(
-                df_demand, start_date, end_date
-            )
-
-            if df_time_filtered.empty:
-                logger.warning(f"Data for bus '{bus_name}' is empty, cannot plot.")
-                continue
-
-            # plot time filtered data
-            plots.plot_dispatch(
-                ax=ax,
-                df=df_time_filtered,
-                df_demand=df_demand_time_filtered,
-                unit="W",
-                colors_odict=COLORS,
-            )
-
-            plt.grid()
-            plt.xlabel("Date (mm-dd)", loc="center", fontdict={"size": 17})
-            plt.ylabel("Power", loc="center", fontdict={"size": 17})
-            plt.xticks(fontsize=14)
-            plt.yticks(fontsize=14)
-            # format x-axis representing the dates
-            plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-            plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator())
-
-            # Shrink current axis's height by 10% on the bottom
-            box = ax.get_position()
-            ax.set_position(
-                [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
-            )
-
-            # Simplify legend. As there is only one color per technology, there should
-            # be only one label per technology.
-            simple_labels_dict = {
-                "Battery": ["Battery out", "Battery in"],
-                "El. transmission external": ["El. import", "El. export"],
-                "El. transmission B-BB": [
-                    "El. transmission in",
-                    "El. transmission out",
-                ],
-                "El. shortage / curtailment": ["El. shortage", "Curtailment"],
-                "Heat cen. storage": ["Heat cen. storage out", "Heat cen. storage in"],
-                "Heat cen. mismatch": ["Heat cen. excess", "Heat cen. shortage"],
-                "Heat dec. storage": ["Heat dec. storage out", "Heat dec. storage in"],
-                "Heat dec. mismatch": ["Heat dec. excess", "Heat dec. shortage"],
-            }
-
-            handles, labels = reduce_labels(
-                ax=ax, simple_labels_dict=simple_labels_dict
-            )
-
-            # Put a legend below current axis
-
-            ax.legend(
-                handles=handles,
-                labels=labels,
-                loc="upper center",
-                bbox_to_anchor=(0.5, -0.25),
-                fancybox=True,
-                ncol=4,
-                fontsize=14,
-            )
-
-            # remove year from xticks
-            formatter = mdates.DateFormatter("%m-%d")
-            ax.xaxis.set_major_formatter(formatter)
-            locator = mdates.AutoDateLocator()
-            ax.xaxis.set_major_locator(locator)
-
-            fig.tight_layout()
-            file_name = bus_name + "_" + start_date[5:7] + ".pdf"
-            plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
-            file_name = bus_name + "_" + start_date[5:7] + ".png"
-            plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
         df, df_demand, bus_name = prepare_dispatch_data(bus_file)
+        plot_dispatch_data(df, df_demand)
