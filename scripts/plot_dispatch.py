@@ -38,6 +38,7 @@ import matplotlib.dates as mdates
 
 from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config
+from oemof_b3.tools import data_processing as dp
 
 
 def prepare_dispatch_data(bus_file):
@@ -203,6 +204,31 @@ def plot_dispatch_data(df, df_demand):
         plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
 
 
+def prepare_data_for_aggregation(df_stacked, df):
+    """
+    This function concatenates stacked Dataframes
+
+    Parameters
+    ----------
+    df_stacked: pd.DataFrame
+        Stacked DataFrame to be concatenated with stacked df
+    df: pd.DataFrame
+        Initial DataFrame to be stacked and concatenated with df_stacked
+
+    Returns
+    -------
+    df_stacked: pd.DataFrame
+        Result DataFrame with concatenation of stacked data
+
+    """
+    if isinstance(df_stacked, type(None)):
+        df_stacked = dp.stack_timeseries(df)
+    else:
+        df_stacked = pd.concat([df_stacked, dp.stack_timeseries(df)])
+
+    return df_stacked
+
+
 def reduce_labels(ax, simple_labels_dict):
     """
     Replaces two labels by one as defined in a dictionary.
@@ -251,6 +277,42 @@ if __name__ == "__main__":
     selected_bus_files = [
         file for file in bus_files for carrier in carriers if carrier in file
     ]
+
+    # Aggregate data of busses and demand by region
+    df_stacked = None
+    df_demand_stacked = None
+
+    for carrier in carriers:
+        # Find all files where carrier is same and hence multiple regions exist
+        busses_to_be_aggregated = [file for file in bus_files if carrier in file]
+        if len(busses_to_be_aggregated) > 1:
+            for bus_to_be_aggregated in busses_to_be_aggregated:
+                df, df_demand, bus_name = prepare_dispatch_data(bus_to_be_aggregated)
+
+                df_stacked = prepare_data_for_aggregation(df_stacked, df)
+                df_demand_stacked = prepare_data_for_aggregation(
+                    df_demand_stacked, df_demand
+                )
+
+            # Exchange region from bus_name with "ALL"
+            bus_name = "ALL_" + carrier
+
+            # Aggregate bus data and demand
+            df_aggregated = dp.aggregate_timeseries(
+                df_stacked, columns_to_aggregate="region"
+            )
+            df_demand_aggregated = dp.aggregate_timeseries(
+                df_demand_stacked, columns_to_aggregate="region"
+            )
+            # Unstack aggregated bus data and demand
+            df_aggregated = dp.unstack_timeseries(df_aggregated)
+            df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
+
+            plot_dispatch_data(df_aggregated, df_demand_aggregated)
+
+            # Set df_stacked and df_demand_stacked to None as preparation for new cycle
+            df_stacked = None
+            df_demand_stacked = None
 
     for bus_file in selected_bus_files:
         df, df_demand, bus_name = prepare_dispatch_data(bus_file)
