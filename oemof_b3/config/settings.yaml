@@ -23,6 +23,7 @@ optimize:
 
 plot_scalar_results:
   agg_regions: true
+  tick_label_size: 12
 
 prepare_cop_timeseries:
   quality_grade: 0.4

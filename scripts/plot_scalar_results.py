@@ -299,7 +299,9 @@ class ScalarPlot:
                 ncol=1,
                 fontsize=14,
             )
-            ax.tick_params("both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                "both", labelsize=config.settings.plot_scalar_results.tick_label_size
+            )
 
         fig.suptitle(title, fontsize="x-large")
 
@@ -434,7 +436,6 @@ if __name__ == "__main__":
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2", "ch4"]
     CARRIERS_WO_CH4 = ["electricity", "heat_central", "heat_decentral", "h2"]
     MW_TO_W = 1e6
-    TICK_LABEL_SIZE = 12
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
@@ -462,7 +463,10 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
             plt.xticks(rotation=45, ha="right")
 
             add_vertical_line_in_plot(ax, position=6)
@@ -571,7 +575,10 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
             add_vertical_line_in_plot(ax, position=6)
 
@@ -614,7 +621,10 @@ if __name__ == "__main__":
                 ncol=2,
                 fontsize=14,
             )
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
             add_vertical_line_in_plot(ax, position=6)
 
@@ -655,7 +665,10 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
             add_vertical_line_in_plot(ax, position=6)
 
@@ -683,7 +696,10 @@ if __name__ == "__main__":
 
         for ax in axs:
             add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
         try:
             plt.tight_layout()
@@ -727,7 +743,10 @@ if __name__ == "__main__":
 
         for ax in axs:
             add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
         try:
             plt.tight_layout()
@@ -754,7 +773,10 @@ if __name__ == "__main__":
 
         for ax in axs:
             add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
         try:
             plt.tight_layout()
@@ -780,7 +802,10 @@ if __name__ == "__main__":
 
         for ax in axs:
             add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
 
         try:
             plt.tight_layout()
@@ -856,7 +881,10 @@ if __name__ == "__main__":
                 ncol=1,
                 fontsize=14,
             )
-            ax.tick_params(axis="both", labelsize=TICK_LABEL_SIZE)
+            ax.tick_params(
+                axis="both",
+                labelsize=config.settings.plot_scalar_results.tick_label_size,
+            )
             plt.xticks(rotation=45, ha="right")
 
             add_vertical_line_in_plot(ax, position=6)
