@@ -31,9 +31,8 @@ from oemof_b3.config.config import LABELS, COLORS
 
 # User input
 # converting from MW to W
-conv_number = 1e6
-german_translation = True
-unit = "W"
+UNIT = "W"
+MW_TO_W = 1e6
 
 
 def prepare_conv_pp_scalars(df_conv_pp_scalars, var_name, conv_number, label_mapping):
@@ -159,13 +158,13 @@ if __name__ == "__main__":
     df_pivot = prepare_conv_pp_scalars(
         df_conv_pp_scalars=df_conv_pp_scalars,
         var_name=var_name,
-        conv_number=conv_number,
+        conv_number=MW_TO_W,
         label_mapping=LABELS,
     )
 
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # TODO: Check if oemoflex' function can be imported and used here
-    plot_grouped_bar(ax, df_pivot, COLORS, unit)
+    plot_grouped_bar(ax, df_pivot, COLORS, UNIT)
 
     plt.savefig(target, bbox_inches="tight")
