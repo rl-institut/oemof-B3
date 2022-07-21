@@ -30,17 +30,12 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
-
+import oemof_b3.config as config
 
 # global variables
 OPSD_YEARS = list(
     range(2015, 2020)
 )  # opsd load time series are prepared for these years
-REGIONS = ["BB", "B"]
-TS_VAR_UNIT = "None"
-TS_SOURCE = "https://data.open-power-system-data.org/time_series/2020-10-06"
-TS_COMMENT = "DE_50hertz actual load data"
-COL_SELECT = "DE_50hertz_load_actual_entsoe_transparency"
 
 
 def prepare_load_profile_time_series(ts_raw, year, region):
@@ -80,10 +75,14 @@ def prepare_load_profile_time_series(ts_raw, year, region):
 
     # add additional information as required by template
     ts_prepared.loc[:, "region"] = region
-    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_prepared.loc[
+        :, "var_unit"
+    ] = config.settings.prepare_electricity_demand.TS_VAR_UNIT
     ts_prepared.loc[:, "var_name"] = "electricity-demand-profile"
-    ts_prepared.loc[:, "source"] = TS_SOURCE
-    ts_prepared.loc[:, "comment"] = TS_COMMENT
+    ts_prepared.loc[:, "source"] = config.settings.prepare_electricity_demand.TS_SOURCE
+    ts_prepared.loc[
+        :, "comment"
+    ] = config.settings.prepare_electricity_demand.TS_COMMENT
     ts_prepared.loc[
         :, "scenario_key"
     ] = "ALL"  # The profile is not varied in different scenarios
@@ -102,11 +101,11 @@ if __name__ == "__main__":
     ts_raw = pd.read_csv(opsd_ts_data, index_col=0)
     ts_raw.index = pd.to_datetime(ts_raw.index, utc=True)
     # filter for 50hertz actual load
-    ts_raw = ts_raw[[COL_SELECT]]
+    ts_raw = ts_raw[[config.settings.prepare_electricity_demand.COL_SELECT]]
 
     # prepare time series for each year and region
     for year in OPSD_YEARS:
-        for region in REGIONS:
+        for region in config.settings.prepare_electricity_demand.REGIONS:
             # prepare opsd 50hertz actual load time series
             load_ts = prepare_load_profile_time_series(
                 ts_raw=ts_raw, year=year, region=region

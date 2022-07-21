@@ -30,3 +30,10 @@ plot_scalar_results:
 prepare_cop_timeseries:
   quality_grade: 0.4
   scenario: "ALL"
+
+prepare_electricity_demand:
+  REGIONS: ["BB", "B"]
+  TS_VAR_UNIT: "None"
+  TS_SOURCE: "https://data.open-power-system-data.org/time_series/2020-10-06"
+  TS_COMMENT: "DE_50hertz actual load data"
+  COL_SELECT:  "DE_50hertz_load_actual_entsoe_transparency"
