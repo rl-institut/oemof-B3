@@ -1,3 +1,5 @@
+general:
+  plot_filetype: ".png"
 
 labels: de
 

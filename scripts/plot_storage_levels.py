@@ -13,18 +13,13 @@ logfile : str
 
 Outputs
 ---------
-.pdf
-    dispatch plot in pdf-format.
-.png
-    dispatch plot in png-format.
-.html
-    interactive plotly dispatch plot in html-format.
+Static storage level plots.
 
 Description
 -------------
 The script creates storage level plots.
 
-The static plots are saved as pdf-files and the interactive plotly plots as html-files
+The static plots are saved as files (png, pdf, etc.) and the interactive plotly plots as html-files
 in a new directory called plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
@@ -136,7 +131,6 @@ if __name__ == "__main__":
         postprocessed, "sequences/by_variable/storage_content.csv"
     )
     MW_to_W = 1e6
-    IMAGETYPE = ".png"
 
     data = pd.read_csv(
         STORAGE_LEVEL_FILE, header=[0, 1, 2], parse_dates=[0], index_col=[0]
@@ -150,7 +144,7 @@ if __name__ == "__main__":
 
     # prepare data
 
-    # static dispatch plot
+    # static storage level plot
     # plot one winter and one summer month and the whole year
     # select timeframe
     year = data.index[0].year
@@ -195,5 +189,11 @@ if __name__ == "__main__":
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
         ax.xaxis.set_major_locator(mdates.MonthLocator())
 
-        file_name = "storage_level" + "_" + start_date[5:7] + end_date[5:7] + IMAGETYPE
+        file_name = (
+            "storage_level"
+            + "_"
+            + start_date[5:7]
+            + end_date[5:7]
+            + config.settings.general.plot_filetype
+        )
         plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")

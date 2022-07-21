@@ -28,6 +28,7 @@ import pandas as pd
 
 import oemof_b3.tools.data_processing as dp
 from oemof_b3.config.config import LABELS, COLORS
+from oemof_b3.config import config
 
 # User input
 # converting from MW to W
@@ -167,4 +168,4 @@ if __name__ == "__main__":
     # TODO: Check if oemoflex' function can be imported and used here
     plot_grouped_bar(ax, df_pivot, COLORS, UNIT)
 
-    plt.savefig(target, bbox_inches="tight")
+    plt.savefig(target + config.settings.general.plot_filetype, bbox_inches="tight")
