@@ -4,6 +4,8 @@ import pandas as pd
 import pytest
 
 from oemof_b3.tools.data_processing import (
+    HEADER_B3_SCAL,
+    HEADER_B3_TS,
     stack_timeseries,
     unstack_timeseries,
     load_b3_scalars,
@@ -51,32 +53,9 @@ path_file_ts_stacked = os.path.join(
 )
 
 # Headers
-sc_cols_list = [
-    "scenario_key",
-    "name",
-    "var_name",
-    "carrier",
-    "region",
-    "tech",
-    "type",
-    "var_value",
-    "var_unit",
-    "source",
-    "comment",
-]
+sc_cols_list = list(HEADER_B3_SCAL)
 
-ts_cols_list = [
-    "scenario_key",
-    "region",
-    "var_name",
-    "timeindex_start",
-    "timeindex_stop",
-    "timeindex_resolution",
-    "series",
-    "var_unit",
-    "source",
-    "comment",
-]
+ts_cols_list = list(HEADER_B3_TS)
 
 ts_row_wise_cols = [
     "var_name",
