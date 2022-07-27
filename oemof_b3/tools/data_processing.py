@@ -14,7 +14,7 @@ This script contains some helper functions for processing the data in oemof-B3, 
 filtering, sorting, merging, aggregating and saving.
 
 """
-
+import oemof.tabular.facades
 import os
 import ast
 import pandas as pd
@@ -993,6 +993,60 @@ def prepare_b3_timeseries(df_year, **kwargs):
     df_year_stacked = format_header(df_year_stacked, HEADER_B3_TS, "id_ts")
 
     return df_year_stacked
+
+
+def _get_component_from_tuple(tuple, delimiter="-"):
+    return max(tuple, key=lambda x: len(x.split(delimiter)))
+
+
+def _get_region_carrier_tech_from_component(component, delimiter="-"):
+
+    if isinstance(component, oemof.tabular.facades.Facade):
+        region = component.region
+        carrier = component.carrier
+        tech = component.tech
+
+    elif isinstance(component, str):
+        region, carrier, tech = component.split(delimiter)
+
+    return region, carrier, tech
+
+
+def oemof_results_ts_to_oemof_b3(df):
+    r"""
+    Transforms data in oemof-tabular/oemoflex format to stacked b3 timeseries format.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+    """
+    _df = df.copy()
+
+    var_name = df.columns.get_level_values(2)
+
+    component = df.columns.droplevel(2).map(_get_component_from_tuple)
+
+    _df.columns = component
+
+    _df = stack_timeseries(_df)
+
+    _df["region"], _df["carrier"], _df["tech"] = zip(
+        *component.map(_get_region_carrier_tech_from_component)
+    )
+
+    _df["name"] = component
+
+    _df["var_name"] = var_name
+
+    _df = format_header(_df, HEADER_B3_TS, "id_ts")
+
+    return _df
 
 
 class ScalarProcessor:
