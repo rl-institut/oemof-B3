@@ -14,12 +14,13 @@ This script contains some helper functions for processing the data in oemof-B3, 
 filtering, sorting, merging, aggregating and saving.
 
 """
-import oemof.tabular.facades
-import os
 import ast
-import pandas as pd
-import numpy as np
+import os
+import warnings
 
+import numpy as np
+import oemof.tabular.facades
+import pandas as pd
 
 here = os.path.dirname(__file__)
 
@@ -1007,7 +1008,17 @@ def _get_region_carrier_tech_from_component(component, delimiter="-"):
         tech = component.tech
 
     elif isinstance(component, str):
-        region, carrier, tech = component.split(delimiter)
+        split = component.split(delimiter)
+
+        if len(split) == 3:
+            region, carrier, tech = split
+
+        if len(split) > 3:
+
+            region, carrier, tech = "-".join(split[:2]), *split[2:]
+            warnings.warn(f"Could not get region, carrier and tech by splitting "
+                          f"component name into {split}. Assumed region='{region}', "
+                          f"carrier='{carrier}', tech='{tech}'")
 
     return region, carrier, tech
 
