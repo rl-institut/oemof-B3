@@ -505,14 +505,14 @@ def test_oemof_results_flows_to_b3_ts():
 
     df = oemof_results_ts_to_oemof_b3(df)
 
-    assert pd.assert_frame_equal(df, df_expected)
+    assert pd.testing.assert_frame_equal(df, df_expected)
 
 
 def test_oemof_results_storage_content_to_b3_ts():
-    df = load_tabular_results_ts(path_oemof_results_flows)
+    df = load_tabular_results_ts(path_oemof_results_storage_content)
 
     df_expected = load_b3_timeseries(path_oemof_b3_results_timeseries_storage_content)
 
     df = oemof_results_ts_to_oemof_b3(df)
 
-    assert pd.assert_frame_equal(df, df_expected)
+    assert pd.testing.assert_frame_equal(df, df_expected)
