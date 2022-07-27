@@ -260,6 +260,22 @@ def save_df(df, path):
     print(f"User info: The DataFrame has been saved to: {path}.")
 
 
+def load_tabular_results_ts(path):
+    r"""
+    Loads timeseries as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
+
+
 def filter_df(df, column_name, values, inverse=False):
     """
     This function filters a DataFrame.
