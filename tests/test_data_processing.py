@@ -17,39 +17,31 @@ from oemof_b3.tools.data_processing import (
     aggregate_timeseries,
     check_consistency_timeindex,
     merge_a_into_b,
+    oemof_results_ts_to_oemof_b3,
 )
 
 # Paths
-this_path = os.path.realpath(__file__)
+this_path = os.path.abspath(os.path.dirname(__file__))
 
-path_file_sc = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_scalars.csv",
+
+def full_path(filename):
+    return os.path.join(this_path, "_files", filename)
+
+
+path_file_sc = full_path("oemof_b3_resources_scalars.csv")
+path_file_sc_scenarios = full_path("oemof_b3_resources_scalars_scenarios.csv")
+path_file_sc_update_scenarios_expected = full_path(
+    "oemof_b3_resources_scalars_update_scenarios_expected.csv"
 )
-
-path_file_sc_scenarios = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_scalars_scenarios.csv",
+path_file_sc_mixed_types = full_path("oemof_b3_resources_scalars_mixed_types.csv")
+path_file_ts_stacked = full_path("oemof_b3_resources_timeseries_stacked.csv")
+path_oemof_results_flows = full_path("oemof_results_flows.csv")
+path_oemof_b3_results_timeseries_flows = full_path(
+    "oemof_b3_results_timeseries_flows.csv"
 )
-
-path_file_sc_update_scenarios_expected = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_scalars_update_scenarios_expected.csv",
-)
-
-path_file_sc_mixed_types = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_scalars_mixed_types.csv",
-)
-
-path_file_ts_stacked = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_timeseries_stacked.csv",
+path_oemof_results_storage_content = full_path("oemof_results_storage_content.csv")
+path_oemof_b3_results_timeseries_storage_content = full_path(
+    "oemof_b3_results_timeseries_storage_content.csv"
 )
 
 # Headers
@@ -136,7 +128,7 @@ def test_save_df_sc():
     # Scalars
 
     path_file_saved = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_saved.csv",
     )
@@ -167,7 +159,7 @@ def test_save_df_ts():
     """
 
     path_file_stacked_saved = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_timeseries_stacked_saved.csv",
     )
@@ -202,7 +194,7 @@ def test_filter_df_sc_region_BE():
 
     # Load expected filtered scalars
     path_file_filtered_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_filtered_BE.csv",
     )
@@ -238,7 +230,7 @@ def test_filter_df_sc_type_conversion():
 
     # Load expected filtered scalars
     path_file_filtered_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_filtered_conversion.csv",
     )
@@ -286,7 +278,7 @@ def test_filter_df_ts():
 
     # Load expected filtered stacked time series
     path_file_filtered_ts = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_timeseries_stacked_filtered_BE.csv",
     )
@@ -311,7 +303,7 @@ def test_df_agg_sc():
 
     # Load expected aggregated DataFrame
     path_file_agg_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_agg_region.csv",
     )
@@ -327,7 +319,7 @@ def test_df_agg_sc():
 
     # Load expected aggregated DataFrame
     path_file_agg_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_agg_carrier.csv",
     )
@@ -343,7 +335,7 @@ def test_df_agg_sc():
 
     # Load expected aggregated DataFrame
     path_file_agg_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_agg_tech.csv",
     )
@@ -378,7 +370,7 @@ def test_df_agg_ts():
 
     # Load expected filtered stacked time series
     path_file_agg_ts = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_timeseries_stacked_agg_region.csv",
     )
@@ -457,7 +449,7 @@ def test_stack_unstack_on_example_data():
     """
 
     file_path = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_tabular_sequence.csv",
     )
@@ -503,3 +495,23 @@ def test_merge_a_into_b():
     c = merge_a_into_b(a, b, on=["A"], how="outer")
 
     assert c.equals(expected_result)
+
+
+def test_oemof_results_flows_to_b3_ts():
+    df = pd.read_csv(path_oemof_results_flows)
+
+    df_expected = load_b3_scalars(path_oemof_b3_results_timeseries_flows)
+
+    df = oemof_results_ts_to_oemof_b3(df)
+
+    assert pd.assert_frame_equal(df, df_expected)
+
+
+def test_oemof_results_storage_content_to_b3_ts():
+    df = pd.read_csv(path_oemof_results_flows)
+
+    df_expected = load_b3_scalars(path_oemof_b3_results_timeseries_storage_content)
+
+    df = oemof_results_ts_to_oemof_b3(df)
+
+    assert pd.assert_frame_equal(df, df_expected)
