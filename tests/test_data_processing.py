@@ -505,7 +505,7 @@ def test_oemof_results_flows_to_b3_ts():
 
     df = oemof_results_ts_to_oemof_b3(df)
 
-    assert pd.testing.assert_frame_equal(df, df_expected)
+    pd.testing.assert_frame_equal(df, df_expected)
 
 
 def test_oemof_results_storage_content_to_b3_ts():
@@ -515,4 +515,4 @@ def test_oemof_results_storage_content_to_b3_ts():
 
     df = oemof_results_ts_to_oemof_b3(df)
 
-    assert pd.testing.assert_frame_equal(df, df_expected)
+    pd.testing.assert_frame_equal(df, df_expected)
