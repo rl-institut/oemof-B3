@@ -10,6 +10,7 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     load_b3_scalars,
     load_b3_timeseries,
+    load_tabular_results_ts,
     save_df,
     filter_df,
     update_filtered_df,
@@ -498,9 +499,9 @@ def test_merge_a_into_b():
 
 
 def test_oemof_results_flows_to_b3_ts():
-    df = pd.read_csv(path_oemof_results_flows)
+    df = load_tabular_results_ts(path_oemof_results_flows)
 
-    df_expected = load_b3_scalars(path_oemof_b3_results_timeseries_flows)
+    df_expected = load_b3_timeseries(path_oemof_b3_results_timeseries_flows)
 
     df = oemof_results_ts_to_oemof_b3(df)
 
@@ -508,9 +509,9 @@ def test_oemof_results_flows_to_b3_ts():
 
 
 def test_oemof_results_storage_content_to_b3_ts():
-    df = pd.read_csv(path_oemof_results_flows)
+    df = load_tabular_results_ts(path_oemof_results_flows)
 
-    df_expected = load_b3_scalars(path_oemof_b3_results_timeseries_storage_content)
+    df_expected = load_b3_timeseries(path_oemof_b3_results_timeseries_storage_content)
 
     df = oemof_results_ts_to_oemof_b3(df)
 
