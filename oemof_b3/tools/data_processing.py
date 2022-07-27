@@ -1061,7 +1061,8 @@ def oemof_results_ts_to_oemof_b3(df):
 
     component = df.columns.droplevel(2).map(_get_component_from_tuple)
 
-    _df.columns = component
+    # Introduce arbitrary unique columns before stacking.
+    _df.columns = range(len(_df.columns))
 
     _df = stack_timeseries(_df)
 
