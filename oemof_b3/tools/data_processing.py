@@ -261,6 +261,22 @@ def save_df(df, path):
     print(f"User info: The DataFrame has been saved to: {path}.")
 
 
+def load_tabular_results_scal(path):
+    r"""
+    Loads timeseries as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0])
+
+
 def load_tabular_results_ts(path):
     r"""
     Loads timeseries as given by oemof.tabular/oemoflex.
