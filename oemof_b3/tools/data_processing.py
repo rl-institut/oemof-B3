@@ -1032,9 +1032,11 @@ def _get_region_carrier_tech_from_component(component, delimiter="-"):
         if len(split) > 3:
 
             region, carrier, tech = "-".join(split[:2]), *split[2:]
-            warnings.warn(f"Could not get region, carrier and tech by splitting "
-                          f"component name into {split}. Assumed region='{region}', "
-                          f"carrier='{carrier}', tech='{tech}'")
+            warnings.warn(
+                f"Could not get region, carrier and tech by splitting "
+                f"component name into {split}. Assumed region='{region}', "
+                f"carrier='{carrier}', tech='{tech}'"
+            )
 
     return region, carrier, tech
 
