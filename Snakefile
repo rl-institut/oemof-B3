@@ -76,7 +76,7 @@ rule prepare_example:
     output:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
-        # necessary to distinguish from those scenarios that are not pre-fabricated
+        # Use this rule for the examples. Do not use build_datapackage.
         scenario="|".join(scenario_groups["examples"])
     run:
         import shutil
@@ -196,6 +196,9 @@ rule build_datapackage:
         directory("results/{scenario}/preprocessed")
     params:
         logfile="logs/{scenario}.log"
+    wildcard_constraints:
+        # Do not use this rule for the examples. Use prepare_example instead
+        scenario="^" + "|".join(scenario_groups["examples"])
     shell:
         "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
