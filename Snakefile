@@ -60,7 +60,7 @@ rule clean:
 
 # Rules for intermediate steps
 
-rule create_input_data_overview:
+rule table_costs_efficiencies:
     input:
         "raw/scalars/costs_efficiencies.csv"
     output:
@@ -68,7 +68,7 @@ rule create_input_data_overview:
     params:
         logfile="logs/{scenario_key}.log"
     shell:
-        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output} {params.logfile}"
+        "python scripts/table_costs_efficiencies.py {input} {wildcards.scenario_key} {output} {params.logfile}"
 
 rule prepare_example:
     input:
@@ -219,7 +219,7 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
-rule create_results_table:
+rule table_results:
     input:
         "results/{scenario}/postprocessed/"
     output:
@@ -227,9 +227,9 @@ rule create_results_table:
     params:
         logfile="logs/{scenario}.log"
     shell:
-        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+        "python scripts/table_results.py {input} {output} {params.logfile}"
 
-rule create_joined_results_table:
+rule table_joined_results:
     input:
         "results/joined_scenarios/{scenario_group}/joined/"
     output:
@@ -237,7 +237,7 @@ rule create_joined_results_table:
     params:
         logfile="logs/{scenario_group}.log"
     shell:
-        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+        "python scripts/table_results.py {input} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
