@@ -3,7 +3,8 @@
 
 # build_datapackage
 
-name: 2050-gas_lessCH4
+name: 2050-100-el_eff
+label: 100 EL EFF
 
 datetimeindex:
   start:
@@ -33,8 +34,9 @@ filter_scalars:
   1:
     scenario_key:
       - "ALL"
-      - "2050-gas_lessCH4"
+      - "2050-el_eff"
       - "2050-base"
+      - "reduction_100"
 
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv
@@ -47,7 +49,7 @@ paths_timeseries:
 
 filter_timeseries:
   scenario_key:
-    - "2050-gas_lessCH4"
+    - "2050-el_eff"
     - "ALL"
   timeindex_start:
     "2017-01-01 00:00:00"
