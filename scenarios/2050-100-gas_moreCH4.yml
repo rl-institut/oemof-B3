@@ -4,6 +4,7 @@
 # build_datapackage
 
 name: 2050-100-gas_moreCH4
+label: 100 GAS
 
 datetimeindex:
   start:
