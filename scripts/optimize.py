@@ -46,6 +46,7 @@ from oemof.tabular.facades import TYPEMAP
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.equate_flows import equate_flows_by_keyword
 from oemof_b3.config import config
+from oemof_b3.tools.timing import Timer
 
 
 logger = logging.getLogger()
@@ -217,22 +218,21 @@ if __name__ == "__main__":
     try:
 
         logger.info(
-            f"Building solph.EnergSystem using oemof.solph version '{solph.__version__}'."
+            f"Created solph.EnergSystem using oemof.solph version '{solph.__version__}'."
         )
 
-        es = EnergySystem.from_datapackage(
-            os.path.join(preprocessed, config.settings.optimize.filename_metadata),
-            attributemap={},
-            typemap=TYPEMAP,
-        )
+        with Timer(text="Created solph.Energystem.", logger=logger.info):
+            es = EnergySystem.from_datapackage(
+                os.path.join(preprocessed, config.settings.optimize.filename_metadata),
+                attributemap={},
+                typemap=TYPEMAP,
+            )
 
         # Reduce number of timestep for debugging
         if config.settings.optimize.debug:
             es.timeindex = es.timeindex[:3]
 
-            logger.info(
-                "Optimizing in DEBUG mode: Running model with first 3 timesteps only."
-            )
+            logger.info("Using DEBUG mode: Running model with first 3 timesteps only.")
 
         # add output_parameters of bpchp
         if bpchp_out is not None:
@@ -241,7 +241,8 @@ if __name__ == "__main__":
         # create model from energy system (this is just oemof.solph)
         logger.info("Creating solph.Model.")
 
-        m = Model(es)
+        with Timer(text="Created solph.Model.", logger=logger.info):
+            m = Model(es)
 
         # add constraints
         logger.info("Setting constraints.")
@@ -267,11 +268,12 @@ if __name__ == "__main__":
             f"and cmdline_options '{config.settings.optimize.cmdline_options}'."
         )
 
-        m.solve(
-            solver=config.settings.optimize.solver,
-            solve_kwargs=config.settings.optimize.solve_kwargs,
-            cmdline_options=config.settings.optimize.cmdline_options,
-        )
+        with Timer(text="Solved the model.", logger=logger.info):
+            m.solve(
+                solver=config.settings.optimize.solver,
+                solve_kwargs=config.settings.optimize.solve_kwargs,
+                cmdline_options=config.settings.optimize.cmdline_options,
+            )
 
     except:  # noqa: E722
         logger.exception(
