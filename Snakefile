@@ -342,10 +342,10 @@ def get_scenarios_in_group(wildcards):
     return [os.path.join("results", scenario, "postprocessed") for scenario in scenario_groups[wildcards.scenario_group]]
 
 
-# rule join_scenario_results:
-#     input:
-#         get_scenarios_in_group
-#     output:
-#         directory("results/joined_scenarios/{scenario_group}/joined/")
-#     shell:
-#         "python scripts/join_scenarios.py {input} {output}"
+rule join_scenario_results:
+    input:
+        get_scenarios_in_group
+    output:
+        directory("results/joined_scenarios/{scenario_group}/joined/")
+    shell:
+        "python scripts/join_scenarios.py {input} {output}"
