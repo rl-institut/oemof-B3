@@ -23,7 +23,7 @@ oemof-B3 resources
 ------------------
 
 The resources are preprocessed data that serves as material for building scenarios. They follow
-a common data schema defined in :file:`oemof_b3/schema/`.
+a common data schema defined in :file:`oemof_b3/schema/` and are located in :file:`oemof_b3/raw/scalars` and :file:`oemof_b3/raw/time_series`.
 
 Scalars
 
