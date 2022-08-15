@@ -156,13 +156,10 @@ def add_electricity_gas_relation_constraints(model, relations):
     r"""
     Adds constraint `equate_flows_by_keyword` to `model`.
 
-    The components belonging to one constraint are selected by keywords. The keywords of components
-    powered by gas start with `config.settings.optimize.gas_key` and such powered with
+    The components belonging to 'electricity' or 'gas' are selected by keywords. The keywords of
+    components powered by gas start with `config.settings.optimize.gas_key` and such powered by
     electricity with `config.settings.optimize.el_key`, followed by `carrier` and `region` e.g.
     <`GAS_KEY`>-<carrier>-<region>.
-    Attention: Although a value is provided for the keywords in the input data
-    (e.g. {"electricity-heat_central-B": 1}) this value does not have any effect, at the moment.
-    If a component is not to be taken into account the keyword must not be provided.
 
     Parameters
     ----------
