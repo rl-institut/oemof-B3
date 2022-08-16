@@ -34,6 +34,7 @@ import sys
 import os
 
 from oemof_b3.tools import data_processing as dp
+import oemof_b3.config as config
 
 if __name__ == "__main__":
     input_dir = sys.argv[1]
@@ -73,18 +74,18 @@ if __name__ == "__main__":
 
     # format header of `potentials` according to template
     scalar_df = dp.format_header(
-        df=potentials, header=dp.HEADER_B3_SCAL, index_name="id_scal"
+        df=potentials,
+        header=dp.HEADER_B3_SCAL,
+        index_name=config.settings.general.scal_index_name,
     )
 
     # add additional information as required by template
-    scalar_df.loc[:, "scenario_key"] = ""
-    scalar_df.loc[:, "name"] = "None"
-    scalar_df.loc[:, "var_name"] = "capacity"
+    scalar_df.loc[:, "scenario_key"] = config.settings.process_re_potential.SCENARIO_KEY
+    scalar_df.loc[:, "name"] = config.settings.process_re_potential.NAME
+    scalar_df.loc[:, "var_name"] = config.settings.process_re_potential.VAR_NAME
     scalar_df.loc[:, "type"] = "volatile"
-    scalar_df.loc[:, "var_unit"] = "MW"
-    scalar_df.loc[
-        :, "source"
-    ] = "area potentials - https://sandbox.zenodo.org/record/746695/"
+    scalar_df.loc[:, "var_unit"] = config.settings.process_re_potential.VAR_UNIT
+    scalar_df.loc[:, "source"] = config.settings.process_re_potential.SOURCE
 
     dp.save_df(df=scalar_df, path=output_scalars)
 

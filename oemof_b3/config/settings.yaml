@@ -65,3 +65,10 @@ prepare_vehicle_charging_demand:
   WORK_END: "14:00"  # end charging strategy "balanced" for work profile
   REGION_DICT: {"Berlin": "B", "Brandenburg": "BB" }
   VAR_NAME: "electricity-bev_charging-profile"
+
+process_re_potential:
+  VAR_UNIT: "MW"
+  SOURCE: "area potentials - https://sandbox.zenodo.org/record/746695/"
+  VAR_NAME: "capacity"
+  SCENARIO_KEY: ""
+  NAME: "None"
