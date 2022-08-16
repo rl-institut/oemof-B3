@@ -64,9 +64,13 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     # extract one specific `year`
     time_series = time_series[time_series.index.year == year]
     # get time series for B and BB only
-    time_series_regions = time_series.loc[:, [config.settings.prepare_feedin.NUTS_DE30, config.settings.prepare_feedin.NUTS_DE40]].rename(
-        columns=config.settings.prepare_feedin.RENAME_NUTS
-    )
+    time_series_regions = time_series.loc[
+        :,
+        [
+            config.settings.prepare_feedin.NUTS_DE30,
+            config.settings.prepare_feedin.NUTS_DE40,
+        ],
+    ].rename(columns=config.settings.prepare_feedin.RENAME_NUTS)
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series_regions).rename(

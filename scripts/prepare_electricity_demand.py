@@ -70,7 +70,9 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name=config.settings.general.ts_index_name
+        df=ts_stacked,
+        header=dp.HEADER_B3_TS,
+        index_name=config.settings.general.ts_index_name,
     )
 
     # add additional information as required by template
