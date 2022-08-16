@@ -32,20 +32,10 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
+import oemof_b3.config as config
 
 # global variables
-YEARS = list(range(2010, 2020))
-# specific to wind and pv time series
-NUTS_DE30 = "DE30"
-NUTS_DE40 = "DE40"
-RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
-TS_VAR_UNIT = "None"
-TS_SOURCE = "https://www.renewables.ninja/"
-TS_COMMENT = "navigate to country Germany"
-# specific to ror time series
-REGIONS = ["BB", "B"]
-TS_SOURCE_ROR = "https://zenodo.org/record/1044463"
-TS_COMMENT_ROR = "Isolated ror availability time series from DIW data"
+TS_INDEX_NAME = config.settings.general.ts_index_name
 
 
 def prepare_wind_and_pv_time_series(filename_ts, year, type):
@@ -74,8 +64,8 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     # extract one specific `year`
     time_series = time_series[time_series.index.year == year]
     # get time series for B and BB only
-    time_series_regions = time_series.loc[:, [NUTS_DE30, NUTS_DE40]].rename(
-        columns=RENAME_NUTS
+    time_series_regions = time_series.loc[:, [config.settings.prepare_feedin.NUTS_DE30, config.settings.prepare_feedin.NUTS_DE40]].rename(
+        columns=config.settings.prepare_feedin.RENAME_NUTS
     )
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
@@ -83,7 +73,7 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
         columns={"var_name": "region"}
     )
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+        df=ts_stacked, header=dp.HEADER_B3_TS, index_name=TS_INDEX_NAME
     )
 
     # add additional information as required by template
@@ -155,7 +145,7 @@ def prepare_ror_time_series(filename_ts, region):
             columns={"var_name": "region"}
         )
         ts_prepared = dp.format_header(
-            df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+            df=ts_stacked, header=dp.HEADER_B3_TS, index_name=TS_INDEX_NAME
         )
         ts_prepared.loc[:, "scenario_key"] = "ALL"
         ts_df = pd.concat([ts_df, ts_prepared])
@@ -205,7 +195,7 @@ if __name__ == "__main__":
 
     # set index
     time_series_df.reset_index(drop=True, inplace=True)
-    time_series_df.index.name = "id_ts"
+    time_series_df.index.name = TS_INDEX_NAME
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

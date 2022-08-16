@@ -39,3 +39,16 @@ prepare_electricity_demand:
   TS_SOURCE: "https://data.open-power-system-data.org/time_series/2020-10-06"
   TS_COMMENT: "DE_50hertz actual load data"
   COL_SELECT:  "DE_50hertz_load_actual_entsoe_transparency"
+prepare_feedin:
+  YEARS: list(range(2010, 2020))
+  # specific to wind and pv time series
+  NUTS_DE30: "DE30"
+  NUTS_DE40: "DE40"
+  RENAME_NUTS: {NUTS_DE30: "B", NUTS_DE40: "BB" }
+  TS_VAR_UNIT: "None"
+  TS_SOURCE: "https://www.renewables.ninja/"
+  TS_COMMENT: "navigate to country Germany"
+  # specific to ror time series
+  REGIONS: ["BB", "B"]
+  TS_SOURCE_ROR: "https://zenodo.org/record/1044463"
+  TS_COMMENT_ROR: "Isolated ror availability time series from DIW data"
