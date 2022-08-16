@@ -81,10 +81,10 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     )
 
     # add additional information as required by template
-    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_prepared.loc[:, "var_unit"] = config.settings.prepare_feedin.TS_VAR_UNIT
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
-    ts_prepared.loc[:, "source"] = TS_SOURCE
-    ts_prepared.loc[:, "comment"] = TS_COMMENT
+    ts_prepared.loc[:, "source"] = config.settings.prepare_feedin.TS_SOURCE
+    ts_prepared.loc[:, "comment"] = config.settings.prepare_feedin.TS_COMMENT
     ts_prepared.loc[
         :, "scenario_key"
     ] = "ALL"  # The profile is not varied in different scenarios
@@ -120,7 +120,7 @@ def prepare_ror_time_series(filename_ts, region):
 
     # prepare for all years
     ts_df = pd.DataFrame()
-    for year in YEARS:
+    for year in config.settings.prepare_feedin.YEARS:
         time_series = ts_raw.copy()
         new_index = pd.date_range(
             f"{year}-01-01 00:00:00", f"{year}-12-31 23:00:00", freq="H"
@@ -156,10 +156,10 @@ def prepare_ror_time_series(filename_ts, region):
 
     # add additional information as required by template
     ts_df.loc[:, "region"] = region
-    ts_df.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_df.loc[:, "var_unit"] = config.settings.prepare_feedin.TS_VAR_UNIT
     ts_df.loc[:, "var_name"] = "hydro-ror-profile"
-    ts_df.loc[:, "source"] = TS_SOURCE_ROR
-    ts_df.loc[:, "comment"] = TS_COMMENT_ROR
+    ts_df.loc[:, "source"] = config.settings.prepare_feedin.TS_SOURCE_ROR
+    ts_df.loc[:, "comment"] = config.settings.prepare_feedin.TS_COMMENT_ROR
 
     return ts_df
 
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     time_series_df = pd.DataFrame()
 
     # prepare time series for each year
-    for year in YEARS:
+    for year in config.settings.prepare_feedin.YEARS:
         # prepare wind time series
         wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
@@ -191,7 +191,7 @@ if __name__ == "__main__":
         time_series_df = pd.concat([time_series_df, wind_ts, pv_ts], axis=0)
 
     # prepare ror time series
-    for region in REGIONS:
+    for region in config.settings.prepare_feedin.REGIONS:
         ror_ts = prepare_ror_time_series(filename_ts=filename_ror, region=region)
 
         # add time series to `time_series_df`
