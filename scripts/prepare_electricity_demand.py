@@ -78,7 +78,7 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     ts_prepared.loc[
         :, "var_unit"
     ] = config.settings.prepare_electricity_demand.TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "electricity-demand-profile"
+    ts_prepared.loc[:, "var_name"] = config.settings.prepare_electricity_demand.VAR_NAME
     ts_prepared.loc[:, "source"] = config.settings.prepare_electricity_demand.TS_SOURCE
     ts_prepared.loc[
         :, "comment"

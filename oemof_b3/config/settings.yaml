@@ -39,6 +39,8 @@ prepare_electricity_demand:
   TS_SOURCE: "https://data.open-power-system-data.org/time_series/2020-10-06"
   TS_COMMENT: "DE_50hertz actual load data"
   COL_SELECT:  "DE_50hertz_load_actual_entsoe_transparency"
+  VAR_NAME: "electricity-demand-profile"
+
 prepare_feedin:
   YEARS: list(range(2010, 2020))
   # specific to wind and pv time series
