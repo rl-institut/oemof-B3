@@ -34,6 +34,7 @@ import yaml
 
 import oemof_b3.tools.data_processing as dp
 import oemof_b3.tools.geo as geo
+import oemof_b3.config as config
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
@@ -126,7 +127,7 @@ if __name__ == "__main__":
         inplace=True,
     )
     conv_scalars_prepared = dp.format_header(
-        df=conv_scalars, header=dp.HEADER_B3_SCAL, index_name="id_scal"
+        df=conv_scalars, header=dp.HEADER_B3_SCAL, index_name=config.settings.general.scal_index_name
     )
 
     # add additional information as required by template
