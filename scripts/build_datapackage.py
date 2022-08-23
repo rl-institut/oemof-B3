@@ -39,8 +39,6 @@ from oemof_b3.model import (
 from oemof_b3.tools.data_processing import (
     filter_df,
     update_filtered_df,
-    multi_load_b3_scalars,
-    multi_load_b3_timeseries,
     unstack_timeseries,
     expand_regions,
     save_df,
@@ -50,52 +48,6 @@ from oemof_b3.tools.data_processing import (
 from oemof_b3.config import config
 
 logger = logging.getLogger()
-
-
-def expand_regions(scalars, regions, where="ALL"):
-    r"""
-    Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
-    Returns scalars with new rows included for each region in those places where region equals
-    `where`.
-
-    Parameters
-    ----------
-    scalars : pd.DataFrame
-        Data in oemof_b3 format to expand
-    regions : list
-        List of regions
-    where : str
-        Key that should be expanded
-    Returns
-    -------
-    sc_with_region : pd.DataFrame
-        Data with expanded regions in oemof_b3 format
-    """
-    _scalars = format_header(scalars, HEADER_B3_SCAL, "id_scal")
-
-    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
-
-    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
-
-    if sc_wo_region.empty:
-        return sc_with_region
-
-    for region in regions:
-        regionalized = sc_wo_region.copy()
-
-        regionalized["name"] = regionalized.apply(
-            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-        )
-
-        regionalized["region"] = region
-
-        sc_with_region = sc_with_region.append(regionalized)
-
-    sc_with_region = sc_with_region.reset_index(drop=True)
-
-    sc_with_region.index.name = "id_scal"
-
-    return sc_with_region
 
 
 def update_with_checks(old, new):
