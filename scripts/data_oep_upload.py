@@ -1,11 +1,7 @@
 from oem2orm import oep_oedialect_oem2orm as oem2orm
 import os
 import pandas as pd
-import getpass
 
-# imports for metadata upload
-import json
-import requests
 
 ### Setting up the oem2orm logger
 ''' If you want to see detailed runtime information on oem2orm functions or if errors occur, you can activate the logger with this simple setup function. '''
