@@ -35,8 +35,8 @@ import os
 import sys
 import numpy as np
 
-from oemof.solph import EnergySystem, Model, constraints
-from oemof.solph import processing
+from oemof import solph
+from oemof.solph import EnergySystem, Model, constraints, processing
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -46,6 +46,7 @@ from oemof.tabular.facades import TYPEMAP
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.equate_flows import equate_flows_by_keyword
 from oemof_b3.config import config
+from oemof_b3.tools.timing import Timer
 
 
 logger = logging.getLogger()
@@ -67,11 +68,11 @@ def get_emission_limit(scalars):
 
     # return None if no emission limit is given ('None' or entry missing)
     if emission_df.empty or emission_df.at["emission_limit", "var_value"] is np.nan:
-        print("No emission limit will be set.")
+        logger.info("No emission limit will be set.")
         return None
     else:
         limit = emission_df.at["emission_limit", "var_value"]
-        print(f"Emission limit will be set to {limit}.")
+        logger.info(f"Emission limit will be set to {limit}.")
         return limit
 
 
@@ -91,11 +92,11 @@ def get_electricity_gas_relations(scalars):
     # drop relations that are None
     relations = drop_values_by_keyword(relations_raw)
     if relations.empty:
-        print("No gas electricity relation will be set.")
+        logger.info("No gas electricity relation will be set.")
         return None
     else:
         busses = relations.carrier.drop_duplicates().values
-        print(f"Gas electricity relations will be set for busses: {busses}")
+        logger.info(f"Gas electricity relations will be set for busses: {busses}")
         return relations
 
 
@@ -215,28 +216,37 @@ if __name__ == "__main__":
         os.mkdir(optimized)
 
     try:
-        es = EnergySystem.from_datapackage(
-            os.path.join(preprocessed, config.settings.optimize.filename_metadata),
-            attributemap={},
-            typemap=TYPEMAP,
+
+        logger.info(
+            f"Created solph.EnergSystem using oemof.solph version '{solph.__version__}'."
         )
+
+        with Timer(text="Created solph.Energystem.", logger=logger.info):
+            es = EnergySystem.from_datapackage(
+                os.path.join(preprocessed, config.settings.optimize.filename_metadata),
+                attributemap={},
+                typemap=TYPEMAP,
+            )
 
         # Reduce number of timestep for debugging
         if config.settings.optimize.debug:
             es.timeindex = es.timeindex[:3]
 
-            logger.info(
-                "Optimizing in DEBUG mode: Run model with first 3 timesteps only."
-            )
+            logger.info("Using DEBUG mode: Running model with first 3 timesteps only.")
 
         # add output_parameters of bpchp
         if bpchp_out is not None:
             es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
 
         # create model from energy system (this is just oemof.solph)
-        m = Model(es)
+        logger.info("Creating solph.Model.")
+
+        with Timer(text="Created solph.Model.", logger=logger.info):
+            m = Model(es)
 
         # add constraints
+        logger.info("Setting constraints.")
+
         if emission_limit is not None:
             constraints.emission_limit(m, limit=emission_limit)
         if el_gas_relations is not None:
@@ -258,11 +268,12 @@ if __name__ == "__main__":
             f"and cmdline_options '{config.settings.optimize.cmdline_options}'."
         )
 
-        m.solve(
-            solver=config.settings.optimize.solver,
-            solve_kwargs=config.settings.optimize.solve_kwargs,
-            cmdline_options=config.settings.optimize.cmdline_options,
-        )
+        with Timer(text="Solved the model.", logger=logger.info):
+            m.solve(
+                solver=config.settings.optimize.solver,
+                solve_kwargs=config.settings.optimize.solve_kwargs,
+                cmdline_options=config.settings.optimize.cmdline_options,
+            )
 
     except:  # noqa: E722
         logger.exception(
@@ -271,6 +282,9 @@ if __name__ == "__main__":
         raise
 
     else:
+
+        logger.info("Model solved. Collecting results.")
+
         # get results from the solved model(still oemof.solph)
         es.meta_results = processing.meta_results(m)
         es.results = processing.results(m)
@@ -278,3 +292,5 @@ if __name__ == "__main__":
 
         # dump the EnergySystem
         es.dump(optimized)
+
+        logger.info(f"Results saved to {optimized}.")
