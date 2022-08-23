@@ -1,6 +1,29 @@
 
-debug: true
+labels: de
+
+build_datapackage:
+  el_gas_relation: electricity_gas_relation  # appears in optimize as well
+  emission: emission
+  additional_scalars_file: additional_scalars.csv
 
 optimize:
-  solver: cbc
   filename_metadata: datapackage.json
+  solver: cbc
+  solve_kwargs:
+    tee: True
+    keepfiles: True
+  cmdline_options:
+    AllowableGap: 0.01
+  debug: true
+  receive_duals: false
+  el_gas_relation: electricity_gas_relation  # appears in build_datapackage as well
+  el_key: electricity  # prefix of keywords for gas electricity relation
+  gas_key: gas  # prefix of keywords for gas electricity relation
+
+
+plot_scalar_results:
+  agg_regions: true
+
+prepare_cop_timeseries:
+  quality_grade: 0.4
+  scenario: "ALL"

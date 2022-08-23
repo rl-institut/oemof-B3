@@ -1,0 +1,55 @@
+# This scenario config file contains information for several steps in the model pipeline, i.e.
+# build_datapackage, parametrize, optimize and potentially also postprocess or plot.
+
+# build_datapackage
+
+name: 2050-80-gas_moreCH4
+label: 80 GAS
+
+datetimeindex:
+  start:
+    "2019-01-01"
+  freq:
+    "H"
+  periods:
+    8760
+
+model_structure:
+  model_structure_full
+
+# parametrize
+
+paths_scalars:
+  - raw/scalars/capacities.csv
+  - raw/scalars/potentials.csv
+  - raw/scalars/carrier_costs.csv
+  - raw/scalars/import_export_prices.csv
+  - raw/scalars/demands.csv
+  - raw/scalars/emission_constraint.csv
+  - raw/scalars/el_gas_constraint.csv
+  - results/_resources/scal_costs_efficiencies.csv
+  - results/_resources/scal_load_heat.csv
+
+filter_scalars:
+  1:
+    scenario_key:
+      - "ALL"
+      - "2050-gas_moreCH4"
+      - "2050-base"
+      - "reduction_80"
+
+paths_timeseries:
+  - raw/time_series/ts_load_ch4.csv
+  - raw/time_series/ts_load_h2.csv
+  - results/_resources/ts_efficiency_heatpump_small.csv
+  - results/_resources/ts_feedin.csv
+  - results/_resources/ts_load_electricity.csv
+  - results/_resources/ts_load_heat.csv
+  - results/_resources/ts_load_electricity_vehicles.csv
+
+filter_timeseries:
+  scenario_key:
+    - "2050-gas_moreCH4"
+    - "ALL"
+  timeindex_start:
+    "2017-01-01 00:00:00"

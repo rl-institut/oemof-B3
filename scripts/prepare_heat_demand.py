@@ -13,12 +13,14 @@ in_path4 : str
     ``raw/building_class.csv``: path of input file with building classes of all states in Germany
     as .csv
 in_path5 : str
-    ``raw/scalars_base_2050.csv``: path of scalar data as .csv
+    ``raw/scalars/demands.csv``: path of scalar data as .csv
 out_path1 : str
     ``results/_resources/scal_load_heat.csv``: path of output file with aggregated scalar data as
     .csv
 out_path2 : str
     ``results/_resources/ts_load_heat.csv``: path of output file with timeseries data as .csv
+logfile : str
+    ``logs/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -49,6 +51,7 @@ import pandas as pd
 from demandlib import bdew
 
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
 
 
 def get_shares_from_hh_distribution(path, region):
@@ -106,7 +109,7 @@ def find_regional_files(path, region):
     files_region : list
         List of file names matching region
     """
-    files_region = [file for file in os.listdir(path) if region in file]
+    files_region = [file for file in os.listdir(path) if f"_{region}_" in file]
     files_region = sorted(files_region)
 
     if not files_region:
@@ -255,7 +258,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     scalars : DataFrame
         Dataframe with scalars
     scenario : str
-        Scenario e.g. "base"
+        Scenario e.g. "2040-el_eff"
     carrier : str
          Name of carrier (eg.: heat_central, heat_decentral)
     region : str
@@ -277,7 +280,7 @@ def get_heat_demand(scalars, scenario, carrier, region):
     sc_filtered = dp.filter_df(sc_filtered, "carrier", carrier)
     sc_filtered = dp.filter_df(sc_filtered, "region", region)
     sc_filtered = dp.filter_df(sc_filtered, "scenario_key", scenario)
-    if sc_filtered.empty:
+    if sc_filtered.empty or sc_filtered["var_value"].isna().all():
         raise ValueError(
             f"No scalar data found that matches "
             f"scenario='{scenario}', "
@@ -297,8 +300,8 @@ def get_heat_demand(scalars, scenario, carrier, region):
         sc_filtered_consumer = sc_filtered[sc_filtered["tech"].str.contains(consumer)]
 
         if len(sc_filtered_consumer) > 1:
-            print(
-                f"User warning: There is duplicate demand of carrier '{carrier}', consumer "
+            logger.warning(
+                f"There is duplicate demand of carrier '{carrier}', consumer "
                 f"'{consumer}', region '{region}' and scenario '{scenario}' in {in_path5}."
                 + "\n"
                 + "The demand is going to be summed up. "
@@ -376,12 +379,13 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
     ).get_bdew_profile()
 
     # Calculate industry, trade, service (ghd: Gewerbe, Handel, Dienstleistung)
-    # heat load
+    # heat load using gha profile of retail and wholesale (Einzel- und Großhandel)
+    # which has lower share of process heat
     heat_load_consumer["ghd" + "_" + carrier] = bdew.HeatBuilding(
         heat_load_consumer.index,
         holidays=holidays,
         temperature=temperature,
-        shlp_type="ghd",
+        shlp_type="GHA",
         wind_class=0,
         annual_heat_demand=yearly_demands["ghd" + "_" + carrier][0],
         name="ghd",
@@ -400,44 +404,6 @@ def calculate_heat_load(carrier, holidays, temperature, yearly_demands, building
     return heat_load_total
 
 
-def postprocess_data(heat_load_postprocessed, heat_load_year, region, scenario, unit):
-    """
-    This function stacks time series of heat load profile and addes it to result DataFrame
-
-    Parameters
-    ----------
-    heat_load_postprocessed : pd.Dataframe
-        Empty Dataframe as result DataFrame
-    heat_load_year : pd.Dataframe
-        DataFrame with total normalized heat load in year to be processed
-    region : str
-        Region (eg. Brandenburg)
-    scenario : str
-        Scenario e.g. "base
-    unit : str
-        Unit of total demands (eg. GWh)
-
-    Returns
-    -------
-    heat_load_postprocessed : pd.DataFrame
-         DataFrame that contains stacked heat load profile
-
-    """
-    # Stack time series with total heat load in year
-    heat_load_year_stacked = dp.stack_timeseries(heat_load_year)
-
-    heat_load_year_stacked["region"] = region
-    heat_load_year_stacked["scenario_key"] = scenario
-    heat_load_year_stacked["var_unit"] = unit[0]
-
-    # Append stacked heat load of year to stacked time series with total heat loads
-    heat_load_postprocessed = pd.concat(
-        [heat_load_postprocessed, heat_load_year_stacked], ignore_index=True, sort=False
-    )
-
-    return heat_load_postprocessed
-
-
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to weather data
     in_path2 = sys.argv[2]  # path to household distributions data
@@ -446,6 +412,9 @@ if __name__ == "__main__":
     in_path5 = sys.argv[5]  # path to csv with b3 scalars
     out_path1 = sys.argv[6]
     out_path2 = sys.argv[7]
+    logfile = sys.argv[8]
+
+    logger = config.add_snake_logger(logfile, "prepare_heat_demand")
 
     CARRIERS = ["heat_central", "heat_decentral"]
 
@@ -494,9 +463,22 @@ if __name__ == "__main__":
             heat_load_year = calculate_heat_load(
                 carrier, holidays, temperature, yearly_demands, building_class
             )
-            total_heat_load = postprocess_data(
-                total_heat_load, heat_load_year, region, f"ts_{year}", sc_demand_unit
+
+            heat_load_ts_info = {
+                "region": region,
+                "scenario_key": scenario,
+                "var_unit": sc_demand_unit,
+            }
+
+            heat_load_year = dp.prepare_b3_timeseries(
+                heat_load_year, **heat_load_ts_info
             )
+
+            # Append stacked heat load of year to stacked time series with total heat load
+            total_heat_load = pd.concat(
+                [total_heat_load, heat_load_year], ignore_index=True, sort=False
+            )
+
     # aggregate heat demand for different sectors (hh, ghd, i)
     demand_per_sector = dp.filter_df(
         sc, "tech", ["demand_hh", "demand_ghd", "demand_i"]

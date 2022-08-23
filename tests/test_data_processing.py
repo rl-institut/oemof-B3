@@ -10,7 +10,9 @@ from oemof_b3.tools.data_processing import (
     load_b3_timeseries,
     save_df,
     filter_df,
+    update_filtered_df,
     aggregate_scalars,
+    aggregate_timeseries,
     check_consistency_timeindex,
     merge_a_into_b,
 )
@@ -22,6 +24,18 @@ path_file_sc = os.path.join(
     os.path.abspath(os.path.join(this_path, os.pardir)),
     "_files",
     "oemof_b3_resources_scalars.csv",
+)
+
+path_file_sc_scenarios = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_scalars_scenarios.csv",
+)
+
+path_file_sc_update_scenarios_expected = os.path.join(
+    os.path.abspath(os.path.join(this_path, os.pardir)),
+    "_files",
+    "oemof_b3_resources_scalars_update_scenarios_expected.csv",
 )
 
 path_file_sc_mixed_types = os.path.join(
@@ -266,6 +280,21 @@ def test_filter_df_sc_raises_error():
         filter_df(df, "something", ["conversion"])
 
 
+def test_update_filtered_df():
+
+    df = load_b3_scalars(path_file_sc_scenarios)
+    df_filtered_expected = load_b3_scalars(path_file_sc_update_scenarios_expected)
+
+    filters = {
+        1: {"scenario_key": "2050-base", "var_name": ["capacity_cost", "efficiency"]},
+        2: {"scenario_key": "2050-eff", "var_name": ["capacity_cost", "efficiency"]},
+    }
+
+    df_filtered = update_filtered_df(df, filters)
+
+    pd.testing.assert_frame_equal(df_filtered_expected, df_filtered, check_dtype=False)
+
+
 def test_filter_df_ts():
     """
     This test checks whether time series is filtered by a key "region" and value "BE_BB"
@@ -274,13 +303,13 @@ def test_filter_df_ts():
     # Read stacked time series
     df = load_b3_timeseries(path_file_ts_stacked)
 
-    df_BE_BB = filter_df(df, "region", ["BE_BB"])
+    df_BE_BB = filter_df(df, "region", ["BE"])
 
     # Load expected filtered stacked time series
     path_file_filtered_ts = os.path.join(
         os.path.abspath(os.path.join(this_path, os.pardir)),
         "_files",
-        "oemof_b3_resources_timeseries_stacked_filtered_BE_BB.csv",
+        "oemof_b3_resources_timeseries_stacked_filtered_BE.csv",
     )
     df_filtered_ts_expected = load_b3_timeseries(path_file_filtered_ts)
 
@@ -347,7 +376,17 @@ def test_df_agg_sc():
     )
 
 
-@pytest.mark.skip(reason="Timeseries aggregation is not implemented yet.")
+def test_df_agg_sc_with_nan():
+    """
+    This test checks whether scalars containing nan are aggregated by a key
+    """
+
+    df = load_b3_scalars(path_file_sc)
+    df["carrier"].iloc[1] = np.nan
+    df_agg_by_region = aggregate_scalars(df, "region")
+    assert np.isnan(df_agg_by_region["carrier"].iloc[1])
+
+
 def test_df_agg_ts():
     """
     This test checks whether a time series is aggregated by a key
@@ -356,7 +395,7 @@ def test_df_agg_ts():
     df = load_b3_timeseries(path_file_ts_stacked)
 
     # Aggregate by region
-    df_agg_by_region = df  # TODO: implement: aggregate_timeseries(df, "region")
+    df_agg_by_region = aggregate_timeseries(df, "region")
 
     # Load expected filtered stacked time series
     path_file_agg_ts = os.path.join(

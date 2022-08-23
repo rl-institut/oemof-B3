@@ -5,9 +5,14 @@ Inputs
 input_dir : str
     ``raw/time_series/vehicle_charging``: Path of directory where csv files containing electric
     vehicle charging demand profiles are placed
+scalars_file : str
+    ``raw/scalars/demands.csv``: Path incl. file name of demand scalars including 'bev_car_share',
+    the share of passenger car electricity charging demand
 output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
+logfile : str
+    ``logs/prepare_vehicle_charging_demand.log``: path to logfile
 
 Outputs
 ---------
@@ -18,25 +23,34 @@ pd.DataFrame
 Description
 -------------
 This script prepares electric vehicle charging demand profiles for the regions Berlin and
-Brandenburg. The profiles have been created before with simBEV
-(https://github.com/rl-institut/simbev). The charging strategy of simBEV data is "greedy", i.e.
-batteries are charged with maximum power until they are fully charged or removed. This script
-applies a charging strategy we refer to as "balanced" for the profiles "home" and "work" during
-specific hours (see global variables). To apply this charging strategy values between
-[`HOME_START`, `HOME_END`] and [`WORK_START`, `WORK_END`] respectively are replaced by the average
-of all these values. We assume that this is a more realistic picture of the future than a charging
-strategy "greedy".
+Brandenburg. The profiles for passenger cars have been created before with simBEV
+(https://github.com/rl-institut/simbev), other vehicles taken into consideration with constant
+profiles. The charging strategy of simBEV data is "greedy", i.e. batteries are charged with maximum
+power until they are fully charged or removed. This script applies a charging strategy we refer to
+as "balanced" for the profiles "home" and "work" during specific hours (see global variables). To
+apply this, charging strategy values between [`HOME_START`, `HOME_END`] and
+[`WORK_START`, `WORK_END`] respectively are replaced by the average of all these values. We assume
+that this is a more realistic picture of the future than a charging strategy "greedy".
 """
 
 import sys
 import pandas as pd
 import os
+
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
+
+# dummy logger for tests
+import logging
+
+logger = logging.getLogger("dummy")
 
 # global variables
 TS_VAR_UNIT = "None"
-TS_SOURCE = "created with simBEV"
-TS_COMMENT = "https://github.com/rl-institut/simbev"
+TS_SOURCE = "https://github.com/rl-institut/simbev"
+TS_COMMENT = (
+    "created with simBEV. contains a mix of hourly simBEV and a constant profile"
+)
 HOME_START = "15:00"  # start charging strategy "balanced" for home profile
 HOME_END = "05:00"  # end charging strategy "balanced" for home profile
 WORK_START = "06:00"  # start charging strategy "balanced" for work profile
@@ -44,9 +58,14 @@ WORK_END = "14:00"  # end charging strategy "balanced" for work profile
 REGION_DICT = {"Berlin": "B", "Brandenburg": "BB"}
 
 
-def prepare_vehicle_charging_demand(input_dir, balanced=True):
+def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
     r"""
     Prepares and formats electric vehicle charging demand profiles for regions 'B' and 'BB'.
+
+    The simBEV profiles are passenger cars charging demand profiles. If `const_share` of the
+    charging demand is given this hourly profile is mixed with a constant profile:
+    car_profile * (1 - const_share) + constant_profile * const_share
+        (using specified profiles, i.e. divided by their yearly sum)
 
     The profiles are resampled from 15-min to hourly time steps. If `balanced` is True the profiles
     "work" and "home" are smoothed between [`HOME_START`, `HOME_END`] and
@@ -63,6 +82,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         If True profiles "work" and "home" are smoothed with charging strategy "balanced" with
         :py:func:`smooth_profiles()`.
         Default: True
+    const_share : float
+        If given the passenger car charging profile is mixed with a constant profile.
+        Default: None
 
     Returns
     -------
@@ -78,6 +100,17 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         r, y = split_filename[2], int(split_filename[3])
         return r, y
 
+    if const_share is not None:
+        logger.info(
+            f"Passenger car charging profile is mixed with constant share of "
+            f"{int(const_share*100)} %."
+        )
+    if balanced:
+        logger.info(
+            f"Passenger car charging profiles have charging strategy 'balanced': 'home' between "
+            f"{HOME_START} and {HOME_END}, 'work' between {WORK_START} and {WORK_END}."
+        )
+
     # initialize data frame
     df = pd.DataFrame()
 
@@ -92,9 +125,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
             path,
             index_col=1,
             sep=";",
-            decimal=",",
+            decimal=".",
             parse_dates=True,
-            thousands=".",
+            thousands=",",
         ).drop(columns=["Unnamed: 0"], axis=1)
         ts = ts_raw[ts_raw.index.year == year]
 
@@ -113,10 +146,25 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True):
         # divide by total electricity demand of vehicles
         ts_total_norm = ts_total_demand / ts_total_demand.sum()
 
+        if const_share is not None:
+            # combine car profile and constant profile with `const_share`
+            length = len(ts_total_demand)
+            constant_ts_norm = pd.DataFrame(
+                [1 / length] * length,
+                index=ts_total_demand.index,
+            )
+            array_ts_total_norm = (
+                ts_total_norm.values * (1 - const_share)
+                + constant_ts_norm.values * const_share
+            )
+            ts_total_norm[f"ts_{year}"] = array_ts_total_norm
+
         # stack time series and add region
-        ts_stacked = dp.stack_timeseries(ts_total_norm).rename(
-            columns={"var_name": "scenario_key"}
-        )
+        ts_stacked = dp.stack_timeseries(ts_total_norm)
+
+        # The profile is not varied in different scenarios
+        ts_stacked.loc[:, "scenario_key"] = "ALL"
+
         ts_stacked.loc[:, "region"] = region
 
         # add to `df`
@@ -190,11 +238,28 @@ def smooth_profiles(df):
     return df
 
 
+def get_constant_share_of_vehicle_ts(filename):
+    """Reads electric car share from `filename` and returns (1 - car_share), the constant share"""
+    scalars = dp.load_b3_scalars(filename)
+    car_share = scalars.loc[scalars["var_name"] == "bev_car_share"].var_value.iloc[0]
+    const_share = 1 - car_share
+    return const_share
+
+
 if __name__ == "__main__":
     input_dir = sys.argv[1]
-    output_file = sys.argv[2]
+    scalars_file = sys.argv[2]
+    output_file = sys.argv[3]
+    logfile = sys.argv[4]
 
-    time_series = prepare_vehicle_charging_demand(input_dir=input_dir)
+    logger = config.add_snake_logger(logfile, "prepare_vehicle_charging_demand")
+
+    # get constant share of electric charging demand
+    const_share = get_constant_share_of_vehicle_ts(scalars_file)
+
+    time_series = prepare_vehicle_charging_demand(
+        input_dir=input_dir, const_share=const_share
+    )
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

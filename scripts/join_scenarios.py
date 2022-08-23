@@ -41,4 +41,7 @@ if __name__ == "__main__":
 
     joined_scalars = pd.concat(joined_scalars)
 
-    joined_scalars.to_csv(destination)
+    if not os.path.exists(destination):
+        os.makedirs(destination)
+
+    joined_scalars.to_csv(os.path.join(destination, "scalars.csv"))
