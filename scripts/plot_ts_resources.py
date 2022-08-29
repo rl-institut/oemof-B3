@@ -7,8 +7,13 @@ import oemof_b3.tools.data_processing as dp
 
 
 if __name__ == "__main__":
-    input_path = sys.argv[1]
-    output_path = sys.argv[2]
+    resources = sys.argv[1]
+    scalars = sys.argv[2]
+    output_path = sys.argv[3]
+
+    logfile = sys.argv[4]
+
+    logger = add_snake_logger(logfile, "plot_storage_levels")
 
     REGION = "B"
     TIMEINDEX_START = "2015-01-01 00:00:00"

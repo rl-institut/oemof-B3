@@ -269,11 +269,14 @@ rule plot_conv_pp_scalars:
 
 rule plot_resources_timeseries:
     input:
-        "results/_resources/"
+        resources="results/_resources/",
+        scalars="raw/scalars/demands.csv",
     output:
-        "results/_resources/plots/ts_load.png"
+        directory("results/_resources/plots/ts_load_profiles")
+    params:
+        logfile="results/_resources/plots/ts_load.log"
     shell:
-        "python scripts/plot_ts_resources.py {input} {output}"
+        "python scripts/plot_ts_resources.py {input} {output} {params.logfile}"
 
 rule plot_scalar_results:
     input:
