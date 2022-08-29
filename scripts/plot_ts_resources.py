@@ -92,8 +92,10 @@ if __name__ == "__main__":
 
                     if len(ts_scenario_carrier) != len(regions):
                         raise ValueError(
-                            f"There probably is multiple data of {carrier} and scenario key {scenario}. "
-                            f"Please provide only one time series per region, scenario key and carrier."
+                            f"There probably is multiple data of {carrier} and scenario key"
+                            f" {scenario}. "
+                            f"Please provide only one time series per region, scenario key and "
+                            f"carrier."
                         )
 
                     # Add empty Dataframe for non normalized profiles
