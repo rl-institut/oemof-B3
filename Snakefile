@@ -219,6 +219,14 @@ rule postprocess:
     shell:
         "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
+rule map_results_to_b3_format:
+    input:
+        "results/{scenario}/postprocessed"
+    output:
+        directory("results/{scenario}/b3_results")
+    shell:
+        "python scripts/map_results_to_b3_format.py {input} {output}"
+
 rule create_results_table:
     input:
         "results/{scenario}/postprocessed/"

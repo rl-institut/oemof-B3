@@ -14,12 +14,13 @@ This script contains some helper functions for processing the data in oemof-B3, 
 filtering, sorting, merging, aggregating and saving.
 
 """
-import oemof.tabular.facades
-import os
 import ast
-import pandas as pd
-import numpy as np
+import os
+import warnings
 
+import numpy as np
+import oemof.tabular.facades
+import pandas as pd
 
 here = os.path.dirname(__file__)
 
@@ -258,6 +259,22 @@ def save_df(df, path):
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")
+
+
+def load_tabular_results_scal(path):
+    r"""
+    Loads timeseries as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0])
 
 
 def load_tabular_results_ts(path):
@@ -995,8 +1012,46 @@ def prepare_b3_timeseries(df_year, **kwargs):
     return df_year_stacked
 
 
+def _get_component_id_in_tuple(oemof_tuple, delimiter="-"):
+    r"""
+    Returns the id of the component in an oemof tuple.
+    If the component is first in the tuple, will return 0,
+    if it is second, 1.
+
+    Parameters
+    ----------
+    oemof_tuple : tuple
+        tuple of the form (node, node) or (node, None).
+
+    Returns
+    -------
+    component_id : int
+        Position of the component in the tuple
+    """
+    return max(enumerate(oemof_tuple), key=lambda x: len(x[1].split(delimiter)))[0]
+
+
 def _get_component_from_tuple(tuple, delimiter="-"):
     return max(tuple, key=lambda x: len(x.split(delimiter)))
+
+
+def _get_direction(oemof_tuple):
+    comp_id = _get_component_id_in_tuple(oemof_tuple)
+
+    directions = {
+        0: "out",
+        1: "in",
+    }
+
+    other_id = {
+        0: 1,
+        1: 0,
+    }[comp_id]
+
+    if oemof_tuple[other_id] == "nan":
+        return ""
+    else:
+        return directions[comp_id]
 
 
 def _get_region_carrier_tech_from_component(component, delimiter="-"):
@@ -1007,7 +1062,19 @@ def _get_region_carrier_tech_from_component(component, delimiter="-"):
         tech = component.tech
 
     elif isinstance(component, str):
-        region, carrier, tech = component.split(delimiter)
+        split = component.split(delimiter)
+
+        if len(split) == 3:
+            region, carrier, tech = split
+
+        if len(split) > 3:
+
+            region, carrier, tech = "-".join(split[:2]), *split[2:]
+            warnings.warn(
+                f"Could not get region, carrier and tech by splitting "
+                f"component name into {split}. Assumed region='{region}', "
+                f"carrier='{carrier}', tech='{tech}'"
+            )
 
     return region, carrier, tech
 
@@ -1028,11 +1095,18 @@ def oemof_results_ts_to_oemof_b3(df):
     """
     _df = df.copy()
 
-    var_name = df.columns.get_level_values(2)
-
     component = df.columns.droplevel(2).map(_get_component_from_tuple)
 
-    _df.columns = component
+    direction = df.columns.droplevel(2).map(_get_direction)
+
+    var_name = df.columns.get_level_values(2)
+
+    var_name = list(zip(var_name, direction))
+
+    var_name = list(map(lambda x: "_".join(filter(None, x)), var_name))
+
+    # Introduce arbitrary unique columns before stacking.
+    _df.columns = range(len(_df.columns))
 
     _df = stack_timeseries(_df)
 
