@@ -227,8 +227,10 @@ rule map_results_to_b3_format:
         "results/{scenario}/postprocessed"
     output:
         directory("results/{scenario}/b3_results")
+    params:
+        logfile="results/{scenario}/{scenario}.log"
     shell:
-        "python scripts/map_results_to_b3_format.py {input} {output}"
+        "python scripts/map_results_to_b3_format.py {input} {output} {params.logfile}"
 
 rule table_results:
     input:

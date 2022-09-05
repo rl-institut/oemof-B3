@@ -2,17 +2,18 @@ import sys
 import pathlib
 
 import oemof_b3.tools.data_processing as dp
+from oemof_b3.config import config
 
 
 if __name__ == "__main__":
     postprocessed = pathlib.Path(sys.argv[1])
-
     target = pathlib.Path(sys.argv[2])
+    logfile = sys.argv[3]
 
     target.mkdir(exist_ok=True)
+    logger = config.add_snake_logger(logfile, "map_results_to_b3_format")
 
     scenario = postprocessed.parts[-2]
-    print(scenario)
 
     # map sequences
     sequences = postprocessed / "sequences" / "by_variable"
@@ -27,6 +28,10 @@ if __name__ == "__main__":
 
         dp.save_df(ts, target / file_name)
 
+        logger.info(
+            f"Saved mapped timeseries results in b3 format to {target / file_name}"
+        )
+
     # map scalars
     scal = dp.load_tabular_results_scal(postprocessed / "scalars.csv")
 
@@ -35,3 +40,5 @@ if __name__ == "__main__":
     scal = dp.format_header(scal, dp.HEADER_B3_SCAL, "id_scal")
 
     dp.save_df(scal, target / "scalars.csv")
+
+    logger.info(f"Saved mapped scalar results in b3 format to {target / file_name}")
