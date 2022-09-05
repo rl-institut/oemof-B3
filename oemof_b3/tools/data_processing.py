@@ -1097,6 +1097,7 @@ def oemof_results_ts_to_oemof_b3(df):
 
     component = df.columns.droplevel(2).map(_get_component_from_tuple)
 
+    # specify direction in var_name
     direction = df.columns.droplevel(2).map(_get_direction)
 
     var_name = df.columns.get_level_values(2)
@@ -1110,6 +1111,7 @@ def oemof_results_ts_to_oemof_b3(df):
 
     _df = stack_timeseries(_df)
 
+    # assign values to other columns
     _df["region"], _df["carrier"], _df["tech"] = zip(
         *component.map(_get_region_carrier_tech_from_component)
     )
@@ -1118,6 +1120,7 @@ def oemof_results_ts_to_oemof_b3(df):
 
     _df["var_name"] = var_name
 
+    # ensure that the format follows b3 schema
     _df = format_header(_df, HEADER_B3_TS, "id_ts")
 
     return _df
