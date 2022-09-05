@@ -75,7 +75,7 @@ def expand_scalars(df, column, where, expand):
 
         d[column] = var
 
-        _df_wo_cc = _df_wo_cc.append(d)
+        _df_wo_cc = pd.concat([_df_wo_cc, d])
 
     _df_wo_cc = sort_values(_df_wo_cc)
 

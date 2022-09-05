@@ -639,7 +639,7 @@ def expand_regions(scalars, regions, where="ALL"):
 
         regionalized["region"] = region
 
-        sc_with_region = sc_with_region.append(regionalized)
+        sc_with_region = pd.concat([sc_with_region, regionalized])
 
     sc_with_region = sc_with_region.reset_index(drop=True)
 
@@ -842,7 +842,7 @@ def stack_timeseries(df):
 
         dict_stacked_column = dict(zip(df_stacked_cols, column_data))
         df_stacked_column = pd.DataFrame(data=dict_stacked_column)
-        df_stacked = df_stacked.append(df_stacked_column, ignore_index=True)
+        df_stacked = pd.concat([df_stacked, df_stacked_column], ignore_index=True)
 
     # Save name of the index in the unstacked DataFrame as name of the index of "timeindex_start"
     # column of stacked DataFrame, so that it can be extracted from it when unstacked again.
@@ -1188,4 +1188,4 @@ class ScalarProcessor:
 
         _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
-        self.scalars = self.scalars.append(_df)
+        self.scalars = pd.concat([self.scalars, _df])

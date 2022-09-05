@@ -60,15 +60,15 @@ rule clean:
 
 # Rules for intermediate steps
 
-rule create_input_data_overview:
+rule table_costs_efficiencies:
     input:
         "raw/scalars/costs_efficiencies.csv"
     output:
         "results/_tables/technical_and_cost_assumptions_{scenario_key}.csv"
     params:
-        logfile="logs/{scenario_key}.log"
+        logfile="results/_tables/technical_and_cost_assumptions_{scenario_key}.log"
     shell:
-        "python scripts/create_input_data_overview.py {input} {wildcards.scenario_key} {output} {params.logfile}"
+        "python scripts/table_costs_efficiencies.py {input} {wildcards.scenario_key} {output} {params.logfile}"
 
 rule prepare_example:
     input:
@@ -76,7 +76,7 @@ rule prepare_example:
     output:
         directory("results/{scenario}/preprocessed")
     wildcard_constraints:
-        # necessary to distinguish from those scenarios that are not pre-fabricated
+        # Use this rule for the examples. Do not use build_datapackage.
         scenario="|".join(scenario_groups["examples"])
     run:
         import shutil
@@ -118,7 +118,7 @@ rule prepare_vehicle_charging_demand:
     output:
         "results/_resources/ts_load_electricity_vehicles.csv"
     params:
-        logfile="logs/prepare_vehicle_charging_demand.log"
+        logfile="results/_resources/ts_load_electricity_vehicles.log"
     shell:
         "python scripts/prepare_vehicle_charging_demand.py {input.input_dir} {input.scalars} {output} {params.logfile}"
 
@@ -137,7 +137,7 @@ rule prepare_cop_timeseries:
     output:
         ts_efficiency_small="results/_resources/ts_efficiency_heatpump_small.csv",
     params:
-        logfile="logs/prepare_cop_timeseries.log"
+        logfile="results/_resources/ts_efficiency_heatpump_small.log"
     shell:
          "python scripts/prepare_cop_timeseries.py {input.scalars} {input.weather} {output.ts_efficiency_small} {params.logfile}"
 
@@ -152,7 +152,7 @@ rule prepare_heat_demand:
         scalars="results/_resources/scal_load_heat.csv",
         timeseries="results/_resources/ts_load_heat.csv",
     params:
-        logfile="logs/prepare_heat_demand.log"
+        logfile="results/_resources/load_heat.log"
     shell:
         "python scripts/prepare_heat_demand.py {input.weather} {input.distribution_hh} {input.holidays} {input.building_class} {input.scalars} {output.scalars} {output.timeseries} {params.logfile}"
 
@@ -195,7 +195,10 @@ rule build_datapackage:
     output:
         directory("results/{scenario}/preprocessed")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
+    wildcard_constraints:
+        # Do not use this rule for the examples. Use prepare_example instead
+        scenario="^" + "|".join(scenario_groups["examples"])
     shell:
         "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
@@ -205,7 +208,7 @@ rule optimize:
     output:
         directory("results/{scenario}/optimized/")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
     shell:
         "python scripts/optimize.py {input} {output} {params.logfile}"
 
@@ -215,7 +218,7 @@ rule postprocess:
     output:
         directory("results/{scenario}/postprocessed/")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
     shell:
         "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
@@ -227,25 +230,25 @@ rule map_results_to_b3_format:
     shell:
         "python scripts/map_results_to_b3_format.py {input} {output}"
 
-rule create_results_table:
+rule table_results:
     input:
         "results/{scenario}/postprocessed/"
     output:
         directory("results/{scenario}/tables/")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
     shell:
-        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+        "python scripts/table_results.py {input} {output} {params.logfile}"
 
-rule create_joined_results_table:
+rule table_joined_results:
     input:
         "results/joined_scenarios/{scenario_group}/joined/"
     output:
         directory("results/joined_scenarios/{scenario_group}/joined_tables/")
     params:
-        logfile="logs/{scenario_group}.log"
+        logfile="results/joined_scenarios/{scenario_group}/{scenario_group}.log"
     shell:
-        "python scripts/create_results_table.py {input} {output} {params.logfile}"
+        "python scripts/table_results.py {input} {output} {params.logfile}"
 
 rule plot_dispatch:
     input:
@@ -253,7 +256,7 @@ rule plot_dispatch:
     output:
         directory("results/{scenario}/plotted/dispatch")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
     shell:
         "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
 
@@ -263,7 +266,7 @@ rule plot_storage_level:
     output:
         directory("results/{scenario}/plotted/storage_level")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
     shell:
         "python scripts/plot_storage_levels.py {input} {output} {params.logfile}"
 
@@ -281,7 +284,7 @@ rule plot_scalar_results:
     output:
         directory("results/{scenario}/plotted/scalars/")
     params:
-        logfile="logs/{scenario}.log"
+        logfile="results/{scenario}/{scenario}.log"
     shell:
         "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
@@ -291,7 +294,7 @@ rule plot_joined_scalars:
     output:
         directory("results/joined_scenarios/{scenario_group}/joined_plotted/")
     params:
-        logfile="logs/{scenario_group}.log"
+        logfile="results/joined_scenarios/{scenario_group}/{scenario_group}.log"
     shell:
         "python scripts/plot_scalar_results.py {input} {output} {params.logfile}"
 
@@ -304,7 +307,7 @@ rule report:
     output:
         directory("results/{scenario}/report/")
     params:
-        logfile="logs/{scenario}.log",
+        logfile="results/{scenario}/{scenario}.log",
         all_plots="results/{scenario}/plotted/",
     run:
         import os
@@ -350,10 +353,10 @@ def get_scenarios_in_group(wildcards):
     return [os.path.join("results", scenario, "postprocessed") for scenario in scenario_groups[wildcards.scenario_group]]
 
 
-# rule join_scenario_results:
-#     input:
-#         get_scenarios_in_group
-#     output:
-#         directory("results/joined_scenarios/{scenario_group}/joined/")
-#     shell:
-#         "python scripts/join_scenarios.py {input} {output}"
+rule join_scenario_results:
+    input:
+        get_scenarios_in_group
+    output:
+        directory("results/joined_scenarios/{scenario_group}/joined/")
+    shell:
+        "python scripts/join_scenarios.py {input} {output}"

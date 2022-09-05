@@ -3,8 +3,8 @@
 
 # build_datapackage
 
-name: 2050-el_eff
-label: Efficiency-Scenario
+name: 2050-80-el_eff
+label: 80 EL-EFF
 
 datetimeindex:
   start:
@@ -36,6 +36,7 @@ filter_scalars:
       - "ALL"
       - "2050-el_eff"
       - "2050-base"
+      - "reduction_80"
 
 paths_timeseries:
   - raw/time_series/ts_load_ch4.csv
