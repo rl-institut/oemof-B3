@@ -1,3 +1,19 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+
+Outputs
+---------
+
+Description
+-------------
+Uploads results data in oemof_b3-format to the OpenEnergyPlatform (OEP).
+
+The oemetadata format is a standardised json file format and required for all data uploaded to
+the OEP. It includes the data model and the used data types. This allows us to derive the
+necessary tables in sqlalchemy from it.
+"""
 from oem2orm import oep_oedialect_oem2orm as oem2orm
 import os
 import pandas as pd
@@ -7,14 +23,15 @@ from oemof_b3.config import config
 
 
 if __name__ == "__main__":
-    scenario = sys.argv[1]
+    filepath = sys.argv[1]  # "./metadata/"
     logfile = sys.argv[2]
 
+    scenario = "scenario"  # TODO: Derive scenario from filepath
     logger = config.add_snake_logger(logfile, "upload_results_to_oep")
 
     # Setting up the oem2orm logger
-    """ If you want to see detailed runtime information on oem2orm functions or if errors occur,
-    you can activate the logger with this simple setup function. """
+    # If you want to see detailed runtime information on oem2orm functions or if errors occur,
+    # you can activate the logger with this simple setup function.
     # oem2orm.setup_logger()
 
     # To connect to the OEP you need your OEP Token and user name. Note: You ca view your token
@@ -26,16 +43,6 @@ if __name__ == "__main__":
     db = oem2orm.setup_db_connection()
 
     # Creating sql tables from oemetadata
-    """
-    The oemetadata format is a standardised json file format and required for all data uploaded to
-    the OEP. It includes the data model and the used data types. This allows us to derive the
-    necessary tables in sqlalchemy from it.
-    In order to create the table(s) we need to tell python where to find our oemetadata file first.
-    To do this we place them in the folder "metadata" which is in the current directory
-    (Path of this jupyter notebbok). Provide the path to your own folder if you want to use your
-    own metadata. oem2orm will process all files that are located in the folder.
-    """
-
     metadata_folder = oem2orm.select_oem_dir(oem_folder_name="metadata")
 
     # The next command will set up the table. The collect_tables_function collects all metadata
@@ -46,21 +53,7 @@ if __name__ == "__main__":
     # create table
     oem2orm.create_tables(db, tables_orm)
 
-    # %debug
-
     # Writing data into a table
-    """
-    In this example we will upload data from a csv file. Pandas has a read_csv function which makes
-    importing a csv-file rather comfortable. It reads csv into a DataFrame. By default, it assumes
-    that the fields are comma-separated. Our example file has columns with semicolons as separators,
-    so we have to specify this when reading the file.
-    The example file for this tutorial ('upload_tutorial_example_data.csv') is in the 'data'
-    directory, next to this tutorial. Make sure to adapt the path to the file you're using if
-    your file is located elsewhere.
-    """
-
-    filepath = "./metadata/"
-
     list_filenames = os.listdir(filepath)
 
     files = [filename.split(".")[0] for filename in list_filenames]
