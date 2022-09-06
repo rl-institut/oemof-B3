@@ -26,13 +26,23 @@ except ImportError:
 
 from oemof_b3.config import config
 
+SCHEMA = "model_draft"
+
 
 if __name__ == "__main__":
-    filepath = sys.argv[1]  # "./metadata/"
-    logfile = sys.argv[2]
+    filepath = sys.argv[1]
+    metadata_path = sys.argv[2]
+    logfile = sys.argv[3]
 
+    # set up the logger
     scenario = "scenario"  # TODO: Derive scenario from filepath
     logger = config.add_snake_logger(logfile, "upload_results_to_oep")
+
+    # find data to upload
+    list_filenames = os.listdir(filepath)
+
+    logger.info("These files will be uploaded \n")
+    logger.info(*list_filenames, sep="\n")
 
     # Setting up the oem2orm logger
     # If you want to see detailed runtime information on oem2orm functions or if errors occur,
@@ -59,39 +69,32 @@ if __name__ == "__main__":
     oem2orm.create_tables(db, tables_orm)
 
     # Writing data into a table
-    list_filenames = os.listdir(filepath)
+    for filename in list_filenames:
+        table_name = os.path.splitext(filename)[0]
 
-    files = [filename.split(".")[0] for filename in list_filenames]
+        logger.info(f"{filename} is processed")
 
-    logger.info("These files will be uploaded \n")
-    logger.info(*files, sep="\n")
-
-    for file in files:
-
-        logger.info(f"{file} is processed")
-
-        filepath = f"./csv/{file}.csv"
-        data_upload_df = pd.read_csv(filepath, encoding="utf8", sep=";")
+        data_upload_df = pd.read_csv(
+            os.path.join(filepath, filename), encoding="utf8", sep=";"
+        )
 
         data_upload_df = data_upload_df.where(pd.notnull(data_upload_df), None)
-
-        # We need to define the location in the OEDB where the data should be written to. The
-        # connection information is still available from our steps above
-        schema = "model_draft"
-        table_name = f"{file}"
-        connection = db.engine
 
         # The following command will write the content of your dataframe to the table on the OEP
         # that was created earlier.<br>
         # Have a look in the OEP after it ran succesfully!
-        logger.info(f"{file} is written into table")
+        logger.info(f"{filename} is written into table")
 
         try:
             data_upload_df.to_sql(
-                table_name, connection, schema=schema, if_exists="append", index=False
+                table_name,
+                connection=db.engine,
+                schema=SCHEMA,
+                if_exists="append",
+                index=False,
             )
 
-            logger.info("Inserted data to " + schema + "." + table_name)
+            logger.info("Inserted data to " + SCHEMA + "." + table_name)
 
         except Exception as e:
             logger.error(e)
@@ -105,7 +108,7 @@ if __name__ == "__main__":
                 " upload again."
             )
 
-        logger.info(f"{file} writing into table ended")
+        logger.info(f"{filename} writing into table ended")
 
         # Writing metadata to the table
         # Now that we have data in our table it's high time, that we attach our metadata to it.
@@ -116,10 +119,10 @@ if __name__ == "__main__":
         # If you wan´t to set another folder use the code below:
 
         # oem_path = oem2orm.select_oem_dir(oem_folder_name="metadata")
-        md_file_name = f"{file}.json"
+        md_file_name = f"{filename}.json"
 
         # First we're reading the metadata file into a json dictionary.
-        logger.info(f"{file} read metadata")
+        logger.info(f"{filename} read metadata")
 
         metadata = oem2orm.mdToDict(
             oem_folder_path=metadata_folder, file_name=md_file_name
