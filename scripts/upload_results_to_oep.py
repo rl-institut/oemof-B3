@@ -14,10 +14,15 @@ The oemetadata format is a standardised json file format and required for all da
 the OEP. It includes the data model and the used data types. This allows us to derive the
 necessary tables in sqlalchemy from it.
 """
-from oem2orm import oep_oedialect_oem2orm as oem2orm
 import os
-import pandas as pd
 import sys
+
+import pandas as pd
+
+try:
+    from oem2orm import oep_oedialect_oem2orm as oem2orm
+except ImportError:
+    raise ImportError("Need to install oem2orm to upload results to OEP.")
 
 from oemof_b3.config import config
 
