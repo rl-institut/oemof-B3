@@ -66,6 +66,9 @@ if __name__ == "__main__":
     logger.info("These files will be uploaded \n")
     logger.info(*files, sep="\n")
 
+    # In order to actually delete, you will need to type: yes
+    oem2orm.delete_tables(db, tables_orm)
+
     for file in files:
 
         logger.info(f"{file} is processed")
