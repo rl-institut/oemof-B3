@@ -40,6 +40,7 @@ Time series
    :delim: ;
    :file: ../oemof_b3/schema/timeseries.csv
 
+Within oemof-B3 resources are located in :file:`results/_resources`.
 A few more conventions are important to know. Missing data is left empty. If a value applies to all
 regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
 There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
