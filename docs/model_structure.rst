@@ -17,9 +17,10 @@ The busses used in addition to the electricity bus in oemof-B3 are given in :fil
 Raw data
 --------
 
-Raw data from external source comes in different formats. As a first step, preprocessing scripts in
-the model pipeline (see :ref:`Preprocessing`) convert it into the oemof-B3-resources-format,
-explained in the next section. Raw data that represents model-own assumptions is provided in that format already.
+Raw data from external source comes in different formats. It is provided in :file:`raw/`.
+As a first step, preprocessing scripts in the model pipeline (see :ref:`Preprocessing`) convert it into the
+oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
+that format already.
 
 oemof-B3 resources
 ------------------
