@@ -10,7 +10,9 @@ Model structure
     :backlinks: top
 
 In oemof-B3, data appears in different formats in each processing step. Here, we give a short
-overview.
+overview. In general, it should be noted that energy carriers are not the same as busses.
+For example, electricity can be generated from the energy carrier biomass without biomass being added as a bus.
+The busses used in addition to the electricity bus in oemof-B3 are given in :file:`bus_attrs_update.yml`.
 
 Raw data
 --------
