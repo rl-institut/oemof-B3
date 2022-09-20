@@ -78,6 +78,8 @@ More generally, there are specific variables which depend on the type of the com
 their properties are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
 Components and properties can also be added or updated in oemof-B3 using the files in :file:`oemof_b3/model/`.
+You can have a look at the structure of a datapackage using our example:
+`datapackage of "example_base" <https://github.com/rl-institut/oemof-B3/tree/dev/examples/example_base/preprocessed>`_.
 
 .. todo: Explain how to do this and when it is relevant.
 
