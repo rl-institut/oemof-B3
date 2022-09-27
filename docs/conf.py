@@ -71,16 +71,21 @@ html_static_path = ['_static']
 # -- Options for Sphinx autodoc ----------------------------------------------
 
 autodoc_mock_imports = [
+    "pandas",
+    "matplotlib",
+    "numpy",
+    "demandlib",
+    "rtree",
+    "pyyaml",
+    "docutils",
+    "dynaconf",
+    "yaml",
+    "pyomo",
     "oemof",
-    "oemof.solph",
     "oemof.outputlib",
     "oemof.tabular",
     "oemoflex",
-    "demandlib",
-    "matplotlib",
-    "pandas",
-    "numpy",
+    "oemof.solph",
     "geopandas",
     "shapely",
-    "yaml"
 ]
