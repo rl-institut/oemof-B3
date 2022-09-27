@@ -20,6 +20,7 @@ Description
 -------------
 Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and an
 oemof.solph.Model, which is optimized.
+
 The following constraints are added:
     - `emission_limit`: maximum amount of emissions
     - `equate_flows_by_keyword`: electricty-gas relation is set (electricity/gas = factor).
@@ -27,8 +28,8 @@ The following constraints are added:
       To use this constraint you need to copy
       [`equate_flows.py`](https://github.com/oemof/oemof-solph/blob/features/equate-flows/src/oemof/solph/constraints/equate_variables.py)
       of oemof.solph into `/tools` directory of `oemof-B3`.
-The EnergySystem with results, meta-results and parameters is saved.
 
+The EnergySystem with results, meta-results and parameters is saved.
 """
 import logging
 import os
