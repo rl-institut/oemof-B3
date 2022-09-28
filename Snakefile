@@ -198,7 +198,7 @@ rule build_datapackage:
         logfile="results/{scenario}/{scenario}.log"
     wildcard_constraints:
         # Do not use this rule for the examples. Use prepare_example instead
-        scenario="^" + "|".join(scenario_groups["examples"])
+        scenario=r"(?!example_).*"
     shell:
         "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
 
