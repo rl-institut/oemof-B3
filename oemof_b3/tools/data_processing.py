@@ -24,8 +24,8 @@ import numpy as np
 import oemof_b3.config.config as config
 
 # global variables
-TS_INDEX_NAME = config.settings.general.ts_index_name
-SCAL_INDEX_NAME = config.settings.general.scal_index_name
+config.settings.general.ts_index_name = config.settings.general.ts_index_name
+config.settings.general.scal_index_name = config.settings.general.scal_index_name
 
 here = os.path.dirname(__file__)
 
@@ -48,7 +48,7 @@ def sort_values(df, reset_index=True):
     if reset_index:
         _df = _df.reset_index(drop=True)
 
-        _df.index.name = SCAL_INDEX_NAME
+        _df.index.name = config.settings.general.scal_index_name
 
     return _df
 
@@ -151,7 +151,7 @@ def load_b3_scalars(path, sep=";"):
         df["var_value"]
     )
 
-    df = format_header(df, HEADER_B3_SCAL, SCAL_INDEX_NAME)
+    df = format_header(df, HEADER_B3_SCAL, config.settings.general.scal_index_name)
 
     return df
 
@@ -175,7 +175,7 @@ def load_b3_timeseries(path, sep=";"):
     # Read data
     df = pd.read_csv(path, sep=sep)
 
-    df = format_header(df, HEADER_B3_TS, TS_INDEX_NAME)
+    df = format_header(df, HEADER_B3_TS, config.settings.general.ts_index_name)
 
     df.loc[:, "series"] = df.loc[:, "series"].apply(lambda x: ast.literal_eval(x), 1)
 
@@ -389,7 +389,7 @@ def update_filtered_df(df, filters):
 
     # Prepare empty dataframe to be updated with filtered data
     filtered_updated = pd.DataFrame(columns=HEADER_B3_SCAL)
-    filtered_updated.index.name = SCAL_INDEX_NAME
+    filtered_updated.index.name = config.settings.general.scal_index_name
 
     for iteration, filter in filters.items():
         print(f"Applying set of filters no {iteration}.")
@@ -483,7 +483,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
-    _df = format_header(_df, HEADER_B3_SCAL, SCAL_INDEX_NAME)
+    _df = format_header(_df, HEADER_B3_SCAL, config.settings.general.scal_index_name)
 
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
@@ -510,7 +510,9 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     # Reset the index
     df_aggregated.reset_index(inplace=True)
 
-    df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, SCAL_INDEX_NAME)
+    df_aggregated = format_header(
+        df_aggregated, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
 
     return df_aggregated
 
@@ -536,7 +538,7 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
-    _df = format_header(_df, HEADER_B3_TS, TS_INDEX_NAME)
+    _df = format_header(_df, HEADER_B3_TS, config.settings.general.ts_index_name)
     _df.series = _df.series.apply(lambda x: np.array(x))
 
     if not isinstance(columns_to_aggregate, list):
@@ -570,7 +572,9 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     # Reset the index
     df_aggregated.reset_index(inplace=True)
 
-    df_aggregated = format_header(df_aggregated, HEADER_B3_TS, TS_INDEX_NAME)
+    df_aggregated = format_header(
+        df_aggregated, HEADER_B3_TS, config.settings.general.ts_index_name
+    )
 
     return df_aggregated
 
@@ -594,7 +598,9 @@ def expand_regions(scalars, regions, where="ALL"):
     sc_with_region : pd.DataFrame
         Data with expanded regions in oemof_b3 format
     """
-    _scalars = format_header(scalars, HEADER_B3_SCAL, SCAL_INDEX_NAME)
+    _scalars = format_header(
+        scalars, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
 
     sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
 
@@ -616,7 +622,7 @@ def expand_regions(scalars, regions, where="ALL"):
 
     sc_with_region = sc_with_region.reset_index(drop=True)
 
-    sc_with_region.index.name = SCAL_INDEX_NAME
+    sc_with_region.index.name = config.settings.general.scal_index_name
 
     return sc_with_region
 
@@ -892,7 +898,7 @@ def unstack_var_name(df):
     """
     _df = df.copy()
 
-    _df = format_header(_df, HEADER_B3_SCAL, SCAL_INDEX_NAME)
+    _df = format_header(_df, HEADER_B3_SCAL, config.settings.general.scal_index_name)
 
     _df = _df.set_index(
         ["scenario_key", "name", "region", "carrier", "tech", "type", "var_name"]
@@ -980,7 +986,9 @@ def prepare_b3_timeseries(df_year, **kwargs):
         df_year_stacked[key] = value
 
     # Make sure that header is in correct format
-    df_year_stacked = format_header(df_year_stacked, HEADER_B3_TS, TS_INDEX_NAME)
+    df_year_stacked = format_header(
+        df_year_stacked, HEADER_B3_TS, config.settings.general.ts_index_name
+    )
 
     return df_year_stacked
 
@@ -1048,6 +1056,8 @@ class ScalarProcessor:
 
         _df = stack_var_name(_df)
 
-        _df = format_header(_df, HEADER_B3_SCAL, SCAL_INDEX_NAME)
+        _df = format_header(
+            _df, HEADER_B3_SCAL, config.settings.general.scal_index_name
+        )
 
         self.scalars = self.scalars.append(_df)

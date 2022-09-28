@@ -34,9 +34,6 @@ import os
 import oemof_b3.tools.data_processing as dp
 import oemof_b3.config.config as config
 
-# global variables
-TS_INDEX_NAME = config.settings.general.ts_index_name
-
 
 def prepare_wind_and_pv_time_series(filename_ts, year, type):
     r"""
@@ -77,7 +74,9 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
         columns={"var_name": "region"}
     )
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name=TS_INDEX_NAME
+        df=ts_stacked,
+        header=dp.HEADER_B3_TS,
+        index_name=config.settings.general.ts_index_name,
     )
 
     # add additional information as required by template
@@ -149,7 +148,9 @@ def prepare_ror_time_series(filename_ts, region):
             columns={"var_name": "region"}
         )
         ts_prepared = dp.format_header(
-            df=ts_stacked, header=dp.HEADER_B3_TS, index_name=TS_INDEX_NAME
+            df=ts_stacked,
+            header=dp.HEADER_B3_TS,
+            index_name=config.settings.general.ts_index_name,
         )
         ts_prepared.loc[:, "scenario_key"] = "ALL"
         ts_df = pd.concat([ts_df, ts_prepared])
@@ -199,7 +200,7 @@ if __name__ == "__main__":
 
     # set index
     time_series_df.reset_index(drop=True, inplace=True)
-    time_series_df.index.name = TS_INDEX_NAME
+    time_series_df.index.name = config.settings.general.ts_index_name
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)
