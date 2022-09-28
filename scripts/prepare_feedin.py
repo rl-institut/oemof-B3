@@ -32,7 +32,7 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
-import oemof_b3.config as config
+import oemof_b3.config.config as config
 
 # global variables
 TS_INDEX_NAME = config.settings.general.ts_index_name
