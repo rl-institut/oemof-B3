@@ -46,7 +46,7 @@ prepare_feedin:
   # specific to wind and pv time series
   NUTS_DE30: "DE30"
   NUTS_DE40: "DE40"
-  RENAME_NUTS: {NUTS_DE30: "B", NUTS_DE40: "BB" }
+  RENAME_NUTS: {DE30: B, DE40: BB}
   TS_VAR_UNIT: "None"
   TS_SOURCE: "https://www.renewables.ninja/"
   TS_COMMENT: "navigate to country Germany"
