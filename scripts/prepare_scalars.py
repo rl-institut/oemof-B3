@@ -25,6 +25,7 @@ import sys
 from oemof.tools.economics import annuity
 
 from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, save_df
+import oemof_b3.config.config as config
 
 
 def annuise_investment_cost(sc):
@@ -86,6 +87,6 @@ if __name__ == "__main__":
 
     sc.scalars.reset_index(inplace=True, drop=True)
 
-    sc.scalars.index.name = "id_scal"
+    sc.scalars.index.name = config.settings.general.scal_index_name
 
     save_df(sc.scalars, out_path)

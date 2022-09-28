@@ -30,7 +30,7 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
-import oemof_b3.config as config
+import oemof_b3.config.config as config
 
 # global variables
 OPSD_YEARS = list(
@@ -70,7 +70,9 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+        df=ts_stacked,
+        header=dp.HEADER_B3_TS,
+        index_name=config.settings.general.ts_index_name,
     )
 
     # add additional information as required by template
@@ -78,7 +80,7 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     ts_prepared.loc[
         :, "var_unit"
     ] = config.settings.prepare_electricity_demand.TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "electricity-demand-profile"
+    ts_prepared.loc[:, "var_name"] = config.settings.prepare_electricity_demand.VAR_NAME
     ts_prepared.loc[:, "source"] = config.settings.prepare_electricity_demand.TS_SOURCE
     ts_prepared.loc[
         :, "comment"
@@ -116,7 +118,7 @@ if __name__ == "__main__":
 
     # set index
     time_series_df.reset_index(drop=True, inplace=True)
-    time_series_df.index.name = "id_ts"
+    time_series_df.index.name = config.settings.general.ts_index_name
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

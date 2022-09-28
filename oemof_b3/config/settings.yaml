@@ -1,5 +1,7 @@
 general:
   plot_filetype: ".png"
+  ts_index_name: "id_ts"
+  scal_index_name: "id_scal"
 
 labels: de
 
@@ -37,3 +39,36 @@ prepare_electricity_demand:
   TS_SOURCE: "https://data.open-power-system-data.org/time_series/2020-10-06"
   TS_COMMENT: "DE_50hertz actual load data"
   COL_SELECT:  "DE_50hertz_load_actual_entsoe_transparency"
+  VAR_NAME: "electricity-demand-profile"
+
+prepare_feedin:
+  YEARS: [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
+  # specific to wind and pv time series
+  NUTS_DE30: "DE30"
+  NUTS_DE40: "DE40"
+  RENAME_NUTS: {DE30: B, DE40: BB}
+  TS_VAR_UNIT: "None"
+  TS_SOURCE: "https://www.renewables.ninja/"
+  TS_COMMENT: "navigate to country Germany"
+  # specific to ror time series
+  REGIONS: ["BB", "B"]
+  TS_SOURCE_ROR: "https://zenodo.org/record/1044463"
+  TS_COMMENT_ROR: "Isolated ror availability time series from DIW data"
+
+prepare_vehicle_charging_demand:
+  TS_VAR_UNIT: "None"
+  TS_SOURCE: "https://github.com/rl-institut/simbev"
+  TS_COMMENT: "created with simBEV. contains a mix of hourly simBEV and a constant profile"
+  HOME_START: "15:00"  # start charging strategy "balanced" for home profile
+  HOME_END: "05:00"  # end charging strategy "balanced" for home profile
+  WORK_START: "06:00"  # start charging strategy "balanced" for work profile
+  WORK_END: "14:00"  # end charging strategy "balanced" for work profile
+  REGION_DICT: {"Berlin": "B", "Brandenburg": "BB" }
+  VAR_NAME: "electricity-bev_charging-profile"
+
+process_re_potential:
+  VAR_UNIT: "MW"
+  SOURCE: "area potentials - https://sandbox.zenodo.org/record/746695/"
+  VAR_NAME: "capacity"
+  SCENARIO_KEY: ""
+  NAME: "None"
