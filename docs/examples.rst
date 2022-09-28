@@ -41,3 +41,5 @@ The three examples have been built based on the grid development plan:
 * **example_more_re_less_fossil**: This example represents a system with more renewable capacities
   compared to the previous and assumes that the capacities of fossil (gas, oil) powerplants have
   been reduced further. The capacities correspond to scenario B 2040 of the grid development plan.
+
+The description for the execution of the examples can be found here :ref:`How to run the model`.
