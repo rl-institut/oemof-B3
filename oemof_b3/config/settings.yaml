@@ -42,7 +42,7 @@ prepare_electricity_demand:
   VAR_NAME: "electricity-demand-profile"
 
 prepare_feedin:
-  YEARS: list(range(2010, 2020))
+  YEARS: [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
   # specific to wind and pv time series
   NUTS_DE30: "DE30"
   NUTS_DE40: "DE40"
