@@ -1032,6 +1032,7 @@ def _get_component_id_in_tuple(oemof_tuple, delimiter="-"):
 
 
 def _get_component_from_tuple(tuple, delimiter="-"):
+    # TODO: This is a dummy implementation that can easily fail
     return max(tuple, key=lambda x: len(x.split(delimiter)))
 
 
@@ -1095,6 +1096,10 @@ def oemof_results_ts_to_oemof_b3(df):
     """
     _df = df.copy()
 
+    # The columns of oemof results are multiindex with 3 levels: (from, to, type).
+    # This is mapped to var_name = <type>_<in/out> with "in" if bus comes first (from),
+    # "out" if bus is second (to). If the multiindex entry is of the form (component, None, type),
+    # then var_name = type
     component = df.columns.droplevel(2).map(_get_component_from_tuple)
 
     # specify direction in var_name
