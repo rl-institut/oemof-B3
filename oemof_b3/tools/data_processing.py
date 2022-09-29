@@ -409,10 +409,6 @@ def update_filtered_df(df, filters):
     return filtered_updated
 
 
-def isnull_any(df):
-    return df.isna().any().any()
-
-
 def aggregate_units(units):
     r"""
     This function checks if units that should be aggregated are unique.
