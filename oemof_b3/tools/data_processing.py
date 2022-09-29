@@ -50,7 +50,7 @@ def sort_values(df, reset_index=True):
     return _df
 
 
-def sum_series(series):
+def _sum_series(series):
     """
     Enables ndarray summing into one list
     """
@@ -61,7 +61,7 @@ def sum_series(series):
         return summed_series
 
 
-def get_list_diff(list_a, list_b):
+def _get_list_diff(list_a, list_b):
     r"""
     Returns all items of list_a that are not in list_b.
 
@@ -100,18 +100,18 @@ def format_header(df, header, index_name):
     """
     _df = df.copy()
 
-    extra_colums = get_list_diff(_df.columns, header)
+    extra_colums = _get_list_diff(_df.columns, header)
 
     if index_name in extra_colums:
         _df = _df.set_index(index_name, drop=True)
-        extra_colums = get_list_diff(_df.columns, header)
+        extra_colums = _get_list_diff(_df.columns, header)
     else:
         _df.index.name = index_name
 
     if extra_colums:
         raise ValueError(f"There are extra columns {extra_colums}")
 
-    missing_columns = get_list_diff(header, _df.columns)
+    missing_columns = _get_list_diff(header, _df.columns)
 
     for col in missing_columns:
         _df.loc[:, col] = np.nan
@@ -556,7 +556,7 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     # Define how to aggregate if
     if not agg_method:
         agg_method = {
-            "series": sum_series,
+            "series": _sum_series,
             "var_unit": aggregate_units,
         }
 
