@@ -32,11 +32,6 @@ import os
 import oemof_b3.tools.data_processing as dp
 from oemof_b3.config import config
 
-# global variables
-OPSD_YEARS = list(
-    range(2015, 2020)
-)  # opsd load time series are prepared for these years
-
 
 def prepare_load_profile_time_series(ts_raw, year, region):
     r"""
@@ -106,7 +101,7 @@ if __name__ == "__main__":
     ts_raw = ts_raw[[config.settings.prepare_electricity_demand.col_select]]
 
     # prepare time series for each year and region
-    for year in OPSD_YEARS:
+    for year in config.settings.prepare_electricity_demand.opsd_years:
         for region in config.settings.prepare_electricity_demand.regions:
             # prepare opsd 50hertz actual load time series
             load_ts = prepare_load_profile_time_series(

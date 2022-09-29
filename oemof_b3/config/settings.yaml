@@ -34,6 +34,7 @@ prepare_cop_timeseries:
   scenario: ALL
 
 prepare_electricity_demand:
+  opsd_years: [2015, 2016, 2017, 2018, 2019]
   regions: [BB, B]
   ts_var_unit: None
   ts_source: https://data.open-power-system-data.org/time_series/2020-10-06
