@@ -1,7 +1,7 @@
 general:
-  plot_filetype: ".png"
-  ts_index_name: "id_ts"
-  scal_index_name: "id_scal"
+  plot_filetype: .png
+  ts_index_name: id_ts
+  scal_index_name: id_scal
 
 labels: de
 
@@ -31,44 +31,44 @@ plot_scalar_results:
 
 prepare_cop_timeseries:
   quality_grade: 0.4
-  scenario: "ALL"
+  scenario: ALL
 
 prepare_electricity_demand:
-  regions: ["BB", "B"]
-  ts_var_unit: "None"
-  ts_source: "https://data.open-power-system-data.org/time_series/2020-10-06"
-  ts_comment: "DE_50hertz actual load data"
-  col_select:  "DE_50hertz_load_actual_entsoe_transparency"
-  var_name: "electricity-demand-profile"
+  regions: [BB, B]
+  ts_var_unit: None
+  ts_source: https://data.open-power-system-data.org/time_series/2020-10-06
+  ts_comment: DE_50hertz actual load data
+  col_select:  DE_50hertz_load_actual_entsoe_transparency
+  var_name: electricity-demand-profile
 
 prepare_feedin:
   years: [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
   # specific to wind and pv time series
-  nuts_de30: "DE30"
-  nuts_de40: "DE40"
+  nuts_de30: DE30
+  nuts_de40: DE40
   rename_nuts: {DE30: B, DE40: BB}
-  ts_var_unit: "None"
-  ts_source: "https://www.renewables.ninja/"
-  ts_comment: "navigate to country Germany"
+  ts_var_unit: None
+  ts_source: https://www.renewables.ninja/
+  ts_comment: navigate to country Germany
   # specific to ror time series
-  regions: ["BB", "B"]
-  ts_source_ror: "https://zenodo.org/record/1044463"
-  ts_comment_ror: "Isolated ror availability time series from DIW data"
+  regions: [BB, B]
+  ts_source_ror: https://zenodo.org/record/1044463
+  ts_comment_ror: Isolated ror availability time series from DIW data
 
 prepare_vehicle_charging_demand:
-  ts_var_unit: "None"
-  ts_source: "https://github.com/rl-institut/simbev"
-  ts_comment: "created with simBEV. contains a mix of hourly simBEV and a constant profile"
+  ts_var_unit: None
+  ts_source: https://github.com/rl-institut/simbev
+  ts_comment: created with simBEV. contains a mix of hourly simBEV and a constant profile
   home_start: "15:00"  # start charging strategy "balanced" for home profile
   home_end: "05:00"  # end charging strategy "balanced" for home profile
   work_start: "06:00"  # start charging strategy "balanced" for work profile
   work_end: "14:00"  # end charging strategy "balanced" for work profile
-  region_dict: {"Berlin": "B", "Brandenburg": "BB" }
-  var_name: "electricity-bev_charging-profile"
+  region_dict: {Berlin: B, Brandenburg: BB }
+  var_name: electricity-bev_charging-profile
 
 process_re_potential:
-  var_unit: "MW"
-  source: "area potentials - https://sandbox.zenodo.org/record/746695/"
-  var_name: "capacity"
+  var_unit: MW
+  source: area potentials - https://sandbox.zenodo.org/record/746695/
+  var_name: capacity
   scenario_key: ""
-  name: "None"
+  name: None
