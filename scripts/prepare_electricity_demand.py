@@ -79,12 +79,12 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     ts_prepared.loc[:, "region"] = region
     ts_prepared.loc[
         :, "var_unit"
-    ] = config.settings.prepare_electricity_demand.TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = config.settings.prepare_electricity_demand.VAR_NAME
-    ts_prepared.loc[:, "source"] = config.settings.prepare_electricity_demand.TS_SOURCE
+    ] = config.settings.prepare_electricity_demand.ts_var_unit
+    ts_prepared.loc[:, "var_name"] = config.settings.prepare_electricity_demand.var_name
+    ts_prepared.loc[:, "source"] = config.settings.prepare_electricity_demand.ts_source
     ts_prepared.loc[
         :, "comment"
-    ] = config.settings.prepare_electricity_demand.TS_COMMENT
+    ] = config.settings.prepare_electricity_demand.ts_comment
     ts_prepared.loc[
         :, "scenario_key"
     ] = "ALL"  # The profile is not varied in different scenarios
@@ -103,11 +103,11 @@ if __name__ == "__main__":
     ts_raw = pd.read_csv(opsd_ts_data, index_col=0)
     ts_raw.index = pd.to_datetime(ts_raw.index, utc=True)
     # filter for 50hertz actual load
-    ts_raw = ts_raw[[config.settings.prepare_electricity_demand.COL_SELECT]]
+    ts_raw = ts_raw[[config.settings.prepare_electricity_demand.col_select]]
 
     # prepare time series for each year and region
     for year in OPSD_YEARS:
-        for region in config.settings.prepare_electricity_demand.REGIONS:
+        for region in config.settings.prepare_electricity_demand.regions:
             # prepare opsd 50hertz actual load time series
             load_ts = prepare_load_profile_time_series(
                 ts_raw=ts_raw, year=year, region=region

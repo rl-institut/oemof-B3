@@ -48,16 +48,16 @@ logger = logging.getLogger("dummy")
 # global variables
 TS_INDEX_NAME = config.settings.general.ts_index_name
 HOME_START = (
-    config.settings.prepare_vehicle_charging_demand.HOME_START
+    config.settings.prepare_vehicle_charging_demand.home_start
 )  # start charging strategy "balanced" for home profile
 HOME_END = (
-    config.settings.prepare_vehicle_charging_demand.HOME_END
+    config.settings.prepare_vehicle_charging_demand.home_end
 )  # end charging strategy "balanced" for home profile
 WORK_START = (
-    config.settings.prepare_vehicle_charging_demand.WORK_START
+    config.settings.prepare_vehicle_charging_demand.work_start
 )  # start charging strategy "balanced" for work profile
 WORK_END = (
-    config.settings.prepare_vehicle_charging_demand.WORK_END
+    config.settings.prepare_vehicle_charging_demand.work_end
 )  # end charging strategy "balanced" for work profile
 
 
@@ -121,7 +121,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
     for filename in os.listdir(input_dir):
         path = os.path.join(input_dir, filename)
         region, year = get_year_region_from_filename()
-        region = config.settings.prepare_vehicle_charging_demand.REGION_DICT[region]
+        region = config.settings.prepare_vehicle_charging_demand.region_dict[region]
 
         # read data from file, copy and superfluous drop last time step
         ts_raw = pd.read_csv(
@@ -185,16 +185,16 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
     # add additional information as required by template
     ts_prepared.loc[
         :, "var_unit"
-    ] = config.settings.prepare_vehicle_charging_demand.TS_VAR_UNIT
+    ] = config.settings.prepare_vehicle_charging_demand.ts_var_unit
     ts_prepared.loc[
         :, "var_name"
-    ] = config.settings.prepare_vehicle_charging_demand.VAR_NAME
+    ] = config.settings.prepare_vehicle_charging_demand.var_name
     ts_prepared.loc[
         :, "source"
-    ] = config.settings.prepare_vehicle_charging_demand.TS_SOURCE
+    ] = config.settings.prepare_vehicle_charging_demand.ts_source
     ts_prepared.loc[
         :, "comment"
-    ] = config.settings.prepare_vehicle_charging_demand.TS_COMMENT
+    ] = config.settings.prepare_vehicle_charging_demand.ts_comment
 
     return ts_prepared
 

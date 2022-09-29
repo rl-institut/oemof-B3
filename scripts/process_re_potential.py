@@ -80,12 +80,12 @@ if __name__ == "__main__":
     )
 
     # add additional information as required by template
-    scalar_df.loc[:, "scenario_key"] = config.settings.process_re_potential.SCENARIO_KEY
-    scalar_df.loc[:, "name"] = config.settings.process_re_potential.NAME
-    scalar_df.loc[:, "var_name"] = config.settings.process_re_potential.VAR_NAME
+    scalar_df.loc[:, "scenario_key"] = config.settings.process_re_potential.scenario_key
+    scalar_df.loc[:, "name"] = config.settings.process_re_potential.name
+    scalar_df.loc[:, "var_name"] = config.settings.process_re_potential.var_name
     scalar_df.loc[:, "type"] = "volatile"
-    scalar_df.loc[:, "var_unit"] = config.settings.process_re_potential.VAR_UNIT
-    scalar_df.loc[:, "source"] = config.settings.process_re_potential.SOURCE
+    scalar_df.loc[:, "var_unit"] = config.settings.process_re_potential.var_unit
+    scalar_df.loc[:, "source"] = config.settings.process_re_potential.source
 
     dp.save_df(df=scalar_df, path=output_scalars)
 
