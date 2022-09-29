@@ -240,7 +240,7 @@ if __name__ == "__main__":
     final_cops = dp.format_header(
         df=final_cops,
         header=dp.HEADER_B3_TS,
-        index_name="id_ts",
+        index_name=config.settings.general.ts_index_name,
     )
 
     dp.save_df(final_cops, out_path)
