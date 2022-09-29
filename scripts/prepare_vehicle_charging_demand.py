@@ -38,7 +38,7 @@ import pandas as pd
 import os
 
 import oemof_b3.tools.data_processing as dp
-import oemof_b3.config.config as config
+from oemof_b3.config import config
 
 # dummy logger for tests
 import logging

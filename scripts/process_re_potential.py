@@ -34,7 +34,7 @@ import sys
 import os
 
 from oemof_b3.tools import data_processing as dp
-import oemof_b3.config.config as config
+from oemof_b3.config import config
 
 if __name__ == "__main__":
     input_dir = sys.argv[1]

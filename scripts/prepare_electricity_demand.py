@@ -30,7 +30,7 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
-import oemof_b3.config.config as config
+from oemof_b3.config import config
 
 # global variables
 OPSD_YEARS = list(

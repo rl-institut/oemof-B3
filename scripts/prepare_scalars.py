@@ -25,7 +25,7 @@ import sys
 from oemof.tools.economics import annuity
 
 from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, save_df
-import oemof_b3.config.config as config
+from oemof_b3.config import config
 
 
 def annuise_investment_cost(sc):

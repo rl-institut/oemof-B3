@@ -34,7 +34,7 @@ import yaml
 
 import oemof_b3.tools.data_processing as dp
 import oemof_b3.tools.geo as geo
-import oemof_b3.config.config as config
+from oemof_b3.config import config
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data

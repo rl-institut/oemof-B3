@@ -21,7 +21,7 @@ import pandas as pd
 import numpy as np
 
 
-import oemof_b3.config.config as config
+from oemof_b3.config import config
 
 # global variables
 config.settings.general.ts_index_name = config.settings.general.ts_index_name
