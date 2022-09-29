@@ -23,9 +23,6 @@ import numpy as np
 
 from oemof_b3.config import config
 
-# global variables
-config.settings.general.ts_index_name = config.settings.general.ts_index_name
-config.settings.general.scal_index_name = config.settings.general.scal_index_name
 
 here = os.path.dirname(__file__)
 
