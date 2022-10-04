@@ -34,6 +34,8 @@ import pandas as pd
 import oemof_b3.tools.data_processing as dp
 import oemof_b3.tools.geo as geo
 from oemof_b3.config import config
+from oemof_b3.config.config import load_yaml
+
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     regions_nuts3_de = geo.load_regions_file(in_path2)
 
-    b3_regions_list = dp.load_yaml(in_path3)
+    b3_regions_list = load_yaml(in_path3)
 
     b3_regions_geo = geo.filter_regions_file(regions_nuts3_de, b3_regions_list)
     pp_opsd_b3 = geo.add_region_to_register(pp_opsd_b3, b3_regions_geo)
