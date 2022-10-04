@@ -1,6 +1,6 @@
 import os
 
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.tools.data_processing import load_yaml
 
 
 here = os.path.dirname(os.path.abspath(__file__))

@@ -2,7 +2,7 @@ import logging
 import pathlib
 
 from dynaconf import Dynaconf
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.tools.data_processing import load_yaml
 
 CONFIG_PATH = pathlib.Path(__file__).parent
 

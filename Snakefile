@@ -1,5 +1,5 @@
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.tools.data_processing import load_yaml
 
 HTTP = HTTPRemoteProvider()
 
