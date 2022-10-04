@@ -27,7 +27,7 @@ import numpy as np
 import oemoflex.tools.plots as plots
 import pandas as pd
 from oemoflex.tools.plots import plot_grouped_bar
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.config.config import load_yaml
 
 from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config

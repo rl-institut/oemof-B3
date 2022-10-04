@@ -30,11 +30,12 @@ in the format of the scalar data template. Only operating power plants are consi
 import sys
 
 import pandas as pd
-import yaml
 
 import oemof_b3.tools.data_processing as dp
 import oemof_b3.tools.geo as geo
 from oemof_b3.config import config
+from oemof_b3.config.config import load_yaml
+
 
 if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to OPSD data
@@ -49,10 +50,7 @@ if __name__ == "__main__":
 
     regions_nuts3_de = geo.load_regions_file(in_path2)
 
-    with open(in_path3, "r", encoding="utf-8") as b3_regions_yaml:
-        b3_regions_content = yaml.load(b3_regions_yaml, Loader=yaml.FullLoader)
-    for key, value in b3_regions_content.items():
-        b3_regions_list = value
+    b3_regions_list = load_yaml(in_path3)
 
     b3_regions_geo = geo.filter_regions_file(regions_nuts3_de, b3_regions_list)
     pp_opsd_b3 = geo.add_region_to_register(pp_opsd_b3, b3_regions_geo)

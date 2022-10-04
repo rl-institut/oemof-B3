@@ -15,11 +15,11 @@ filtering, sorting, merging, aggregating and saving.
 
 """
 
-import os
 import ast
-import pandas as pd
-import numpy as np
+import os
 
+import numpy as np
+import pandas as pd
 
 from oemof_b3.config import config
 
