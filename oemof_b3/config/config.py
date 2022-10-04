@@ -1,8 +1,8 @@
 import logging
 import pathlib
 
+import yaml
 from dynaconf import Dynaconf
-from oemof_b3.tools.data_processing import load_yaml
 
 CONFIG_PATH = pathlib.Path(__file__).parent
 
@@ -44,6 +44,13 @@ def add_snake_logger(logfile, rulename):
     handler.setFormatter(file_formatter)
     logger.addHandler(handler)
     return logger
+
+
+def load_yaml(file_path):
+    with open(file_path, "r") as yaml_file:
+        yaml_data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+
+    return yaml_data
 
 
 LABELS = load_yaml(CONFIG_PATH / "labels" / f"{settings.labels}.yml")

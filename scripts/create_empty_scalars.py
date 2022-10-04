@@ -20,7 +20,7 @@ import sys
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemof_b3.tools.data_processing import load_yaml
+from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import bus_attrs_update, component_attrs_update
 from oemof_b3.tools.data_processing import (
