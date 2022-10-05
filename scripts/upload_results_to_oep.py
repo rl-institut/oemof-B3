@@ -8,14 +8,15 @@ Outputs
 
 Description
 -------------
-Creates tables on the OpenEnergyPlatform (OEP) based on related oemetadata. Uploads input data (unspecified format) and
-results data in oemof_b3-format to the OEP.
+Creates tables on the OpenEnergyPlatform (OEP) based on related oemetadata. Uploads results data
+in oemof_b3-format to the OEP.
 
-The script can delete existing tables on the OEP that have been uploaded with an affiliated OEP user account.
+The script can delete existing tables on the OEP that have been uploaded with an affiliated OEP user
+account.
 
 The oemetadata format is a standardised json file format and is required for all data uploaded to
-the OEP. It includes the data model, the used data types, and general information about the data context.
-Tables in sqlalchemy are created based on the information in the oemetadata.
+the OEP. It includes the data model, the used data types, and general information about the data
+context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
 import os
 import sys
