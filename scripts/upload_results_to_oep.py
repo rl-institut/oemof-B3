@@ -19,7 +19,9 @@ the OEP. It includes the data model, the used data types, and general informatio
 context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
 import os
+import pathlib
 import sys
+import json
 
 import pandas as pd
 from unittest.mock import Mock
@@ -34,6 +36,29 @@ from oemof_b3.config import config
 oem2orm = Mock()
 
 SCHEMA = "model_draft"
+
+
+def load_json_to_dict(filepath):
+    with open(filepath, "rb") as f:
+        return json.load(f)
+
+
+def save_dict_to_json(data, filepath, encoding="utf-8"):
+    with open(filepath, "w", encoding=encoding) as f:
+        return json.dump(data, f, sort_keys=True, indent=2)
+
+
+metadata_folder = pathlib.Path("oemof_b3/schema/oemetadata.json")
+oemetadata_template = load_json_to_dict(metadata_folder)
+
+
+def create_metadata(data, template=None):
+    if template is None:
+        template = oemetadata_template
+
+    metadata = template.copy()
+
+    return metadata
 
 
 if __name__ == "__main__":
@@ -62,6 +87,11 @@ if __name__ == "__main__":
     # When you paste it here, it will only show dots instead of the actual string.
     # save user name & token in environment as OEP_TOKEN & OEP_USER
     db = oem2orm.setup_db_connection()
+
+    for filename in list_filenames:
+        metadata = create_metadata(data)
+
+        save_dict_to_json(metadata, metadata_path)
 
     # Creating sql tables from oemetadata
     metadata_folder = oem2orm.select_oem_dir(oem_folder_name=metadata_path)
