@@ -352,3 +352,10 @@ rule join_scenario_results:
         directory("results/joined_scenarios/{scenario_group}/joined/")
     shell:
         "python scripts/join_scenarios.py {input} {output}"
+
+rule upload_results_to_oep:
+    input: "results/{scenario}/b3_results/data"
+    output: "results/{scenario}/b3_results/metadata"
+    params:
+        logfile="results/{scenario}/{scenario}.log"
+    shell: "python scripts/upload_results_to_oep.py {input} {output} {params.logfile}"
