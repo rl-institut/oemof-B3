@@ -19,6 +19,7 @@ the OEP. It includes the data model, the used data types, and general informatio
 context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
 import json
+import logging
 import os
 import pathlib
 import sys
@@ -33,6 +34,17 @@ from oemof_b3.config import config
 # except ImportError:
 #     raise ImportError("Need to install oem2orm to upload results to OEP.")
 
+logger = logging.getLogger()
+
+# try to get oep_user and oep_token from .secrets.yaml
+try:
+    os.environ["OEP_USER"] = config.settings.oep_user
+    os.environ["OEP_TOKEN"] = config.settings.oep_token
+except AttributeError:
+    logger.warning(
+        "No oep_user and/or oep_token provided in oemof_b3/config/.secrets.yaml. "
+        "Will have to type provide them manually when uploading to OEP."
+    )
 
 oem2orm = Mock()
 
