@@ -22,13 +22,16 @@ import os
 import sys
 
 import pandas as pd
+from unittest.mock import Mock
 
-try:
-    from oem2orm import oep_oedialect_oem2orm as oem2orm
-except ImportError:
-    raise ImportError("Need to install oem2orm to upload results to OEP.")
+# try:
+#     from oem2orm import oep_oedialect_oem2orm as oem2orm
+# except ImportError:
+#     raise ImportError("Need to install oem2orm to upload results to OEP.")
 
 from oemof_b3.config import config
+
+oem2orm = Mock()
 
 SCHEMA = "model_draft"
 
