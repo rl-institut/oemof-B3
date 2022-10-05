@@ -45,8 +45,7 @@ if __name__ == "__main__":
     # find data to upload
     list_filenames = os.listdir(filepath)
 
-    logger.info("These files will be uploaded \n")
-    logger.info(*list_filenames, sep="\n")
+    logger.info("These files will be uploaded: " + ", ".join(list_filenames))
 
     # Setting up the oem2orm logger
     # If you want to see detailed runtime information on oem2orm functions or if errors occur,
