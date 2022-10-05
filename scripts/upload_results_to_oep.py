@@ -66,15 +66,15 @@ if __name__ == "__main__":
     # Creating sql tables from oemetadata
     metadata_folder = oem2orm.select_oem_dir(oem_folder_name=metadata_path)
 
-    # The next command will set up the table. The collect_tables_function collects all metadata
-    # files in a folder and retrives the SQLAlchemy ORM objects and returns them. The Tables are
+    # The next command will set up the tables. The collect_tables-function collects all metadata
+    # files in a folder, creates the SQLAlchemy ORM objects and returns them. The tables are
     # ordered by foreign key. Having a valid metadata strings is necessary for the following steps.
     tables_orm = oem2orm.collect_tables_from_oem(db, metadata_folder)
 
-    # create table
+    # create tables
     oem2orm.create_tables(db, tables_orm)
 
-    # Writing data into a table
+    # Writing data into the tables
     for filename in list_filenames:
         table_name = os.path.splitext(filename)[0]
 
@@ -87,8 +87,8 @@ if __name__ == "__main__":
         data_upload_df = data_upload_df.where(pd.notnull(data_upload_df), None)
 
         # The following command will write the content of your dataframe to the table on the OEP
-        # that was created earlier.<br>
-        # Have a look in the OEP after it ran succesfully!
+        # that was created earlier.
+        # Have a look in the OEP after it ran successfully!
         logger.info(f"{filename} is written into table")
 
         try:
@@ -117,17 +117,10 @@ if __name__ == "__main__":
         logger.info(f"{filename} writing into table ended")
 
         # Writing metadata to the table
-        # Now that we have data in our table it's high time, that we attach our metadata to it.
-        # Since we're using the api, some direct http-requests and a little helper function from
-        # the oep-client, we need to import these new dependencies.
-
-        # We use the metadata folder we set up before. (See the Creating tables section)
-        # If you wan´t to set another folder use the code below:
-
-        # oem_path = oem2orm.select_oem_dir(oem_folder_name="metadata")
+        # Now that we have data in our table, it is time to metadata to it.
         md_file_name = f"{filename}.json"
 
-        # First we're reading the metadata file into a json dictionary.
+        # First we are reading the metadata file into a json dictionary.
         logger.info(f"{filename} read metadata")
 
         metadata = oem2orm.mdToDict(
@@ -135,9 +128,9 @@ if __name__ == "__main__":
         )
 
         # Then we need to validate the metadata.
-        # logger.info(f'{file} metadata validation')
+        logger.info(f"{filename} metadata validation")
         oem2orm.omi_validateMd(metadata)
 
         # Now we can upload the metadata.
-        # logger.info(f'{file} metadata upload')
+        logger.info(f"{filename} metadata upload")
         oem2orm.api_updateMdOnTable(metadata)
