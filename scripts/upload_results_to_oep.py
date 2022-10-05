@@ -18,20 +18,21 @@ The oemetadata format is a standardised json file format and is required for all
 the OEP. It includes the data model, the used data types, and general information about the data
 context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
+import json
 import os
 import pathlib
 import sys
-import json
+from unittest.mock import Mock
 
 import pandas as pd
-from unittest.mock import Mock
+
+from oemof_b3.config import config
 
 # try:
 #     from oem2orm import oep_oedialect_oem2orm as oem2orm
 # except ImportError:
 #     raise ImportError("Need to install oem2orm to upload results to OEP.")
 
-from oemof_b3.config import config
 
 oem2orm = Mock()
 
@@ -62,18 +63,24 @@ def create_metadata(data, template=None):
 
 
 if __name__ == "__main__":
-    filepath = sys.argv[1]
-    metadata_path = sys.argv[2]
+    filepath = pathlib.Path(sys.argv[1])
+    metadata_path = pathlib.Path(sys.argv[2])
     logfile = sys.argv[3]
 
     # set up the logger
     scenario = "scenario"  # TODO: Derive scenario from filepath
     logger = config.add_snake_logger(logfile, "upload_results_to_oep")
 
-    # find data to upload
-    list_filenames = os.listdir(filepath)
+    if not os.path.exists(metadata_path):
+        os.makedirs(metadata_path)
 
-    logger.info("These files will be uploaded: " + ", ".join(list_filenames))
+    # find data to upload
+    dict_table_filename = {
+        os.path.splitext(filename)[0]: filename for filename in os.listdir(filepath)
+    }
+    logger.info(
+        "These files will be uploaded: " + ", ".join(dict_table_filename.values())
+    )
 
     # Setting up the oem2orm logger
     # If you want to see detailed runtime information on oem2orm functions or if errors occur,
@@ -88,10 +95,17 @@ if __name__ == "__main__":
     # save user name & token in environment as OEP_TOKEN & OEP_USER
     db = oem2orm.setup_db_connection()
 
-    for filename in list_filenames:
-        metadata = create_metadata(data)
+    # Create the metadata and save it
+    for table, filename in dict_table_filename.items():
+        data_upload_df = pd.read_csv(
+            os.path.join(filepath, filename), encoding="utf8", sep=";"
+        )
 
-        save_dict_to_json(metadata, metadata_path)
+        metadata = create_metadata(data_upload_df)
+
+        save_dict_to_json(metadata, metadata_path / f"{table}.json")
+
+        logger.info(f"Saved metadata to: {metadata_path}")
 
     # Creating sql tables from oemetadata
     metadata_folder = oem2orm.select_oem_dir(oem_folder_name=metadata_path)
@@ -105,8 +119,7 @@ if __name__ == "__main__":
     oem2orm.create_tables(db, tables_orm)
 
     # Writing data into the tables
-    for filename in list_filenames:
-        table_name = os.path.splitext(filename)[0]
+    for table, filename in dict_table_filename.items():
 
         logger.info(f"{filename} is processed")
 
@@ -123,18 +136,18 @@ if __name__ == "__main__":
 
         try:
             data_upload_df.to_sql(
-                table_name,
+                table,
                 connection=db.engine,
                 schema=SCHEMA,
                 if_exists="append",
                 index=False,
             )
 
-            logger.info("Inserted data to " + SCHEMA + "." + table_name)
+            logger.info("Inserted data to " + SCHEMA + "." + table)
 
         except Exception as e:
             logger.error(e)
-            logger.error("Writing to " + table_name + " failed!")
+            logger.error("Writing to " + table + " failed!")
             logger.error(
                 "Note that you cannot load the same data into the table twice."
                 " There will be an id conflict."
@@ -148,19 +161,18 @@ if __name__ == "__main__":
 
         # Writing metadata to the table
         # Now that we have data in our table, it is time to metadata to it.
-        md_file_name = f"{filename}.json"
+        md_file_name = f"{table}.json"
 
         # First we are reading the metadata file into a json dictionary.
-        logger.info(f"{filename} read metadata")
-
+        logger.info(f"{table} read metadata")
         metadata = oem2orm.mdToDict(
             oem_folder_path=metadata_folder, file_name=md_file_name
         )
 
         # Then we need to validate the metadata.
-        logger.info(f"{filename} metadata validation")
+        logger.info(f"{table} metadata validation")
         oem2orm.omi_validateMd(metadata)
 
         # Now we can upload the metadata.
-        logger.info(f"{filename} metadata upload")
+        logger.info(f"{table} metadata upload")
         oem2orm.api_updateMdOnTable(metadata)
