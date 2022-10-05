@@ -64,7 +64,7 @@ if __name__ == "__main__":
     db = oem2orm.setup_db_connection()
 
     # Creating sql tables from oemetadata
-    metadata_folder = oem2orm.select_oem_dir(oem_folder_name="metadata")
+    metadata_folder = oem2orm.select_oem_dir(oem_folder_name=metadata_path)
 
     # The next command will set up the table. The collect_tables_function collects all metadata
     # files in a folder and retrives the SQLAlchemy ORM objects and returns them. The Tables are
