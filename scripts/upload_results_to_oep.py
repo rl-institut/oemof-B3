@@ -18,6 +18,7 @@ The oemetadata format is a standardised json file format and is required for all
 the OEP. It includes the data model, the used data types, and general information about the data
 context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
+from datetime import date
 import json
 import logging
 import os
@@ -114,6 +115,10 @@ if __name__ == "__main__":
         )
 
         metadata = create_metadata(data_upload_df)
+
+        metadata["name"] = f"{scenario}_{table}"
+
+        metadata["PublicationDate"] = str(date.today())
 
         save_dict_to_json(metadata, metadata_path / f"{table}.json")
 
