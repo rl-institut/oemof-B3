@@ -29,6 +29,7 @@ from unittest.mock import Mock
 import pandas as pd
 
 from oemof_b3.config import config
+from oemof_b3.schema import oemetadata_template
 
 # try:
 #     from oem2orm import oep_oedialect_oem2orm as oem2orm
@@ -52,18 +53,9 @@ oem2orm = Mock()
 SCHEMA = "model_draft"
 
 
-def load_json_to_dict(filepath):
-    with open(filepath, "rb") as f:
-        return json.load(f)
-
-
 def save_dict_to_json(data, filepath, encoding="utf-8"):
     with open(filepath, "w", encoding=encoding) as f:
         return json.dump(data, f, sort_keys=True, indent=2)
-
-
-metadata_folder = pathlib.Path("oemof_b3/schema/oemetadata.json")
-oemetadata_template = load_json_to_dict(metadata_folder)
 
 
 def create_metadata(data, template=None):
