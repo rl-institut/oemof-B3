@@ -22,14 +22,20 @@ def write_schema_to_metadata(schema, metadata, num_resource=0):
 
     # allocate enough fields to fit schema in
     _metadata["resources"][num_resource]["schema"]["fields"] = [
-        copy.deepcopy(field) for i, _ in enumerate(schema.columns)
+        copy.deepcopy(field) for i in range(len(schema.columns.columns) + 1)  # one more for index
     ]
 
     # write schema to metadata
+    _metadata["resources"][num_resource]["schema"]["fields"][0]["name"] = schema.index.name
+    _metadata["resources"][num_resource]["schema"]["fields"][0]["type"] = schema.index["type"]
+    _metadata["resources"][num_resource]["schema"]["fields"][0][
+        "description"
+    ] = schema.index["description"]
+
     for i, (name, (type, description)) in enumerate(schema.columns.iteritems()):
-        _metadata["resources"][num_resource]["schema"]["fields"][i]["name"] = name
-        _metadata["resources"][num_resource]["schema"]["fields"][i]["type"] = type
-        _metadata["resources"][num_resource]["schema"]["fields"][i][
+        _metadata["resources"][num_resource]["schema"]["fields"][i + 1]["name"] = name
+        _metadata["resources"][num_resource]["schema"]["fields"][i + 1]["type"] = type
+        _metadata["resources"][num_resource]["schema"]["fields"][i + 1][
             "description"
         ] = description
 
@@ -49,7 +55,7 @@ class B3Schema:
 
         df.index = ["type", "description"]
 
-        index = pd.DataFrame(df.iloc[:, 0])
+        index = df.iloc[:, 0]
 
         columns = df.iloc[:, 1:]
 
