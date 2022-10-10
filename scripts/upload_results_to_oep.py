@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
         metadata = create_metadata(data_upload_df)
 
-        metadata["name"] = f"{scenario}_{table}"
+        metadata["name"] = f"{SCHEMA}.{scenario}_{table}"
 
         metadata["PublicationDate"] = str(date.today())
 
