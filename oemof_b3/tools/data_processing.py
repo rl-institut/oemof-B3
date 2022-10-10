@@ -20,18 +20,16 @@ import ast
 import pandas as pd
 import numpy as np
 
+from oemof_b3 import schema
+
 
 here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "schema")
 
-HEADER_B3_SCAL = pd.read_csv(
-    os.path.join(template_dir, "scalars.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_SCAL = schema.SCHEMA_SCAL.columns
 
-HEADER_B3_TS = pd.read_csv(
-    os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_TS = schema.SCHEMA_TS.columns
 
 
 def sort_values(df, reset_index=True):
