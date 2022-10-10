@@ -125,12 +125,10 @@ if __name__ == "__main__":
         logger.info(f"Saved metadata to: {metadata_path}")
 
     # Creating sql tables from oemetadata
-    metadata_folder = oem2orm.select_oem_dir(oem_folder_name=metadata_path)
-
     # The next command will set up the tables. The collect_tables-function collects all metadata
     # files in a folder, creates the SQLAlchemy ORM objects and returns them. The tables are
     # ordered by foreign key. Having a valid metadata strings is necessary for the following steps.
-    tables_orm = oem2orm.collect_tables_from_oem(db, metadata_folder)
+    tables_orm = oem2orm.collect_tables_from_oem(db, metadata_path)
 
     # create tables
     oem2orm.create_tables(db, tables_orm)
@@ -183,7 +181,7 @@ if __name__ == "__main__":
         # First we are reading the metadata file into a json dictionary.
         logger.info(f"{table} read metadata")
         metadata = oem2orm.mdToDict(
-            oem_folder_path=metadata_folder, file_name=md_file_name
+            oem_folder_path=metadata_path, file_name=md_file_name
         )
 
         # Then we need to validate the metadata.
