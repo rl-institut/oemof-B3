@@ -27,9 +27,9 @@ here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "schema")
 
-HEADER_B3_SCAL = schema.SCHEMA_SCAL.columns
+HEADER_B3_SCAL = schema.SCHEMA_SCAL.columns.columns
 
-HEADER_B3_TS = schema.SCHEMA_TS.columns
+HEADER_B3_TS = schema.SCHEMA_TS.columns.columns
 
 
 def sort_values(df, reset_index=True):
