@@ -18,18 +18,19 @@ The oemetadata format is a standardised json file format and is required for all
 the OEP. It includes the data model, the used data types, and general information about the data
 context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
-from datetime import date
 import json
 import logging
 import os
 import pathlib
 import sys
+from datetime import date
 from unittest.mock import Mock
 
 import pandas as pd
 
 from oemof_b3.config import config
-from oemof_b3.schema import oemetadata_template
+from oemof_b3.schema import oemetadata_scal, oemetadata_ts, SCHEMA_SCAL, SCHEMA_TS
+from oemof_b3.tools import data_processing as dp
 
 # try:
 #     from oem2orm import oep_oedialect_oem2orm as oem2orm
@@ -58,9 +59,40 @@ def save_dict_to_json(data, filepath, encoding="utf-8"):
         return json.dump(data, f, sort_keys=True, indent=2)
 
 
+def list_diff(sample, default):
+    r"""
+    Determines extra and missing items in sample in
+    comparison with default.
+
+    Parameters
+    ----------
+    sample : list
+    default : list
+
+    Returns
+    -------
+    (extra_items, missing_items): (list, list)
+    """
+    extra_items = dp.get_list_diff(sample, default)
+
+    missing_items = dp.get_list_diff(default, sample)
+
+    if not extra_items and not missing_items:
+        return None
+
+    else:
+        return (extra_items, missing_items)
+
+
 def create_metadata(data, template=None):
-    if template is None:
-        template = oemetadata_template
+    if template is not None:
+        pass
+    elif list_diff(data.columns, SCHEMA_SCAL.columns) is None:
+        template = oemetadata_scal
+    elif list_diff(data.columns, SCHEMA_TS.columns) is None:
+        template = oemetadata_ts
+    else:
+        raise ValueError("Could not match data with the existing templates.")
 
     metadata = template.copy()
 
@@ -103,7 +135,7 @@ if __name__ == "__main__":
     # Create the metadata and save it
     for table, filename in dict_table_filename.items():
         data_upload_df = pd.read_csv(
-            os.path.join(filepath, filename), encoding="utf8", sep=";"
+            os.path.join(filepath, filename), encoding="utf8", sep=";", index_col=0
         )
 
         metadata = create_metadata(data_upload_df)
@@ -111,6 +143,9 @@ if __name__ == "__main__":
         metadata["name"] = f"{scenario}_{table}"
 
         metadata["PublicationDate"] = str(date.today())
+
+        # TODO: A method metadata.add_resource, add field would be handy
+        metadata["resources"][0]["name"] = f"{scenario}_{table}"
 
         save_dict_to_json(metadata, metadata_path / f"{table}.json")
 
