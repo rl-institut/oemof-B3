@@ -24,7 +24,6 @@ import os
 import pathlib
 import sys
 from datetime import date
-from unittest.mock import Mock
 
 import pandas as pd
 
@@ -32,10 +31,10 @@ from oemof_b3.config import config
 from oemof_b3.schema import oemetadata_scal, oemetadata_ts, SCHEMA_SCAL, SCHEMA_TS
 from oemof_b3.tools import data_processing as dp
 
-# try:
-#     from oem2orm import oep_oedialect_oem2orm as oem2orm
-# except ImportError:
-#     raise ImportError("Need to install oem2orm to upload results to OEP.")
+try:
+    from oem2orm import oep_oedialect_oem2orm as oem2orm
+except ImportError:
+    raise ImportError("Need to install oem2orm to upload results to OEP.")
 
 logger = logging.getLogger()
 
@@ -49,7 +48,6 @@ except AttributeError:
         "Will have to type provide them manually when uploading to OEP."
     )
 
-oem2orm = Mock()
 
 SCHEMA = "model_draft"
 
