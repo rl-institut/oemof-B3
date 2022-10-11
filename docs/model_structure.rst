@@ -10,9 +10,7 @@ Model structure
     :backlinks: top
 
 In oemof-B3, data appears in different formats in each processing step. Here, we give a short
-overview. In general, it should be noted that energy carriers are not the same as busses.
-For example, electricity can be generated from the energy carrier biomass without biomass being added as a bus.
-The busses used in addition to the electricity bus in oemof-B3 are given in :file:`bus_attrs_update.yml`.
+overview.
 
 Raw data
 --------
@@ -21,6 +19,12 @@ Raw data from external source comes in different formats. It is not part of the 
 As a first step, preprocessing scripts in the model pipeline (see :ref:`Preprocessing`) convert it into the
 oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
 that format already.
+
+The following additional information about specific parameters should be considered:
+Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
+Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
+with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
+Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
 oemof-B3 resources
 ------------------
@@ -46,12 +50,6 @@ Time series
 A few more conventions are important to know. Missing data is left empty. If a value applies to all
 regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
 There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
-
-The following additional information about specific parameters should be considered:
-Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
-Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
-with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
-Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
 Preprocessed datapackages
 -------------------------
