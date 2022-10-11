@@ -25,8 +25,10 @@ that format already.
 oemof-B3 resources
 ------------------
 
-The resources are preprocessed data that serves as material for building scenarios. They follow
-a common data schema defined in :file:`oemof_b3/schema/` and are located in :file:`oemof_b3/raw/scalars` and :file:`oemof_b3/raw/time_series`.
+The resources are preprocessed data that serves as material for building scenarios.
+Because they are a first intermediate result, resources will be saved in :file:`results/_resources`.
+The resources follow a common data schema defined in :file:`oemof_b3/schema/`.
+There is a separate schema for scalars and for timeseries:
 
 Scalars
 
@@ -40,7 +42,7 @@ Time series
    :delim: ;
    :file: ../oemof_b3/schema/timeseries.csv
 
-Within oemof-B3, resources are located in :file:`results/_resources`.
+
 A few more conventions are important to know. Missing data is left empty. If a value applies to all
 regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
 There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
