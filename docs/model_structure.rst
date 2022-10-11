@@ -17,7 +17,7 @@ The busses used in addition to the electricity bus in oemof-B3 are given in :fil
 Raw data
 --------
 
-Raw data from external source comes in different formats. It is provided in :file:`raw/`.
+Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
 As a first step, preprocessing scripts in the model pipeline (see :ref:`Preprocessing`) convert it into the
 oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
 that format already.
@@ -40,13 +40,13 @@ Time series
    :delim: ;
    :file: ../oemof_b3/schema/timeseries.csv
 
-Within oemof-B3 resources are located in :file:`results/_resources`.
+Within oemof-B3, resources are located in :file:`results/_resources`.
 A few more conventions are important to know. Missing data is left empty. If a value applies to all
 regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
 There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
 
-Further information about specific parameters should be known.
-Components can receive keywords for the electricity gas relation constraint in variable :attr:`output_parameters`.
+The following additional information about specific parameters should be considered:
+Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
 Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
 with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
 Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
@@ -57,8 +57,8 @@ Preprocessed datapackages
 The resources are then again preprocessed together with the scenario information to generate
 scenario-specific datapackages. A preprocessed datapackage represents an instance of an energy system scenario.
 It is a collection of .csv-files, one file for all busses and one for each
-component, stored in :file:`results/<scneario_key>/preprocessed/data/elements` (scalars data) and
-:file:`results/<scneario_key>/preprocessed/data/sequences` (time series for e.g. renewable feedin or demand profiles),
+component, stored in :file:`results/<scenario>/preprocessed/data/elements` (scalar data) and
+:file:`results/<scenario>/preprocessed/data/sequences` (time series for e.g. renewable feed-in or demand profiles),
 stored in separate folders.
 A separate file, :file:`additional_scalars.csv`, contains information on constraints but will be integrated into the
 datapackage in the future.
@@ -75,8 +75,8 @@ BB       BB-ch4-gt  conversion  ch4      gt     BB-ch4    BB-electricity  600000
 =======  =========  ==========  =======  =====  ========  ==============  ========  =============  ===========  =============  =============  ==========  =================
 
 More generally, there are specific variables which depend on the type of the component. Components and
-their properties are defined in
-`oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model>`_.
+their attributes are defined in
+`oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model/component_attrs.yml>`_.
 Components and properties can also be added or updated in oemof-B3 using the files in :file:`oemof_b3/model/`.
 You can have a look at the structure of a datapackage using our example:
 `datapackage of "example_base" <https://github.com/rl-institut/oemof-B3/tree/dev/examples/example_base/preprocessed>`_.
