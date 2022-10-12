@@ -958,11 +958,11 @@ python-versions = "*"
 
 [[package]]
 name = "numpy"
-version = "1.21.0"
+version = "1.21.6"
 description = "NumPy is the fundamental package for array computing with Python."
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.7,<3.11"
 
 [[package]]
 name = "oemof.network"
@@ -2306,7 +2306,7 @@ preprocessing = ["geopandas"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7, <3.9"
-content-hash = "f549294dfe9e1029f16fbd141dccff5ef4b0170416989e1a9e3edf1f845edaaa"
+content-hash = "b1b625f706ec2931d34a7374a697905af6d1fc5951bf6ffd05bd1ebe1fdede51"
 
 [metadata.files]
 alabaster = []
