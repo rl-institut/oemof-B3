@@ -7,7 +7,7 @@ import matplotlib.dates as mdates
 
 import oemof_b3.tools.data_processing as dp
 import oemoflex.tools.plots as plots
-from oemof_b3.config.config import LABELS, COLORS, add_snake_logger
+from oemof_b3.config.config import LABELS, COLORS, add_snake_logger, settings
 from datetime import datetime
 
 
@@ -199,29 +199,19 @@ if __name__ == "__main__":
                         + start_date[5:7]
                         + "-"
                         + end_date[5:7]
-                        + ".pdf"
-                    )
-                    plt.savefig(
-                        os.path.join(output_path, file_name), bbox_inches="tight"
-                    )
-                    file_name = (
-                        "ts_load_"
-                        + scenario
-                        + "_"
-                        + start_date[5:7]
-                        + "-"
-                        + end_date[5:7]
-                        + ".png"
+                        + settings.general.plot_filetype
                     )
                     plt.savefig(
                         os.path.join(output_path, file_name), bbox_inches="tight"
                     )
                 else:
-                    file_name = "ts_load_" + scenario + "_" + start_date[5:7] + ".pdf"
-                    plt.savefig(
-                        os.path.join(output_path, file_name), bbox_inches="tight"
+                    file_name = (
+                        "ts_load_"
+                        + scenario
+                        + "_"
+                        + start_date[5:7]
+                        + settings.general.plot_filetype
                     )
-                    file_name = "ts_load_" + scenario + "_" + start_date[5:7] + ".png"
                     plt.savefig(
                         os.path.join(output_path, file_name), bbox_inches="tight"
                     )
