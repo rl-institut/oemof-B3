@@ -171,7 +171,7 @@ if __name__ == "__main__":
                 fig.text(
                     0.02,
                     0.5,
-                    "Leistung",
+                    "Leistung (MW)",
                     ha="center",
                     va="center",
                     rotation="vertical",
