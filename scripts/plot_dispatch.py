@@ -223,6 +223,12 @@ def prepare_data_for_aggregation(df_stacked, df):
     return df_stacked
 
 
+def aggregate_data(df_stacked):
+    df_aggregated = dp.aggregate_timeseries(df_stacked, columns_to_aggregate="region")
+
+    return df_aggregated
+
+
 def reduce_labels(ax, simple_labels_dict):
     """
     Replaces two labels by one as defined in a dictionary.
@@ -300,12 +306,9 @@ if __name__ == "__main__":
             bus_name = "ALL_" + carrier
 
             # Aggregate bus data and demand
-            df_aggregated = dp.aggregate_timeseries(
-                df_stacked, columns_to_aggregate="region"
-            )
-            df_demand_aggregated = dp.aggregate_timeseries(
-                df_demand_stacked, columns_to_aggregate="region"
-            )
+            df_aggregated = aggregate_data(df_stacked)
+            df_demand_aggregated = aggregate_data(df_demand_stacked)
+
             # Unstack aggregated bus data and demand
             df_aggregated = dp.unstack_timeseries(df_aggregated)
             df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
