@@ -202,7 +202,8 @@ def plot_dispatch_data(df, df_demand):
 
 def prepare_data_for_aggregation(df_stacked, df):
     """
-    This function concatenates stacked Dataframes
+    This function stacks a Dataframe and concatenates it with a Dataframe containing stacked
+    results.
 
     Parameters
     ----------
