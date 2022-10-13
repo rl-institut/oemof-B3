@@ -192,7 +192,7 @@ def plot_dispatch_data(df, df_demand):
         ax.xaxis.set_major_formatter(formatter)
         locator = mdates.AutoDateLocator()
         ax.xaxis.set_major_locator(locator)
-        
+
         fig.tight_layout()
         file_name = (
             bus_name + "_" + start_date[5:7] + config.settings.general.plot_filetype
