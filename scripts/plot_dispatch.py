@@ -279,10 +279,9 @@ if __name__ == "__main__":
     ]
 
     # Aggregate data of busses and demand by region
-    df_stacked = None
-    df_demand_stacked = None
-
     for carrier in carriers:
+        df_stacked = None
+        df_demand_stacked = None
         # Find all files where carrier is same and hence multiple regions exist
         busses_to_be_aggregated = [file for file in bus_files if carrier in file]
         if len(busses_to_be_aggregated) > 1:
@@ -315,10 +314,6 @@ if __name__ == "__main__":
             df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
 
             plot_dispatch_data(df_aggregated, df_demand_aggregated)
-
-            # Set df_stacked and df_demand_stacked to None as preparation for new cycle
-            df_stacked = None
-            df_demand_stacked = None
 
     for bus_file in selected_bus_files:
         df, df_demand, bus_name = prepare_dispatch_data(bus_file)
