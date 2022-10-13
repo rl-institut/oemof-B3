@@ -667,7 +667,9 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
                 )
 
         a_and_b = set_index_a.intersection(set_index_b)
-        logger.info(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+        logger.info(
+            f"There are {len(a_and_b)} elements in df_b that are updated by df_a."
+        )
 
         b_not_a = set_index_b.difference(set_index_a)
         logger.info(
