@@ -20,7 +20,7 @@ import sys
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import bus_attrs_update, component_attrs_update
 from oemof_b3.tools.data_processing import (
@@ -75,7 +75,7 @@ def expand_scalars(df, column, where, expand):
 
         d[column] = var
 
-        _df_wo_cc = _df_wo_cc.append(d)
+        _df_wo_cc = pd.concat([_df_wo_cc, d])
 
     _df_wo_cc = sort_values(_df_wo_cc)
 

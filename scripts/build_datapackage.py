@@ -28,7 +28,7 @@ from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import (
     model_structures,
@@ -113,6 +113,8 @@ def parametrize_scalars(edp, scalars, filters):
     update_with_checks(edp.data["component"], filtered)
 
     edp.unstack_components()
+
+    logger.info(f"Updated DataPackage with timeseries from '{paths_scalars}'.")
 
     return edp
 
@@ -221,6 +223,8 @@ def save_additional_scalars(additional_scalars, destination):
     )
     save_df(additional_scalars, filename)
 
+    logger.info(f"Saved additional scalars to '{filename}'.")
+
 
 def calculate_emission_limit(
     emissions_1990, emissions_not_modeled, emission_reduction_factor
@@ -295,9 +299,14 @@ if __name__ == "__main__":
 
     # save to csv
     edp.to_csv_dir(destination)
+
+    logger.info(f"Saved datapackage to '{destination}'.")
+
     save_additional_scalars(
         additional_scalars=additional_scalars, destination=destination
     )
+
+    logger.info(f"Saved additional_scalars to '{destination}'.")
 
     # add metadata
     edp.infer_metadata(foreign_keys_update=foreign_keys_update)

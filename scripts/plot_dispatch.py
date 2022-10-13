@@ -13,12 +13,8 @@ logfile : str
 
 Outputs
 ---------
-.pdf
-    dispatch plot in pdf-format.
-.png
-    dispatch plot in png-format.
-.html
-    interactive plotly dispatch plot in html-format.
+* Static dispatch plots.
+* Interactive plotly dispatch plot in html-format.
 
 Description
 -------------
@@ -196,11 +192,11 @@ def plot_dispatch_data(df, df_demand):
         ax.xaxis.set_major_formatter(formatter)
         locator = mdates.AutoDateLocator()
         ax.xaxis.set_major_locator(locator)
-
+        
         fig.tight_layout()
-        file_name = bus_name + "_" + start_date[5:7] + ".pdf"
-        plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
-        file_name = bus_name + "_" + start_date[5:7] + ".png"
+        file_name = (
+            bus_name + "_" + start_date[5:7] + config.settings.general.plot_filetype
+        )
         plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
 
 
