@@ -224,6 +224,17 @@ rule plot_conv_pp_scalars:
     output: "results/_resources/plots/{resource}-{var_name}.png"
     shell: "python scripts/plot_conv_pp_scalars.py {input.data} {wildcards.var_name} {output}"
 
+rule plot_resources_timeseries:
+    input:
+        resources="results/_resources/",
+        scalars="raw/scalars/demands.csv",
+    output:
+        directory("results/_resources/plots/ts_load_profiles")
+    params:
+        logfile="results/_resources/plots/ts_load.log"
+    shell:
+        "python scripts/plot_ts_resources.py {input} {output} {params.logfile}"
+
 rule plot_scalar_results:
     input: "results/{scenario}/postprocessed/"
     output: directory("results/{scenario}/plotted/scalars/")

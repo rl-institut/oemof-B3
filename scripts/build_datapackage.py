@@ -39,11 +39,11 @@ from oemof_b3.model import (
 from oemof_b3.tools.data_processing import (
     filter_df,
     update_filtered_df,
-    multi_load_b3_scalars,
-    multi_load_b3_timeseries,
     unstack_timeseries,
     expand_regions,
     save_df,
+    multi_load_b3_scalars,
+    multi_load_b3_timeseries,
 )
 from oemof_b3.config import config
 
