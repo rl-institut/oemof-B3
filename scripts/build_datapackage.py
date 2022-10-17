@@ -28,7 +28,7 @@ from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemoflex.tools.helpers import load_yaml
+from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import (
     model_structures,

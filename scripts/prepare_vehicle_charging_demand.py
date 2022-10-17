@@ -46,16 +46,19 @@ import logging
 logger = logging.getLogger("dummy")
 
 # global variables
-TS_VAR_UNIT = "None"
-TS_SOURCE = "https://github.com/rl-institut/simbev"
-TS_COMMENT = (
-    "created with simBEV. contains a mix of hourly simBEV and a constant profile"
-)
-HOME_START = "15:00"  # start charging strategy "balanced" for home profile
-HOME_END = "05:00"  # end charging strategy "balanced" for home profile
-WORK_START = "06:00"  # start charging strategy "balanced" for work profile
-WORK_END = "14:00"  # end charging strategy "balanced" for work profile
-REGION_DICT = {"Berlin": "B", "Brandenburg": "BB"}
+TS_INDEX_NAME = config.settings.general.ts_index_name
+HOME_START = (
+    config.settings.prepare_vehicle_charging_demand.home_start
+)  # start charging strategy "balanced" for home profile
+HOME_END = (
+    config.settings.prepare_vehicle_charging_demand.home_end
+)  # end charging strategy "balanced" for home profile
+WORK_START = (
+    config.settings.prepare_vehicle_charging_demand.work_start
+)  # start charging strategy "balanced" for work profile
+WORK_END = (
+    config.settings.prepare_vehicle_charging_demand.work_end
+)  # end charging strategy "balanced" for work profile
 
 
 def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
@@ -118,7 +121,7 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
     for filename in os.listdir(input_dir):
         path = os.path.join(input_dir, filename)
         region, year = get_year_region_from_filename()
-        region = REGION_DICT[region]
+        region = config.settings.prepare_vehicle_charging_demand.region_dict[region]
 
         # read data from file, copy and superfluous drop last time step
         ts_raw = pd.read_csv(
@@ -172,16 +175,26 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
 
     # prepare index
     df.reset_index(inplace=True, drop=True)
-    df.index.name = "id_ts"
+    df.index.name = TS_INDEX_NAME
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
-    ts_prepared = dp.format_header(df=df, header=dp.HEADER_B3_TS, index_name="id_ts")
+    ts_prepared = dp.format_header(
+        df=df, header=dp.HEADER_B3_TS, index_name=TS_INDEX_NAME
+    )
 
     # add additional information as required by template
-    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "electricity-bev_charging-profile"
-    ts_prepared.loc[:, "source"] = TS_SOURCE
-    ts_prepared.loc[:, "comment"] = TS_COMMENT
+    ts_prepared.loc[
+        :, "var_unit"
+    ] = config.settings.prepare_vehicle_charging_demand.ts_var_unit
+    ts_prepared.loc[
+        :, "var_name"
+    ] = config.settings.prepare_vehicle_charging_demand.var_name
+    ts_prepared.loc[
+        :, "source"
+    ] = config.settings.prepare_vehicle_charging_demand.ts_source
+    ts_prepared.loc[
+        :, "comment"
+    ] = config.settings.prepare_vehicle_charging_demand.ts_comment
 
     return ts_prepared
 
