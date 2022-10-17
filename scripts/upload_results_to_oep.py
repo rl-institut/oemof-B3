@@ -117,11 +117,6 @@ if __name__ == "__main__":
         "These files will be uploaded: " + ", ".join(dict_table_filename.values())
     )
 
-    # Setting up the oem2orm logger
-    # If you want to see detailed runtime information on oem2orm functions or if errors occur,
-    # you can activate the logger with this simple setup function.
-    # oem2orm.setup_logger()
-
     # To connect to the OEP you need your OEP Token and user name. Note: You ca view your token
     # on your OEP profile page after
     # [logging in](https://openenergy-platform.org/user/login/?next=/).
