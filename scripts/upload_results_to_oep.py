@@ -143,7 +143,7 @@ if __name__ == "__main__":
         metadata["PublicationDate"] = str(date.today())
 
         # TODO: A method metadata.add_resource, add field would be handy
-        metadata["resources"][0]["name"] = f"{scenario}_{table}"
+        metadata["resources"][0]["name"] = f"{SCHEMA}.{scenario}_{table}"
 
         save_dict_to_json(metadata, metadata_path / f"{table}.json")
 
