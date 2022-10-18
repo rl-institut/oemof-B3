@@ -2,9 +2,16 @@
 r"""
 Inputs
 -------
+in_path: str
+    ``results/{scenario}/b3_results/data``: path to scalar results in oemof-B3-format
+out_path: str
+    ``results/{scenario}/b3_results/metadata``: path to metadata directory
+params:
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
+``results/{scenario}/b3_results/metadata``: directory with automatically created metadata.
 
 Description
 -------------
