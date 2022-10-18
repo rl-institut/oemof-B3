@@ -22,12 +22,17 @@ def write_schema_to_metadata(schema, metadata, num_resource=0):
 
     # allocate enough fields to fit schema in
     _metadata["resources"][num_resource]["schema"]["fields"] = [
-        copy.deepcopy(field) for i in range(len(schema.columns.columns) + 1)  # one more for index
+        copy.deepcopy(field)
+        for i in range(len(schema.columns.columns) + 1)  # one more for index
     ]
 
     # write schema to metadata
-    _metadata["resources"][num_resource]["schema"]["fields"][0]["name"] = schema.index.name
-    _metadata["resources"][num_resource]["schema"]["fields"][0]["type"] = schema.index["type"]
+    _metadata["resources"][num_resource]["schema"]["fields"][0][
+        "name"
+    ] = schema.index.name
+    _metadata["resources"][num_resource]["schema"]["fields"][0]["type"] = schema.index[
+        "type"
+    ]
     _metadata["resources"][num_resource]["schema"]["fields"][0][
         "description"
     ] = schema.index["description"]
