@@ -4,3 +4,4 @@ build_datapackage
 =================
 
 .. automodule:: build_datapackage
+   :members:

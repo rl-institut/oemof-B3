@@ -4,3 +4,4 @@ table_results
 =============
 
 .. automodule:: table_results
+   :members:

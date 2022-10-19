@@ -4,3 +4,4 @@ create_empty_scalars
 ====================
 
 .. automodule:: create_empty_scalars
+   :members:
