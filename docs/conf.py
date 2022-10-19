@@ -86,7 +86,6 @@ autodoc_mock_imports = [
     "oemof.tabular",
     "oemoflex",
     "oemof.solph",
-    "oemof_b3.config",
     "geopandas",
     "shapely",
 ]
