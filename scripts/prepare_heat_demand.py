@@ -504,6 +504,6 @@ if __name__ == "__main__":
     head_load = dp.format_header(
         df=total_heat_load,
         header=dp.HEADER_B3_TS,
-        index_name="id_ts",
+        index_name=config.settings.general.ts_index_name,
     )
     dp.save_df(head_load, out_path2)
