@@ -7,6 +7,13 @@ Examples
 To give a quick intro into oemof-B3's capabilities, we provide 3 simple
 `examples <https://github.com/rl-institut/oemof-B3/tree/dev/examples>`_.
 
+To run all example scenarios, execute on a linux system:
+
+::
+
+     snakemake -j<NUMBER_OF_CPU_CORES> plot_all_examples
+
+
 The energy system of Brandenburg and Berlin is represented by two nodes, one for each of the regions.
 
 Modelled components are 
@@ -41,5 +48,3 @@ The three examples have been built based on the grid development plan:
 * **example_more_re_less_fossil**: This example represents a system with more renewable capacities
   compared to the previous and assumes that the capacities of fossil (gas, oil) powerplants have
   been reduced further. The capacities correspond to scenario B 2040 of the grid development plan.
-
-The description for the execution of the examples can be found here :ref:`How to run the model`.
