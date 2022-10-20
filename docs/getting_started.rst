@@ -116,13 +116,6 @@ How to run the model
 Snakemake on Linux
 ^^^^^^^^^^^^^^^^^^
 
-Alternatively, to create just the output file or directory of one rule, run:
-
-::
-
-     snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
-
-
 To run the scenarios, execute:
 
 ::
@@ -131,6 +124,13 @@ To run the scenarios, execute:
 
 whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
 To run the scenarios, the corresponding raw data in the raw directory is required.
+
+
+Alternatively, to create just the output file or directory of one rule, run:
+
+::
+
+     snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
 
 Snakemake on Windows
