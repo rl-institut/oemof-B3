@@ -29,9 +29,12 @@ In order to install oemof-B3, proceed with the following steps:
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
 To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in conda environment config (environment.yml).
-If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
+`Pandoc Installation <https://pandoc.org/installing.html>`_.
 
-For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
+For the optimization, oemof-B3 needs a solver. Check out the
+`oemof.solph documentation <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_
+for installation notes.
 
 To test if everything works, you can run the examples. To do this, please follow the instructions in chapter :ref:`examples`.
 
