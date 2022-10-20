@@ -33,7 +33,7 @@ If environment is build otherwise, pandoc must be installed manually. It can be 
 
 For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
 
-To test if everything works, you can run the examples (cf. :ref:`How to run the model`).
+To test if everything works, you can run the examples. To do this, please follow the instructions in chapter :ref:`examples`.
 
 
 For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
@@ -115,12 +115,6 @@ How to run the model
 
 Snakemake on Linux
 ^^^^^^^^^^^^^^^^^^
-
-To run all example scenarios, execute:
-
-::
-
-     snakemake -j<NUMBER_OF_CPU_CORES> plot_all_examples
 
 Alternatively, to create just the output file or directory of one rule, run:
 
