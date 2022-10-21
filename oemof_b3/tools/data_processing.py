@@ -23,7 +23,6 @@ import pandas as pd
 
 from oemof_b3.config import config
 
-
 here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "schema")
@@ -35,6 +34,8 @@ HEADER_B3_SCAL = pd.read_csv(
 HEADER_B3_TS = pd.read_csv(
     os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
 ).columns
+
+SEPARATOR = config.settings.general.separator
 
 
 def sort_values(df, reset_index=True):
@@ -125,7 +126,7 @@ def format_header(df, header, index_name):
     return df_formatted
 
 
-def load_b3_scalars(path, sep=";"):
+def load_b3_scalars(path, sep=SEPARATOR):
     """
     This function loads scalars from a csv file.
 
@@ -153,7 +154,7 @@ def load_b3_scalars(path, sep=";"):
     return df
 
 
-def load_b3_timeseries(path, sep=";"):
+def load_b3_timeseries(path, sep=SEPARATOR):
     """
     This function loads a stacked time series from a csv file.
 
@@ -257,7 +258,7 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True, sep=";")
+    df.to_csv(path, index=True, sep=SEPARATOR)
 
     # Print user info
     print(f"User info: The DataFrame has been saved to: {path}.")
