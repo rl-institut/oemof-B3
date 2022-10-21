@@ -11,8 +11,7 @@ target : str
 
 Outputs
 ---------
-matplotlib.figure.Figure
-    plotted conventional power plant data
+Plot of conventional power plant data
 
 Description
 -------------
