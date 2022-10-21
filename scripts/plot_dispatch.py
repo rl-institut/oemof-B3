@@ -3,8 +3,8 @@ r"""
 Inputs
 -------
 postprocessed : str
-    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
-    can be plotted
+    ``results/{scenario}/postprocessed/``: path to the directory containing the input data
+    that can be plotted
 plotted : str
     ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
     the plots are saved
@@ -20,8 +20,8 @@ Description
 -------------
 The script creates dispatch plots based on plot_dispatch and plot_dispatch_plotly
 functions in oemoflex.
-The static plots are saved as pdf-files and the interactive plotly plots as html-files
-in a new directory called plotted.
+The static plots are saved as png-files and the interactive plotly plots as html-files
+in a new directory called dispatch within directory plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
 
