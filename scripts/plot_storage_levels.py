@@ -19,8 +19,8 @@ Description
 -------------
 The script creates storage level plots.
 
-The static plots are saved as files (png, pdf, etc.) and the interactive plotly plots as html-files
-in a new directory called plotted.
+The static plots are saved as png-files and the interactive plotly plots as html-files
+in a new directory called storage_levels within directory plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
 
