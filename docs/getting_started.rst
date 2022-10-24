@@ -29,7 +29,7 @@ In order to install oemof-B3, proceed with the following steps:
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
 To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in conda environment config (environment.yml).
-If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
+If the environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
 `Pandoc Installation <https://pandoc.org/installing.html>`_.
 
 For the optimization, oemof-B3 needs a solver. Check out the
@@ -123,7 +123,7 @@ To run the scenarios, execute:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/optimized
+     snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/postprocessed
 
 whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
 To run the scenarios, the corresponding raw data in the raw directory is required.
