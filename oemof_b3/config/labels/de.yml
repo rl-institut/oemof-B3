@@ -1,4 +1,5 @@
 # oil: Öl  Raises error as "oil" is in "boiler" -> duplicate mappings
+oil-gt: Oil GT
 biomass-gt: Biomass GT
 biomass-st: Biomass DT
 biomass: Biomasse
