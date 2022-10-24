@@ -86,4 +86,6 @@ Postprocessed data
 -------------------
 
 Data postprocessing makes use of oemoflex's functionality, thus postprocessed data follows its
-data format.
+data format. See oemoflex' documention on
+`postprocessed results <https://oemoflex.readthedocs.io/en/latest/overview.html#postprocess-results>`_
+for further information.
