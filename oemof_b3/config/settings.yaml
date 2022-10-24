@@ -27,7 +27,7 @@ optimize:
 
 plot_scalar_results:
   agg_regions: true
-  ignore_drop_index: "var_name"
+  ignore_drop_level: "var_name"
   tick_label_size: 12
 
 prepare_cop_timeseries:

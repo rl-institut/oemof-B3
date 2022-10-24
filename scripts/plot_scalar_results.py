@@ -87,7 +87,7 @@ def set_scenario_labels(df):
 
 
 def prepare_scalar_data(
-    df, colors_odict, labels_dict, conv_number, ignore, tolerance=1e-3
+    df, colors_odict, labels_dict, conv_number, ignore_drop_level, tolerance=1e-3
 ):
     # drop data that is almost zero
     def _drop_near_zeros(df, tolerance):
@@ -110,19 +110,18 @@ def prepare_scalar_data(
     # restore order of scenarios after pivoting
     df_pivot = df_pivot.reindex(scenario_order, level="scenario")
 
-    def drop_constant_multiindex_levels(df, ignore=False):
+    def drop_constant_multiindex_levels(df, ignore_drop_level=False):
         _df = df.copy()
         drop_levels = [
             name for name in _df.index.names if len(_df.index.unique(name)) <= 1
         ]
-        if ignore:
-            if ignore in drop_levels:
-                drop_levels.remove(ignore)
+        if ignore_drop_level and ignore_drop_level in drop_levels:
+            drop_levels.remove(ignore_drop_level)
         _df.index = _df.index.droplevel(drop_levels)
         return _df
 
     # Drop levels that are all the same, e.g. 'ALL' for aggregated regions
-    df_pivot = drop_constant_multiindex_levels(df_pivot, ignore)
+    df_pivot = drop_constant_multiindex_levels(df_pivot, ignore_drop_level)
 
     # rename and aggregate duplicated columns
     df_pivot = plots.map_labels(df_pivot, labels_dict)
@@ -195,7 +194,7 @@ class ScalarPlot:
             colors_odict=COLORS,
             labels_dict=LABELS,
             conv_number=MW_TO_W,
-            ignore=IGNORE,
+            ignore_drop_level=IGNORE_DROP_LEVEL,
         )
 
         return self.prepared_scalar_data
@@ -441,7 +440,7 @@ if __name__ == "__main__":
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2", "ch4"]
     CARRIERS_WO_CH4 = ["electricity", "heat_central", "heat_decentral", "h2"]
     MW_TO_W = 1e6
-    IGNORE = config.settings.plot_scalar_results.ignore_drop_index
+    IGNORE_DROP_LEVEL = config.settings.plot_scalar_results.ignore_drop_level
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):
