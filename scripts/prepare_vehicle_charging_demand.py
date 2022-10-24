@@ -3,11 +3,11 @@ r"""
 Inputs
 -------
 input_dir : str
-    ``raw/time_series/vehicle_charging``: Path of directory where csv files containing electric
+    ``raw/time_series/vehicle_charging``: Path of directory where csv-files containing electric
     vehicle charging demand profiles are placed
 scalars_file : str
     ``raw/scalars/demands.csv``: Path incl. file name of demand scalars including 'bev_car_share',
-    the share of passenger car electricity charging demand
+    the share of electricity demand for charging passenger cars
 output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
@@ -24,7 +24,7 @@ Description
 -------------
 This script prepares electric vehicle charging demand profiles for the regions Berlin and
 Brandenburg. The profiles for passenger cars have been created before with simBEV
-(https://github.com/rl-institut/simbev), other vehicles taken into consideration with constant
+(https://github.com/rl-institut/simbev), other vehicles are taken into consideration with constant
 profiles. The charging strategy of simBEV data is "greedy", i.e. batteries are charged with maximum
 power until they are fully charged or removed. This script applies a charging strategy we refer to
 as "balanced" for the profiles "home" and "work" during specific hours (see global variables). To
