@@ -19,7 +19,8 @@ Description
 -------------
 The script creates storage level plots.
 
-The static plots are saved as png-files and the interactive plotly plots as html-files
+The static plots with a file format defined by the *plot_filetype* variable in
+``oemof_b3/config/settings.yaml`` and the interactive plotly plots as html-files
 in a new directory called storage_levels within directory plotted.
 Timeframes and the carrier for the plot can be chosen.
 """

@@ -12,7 +12,8 @@ logfile : str
 
 Outputs
 ---------
-Plots of scalar results.
+Plots of scalar results with a file format defined by the *plot_filetype* variable in
+``oemof_b3/config/settings.yaml``.
 
 Description
 -------------
