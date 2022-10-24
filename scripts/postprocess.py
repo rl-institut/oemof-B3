@@ -26,9 +26,15 @@ import sys
 import pandas as pd
 
 from oemof.solph import EnergySystem
+from oemoflex import config as oemoflexconfig
 from oemoflex.model.datapackage import ResultsDataPackage
 
 from oemof_b3.config import config
+
+
+def get_separator():
+    return config.settings.general.separator
+
 
 if __name__ == "__main__":
 
@@ -40,6 +46,10 @@ if __name__ == "__main__":
 
     logfile = sys.argv[4]
     logger = config.add_snake_logger(logfile, "postprocess")
+
+    SEP = ";"  # TODO: use get_separator()
+
+    oemoflexconfig.config.settings.SEPARATOR = SEP
 
     try:
         es = EnergySystem()
@@ -53,7 +63,8 @@ if __name__ == "__main__":
         rdp.to_csv_dir(destination)
 
         pd.Series({"objective": es.meta_results["objective"]}).to_csv(
-            os.path.join(destination, "objective.csv")
+            os.path.join(destination, "objective.csv"),
+            sep=oemoflexconfig.config.settings.SEPARATOR,
         )
 
     except:  # noqa: E722
