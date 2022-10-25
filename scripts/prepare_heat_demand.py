@@ -6,7 +6,7 @@ in_path1 : str
     ``raw/weatherdata``: path of input directory with weather data
 in_path2 : str
     ``raw/distribution_households.csv``: path of input file with household distributions data
-     as .csv
+    as .csv
 in_path3 : str
     ``raw/holidays.csv``: path of input file with holidays of all states in Germany as .csv
 in_path4 : str
