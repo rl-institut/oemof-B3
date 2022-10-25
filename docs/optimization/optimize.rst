@@ -4,3 +4,4 @@ optimize
 ========
 
 .. automodule:: optimize
+   :members:

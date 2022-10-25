@@ -14,6 +14,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('../scripts'))
+sys.path.insert(0, os.path.abspath('../oemof_b3/config/'))
 
 # -- Project information -----------------------------------------------------
 
@@ -70,16 +71,22 @@ html_static_path = ['_static']
 # -- Options for Sphinx autodoc ----------------------------------------------
 
 autodoc_mock_imports = [
+    "pandas",
+    "matplotlib",
+    "numpy",
+    "demandlib",
+    "rtree",
+    "pyyaml",
+    "docutils",
+    "dynaconf",
+    "yaml",
+    "pyomo",
     "oemof",
-    "oemof.solph",
     "oemof.outputlib",
     "oemof.tabular",
     "oemoflex",
-    "demandlib",
-    "matplotlib",
-    "pandas",
-    "numpy",
+    "oemof.solph",
+    "oemof_b3.config.config",
     "geopandas",
     "shapely",
-    "yaml"
 ]
