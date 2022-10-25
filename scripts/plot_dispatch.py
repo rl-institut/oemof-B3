@@ -76,7 +76,7 @@ def prepare_dispatch_data(bus_file):
     return df, df_demand, bus_name
 
 
-def plot_dispatch_data(df, df_demand):
+def plot_dispatch_data(df, df_demand, bus_name):
     """
     This function contains the plotting of dispatch data
 
@@ -86,6 +86,8 @@ def plot_dispatch_data(df, df_demand):
         Dataframe with data to be plotted
     df_demand: pd.DataFrame
         Dataframe with demand
+    bus_name: str
+        Name of the bus
 
     Returns
     -------
@@ -254,28 +256,16 @@ def reduce_labels(ax, simple_labels_dict):
     return handles, labels
 
 
-if __name__ == "__main__":
-    postprocessed = sys.argv[1]
-    plotted = sys.argv[2]
-    logfile = sys.argv[3]
+def aggregate_by_region(bus_files):
+    """
+    This function aggregates data of busses and demand by region
 
-    logger = config.add_snake_logger(logfile, "plot_dispatch")
+    Parameters
+    ----------
+    bus_files: pd.DataFrame
+        Dataframe with bus data from ``results/{scenario}/postprocessed/sequences/bus``
 
-    # create the directory plotted where all plots are saved
-    if not os.path.exists(plotted):
-        os.makedirs(plotted)
-
-    bus_directory = os.path.join(postprocessed, "sequences/bus/")
-    bus_files = os.listdir(bus_directory)
-
-    # select carrier
-    carriers = ["electricity", "heat_central", "heat_decentral"]
-
-    selected_bus_files = [
-        file for file in bus_files for carrier in carriers if carrier in file
-    ]
-
-    # Aggregate data of busses and demand by region
+    """
     for carrier in carriers:
         df_stacked = None
         df_demand_stacked = None
@@ -304,8 +294,32 @@ if __name__ == "__main__":
             df_aggregated = dp.unstack_timeseries(df_aggregated)
             df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
 
-            plot_dispatch_data(df_aggregated, df_demand_aggregated)
+            plot_dispatch_data(df_aggregated, df_demand_aggregated, bus_name)
+
+
+if __name__ == "__main__":
+    postprocessed = sys.argv[1]
+    plotted = sys.argv[2]
+    logfile = sys.argv[3]
+
+    logger = config.add_snake_logger(logfile, "plot_dispatch")
+
+    # create the directory plotted where all plots are saved
+    if not os.path.exists(plotted):
+        os.makedirs(plotted)
+
+    bus_directory = os.path.join(postprocessed, "sequences/bus/")
+    bus_files = os.listdir(bus_directory)
+
+    # select carrier
+    carriers = ["electricity", "heat_central", "heat_decentral"]
+
+    selected_bus_files = [
+        file for file in bus_files for carrier in carriers if carrier in file
+    ]
+
+    aggregate_by_region(bus_files)
 
     for bus_file in selected_bus_files:
         df, df_demand, bus_name = prepare_dispatch_data(bus_file)
-        plot_dispatch_data(df, df_demand)
+        plot_dispatch_data(df, df_demand, bus_name)
