@@ -12,7 +12,7 @@ output_file : str
     ``results/_resources/ts_load_electricity_vehicles.csv``: Path incl. file name of prepared time
     series
 logfile : str
-    ``logs/prepare_vehicle_charging_demand.log``: path to logfile
+    ``results/_resources/ts_load_electricity_vehicles.log``: path to logfile
 
 Outputs
 ---------
