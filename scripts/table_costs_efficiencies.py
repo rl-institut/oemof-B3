@@ -4,6 +4,8 @@ Inputs
 ------
 in_path : str
     ``raw/raw/scalars/costs_efficiencies.csv.csv``: path to raw scalar data.
+scenario_key : str
+    ``scenario_key`` matching the one in costs_efficiencies.csv file.
 out_path : str
     ``results/_tables/technical_and_cost_assumptions_{scenario_key}.csv``: target path for
     the table.
