@@ -218,7 +218,10 @@ def prepare_data_for_aggregation(df_stacked, df):
         Result DataFrame with concatenation of stacked data
 
     """
-    df_stacked = pd.concat([df_stacked, dp.stack_timeseries(df)])
+    if isinstance(df_stacked, type(None)):
+        df_stacked = dp.stack_timeseries(df)
+    else:
+        df_stacked = pd.concat([df_stacked, dp.stack_timeseries(df)])
 
     return df_stacked
 
@@ -288,19 +291,10 @@ if __name__ == "__main__":
             for bus_to_be_aggregated in busses_to_be_aggregated:
                 df, df_demand, bus_name = prepare_dispatch_data(bus_to_be_aggregated)
 
-                # Append stack Dataframe as first element of result Dataframes if it is empty
-                if isinstance(df_stacked, type(None)) and isinstance(
-                    df_demand_stacked, type(None)
-                ):
-                    df_stacked = dp.stack_timeseries(df)
-                    df_demand_stacked = dp.stack_timeseries(df_demand)
-                # Stack and append dataframe to result Dataframe if result Dataframe already
-                # contains data
-                else:
-                    df_stacked = prepare_data_for_aggregation(df_stacked, df)
-                    df_demand_stacked = prepare_data_for_aggregation(
-                        df_demand_stacked, df_demand
-                    )
+                df_stacked = prepare_data_for_aggregation(df_stacked, df)
+                df_demand_stacked = prepare_data_for_aggregation(
+                    df_demand_stacked, df_demand
+                )
 
             # Exchange region from bus_name with "ALL"
             bus_name = "ALL_" + carrier
