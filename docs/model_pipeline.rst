@@ -28,7 +28,7 @@ The subdirectories of oemof-B3 shown below contain configurations and data of th
 :file:`Examples` contains pre-fabricated datapackages that can readily be optimized. The directory
 :file:`scenarios` contains :file:`.yml`-files defining individual scenarios. Raw data is not part
 of the repo and has to be provided in :file:`raw`. Intermediate and final results as well as the
-logfiles will be saved in :file:`results`.
+corresponding logfiles are saved in :file:`results`.
 
 .. code-block::
 
