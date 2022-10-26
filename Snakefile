@@ -58,10 +58,10 @@ rule clean:
 # Rules for intermediate steps
 rule table_costs_efficiencies:
     input: "raw/scalars/costs_efficiencies.csv"
-    output: "results/_tables/technical_and_cost_assumptions_{scenario_key}.csv"
+    output: "results/_tables/technical_and_cost_assumptions_{scenario}.csv"
     params:
-        logfile="results/_tables/technical_and_cost_assumptions_{scenario_key}.log"
-    shell: "python scripts/table_costs_efficiencies.py {input} {wildcards.scenario_key} {output} {params.logfile}"
+        logfile="results/_tables/technical_and_cost_assumptions_{scenario}.log"
+    shell: "python scripts/table_costs_efficiencies.py {input} {wildcards.scenario} {output} {params.logfile}"
 
 rule prepare_example:
     input: "examples/{scenario}/preprocessed/"
