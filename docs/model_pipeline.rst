@@ -140,13 +140,14 @@ Postprocessing
 
 Output files are saved in :file:`results/scenario/postprocessed`.
 
-Plotting
-==============
+Visualization
+=============
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
-   plotting/*
+   visualization/*
 
 Output files are saved  in :file:`results/scenario/plotted`.
+

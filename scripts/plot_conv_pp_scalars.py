@@ -1,3 +1,4 @@
+# coding: utf-8
 r"""
 Inputs
 -------
@@ -11,8 +12,8 @@ target : str
 
 Outputs
 ---------
-matplotlib.figure.Figure
-    plotted conventional power plant data
+Plot of conventional power plant data with a file format defined by the *plot_filetype* variable in
+``oemof_b3/config/settings.yaml``.
 
 Description
 -------------
