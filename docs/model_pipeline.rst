@@ -53,10 +53,17 @@ Prepare resources
 
    prepare_resources/*
 
-Output files are saved in :file:`results/_resources`.
-
 The resources are preprocessed data that serve as material for building scenarios.
-Because they are a first intermediate result, resources will be saved in :file:`results/_resources`.
+They are a first intermediate result in oemof-B3.
+
+File storage
+^^^^^^^^^^^^
+
+Resources are saved in :file:`results/_resources`.
+
+Schema
+^^^^^^
+
 The resources follow a common data schema defined in :file:`oemof_b3/schema/`.
 There is a separate schema for scalars and for timeseries:
 
@@ -73,9 +80,34 @@ Time series
    :file: ../oemof_b3/schema/timeseries.csv
 
 
-A few more conventions are important to know. Missing data is left empty. If a value applies to all
-regions, this is indicated by :attr:`ALL`. If it applies to the sum of regions, by :attr:`TOTAL`.
-There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
+.. _conventions_resources_label_:
+Conventions
+^^^^^^^^^^^
+
+A few more conventions are important to know:
+
+* Missing data is left empty.
+* There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units.
+
+* The parameters :attr:`id_scal` and :attr:`id_ts` are optional and will be added automatically if you do not specify them.
+
+* The parameter :attr:`scenario_key` allows you to pass values that are associated with a specific scenario.
+
+* The parameter :attr:`name` must be specified in a certain fixed concatenation of parameters: :attr:`region`-:attr:`carrier`-:attr:`tech` (example: :attr:`B-biomass-g`).
+
+* If a value applies to all regions, :attr:`region` corresponds to :attr:`ALL` for this value.
+* If :attr:`region` is set to :attr:`ALL` in the model-own assumptions, :attr:`name` is to be left blank. The name will be automatically added per region modelling the energy system.
+* If a value applies to the sum of regions, :attr:`region` corresponds to :attr:`TOTAL` for this value.
+
+* Different attributes can be set for :attr:`var_name`. Which component is assigned to which attributes can be found in chapter `Overview <https://oemoflex.readthedocs.io/en/latest/overview.html>`_ of the :attr:`oemoflex` documentation.
+* Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
+
+  * Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and
+  * such powered with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
+  * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
+
+* The parameters :attr:`timeindex_start` and :attr:`timeindex_end` need to follow ISO 8601 date and time format.
+
 
 Build datapackages
 ==================
