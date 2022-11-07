@@ -11,10 +11,10 @@ Scenario setup
 
 To use oemof-B3, you may want to modify some files, depending on the setup of your Energy System.
 
-While you define scenarios in the :attr:`scenarios` directory, you can specify the structure of your
-model in the :attr:`model` directory.
-Furthermore, you can choose or modify colors within plots, labels and hard coded constant parameters in
-oemof-B3 in the :attr:`config` directory.
+While you define scenarios in the directory :attr:`scenarios`, you can specify the structure of
+your model in the directory :attr:`model`.
+In the directory :attr:`config` you can furthermore choose or modify labels, hard coded constant
+parameters or colors within plots.
 
 scenarios
 ---------
