@@ -38,5 +38,32 @@ If you want to calculate only one scenario, you can use a single :attr:`scenario
 model
 -----
 
+The :attr:`model` directory is structured as follow:
+
+.. code-block::
+
+    model
+    ├── model_structure
+    │     ├── model_structure_el_only.yml
+    │     ├── model_structure_full.yml
+    ├── bus_attrs_update.yml
+    ├── component_attrs_update.yml
+    ├── foreign_keys_update.yml
+    ├── __init__.py
+
+Within directory :attr:`model_structure` you'll find the structure of the whole energy system used
+in oemof-B3 and the one with electricity sector only.
+You can also set up your own energy system in a new YAML file.
+
+In the parent directory :attr:`model` buses are stored in :attr:`bus_attrs_update.yml` which
+differ from the default in oemoflex (compare
+`busses.yml in oemoflex <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/busses.yml>`_).
+The same applies to the files :attr:`component_attr_update.yml` and :attr:`foreign_keys.yml`.
+These are extended for the energy system in oemof-B3 (or depending on the composition of your
+energy system) with information deviating from the default (cf.
+`component_attrs <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/component_attrs.yml>`_
+and
+`foreign_keys.yml <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/foreign_keys.yml>`_)
+
 config
 ------
