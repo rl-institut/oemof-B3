@@ -67,3 +67,27 @@ and
 
 config
 ------
+
+The :attr:`config` directory is structured as follow:
+
+.. code-block::
+
+    config:attr:`colors.yml`
+    ├── labels
+    │     ├── de.yml
+    │     ├── en.yml
+    ├── __init__.py
+    ├── colors.csv
+    ├── colors.yml
+    ├── config.py
+    ├── settings.yml
+
+Within directory :attr:`labels` there are YAML-files which contain labels.
+They are used in some of the visualization scripts (cf. :ref:`Visualization`).
+The  labels are assigned to the keys of the components stored in
+:attr:`component_attrs_update.yml`.
+In the parent directory :attr:`config` colors are stored in the files :attr:`colors.yml`
+and :attr:`colors.csv`. While :attr:`colors.yml` uses keys from
+:attr:`component_attrs_update.yml`, :attr:`colors.csv` expects the labels of these keys.
+In :attr:`settings.yml`, besides assumptions and values taken as constant, paths and settings in
+oemof-B3 are stored.

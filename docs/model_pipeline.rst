@@ -172,6 +172,7 @@ Postprocessing
 
 Output files are saved in :file:`results/scenario/postprocessed`.
 
+.. _visualization_label_:
 Visualization
 =============
 
