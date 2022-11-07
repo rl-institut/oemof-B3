@@ -15,17 +15,17 @@ overview.
 Raw data
 --------
 
-Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
-As a first step, preprocessing scripts in the model pipeline (see :ref:`Preprocessing`) convert it into the
-oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
-that format already.
+Raw data from external source comes in different formats. It is not part of the model on GitHub,
+but has to be downloaded separately and provided in the directory :file:`raw/`.
+As a first step, preprocessing scripts in the model pipeline (see :ref:`Preprocessing`) convert it
+into the oemof-B3-resources-format, explained in the section :ref:`oemof-B3 resources`. Raw data
+that represents model-own assumptions is provided in that format already.
+Convention that is gathered in :ref:`Conventions` must also be taken into account.
+The model-own assumptions follow the logic of oemoflex. See
+`Overview <https://oemoflex.readthedocs.io/en/latest/overview.html>`_ in the :attr:`oemoflex`
+documentation to see which schemas the components are subject to.
 
-The following additional information about specific parameters should be considered:
-Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
-Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
-with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
-Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
-
+.. _oemof-B3_resources_label_:
 oemof-B3 resources
 ------------------
 
