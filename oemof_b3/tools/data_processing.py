@@ -4,6 +4,7 @@ This module contains helper functions for processing the data in oemof-B3, such 
 filtering, sorting, merging, aggregating and saving.
 """
 
+import logging
 import ast
 import os
 
@@ -12,6 +13,7 @@ import pandas as pd
 
 from oemof_b3.config import config
 
+logger = logging.getLogger()
 
 here = os.path.dirname(__file__)
 
@@ -616,6 +618,31 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
         return sc_set_name
 
+    def compare_scalar_data(sc_1, sc_2, col):
+        r"""
+        This functions compares the columns of two DataFrames
+        It returns True in case they are identical and False if they differ.
+
+        Parameters
+        ----------
+        sc_1 : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+        sc_2 : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+        col : str
+            Column that is compared
+
+        Returns
+        -------
+        False : boolean
+            False if columns differ
+        """
+        sc_1 = sc_1.sort_values(by=col)
+        sc_2 = sc_2.sort_values(by=col)
+
+        if sc_1[col].all() != sc_2[col].all():
+            return False
+
     # PART 1: Ensure name is empty if region is 'ALL'
     # Raise ValueError if name is not NaN and region is "ALL"
     if not sc_wo_region["name"].isnull().values.all():
@@ -627,6 +654,17 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
     # Save <region>-<carrier>-<tech> to name
     sc_add_name = set_name(sc_wo_name, regions)
+
+    # PART 3: Ensure name is correct for all values that are not None and where region is fixed
+    # Save values where name is not None and region is not "ALL" in new DataFrame
+    sc_with_name = sc_with_region[sc_with_region['name'].notnull()]
+
+    sc_with_name_corrected = set_name(sc_with_name, sc_with_name["region"].unique())
+
+    if not compare_scalar_data(sc_with_name, sc_with_name_corrected, "name"):
+        logger.warning(f"The name you have set for some of your scalar data differs "
+                       "from the convention (<region>-<carrier>-<tech>) and therefore "
+                       "will be overwritten.")
 
 def expand_regions(scalars, regions, where="ALL"):
     r"""
