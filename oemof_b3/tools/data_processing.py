@@ -620,8 +620,8 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
     def compare_scalar_data(sc_1, sc_2, col):
         r"""
-        This functions compares the columns of two DataFrames
-        It returns True in case they are identical and False if they differ.
+        This functions compares the column of two DataFrames
+        It returns a DataFrame with scalars that diverge in name convention.
 
         Parameters
         ----------
@@ -634,14 +634,15 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
         Returns
         -------
-        False : boolean
-            False if columns differ
+        diff_name_sc : pd.DataFrame
+            DataFrame with data where expected name not found
         """
-        sc_1 = sc_1.sort_values(by=col)
-        sc_2 = sc_2.sort_values(by=col)
+        sc_1 = sc_1.sort_values(by=col, ignore_index=True)
+        sc_2 = sc_2.sort_values(by=col, ignore_index=True)
 
-        if sc_1[col].all() != sc_2[col].all():
-            return False
+        diff_name_sc = sc_2.loc[(sc_2[col].isin(sc_1[col]) == False)]
+
+        return diff_name_sc
 
     # PART 1: Ensure name is empty if region is 'ALL'
     # Raise ValueError if name is not NaN and region is "ALL"
@@ -661,13 +662,18 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
     sc_with_name_corrected = set_name(sc_with_name, sc_with_name["region"].unique())
 
-    if not compare_scalar_data(sc_with_name, sc_with_name_corrected, "name"):
-        logger.warning(f"The name you have set for some of your scalar data differs "
-                       "from the convention (<region>-<carrier>-<tech>) and therefore "
-                       "will be overwritten.")
+    sc_diff_in_name = compare_scalar_data(sc_with_name, sc_with_name_corrected, "name")
+    if not sc_diff_in_name["name"].empty:
+        expected_names = list(sc_diff_in_name["name"].unique())
+        logger.warning(
+            "The name you have set for some of your scalar data differs "
+            "from the convention (<region>-<carrier>-<tech>). \n"
+            "We expected but could not find the following names: "
+            f"{expected_names}"
+        )
 
     # PART 4: Concatenate DataFrame with corrected name and DataFrame with set name
-    scalars_set_name = pd.concat([sc_with_name_corrected, sc_add_name])
+    scalars_set_name = pd.concat([sc_with_name, sc_add_name])
 
     return scalars_set_name
 
