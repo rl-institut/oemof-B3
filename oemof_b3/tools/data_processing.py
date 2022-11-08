@@ -565,6 +565,29 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
+def prepare_attr_name(sc_with_region, sc_wo_region, regions):
+    r"""
+    This function handles the values of the attribute 'name'.
+
+    It ensures that the name is
+       1. empty if region is 'ALL'
+       2. set (according to convention) where name is empty and region is fixed
+       3. correct for all values that are not None and where region is fixed
+
+    Parameters
+    ----------
+    sc_with_region : pd.DataFrame
+        DataFrame with scalar data in oemof-B3-resources format with fixed region
+    sc_wo_region : pd.DataFrame
+        DataFrame with scalar data in oemof-B3-resources format with region == 'ALL'
+    regions : list
+        List of regions
+
+    Returns
+    -------
+    sc_set_name : pd.DataFrame
+        DataFrame made of concatenated DataFrames with the correct names and fixed regions.
+    """
 def expand_regions(scalars, regions, where="ALL"):
     r"""
     Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
@@ -594,6 +617,8 @@ def expand_regions(scalars, regions, where="ALL"):
 
     if sc_wo_region.empty:
         return sc_with_region
+
+    sc_with_region = prepare_attr_name(sc_with_region, sc_wo_region, regions)
 
     for region in regions:
         regionalized = sc_wo_region.copy()
