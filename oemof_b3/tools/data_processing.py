@@ -666,6 +666,12 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
                        "from the convention (<region>-<carrier>-<tech>) and therefore "
                        "will be overwritten.")
 
+    # PART 4: Concatenate DataFrame with corrected name and DataFrame with set name
+    scalars_set_name = pd.concat([sc_with_name_corrected, sc_add_name])
+
+    return scalars_set_name
+
+
 def expand_regions(scalars, regions, where="ALL"):
     r"""
     Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
