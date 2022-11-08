@@ -574,7 +574,7 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
     It ensures that the name is
        1. empty if region is 'ALL'
        2. set (according to convention) where name is empty and region is fixed
-       3. correct for all values that are not None and where region is fixed
+       3. checked for all values that are not None and where region is fixed
 
     Parameters
     ----------
@@ -590,6 +590,7 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
     sc_set_name : pd.DataFrame
         DataFrame made of concatenated DataFrames with the correct names and fixed regions.
     """
+
     def set_name(sc, regions):
         r"""
         This functions sets 'name' so that it conforms to the convention <region>-<carrier>-<tech>
@@ -610,9 +611,9 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
         # Write name in name col as <region>-<carrier>-<tech>
         for region in regions:
             _sc = sc.loc[sc["region"] == region]
-            _sc["name"] = (_sc.apply(
+            _sc["name"] = _sc.apply(
                 lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-            ))
+            )
 
             sc_set_name = sc_set_name.append(_sc)
 
@@ -651,14 +652,14 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
     # PART 2: Ensure name is set (according to convention) where name is empty and region is fixed
     # Save values where name is None and region is not "ALL" in new DataFrame
-    sc_wo_name = sc_with_region[sc_with_region['name'].isnull()]
+    sc_wo_name = sc_with_region[sc_with_region["name"].isnull()]
 
     # Save <region>-<carrier>-<tech> to name
     sc_add_name = set_name(sc_wo_name, regions)
 
-    # PART 3: Ensure name is correct for all values that are not None and where region is fixed
+    # PART 3: Ensure name is checked for all values that are not None and where region is fixed
     # Save values where name is not None and region is not "ALL" in new DataFrame
-    sc_with_name = sc_with_region[sc_with_region['name'].notnull()]
+    sc_with_name = sc_with_region[sc_with_region["name"].notnull()]
 
     sc_with_name_corrected = set_name(sc_with_name, sc_with_name["region"].unique())
 
