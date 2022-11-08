@@ -588,6 +588,11 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
     sc_set_name : pd.DataFrame
         DataFrame made of concatenated DataFrames with the correct names and fixed regions.
     """
+    # PART 1: Ensure name is empty if region is 'ALL'
+    # Raise ValueError if name is not NaN and region is "ALL"
+    if not sc_wo_region["name"].isnull().values.all():
+        raise ValueError("Please leave 'name' empty if you set 'region' to 'ALL'.")
+
 def expand_regions(scalars, regions, where="ALL"):
     r"""
     Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
