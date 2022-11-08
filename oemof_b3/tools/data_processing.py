@@ -588,10 +588,45 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
     sc_set_name : pd.DataFrame
         DataFrame made of concatenated DataFrames with the correct names and fixed regions.
     """
+    def set_name(sc, regions):
+        r"""
+        This functions sets 'name' so that it conforms to the convention <region>-<carrier>-<tech>
+
+        Parameters
+        ----------
+        sc : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+        regions : list
+            List of regions
+
+        Returns
+        -------
+        sc_set_name : pd.DataFrame
+            DataFrame with names set according to convention
+        """
+        sc_set_name = pd.DataFrame(columns=sc.columns)
+        # Write name in name col as <region>-<carrier>-<tech>
+        for region in regions:
+            _sc = sc.loc[sc["region"] == region]
+            _sc["name"] = (_sc.apply(
+                lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+            ))
+
+            sc_set_name = sc_set_name.append(_sc)
+
+        return sc_set_name
+
     # PART 1: Ensure name is empty if region is 'ALL'
     # Raise ValueError if name is not NaN and region is "ALL"
     if not sc_wo_region["name"].isnull().values.all():
         raise ValueError("Please leave 'name' empty if you set 'region' to 'ALL'.")
+
+    # PART 2: Ensure name is set (according to convention) where name is empty and region is fixed
+    # Save values where name is None and region is not "ALL" in new DataFrame
+    sc_wo_name = sc_with_region[sc_with_region['name'].isnull()]
+
+    # Save <region>-<carrier>-<tech> to name
+    sc_add_name = set_name(sc_wo_name, regions)
 
 def expand_regions(scalars, regions, where="ALL"):
     r"""
