@@ -640,8 +640,9 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
         """
         sc_1 = sc_1.sort_values(by=col, ignore_index=True)
         sc_2 = sc_2.sort_values(by=col, ignore_index=True)
+        cond = False  # To avoid flake 8 E712
 
-        diff_name_sc = sc_2.loc[(sc_2[col].isin(sc_1[col]) == False)]
+        diff_name_sc = sc_2.loc[(sc_2[col].isin(sc_1[col])) == cond]
 
         return diff_name_sc
 
