@@ -587,8 +587,8 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
     Returns
     -------
-    sc_set_name : pd.DataFrame
-        DataFrame made of concatenated DataFrames with the correct names and fixed regions.
+    scalars_set_name : pd.DataFrame
+        DataFrame made of concatenated DataFrames with set names and fixed regions.
     """
 
     def set_name(sc, regions):
@@ -670,7 +670,7 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
         logger.warning(
             "The name you have set for some of your scalar data differs "
             "from the convention (<region>-<carrier>-<tech>). \n"
-            "We expected but could not find the following names: "
+            "We expected but could not find the following name(s): "
             f"{expected_names}"
         )
 
