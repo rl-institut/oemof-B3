@@ -104,6 +104,17 @@ def create_metadata(data, template=None):
     return metadata
 
 
+def write_metadata(metadata, schema, scenario, table):
+    metadata["name"] = f"{scenario}_{table}"
+
+    metadata["PublicationDate"] = str(date.today())
+
+    # TODO: A method metadata.add_resource, add field would be handy
+    metadata["resources"][0]["name"] = f"{schema}.{scenario}_{table}"
+
+    return metadata
+
+
 if __name__ == "__main__":
     filepath = pathlib.Path(sys.argv[1])
     metadata_path = pathlib.Path(sys.argv[2])
@@ -140,12 +151,7 @@ if __name__ == "__main__":
 
         metadata = create_metadata(data_upload_df)
 
-        metadata["name"] = f"{scenario}_{table}"
-
-        metadata["PublicationDate"] = str(date.today())
-
-        # TODO: A method metadata.add_resource, add field would be handy
-        metadata["resources"][0]["name"] = f"{SCHEMA}.{scenario}_{table}"
+        metadata = write_metadata(metadata, SCHEMA, scenario, table)
 
         save_dict_to_json(metadata, metadata_path / f"{table}.json")
 
