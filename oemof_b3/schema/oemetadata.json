@@ -147,20 +147,8 @@
                     }
                 ],
                 "primaryKey": [
-                    null
                 ],
                 "foreignKeys": [
-                    {
-                        "fields": [
-                            null
-                        ],
-                        "reference": {
-                            "resource": null,
-                            "fields": [
-                                null
-                            ]
-                        }
-                    }
                 ]
             },
             "dialect": {
