@@ -179,7 +179,7 @@ if __name__ == "__main__":
         try:
             data_upload_df.to_sql(
                 table,
-                connection=db.engine,
+                con=db.engine,
                 schema=SCHEMA,
                 if_exists="append",
                 index=False,
