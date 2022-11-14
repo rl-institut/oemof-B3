@@ -174,11 +174,11 @@ if __name__ == "__main__":
         # The following command will write the content of your dataframe to the table on the OEP
         # that was created earlier.
         # Have a look in the OEP after it ran successfully!
-        logger.info(f"{filename} is written into table")
+        logger.info(f"{filename} is written into table {scenario}_{table}")
 
         try:
             data_upload_df.to_sql(
-                table,
+                f"{scenario}_{table}",
                 con=db.engine,
                 schema=SCHEMA,
                 if_exists="append",
