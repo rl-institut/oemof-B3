@@ -105,12 +105,12 @@ def create_metadata(data, template=None):
 
 
 def write_metadata(metadata, schema, scenario, table):
-    metadata["name"] = f"{scenario}_{table}"
+    metadata["name"] = table
 
     metadata["PublicationDate"] = str(date.today())
 
     # TODO: A method metadata.add_resource, add field would be handy
-    metadata["resources"][0]["name"] = f"{schema}.{scenario}_{table}"
+    metadata["resources"][0]["name"] = f"{schema}.{table}"
 
     return metadata
 
@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
     # find data to upload
     dict_table_filename = {
-        os.path.splitext(filename)[0]: filename for filename in os.listdir(filepath)
+        f"{scenario}_{os.path.splitext(filename)[0]}": filename for filename in os.listdir(filepath)
     }
     logger.info(
         "These files will be uploaded: " + ", ".join(dict_table_filename.values())
@@ -180,11 +180,11 @@ if __name__ == "__main__":
         # The following command will write the content of your dataframe to the table on the OEP
         # that was created earlier.
         # Have a look in the OEP after it ran successfully!
-        logger.info(f"{filename} is written into table {scenario}_{table}")
+        logger.info(f"{filename} is written into table {table}")
 
         try:
             data_upload_df.to_sql(
-                f"{scenario}_{table}",
+                table,
                 con=db.engine,
                 schema=SCHEMA,
                 if_exists="append",
