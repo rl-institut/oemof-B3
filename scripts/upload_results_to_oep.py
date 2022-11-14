@@ -104,13 +104,13 @@ def create_metadata(data, template=None):
     return metadata
 
 
-def write_metadata(metadata, schema, scenario, table):
+def write_metadata(metadata, schema, table, title, keywords):
     metadata["name"] = table
-
+    metadata["title"] = title
     metadata["PublicationDate"] = str(date.today())
-
     # TODO: A method metadata.add_resource, add field would be handy
     metadata["resources"][0]["name"] = f"{schema}.{table}"
+    metadata["keywords"] = keywords
 
     return metadata
 
@@ -151,7 +151,7 @@ if __name__ == "__main__":
 
         metadata = create_metadata(data_upload_df)
 
-        metadata = write_metadata(metadata, SCHEMA, scenario, table)
+        metadata = write_metadata(metadata, SCHEMA, table, f"Model results oemof-B3 {table}", ["RLI", "oemof_b3"])
 
         save_dict_to_json(metadata, metadata_path / f"{table}.json")
 
