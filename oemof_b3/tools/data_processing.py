@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 import logging
+import inspect
 
 from oemof_b3.config import config
 
@@ -27,6 +28,13 @@ HEADER_B3_TS = pd.read_csv(
     os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
 ).columns
 
+
+def get_parent_logger(parent_filename):
+    filename_without_ext = os.path.splitext(parent_filename)[0]
+    logger_name = os.path.basename(filename_without_ext)
+    logger = logging.getLogger(logger_name)
+    print(logger)
+    return logger
 
 def sort_values(df, reset_index=True):
     _df = df.copy()
@@ -247,6 +255,9 @@ def save_df(df, path):
     path : str
         Path to save the csv file
     """
+    parent_filename = inspect.stack()[1].filename
+    logger = get_parent_logger(parent_filename)
+
     # Save scalars to csv file
     df.to_csv(path, index=True, sep=";")
 
@@ -371,6 +382,9 @@ def update_filtered_df(df, filters):
     -------
     filtered : pd.DataFrame
     """
+    parent_filename = inspect.stack()[1].filename
+    logger = get_parent_logger(parent_filename)
+
     assert isinstance(filters, dict)
     for value in filters.values():
         assert isinstance(value, dict)
@@ -639,6 +653,9 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
     merged : pd.DataFrame
         DataFrame in oemof_b3 scalars format.
     """
+    parent_filename = inspect.stack()[1].filename
+    logger = get_parent_logger(parent_filename)
+
     _df_a = df_a.copy()
     _df_b = df_b.copy()
 
@@ -756,6 +773,10 @@ def stack_timeseries(df):
     df_stacked : pandas.DataFrame
         Stacked DataFrame
     """
+
+    parent_filename = inspect.stack()[1].filename
+    logger = get_parent_logger(parent_filename)
+
     _df = df.copy()
 
     # Assert that _df has a timeindex
@@ -834,6 +855,9 @@ def unstack_timeseries(df):
     df_unstacked : pandas.DataFrame
         Unstacked DataFrame
     """
+    parent_filename = inspect.stack()[1].filename
+    logger = get_parent_logger(parent_filename)
+
     _df = df.copy()
 
     # Assert that frequency match for all time steps
@@ -932,6 +956,9 @@ def round_setting_int(df, decimals):
     Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
     it changes the dtype to Int64. Tolerates NaNs.
     """
+    parent_filename = inspect.stack()[1].filename
+    logger = get_parent_logger(parent_filename)
+
     _df = df.copy()
 
     for col, dec in decimals.items():
