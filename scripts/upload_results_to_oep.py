@@ -120,16 +120,24 @@ if __name__ == "__main__":
     metadata_path = pathlib.Path(sys.argv[2])
     logfile = sys.argv[3]
 
-    # set up the logger
+    # make scenario name compatible with oep requirements
+    # (Names must consist of lowercase alpha-numeric words or underscores
+    # and start with a letter and must be have a maximumlength of 50)
     scenario = "scenario_" + str(filepath.parts[1]).replace("-", "_").lower()
+
+    # set up the logger
     logger = config.add_snake_logger(logfile, "upload_results_to_oep")
 
     if not os.path.exists(metadata_path):
         os.makedirs(metadata_path)
 
+    # define table names
+    def get_table_name(filename, scenario):
+        return f"{os.path.splitext(filename)[0]}_{scenario}"
+
     # find data to upload
     dict_table_filename = {
-        f"{scenario}_{os.path.splitext(filename)[0]}": filename for filename in os.listdir(filepath)
+        get_table_name(filename, scenario): filename for filename in os.listdir(filepath)
     }
     logger.info(
         "These files will be uploaded: " + ", ".join(dict_table_filename.values())
