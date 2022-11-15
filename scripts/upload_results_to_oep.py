@@ -61,7 +61,7 @@ SCHEMA = "model_draft"
 
 def save_dict_to_json(data, filepath, encoding="utf-8"):
     with open(filepath, "w", encoding=encoding) as f:
-        return json.dump(data, f, sort_keys=True, indent=2)
+        return json.dump(data, f, sort_keys=False, indent=2)
 
 
 def list_diff(sample, default):
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     logfile = sys.argv[3]
 
     # set up the logger
-    scenario = "scenario"  # TODO: Derive scenario from filepath
+    scenario = "scenario_" + str(filepath.parts[1]).replace("-", "_").lower()
     logger = config.add_snake_logger(logfile, "upload_results_to_oep")
 
     if not os.path.exists(metadata_path):
