@@ -82,3 +82,13 @@ Plotting
    :glob:
 
    plotting/*
+
+
+Upload results to oep
+=====================
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   upload_results_to_oep/*
