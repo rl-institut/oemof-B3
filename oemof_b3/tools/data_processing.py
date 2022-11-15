@@ -30,6 +30,18 @@ HEADER_B3_TS = pd.read_csv(
 
 
 def get_parent_logger(parent_filename):
+    r"""
+    Returns the logger of the specified file
+
+    Parameters
+    ----------
+    parent_filename : path
+        the filename of the calling script including its path
+    Returns
+    -------
+    logger : logging.logger
+        the logger of the script indicated in parent_filename
+    """
     filename_without_ext = os.path.splitext(parent_filename)[0]
     logger_name = os.path.basename(filename_without_ext)
     logger = logging.getLogger(logger_name)
