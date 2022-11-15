@@ -15,8 +15,14 @@ Outputs
 
 Description
 -------------
-Creates tables on the OpenEnergyPlatform (OEP) based on related oemetadata. Uploads results data
-in oemof_b3-format to the OEP.
+This script performs the following steps:
+
+* Create metadata (in oemetadata format, using the template in ``oemof-B3/schema/oemetadata.json``)
+  for given model results (in oemof-B3-format) and saves them locally as json files.
+* Create tables on the OpenEnergyPlatform (OEP) based on the metadata.
+* Upload model results to the OEP tables.
+* Validate metadata.
+* Upload metadata to the OEP tables.
 
 The script can delete existing tables on the OEP that have been uploaded with an affiliated OEP user
 account.
