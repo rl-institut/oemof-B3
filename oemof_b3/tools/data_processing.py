@@ -13,13 +13,16 @@ from oemof_b3.config import config
 
 _log = None
 
+
 def initLogger(logger=None):
     global _log
     if logger != None:
         _log = logger
     else:
         import logging
+
         _log = logging.getLogger()
+
 
 here = os.path.dirname(__file__)
 
@@ -258,7 +261,6 @@ def save_df(df, path):
 
     # Print user info
     _log.info(f"The DataFrame has been saved to: {path}.")
-    print(_log)
 
 
 def filter_df(df, column_name, values, inverse=False):

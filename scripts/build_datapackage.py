@@ -56,6 +56,7 @@ from oemof_b3.config import config
 
 logger = logging.getLogger()
 
+
 def update_with_checks(old, new):
     r"""
     Updates a Series or DataFrame with new data. Raises a warning if there is new data that is not
