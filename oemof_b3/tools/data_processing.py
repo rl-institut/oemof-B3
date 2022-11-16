@@ -9,11 +9,17 @@ import os
 import numpy as np
 import pandas as pd
 
-import logging
-
 from oemof_b3.config import config
 
-logger = logging.getLogger()
+_log = None
+
+def initLogger(logger=None):
+    global _log
+    if logger != None:
+        _log = logger
+    else:
+        import logging
+        _log = logging.getLogger()
 
 here = os.path.dirname(__file__)
 
@@ -251,7 +257,8 @@ def save_df(df, path):
     df.to_csv(path, index=True, sep=";")
 
     # Print user info
-    logger.info(f"The DataFrame has been saved to: {path}.")
+    _log.info(f"The DataFrame has been saved to: {path}.")
+    print(_log)
 
 
 def filter_df(df, column_name, values, inverse=False):
@@ -380,7 +387,7 @@ def update_filtered_df(df, filters):
     filtered_updated.index.name = config.settings.general.scal_index_name
 
     for iteration, filter in filters.items():
-        logger.info(f"Applying set of filters no {iteration}.")
+        _log.info(f"Applying set of filters no {iteration}.")
 
         # Apply set of filters
         filtered = multi_filter_df(df, **filter)
@@ -395,7 +402,7 @@ def update_filtered_df(df, filters):
         )
 
         # inform about filtering updating
-        logger.info(f"Updated data with data filtered by {filter}")
+        _log.info(f"Updated data with data filtered by {filter}")
 
     return filtered_updated
 
@@ -656,23 +663,23 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
         a_not_b = set_index_a.difference(set_index_b)
         if a_not_b:
             if how == "left":
-                logger.warning(
+                _log.warning(
                     f"There are {len(a_not_b)} elements in df_a but not in df_b"
                     f" and are lost (choose how='outer' to keep them): {a_not_b}"
                 )
             elif how == "outer":
-                logger.info(
+                _log.info(
                     f"There are {len(a_not_b)} elements in df_a that are"
                     f" added to df_b: {a_not_b}"
                 )
 
         a_and_b = set_index_a.intersection(set_index_b)
-        logger.info(
+        _log.info(
             f"There are {len(a_and_b)} elements in df_b that are updated by df_a."
         )
 
         b_not_a = set_index_b.difference(set_index_a)
-        logger.info(
+        _log.info(
             f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}"
         )
 
@@ -774,7 +781,7 @@ def stack_timeseries(df):
 
     _df_freq = pd.infer_freq(_df.index)
     if _df.index.freqstr is None:
-        logger.info(
+        _log.info(
             f"The frequency of your data is not specified in the DataFrame, "
             f"but is of the following frequency alias: {_df_freq}. "
             f"The frequency of your DataFrame is therefore automatically set to the "
@@ -846,7 +853,7 @@ def unstack_timeseries(df):
     lost_columns = ["source", "comment"]
     for col in lost_columns:
         if col in list(df.columns):
-            logger.warning(
+            _log.warning(
                 f"Caution any remarks in column '{col}' are lost after unstacking."
             )
 
@@ -936,7 +943,7 @@ def round_setting_int(df, decimals):
 
     for col, dec in decimals.items():
         if col not in _df.columns:
-            logger.warning(f"No column named '{col}' found when trying to round.")
+            _log.warning(f"No column named '{col}' found when trying to round.")
             continue
         elif dec == 0:
             dtype = "Int64"

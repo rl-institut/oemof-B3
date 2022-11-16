@@ -33,6 +33,7 @@ from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
+
 from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import (
@@ -49,11 +50,11 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     expand_regions,
     save_df,
+    initLogger,
 )
 from oemof_b3.config import config
 
 logger = logging.getLogger()
-
 
 def update_with_checks(old, new):
     r"""
@@ -248,6 +249,7 @@ if __name__ == "__main__":
 
     logfile = sys.argv[3]
     logger = config.add_snake_logger(logfile, "build_datapackage")
+    initLogger(logger)
 
     scenario_specs = load_yaml(scenario_specs)
 
