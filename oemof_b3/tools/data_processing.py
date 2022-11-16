@@ -33,8 +33,8 @@ def get_parent_logger(parent_filename):
     filename_without_ext = os.path.splitext(parent_filename)[0]
     logger_name = os.path.basename(filename_without_ext)
     logger = logging.getLogger(logger_name)
+    print(logger)
     return logger
-
 
 def sort_values(df, reset_index=True):
     _df = df.copy()
