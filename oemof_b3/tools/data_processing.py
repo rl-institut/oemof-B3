@@ -16,7 +16,7 @@ _log = None
 
 def initLogger(logger=None):
     global _log
-    if logger != None:
+    if logger is not None:
         _log = logger
     else:
         import logging
