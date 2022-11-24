@@ -43,6 +43,21 @@ of the repo and has to be provided in :file:`raw`. Intermediate and final result
     ├── results
     ├── scenarios
 
+Raw data
+========
+.. There is no rule for getting raw data yet - it has to be provided manually.
+.. in the future, raw data can be downloaded automatically, which will include a rule here, too.
+
+Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
+As a first step, preprocessing scripts in the model pipeline (see :ref:`Preprocessing`) convert it into the
+oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
+that format already.
+
+The following additional information about specific parameters should be considered:
+Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
+Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
+with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
+Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
 Prepare resources
 =================
