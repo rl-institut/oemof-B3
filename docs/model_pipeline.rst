@@ -179,6 +179,11 @@ Outputs
 
 Output files are saved in :file:`results/scenario/postprocessed`.
 
+Data postprocessing makes use of oemoflex's functionality, thus postprocessed data follows its
+data format. See oemoflex' documention on
+`postprocessed results <https://oemoflex.readthedocs.io/en/latest/overview.html#postprocess-results>`_
+for further information.
+
 Visualization
 =============
 
