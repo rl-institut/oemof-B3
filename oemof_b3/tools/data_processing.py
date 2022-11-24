@@ -892,6 +892,9 @@ def unstack_var_name(df):
 
     unstacked = _df.unstack("var_name")
 
+    new_index = _df.index.droplevel(-1).unique()
+    unstacked = unstacked.reindex(new_index)
+
     return unstacked
 
 
@@ -921,6 +924,8 @@ def stack_var_name(df):
     stacked.name = "var_value"
 
     stacked = pd.DataFrame(stacked).reset_index()
+
+    stacked = sort_values(stacked)
 
     stacked = format_header(
         stacked, HEADER_B3_SCAL, config.settings.general.scal_index_name
