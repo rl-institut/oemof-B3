@@ -5,7 +5,7 @@ Model pipeline
 ~~~~~~~~~~~~~~
 
 .. contents:: `Contents`
-    :depth: 2
+    :depth: 1
     :local:
     :backlinks: top
 
