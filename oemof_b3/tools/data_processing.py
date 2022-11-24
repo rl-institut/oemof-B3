@@ -142,6 +142,26 @@ def load_b3_scalars(path, sep=";"):
     return df
 
 
+def load_unstacked_b3_scalars(path, sep=";"):
+    """
+    This function loads unstacked scalars from a csv file.
+
+    Parameters
+    ----------
+    path : str
+        path of input file of csv format
+    sep : str
+        column separator
+
+    Returns
+    -------
+    df : pd.DataFrame
+        DataFrame with unstacked scalars
+    """
+    df = pd.read_csv(path, sep=sep, index_col=[0, 1, 2, 3, 4, 5], header=[0, 1])
+    return df
+
+
 def load_b3_timeseries(path, sep=";"):
     """
     This function loads a stacked time series from a csv file.
