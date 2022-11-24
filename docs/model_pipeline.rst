@@ -47,11 +47,17 @@ of the repo and has to be provided in :file:`raw`. Intermediate and final result
 Prepare resources
 =================
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    prepare_resources/*
+
+Outputs
+-------
 
 Output files are saved in :file:`results/_resources`.
 
@@ -80,11 +86,17 @@ There is no unit transformation within the model, i.e. the user needs to ensure 
 Build datapackages
 ==================
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    build_datapackage/*
+
+Outputs
+-------
 
 Output files are saved in :file:`results/scenario/preprocessed`.
 
@@ -119,11 +131,17 @@ Components and properties can also be added or updated in oemof-B3 using the fil
 Optimization
 ============
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    optimization/*
+
+Outputs
+-------
 
 Output files are saved in :file:`results/scenario/optimized`.
 
@@ -132,22 +150,34 @@ The results are optimized energy systems
 Postprocessing
 ==============
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    postprocessing/*
 
+Outputs
+-------
+
 Output files are saved in :file:`results/scenario/postprocessed`.
 
 Visualization
 =============
+
+Rules
+-----
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
    visualization/*
+
+Outputs
+-------
 
 Output files are saved  in :file:`results/scenario/plotted`.
 
