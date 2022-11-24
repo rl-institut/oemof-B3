@@ -9,7 +9,7 @@ plotted : str
     ``results/{scenario}/plotted/storage_levels/``: path where a new directory is created and
     the plots are saved
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -19,8 +19,9 @@ Description
 -------------
 The script creates storage level plots.
 
-The static plots are saved as files (png, pdf, etc.) and the interactive plotly plots as html-files
-in a new directory called plotted.
+The static plots with a file format defined by the *plot_filetype* variable in
+``oemof_b3/config/settings.yaml`` and the interactive plotly plots as html-files
+in a new directory called storage_levels within directory plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
 

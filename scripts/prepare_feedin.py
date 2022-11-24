@@ -22,7 +22,7 @@ pd.DataFrame
 Description
 -------------
 This script prepares wind, pv and run-of-the-river (ror) feed-in time series for the regions Berlin
-and Brandenburg. Raw data is read from csvs from https://www.renewables.ninja/ (wind+pv) and
+and Brandenburg. Raw data is read from csv-files from https://www.renewables.ninja/ (wind+pv) and
 https://zenodo.org/record/1044463 (ror) and is then formatted to fit the time series template of
 oemof-B3 (`schema/timeseries.csv`).
 

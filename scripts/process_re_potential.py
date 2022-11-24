@@ -6,7 +6,7 @@ input_dir : str
     ``results/_resources/RE_potential/``: Path to input directory of renewable potential
 output_scalars : str
     ``results/_resources/scal_power_potential_wind_pv.csv``: Path incl. file name of scalar output,
-     which is input to energy system model
+    which is input to energy system model
 output_tables : str
     ``results/_tables/potential_wind_pv_kreise.csv``: Path incl. file name of output for results
     documentation

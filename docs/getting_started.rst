@@ -16,7 +16,7 @@ Using oemof-B3
 Installation
 ------------
 
-Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
 In order to install oemof-B3, proceed with the following steps:
 
@@ -28,12 +28,16 @@ In order to install oemof-B3, proceed with the following steps:
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
-Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml).
-If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in conda environment config (environment.yml).
+If the environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
+`Pandoc Installation <https://pandoc.org/installing.html>`_.
 
-For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
+For the optimization, oemof-B3 needs a solver. Check out the
+`oemof.solph documentation <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_
+for installation notes.
 
-To test if everything works, you can run the examples.
+To test if everything works, you can run the examples. To do this, please follow the instructions in chapter :ref:`examples`.
+
 
 For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
@@ -106,14 +110,24 @@ More features which facilitate the workflow management are
 - Modularity
 - Report generation
 
-Snakemake on Linux
-------------------
 
-To run all example scenarios, execute:
+.. _how_to_run_model_label:
+
+How to run the model
+--------------------
+
+Snakemake on Linux
+^^^^^^^^^^^^^^^^^^
+
+To run the scenarios, execute:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES> plot_all_examples
+     snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/postprocessed
+
+whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
+To run the scenarios, the corresponding raw data in the raw directory is required.
+
 
 Alternatively, to create just the output file or directory of one rule, run:
 
@@ -121,8 +135,9 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
+
 Snakemake on Windows
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 When running snakemake with output files in subfolders on Windows with
 

@@ -7,7 +7,7 @@ scenario_specs : str
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -18,8 +18,13 @@ oemoflex.EnergyDatapackage
 Description
 -------------
 The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
-fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
-Further, additional parameters like emission limit are saved in a separate file.
+fills it with scalar and timeseries data, infers the metadata and saves it to the given
+destination. Further, additional parameters like emission limit are saved in a separate file.
+
+Explanations about the structure of the preprocessed datapackage can be found in section
+:ref:`Preprocessed datapackages` of the
+`docu <https://oemof-b3.readthedocs.io/en/latest/index.html>`_.
+
 """
 import logging
 import sys
