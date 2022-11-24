@@ -143,7 +143,8 @@ if __name__ == "__main__":
 
     # find data to upload
     dict_table_filename = {
-        get_table_name(filename, scenario): filename for filename in os.listdir(filepath)
+        get_table_name(filename, scenario): filename
+        for filename in os.listdir(filepath)
     }
     logger.info(
         "These files will be uploaded: " + ", ".join(dict_table_filename.values())
@@ -165,7 +166,13 @@ if __name__ == "__main__":
 
         metadata = create_metadata(data_upload_df)
 
-        metadata = write_metadata(metadata, SCHEMA, table, f"Model results oemof-B3 {table}", ["RLI", "oemof_b3"])
+        metadata = write_metadata(
+            metadata,
+            SCHEMA,
+            table,
+            f"Model results oemof-B3 {table}",
+            ["RLI", "oemof_b3"],
+        )
 
         save_dict_to_json(metadata, metadata_path / f"{table}.json")
 
