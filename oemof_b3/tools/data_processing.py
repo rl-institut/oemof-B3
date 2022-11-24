@@ -897,7 +897,8 @@ def unstack_var_name(df):
 
 def stack_var_name(df):
     r"""
-    Given a DataFrame, this function will stack the variables.
+    Given a DataFrame, this function will stack the variables and format
+    the results in b3-format.
 
     Parameters
     ----------
@@ -920,6 +921,10 @@ def stack_var_name(df):
     stacked.name = "var_value"
 
     stacked = pd.DataFrame(stacked).reset_index()
+
+    stacked = format_header(
+        stacked, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
 
     return stacked
 
@@ -1041,9 +1046,5 @@ class ScalarProcessor:
             _df = pd.DataFrame(_df)
 
         _df = stack_var_name(_df)
-
-        _df = format_header(
-            _df, HEADER_B3_SCAL, config.settings.general.scal_index_name
-        )
 
         self.scalars = pd.concat([self.scalars, _df])
