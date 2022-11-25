@@ -1073,3 +1073,79 @@ class ScalarProcessor:
         _df = stack_var_name(_df)
 
         self.scalars = pd.concat([self.scalars, _df])
+
+
+class B3_Data():
+    header = None
+
+    def __init__(self, df):
+        self.df = format_header(df, self.header, config.settings.general.scal_index_name)
+
+    @classmethod
+    def from_csv(cls, path):
+        pass
+
+    def to_csv(self, path):
+        save_df(self.df, path)
+
+    def get_var_name(self, var_name):
+        return filter_df(self.df, "var_name", var_name)
+
+    def drop_var_name(self, var_name):
+        return filter_df(self.df, "var_name", var_name, inverse=True)
+
+    def aggregate(self, columns_to_aggregate, agg_method=None):
+        pass
+
+
+class B3_Scalars(B3_Data):
+    header = HEADER_B3_SCAL
+
+    @classmethod
+    def from_csv(cls, path):
+        if isinstance(path, list):
+            df = multi_load_b3_scalars(path)
+        else:
+            df = load_b3_scalars(path)
+        return cls(df)
+
+    def get_unstacked_var_name(self, var_name):
+        df = self.get_var_name(var_name)
+
+        if df.empty:
+            raise ValueError(f"No entries for {var_name} in df.")
+
+        df = unstack_var_name(df)
+
+        return df
+
+    def aggregate(self, columns_to_aggregate, agg_method=None):
+        return aggregate_scalars(self.df, columns_to_aggregate, agg_method)
+
+    def expand_regions(self, regions, where="ALL"):
+        return expand_regions(self.df, regions, where)
+
+
+class B3_Timeseries(B3_Data):
+    header = HEADER_B3_TS
+
+    @classmethod
+    def from_csv(cls, path):
+        if isinstance(path, list):
+            df = multi_load_b3_timeseries(path)
+        else:
+            df = load_b3_timeseries(path)
+        return cls(df)
+
+    def get_unstacked_var_name(self, var_name):
+        df = self.get_var_name(var_name)
+
+        if df.empty:
+            raise ValueError(f"No entries for {var_name} in df.")
+
+        df = unstack_timeseries(df)
+
+        return df
+
+    def aggregate(self, columns_to_aggregate, agg_method=None):
+        return aggregate_timeseries(self.df, columns_to_aggregate, agg_method)
