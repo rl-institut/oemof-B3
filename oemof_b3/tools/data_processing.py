@@ -1089,10 +1089,10 @@ class B3_Data():
         save_df(self.df, path)
 
     def get_var_name(self, var_name):
-        return filter_df(self.df, "var_name", var_name)
+        pass
 
     def drop_var_name(self, var_name):
-        return filter_df(self.df, "var_name", var_name, inverse=True)
+        pass
 
     def aggregate(self, columns_to_aggregate, agg_method=None):
         pass
@@ -1119,11 +1119,21 @@ class B3_Scalars(B3_Data):
 
         return df
 
+    def get_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name)
+        return B3_Scalars(filtered)
+
+    def drop_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name, inverse=True)
+        return B3_Scalars(filtered)
+
     def aggregate(self, columns_to_aggregate, agg_method=None):
-        return aggregate_scalars(self.df, columns_to_aggregate, agg_method)
+        aggregated = aggregate_scalars(self.df, columns_to_aggregate, agg_method)
+        return B3_Scalars(aggregated)
 
     def expand_regions(self, regions, where="ALL"):
-        return expand_regions(self.df, regions, where)
+        expanded = expand_regions(self.df, regions, where)
+        return B3_Scalars(expanded)
 
 
 class B3_Timeseries(B3_Data):
@@ -1147,5 +1157,14 @@ class B3_Timeseries(B3_Data):
 
         return df
 
+    def get_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name)
+        return B3_Timeseries(filtered)
+
+    def drop_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name, inverse=True)
+        return B3_Timeseries(filtered)
+
     def aggregate(self, columns_to_aggregate, agg_method=None):
-        return aggregate_timeseries(self.df, columns_to_aggregate, agg_method)
+        aggregated = aggregate_timeseries(self.df, columns_to_aggregate, agg_method)
+        return B3_Timeseries(aggregated)
