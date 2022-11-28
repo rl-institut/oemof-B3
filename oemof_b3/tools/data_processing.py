@@ -263,7 +263,7 @@ def save_df(df, path):
 
 def load_tabular_results_scal(path):
     r"""
-    Loads timeseries as given by oemof.tabular/oemoflex.
+    Loads scalars as given by oemof.tabular/oemoflex.
 
     Parameters
     ----------
