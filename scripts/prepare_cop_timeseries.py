@@ -10,7 +10,7 @@ out_path : str
     ``results/_resources/ts_efficiency_heatpump_small.csv``: path of output file with timeseries
     data as .csv
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/_resources/ts_efficiency_heatpump_small.log``: path to logfile
 
 Outputs
 ---------
