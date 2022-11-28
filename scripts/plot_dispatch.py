@@ -254,7 +254,7 @@ def reduce_labels(ax, simple_labels_dict):
     return handles, labels
 
 
-def aggregate_by_region(bus_files):
+def aggregate_by_region(bus_files, carrier):
     """
     This function aggregates data of busses and demand by region
 
@@ -263,39 +263,50 @@ def aggregate_by_region(bus_files):
     bus_files: pd.DataFrame
         Dataframe with bus data from ``results/{scenario}/postprocessed/sequences/bus``
 
+    Returns
+    -------
+    df_aggregated: pd.DataFrame
+        Dataframe with aggregated data
+
+    df_demand_aggregated: pd.DataFrame
+        Dataframe with aggregated demands
+
+    bus_name: str
+        Name of the bus
+
     """
-    for carrier in carriers:
-        # Add list for stacked DataFrames
-        list_df_stacked = []
-        list_df_demand_stacked = []
 
-        # Find all files where carrier is same and hence multiple regions exist
-        busses_to_be_aggregated = [file for file in bus_files if carrier in file]
-        if len(busses_to_be_aggregated) > 1:
-            for bus_to_be_aggregated in busses_to_be_aggregated:
-                df, df_demand, bus_name = prepare_dispatch_data(bus_to_be_aggregated)
+    # Add list for stacked DataFrames
+    list_df_stacked = []
+    list_df_demand_stacked = []
 
-                list_df_stacked.append(dp.stack_timeseries(df))
-                list_df_demand_stacked.append(dp.stack_timeseries(df_demand))
+    # Find all files where carrier is same and hence multiple regions exist
+    busses_to_be_aggregated = [file for file in bus_files if carrier in file]
+    if len(busses_to_be_aggregated) > 1:
+        for bus_to_be_aggregated in busses_to_be_aggregated:
+            df, df_demand, bus_name = prepare_dispatch_data(bus_to_be_aggregated)
 
-            df_stacked = get_df_for_aggregation(list_df_stacked)
-            df_demand_stacked = get_df_for_aggregation(list_df_demand_stacked)
+            list_df_stacked.append(dp.stack_timeseries(df))
+            list_df_demand_stacked.append(dp.stack_timeseries(df_demand))
 
-            # Exchange region from bus_name with "ALL"
-            bus_name = "ALL_" + carrier
+        df_stacked = get_df_for_aggregation(list_df_stacked)
+        df_demand_stacked = get_df_for_aggregation(list_df_demand_stacked)
 
-            # Aggregate bus data and demand
-            df_aggregated = dp.aggregate_timeseries(
-                df_stacked, columns_to_aggregate="region"
-            )
-            df_demand_aggregated = dp.aggregate_timeseries(
-                df_demand_stacked, columns_to_aggregate="region"
-            )
-            # Unstack aggregated bus data and demand
-            df_aggregated = dp.unstack_timeseries(df_aggregated)
-            df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
+        # Exchange region from bus_name with "ALL"
+        bus_name = "ALL_" + carrier
 
-            plot_dispatch_data(df_aggregated, df_demand_aggregated, bus_name)
+        # Aggregate bus data and demand
+        df_aggregated = dp.aggregate_timeseries(
+            df_stacked, columns_to_aggregate="region"
+        )
+        df_demand_aggregated = dp.aggregate_timeseries(
+            df_demand_stacked, columns_to_aggregate="region"
+        )
+        # Unstack aggregated bus data and demand
+        df_aggregated = dp.unstack_timeseries(df_aggregated)
+        df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
+
+        return df_aggregated, df_demand_aggregated, bus_name
 
 
 if __name__ == "__main__":
@@ -318,8 +329,9 @@ if __name__ == "__main__":
     selected_bus_files = [
         file for file in bus_files for carrier in carriers if carrier in file
     ]
-
-    aggregate_by_region(bus_files)
+    for carrier in carriers:
+        df_aggregated, df_demand_aggregated, bus_name = aggregate_by_region(bus_files)
+        plot_dispatch_data(df_aggregated, df_demand_aggregated, bus_name)
 
     for bus_file in selected_bus_files:
         df, df_demand, bus_name = prepare_dispatch_data(bus_file)
