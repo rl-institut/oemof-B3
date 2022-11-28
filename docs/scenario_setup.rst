@@ -1,8 +1,8 @@
 .. _scenario_setup_label:
 
-~~~~~~~~~~~~~~
-Scenario setup
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+How to customize oemof-B3
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. contents:: `Contents`
     :depth: 1
@@ -16,7 +16,7 @@ your model in the directory :attr:`model`.
 In the directory :attr:`config` you can furthermore choose or modify labels, hard coded constant
 parameters or colors within plots.
 
-scenarios
+Scenarios
 ---------
 For each scenario you define, you create a YAML-file within :attr:`scenarios`.
 You have to provide a name and a label of your scenario.
