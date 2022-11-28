@@ -5,7 +5,7 @@ Model pipeline
 ~~~~~~~~~~~~~~
 
 .. contents:: `Contents`
-    :depth: 2
+    :depth: 1
     :local:
     :backlinks: top
 
@@ -43,15 +43,41 @@ of the repo and has to be provided in :file:`raw`. Intermediate and final result
     ├── results
     ├── scenarios
 
+Raw data
+========
+.. There is no rule for getting raw data yet - it has to be provided manually.
+.. in the future, raw data can be downloaded automatically, which will include a rule here, too.
+
+Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
+As a first step, preprocessing scripts in the model pipeline (see :ref:`Prepare resources`) convert it into the
+oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
+that format already.
+
+The following additional information about specific parameters should be considered:
+Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
+Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
+with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
+Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
+
+.. _prepare_resources_label_:
 
 Prepare resources
 =================
+
+Rules
+-----
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
    prepare_resources/*
+
+
+Outputs
+-------
+
+Output files are saved in :file:`results/_resources`.
 
 The resources are preprocessed data that serve as material for building scenarios.
 They are a first intermediate result in oemof-B3.
@@ -81,6 +107,7 @@ Time series
 
 
 .. _conventions_resources_label_:
+
 Conventions
 ^^^^^^^^^^^
 
@@ -112,11 +139,17 @@ A few more conventions are important to know:
 Build datapackages
 ==================
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    build_datapackage/*
+
+Outputs
+-------
 
 Output files are saved in :file:`results/scenario/preprocessed`.
 
@@ -151,11 +184,17 @@ Components and properties can also be added or updated in oemof-B3 using the fil
 Optimization
 ============
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    optimization/*
+
+Outputs
+-------
 
 Output files are saved in :file:`results/scenario/optimized`.
 
@@ -164,23 +203,41 @@ The results are optimized energy systems
 Postprocessing
 ==============
 
+Rules
+-----
+
 .. toctree::
    :maxdepth: 1
    :glob:
 
    postprocessing/*
 
+Outputs
+-------
+
 Output files are saved in :file:`results/scenario/postprocessed`.
 
+Data postprocessing makes use of oemoflex's functionality, thus postprocessed data follows its
+data format. See oemoflex' documention on
+`postprocessed results <https://oemoflex.readthedocs.io/en/latest/overview.html#postprocess-results>`_
+for further information.
+
 .. _visualization_label_:
+
 Visualization
 =============
+
+Rules
+-----
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
    visualization/*
+
+Outputs
+-------
 
 Output files are saved  in :file:`results/scenario/plotted`.
 
