@@ -8,11 +8,12 @@ target : str
     ``results/{scenario}/plotted/scalars/``: path where a new directory is
     created and the plots are saved.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
-Plots of scalar results.
+Plots of scalar results with a file format defined by the *plot_filetype* variable in
+``oemof_b3/config/settings.yaml``.
 
 Description
 -------------

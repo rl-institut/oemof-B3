@@ -7,7 +7,7 @@ in_path : str
 out_path : str
     ``results/{scenario}/tables/``: target path for results tables.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 -------

@@ -10,7 +10,7 @@ scenario_name : str
 destination : str
     ``results/{scenario}/postprocessed``: Target path for postprocessed results.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -20,6 +20,9 @@ oemoflex.ResultsDatapackage
 Description
 -------------
 The script performs the postprocessing of optimization results.
+
+Explanations about the structure of the postprocessed data can be found in section
+:ref:`Postprocessed data` of the `docu <https://oemof-b3.readthedocs.io/en/latest/index.html>`_.
 """
 import os
 import sys
