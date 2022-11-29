@@ -128,8 +128,6 @@ A few more conventions are important to know:
   * such powered with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
   * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
-* The parameters :attr:`timeindex_start` and :attr:`timeindex_end` need to follow ISO 8601 date and time format.
-
 
 Build datapackages
 ==================
