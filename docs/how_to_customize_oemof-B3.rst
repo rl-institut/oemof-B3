@@ -1,4 +1,4 @@
-.. _scenario_setup_label:
+.. _how_to_customize_oemof-B3_label:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 How to customize oemof-B3
