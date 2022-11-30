@@ -167,14 +167,15 @@ def get_paths_scenario_input(wildcards):
 rule build_datapackage:
     input:
         get_paths_scenario_input,
-        scenario="scenarios/{scenario}.yml"
+        scenario="scenarios/{scenario}.yml",
+        settings="oemof_b3/config/settings.yaml",
     output: directory("results/{scenario}/preprocessed")
     params:
         logfile="results/{scenario}/{scenario}.log"
     wildcard_constraints:
         # Do not use this rule for the examples. Use prepare_example instead
         scenario=r"(?!example_).*"
-    shell: "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
+    shell: "python scripts/build_datapackage.py {input.scenario} {input.settings} {output} {params.logfile}"
 
 rule optimize:
     input: "results/{scenario}/preprocessed"
