@@ -9,7 +9,7 @@ plotted : str
     ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
     the plots are saved
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
