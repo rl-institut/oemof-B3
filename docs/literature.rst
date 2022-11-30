@@ -14,7 +14,7 @@ Berlin
 ----
 
 * Berliner Energie- und Klimaschutzprogramm (BEK) 2030
-* BET-Studie :cite:p:`BET_2019`
+* Machbarkeitsstudie - Kohleausstieg und nachhaltige Fernwärmeversorgung Berlin :cite:p:`BET_2019`
 
 2050
 ----
