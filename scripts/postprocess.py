@@ -10,7 +10,7 @@ scenario_name : str
 destination : str
     ``results/{scenario}/postprocessed``: Target path for postprocessed results.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
