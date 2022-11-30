@@ -265,7 +265,7 @@ if __name__ == "__main__":
     output_file = sys.argv[3]
     logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile, "prepare_vehicle_charging_demand")
+    logger = config.add_snake_logger(logfile)
 
     # get constant share of electric charging demand
     const_share = get_constant_share_of_vehicle_ts(scalars_file)

@@ -109,7 +109,7 @@ if __name__ == "__main__":
     out_path = sys.argv[2]
     logfile = sys.argv[3]
 
-    logger = config.add_snake_logger(logfile, "create_results_table")
+    logger = config.add_snake_logger(logfile)
 
     scalars = pd.read_csv(os.path.join(in_path, "scalars.csv"))
 

@@ -414,7 +414,7 @@ if __name__ == "__main__":
     out_path2 = sys.argv[7]
     logfile = sys.argv[8]
 
-    logger = config.add_snake_logger(logfile, "prepare_heat_demand")
+    logger = config.add_snake_logger(logfile)
 
     CARRIERS = ["heat_central", "heat_decentral"]
 

@@ -430,7 +430,7 @@ if __name__ == "__main__":
     target = sys.argv[2]
     logfile = sys.argv[3]
 
-    logger = config.add_snake_logger(logfile, "plot_scalar_results")
+    logger = config.add_snake_logger(logfile)
 
     # User input
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2", "ch4"]
