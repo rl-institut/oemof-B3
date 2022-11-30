@@ -330,7 +330,9 @@ if __name__ == "__main__":
         file for file in bus_files for carrier in carriers if carrier in file
     ]
     for carrier in carriers:
-        df_aggregated, df_demand_aggregated, bus_name = aggregate_by_region(bus_files)
+        df_aggregated, df_demand_aggregated, bus_name = aggregate_by_region(
+            bus_files, carrier
+        )
         plot_dispatch_data(df_aggregated, df_demand_aggregated, bus_name)
 
     for bus_file in selected_bus_files:
