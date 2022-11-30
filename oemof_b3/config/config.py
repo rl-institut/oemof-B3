@@ -33,11 +33,9 @@ stream_handler.setFormatter(stream_formatter)
 stream_handler.addFilter(LevelFilter(logging.ERROR))
 root_logger.addHandler(stream_handler)
 
-SNAKE_LOGGER = "snake"
 
-
-def add_snake_logger(logfile):
-    logger = logging.getLogger(SNAKE_LOGGER)
+def add_snake_logger(logfile, rulename):
+    logger = logging.getLogger(rulename)
     file_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )

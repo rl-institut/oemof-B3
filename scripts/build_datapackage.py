@@ -50,6 +50,7 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     expand_regions,
     save_df,
+    initLogger,
 )
 from oemof_b3.config import config
 
@@ -248,7 +249,8 @@ if __name__ == "__main__":
     destination = sys.argv[2]
 
     logfile = sys.argv[3]
-    logger = config.add_snake_logger(logfile)
+    logger = config.add_snake_logger(logfile, "build_datapackage")
+    initLogger(logger)
 
     scenario_specs = load_yaml(scenario_specs)
 

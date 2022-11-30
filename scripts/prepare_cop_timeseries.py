@@ -175,7 +175,7 @@ if __name__ == "__main__":
     out_path = sys.argv[3]  # path to timeseries of cops of small-scale heat pumps
     logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile)
+    logger = config.add_snake_logger(logfile, "prepare_cop_timeseries")
 
     # Get constants
     # Quality grade of an air/water heat pump

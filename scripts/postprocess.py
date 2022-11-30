@@ -42,7 +42,7 @@ if __name__ == "__main__":
     destination = sys.argv[3]
 
     logfile = sys.argv[4]
-    logger = config.add_snake_logger(logfile)
+    logger = config.add_snake_logger(logfile, "postprocess")
 
     try:
         es = EnergySystem()

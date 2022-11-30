@@ -122,7 +122,7 @@ if __name__ == "__main__":
     plotted = sys.argv[2]
     logfile = sys.argv[3]
 
-    logger = config.add_snake_logger(logfile)
+    logger = config.add_snake_logger(logfile, "plot_storage_levels")
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(plotted):

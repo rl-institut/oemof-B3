@@ -51,7 +51,7 @@ if __name__ == "__main__":
     out_path = sys.argv[3]
     logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile)
+    logger = config.add_snake_logger(logfile, "create_input_data_overview")
 
     df = dp.load_b3_scalars(in_path)
 
