@@ -9,7 +9,7 @@ plotted : str
     ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
     the plots are saved
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -77,7 +77,7 @@ def prepare_dispatch_data(bus_file):
     return df, df_demand, bus_name
 
 
-def plot_dispatch_data(df, df_demand):
+def plot_dispatch_data(df, df_demand, bus_name):
     """
     This function contains the plotting of dispatch data
 
@@ -87,6 +87,8 @@ def plot_dispatch_data(df, df_demand):
         Dataframe with data to be plotted
     df_demand: pd.DataFrame
         Dataframe with demand
+    bus_name: str
+        Name of the bus
 
     Returns
     -------
@@ -201,33 +203,27 @@ def plot_dispatch_data(df, df_demand):
         plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
 
 
-def prepare_data_for_aggregation(df_stacked, df):
+def get_df_for_aggregation(list_with_dfs):
     """
-    This function stacks a Dataframe and concatenates it with a Dataframe containing stacked
-    results.
+    This function adds DataFrames from a list in to a new Dataframe
 
     Parameters
     ----------
-    df_stacked: pd.DataFrame
-        Stacked DataFrame to be concatenated with stacked df
-    df: pd.DataFrame
-        Initial DataFrame to be stacked and concatenated with df_stacked
+    list_with_dfs: list
+        List containing DataFrames to be added to Dataframe `df_concatenated`
 
     Returns
     -------
-    df_stacked: pd.DataFrame
-        Result DataFrame with concatenation of stacked data
+    df_concatenated: pd.DataFrame
+        Result DataFrame with concatenated DataFrames
 
     """
-    df_stacked = pd.concat([df_stacked, dp.stack_timeseries(df)])
+    df_concatenated = pd.DataFrame()
 
-    return df_stacked
+    for df_in_list in list_with_dfs:
+        df_concatenated = df_concatenated.append(df_in_list, ignore_index=True)
 
-
-def aggregate_data(df_stacked):
-    df_aggregated = dp.aggregate_timeseries(df_stacked, columns_to_aggregate="region")
-
-    return df_aggregated
+    return df_concatenated
 
 
 def reduce_labels(ax, simple_labels_dict):
@@ -258,6 +254,61 @@ def reduce_labels(ax, simple_labels_dict):
     return handles, labels
 
 
+def aggregate_by_region(bus_files, carrier):
+    """
+    This function aggregates data of busses and demand by region
+
+    Parameters
+    ----------
+    bus_files: pd.DataFrame
+        Dataframe with bus data from ``results/{scenario}/postprocessed/sequences/bus``
+
+    Returns
+    -------
+    df_aggregated: pd.DataFrame
+        Dataframe with aggregated data
+
+    df_demand_aggregated: pd.DataFrame
+        Dataframe with aggregated demands
+
+    bus_name: str
+        Name of the bus
+
+    """
+
+    # Add list for stacked DataFrames
+    list_df_stacked = []
+    list_df_demand_stacked = []
+
+    # Find all files where carrier is same and hence multiple regions exist
+    busses_to_be_aggregated = [file for file in bus_files if carrier in file]
+    if len(busses_to_be_aggregated) > 1:
+        for bus_to_be_aggregated in busses_to_be_aggregated:
+            df, df_demand, bus_name = prepare_dispatch_data(bus_to_be_aggregated)
+
+            list_df_stacked.append(dp.stack_timeseries(df))
+            list_df_demand_stacked.append(dp.stack_timeseries(df_demand))
+
+        df_stacked = get_df_for_aggregation(list_df_stacked)
+        df_demand_stacked = get_df_for_aggregation(list_df_demand_stacked)
+
+        # Exchange region from bus_name with "ALL"
+        bus_name = "ALL_" + carrier
+
+        # Aggregate bus data and demand
+        df_aggregated = dp.aggregate_timeseries(
+            df_stacked, columns_to_aggregate="region"
+        )
+        df_demand_aggregated = dp.aggregate_timeseries(
+            df_demand_stacked, columns_to_aggregate="region"
+        )
+        # Unstack aggregated bus data and demand
+        df_aggregated = dp.unstack_timeseries(df_aggregated)
+        df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
+
+        return df_aggregated, df_demand_aggregated, bus_name
+
+
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
@@ -278,44 +329,12 @@ if __name__ == "__main__":
     selected_bus_files = [
         file for file in bus_files for carrier in carriers if carrier in file
     ]
-
-    # Aggregate data of busses and demand by region
     for carrier in carriers:
-        df_stacked = None
-        df_demand_stacked = None
-        # Find all files where carrier is same and hence multiple regions exist
-        busses_to_be_aggregated = [file for file in bus_files if carrier in file]
-        if len(busses_to_be_aggregated) > 1:
-            for bus_to_be_aggregated in busses_to_be_aggregated:
-                df, df_demand, bus_name = prepare_dispatch_data(bus_to_be_aggregated)
-
-                # Append stack Dataframe as first element of result Dataframes if it is empty
-                if isinstance(df_stacked, type(None)) and isinstance(
-                    df_demand_stacked, type(None)
-                ):
-                    df_stacked = dp.stack_timeseries(df)
-                    df_demand_stacked = dp.stack_timeseries(df_demand)
-                # Stack and append dataframe to result Dataframe if result Dataframe already
-                # contains data
-                else:
-                    df_stacked = prepare_data_for_aggregation(df_stacked, df)
-                    df_demand_stacked = prepare_data_for_aggregation(
-                        df_demand_stacked, df_demand
-                    )
-
-            # Exchange region from bus_name with "ALL"
-            bus_name = "ALL_" + carrier
-
-            # Aggregate bus data and demand
-            df_aggregated = aggregate_data(df_stacked)
-            df_demand_aggregated = aggregate_data(df_demand_stacked)
-
-            # Unstack aggregated bus data and demand
-            df_aggregated = dp.unstack_timeseries(df_aggregated)
-            df_demand_aggregated = dp.unstack_timeseries(df_demand_aggregated)
-
-            plot_dispatch_data(df_aggregated, df_demand_aggregated)
+        df_aggregated, df_demand_aggregated, bus_name = aggregate_by_region(
+            bus_files, carrier
+        )
+        plot_dispatch_data(df_aggregated, df_demand_aggregated, bus_name)
 
     for bus_file in selected_bus_files:
         df, df_demand, bus_name = prepare_dispatch_data(bus_file)
-        plot_dispatch_data(df, df_demand)
+        plot_dispatch_data(df, df_demand, bus_name)

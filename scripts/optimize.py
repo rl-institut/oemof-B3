@@ -9,7 +9,7 @@ optimized : str
     ``results/{scenario}/optimized/`` Target path to store dump of oemof.solph.Energysystem
     with optimization results and parameters.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------

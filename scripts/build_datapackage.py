@@ -7,7 +7,7 @@ scenario_specs : str
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
