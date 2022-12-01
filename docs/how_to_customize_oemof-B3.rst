@@ -61,7 +61,7 @@ differ from the default in oemoflex (compare
 `busses.yml in oemoflex <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/busses.yml>`_).
 The same applies to the files :attr:`component_attr_update.yml` and :attr:`foreign_keys.yml`.
 These are extended for the energy system in oemof-B3 (or depending on the composition of your
-energy system) with information deviating from the default (cf.
+energy system) with information deviating from the default in oemoflex (cf.
 `component_attrs <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/component_attrs.yml>`_
 and
 `foreign_keys.yml <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/foreign_keys.yml>`_)
@@ -73,7 +73,7 @@ The :attr:`config` directory is structured as follow:
 
 .. code-block::
 
-    config:attr:`colors.yml`
+    config
     ├── labels
     │     ├── de.yml
     │     ├── en.yml
