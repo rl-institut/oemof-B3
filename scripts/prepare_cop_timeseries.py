@@ -3,9 +3,9 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/weatherdata``: path of input directory with weather data
-in_path2 : str
     ``raw/scalars/demands.csv``: path of scalar data as .csv
+in_path2 : str
+    ``raw/weatherdata``: path of input directory with weather data
 out_path : str
     ``results/_resources/ts_efficiency_heatpump_small.csv``: path of output file with timeseries
     data as .csv

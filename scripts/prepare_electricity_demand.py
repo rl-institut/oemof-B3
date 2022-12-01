@@ -11,14 +11,14 @@ output_file : str
 Outputs
 ---------
 pandas.DataFrame
-    with normalized load data of 50 Hertz region in Germany from the years 2015, 2016, 2017, 2018
+    with normalized load data of 50Hertz region in Germany from the years 2015, 2016, 2017, 2018
     and 2019. The data is normalized with the total electricity demand of the corresponding year.
 
 Description
 -------------
 The corresponding snakemake rule of the preparation of the electricity demand profile
 downloads the 60 min timeseries data from OPSD and keeps it locally.
-The script takes this data and filters for the load data of the 50 Hertz region in Germany.
+The script takes this data and filters for the load data of the 50Hertz region in Germany.
 The load data is normalized with the total electricity demand of the corresponding year and put
 into the timeseries template format. The years 2015 to 2019 (including) are available.
 Note: the electricity demand profile for electric vehicle charging is prepared in

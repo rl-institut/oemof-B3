@@ -74,11 +74,11 @@ Postprocessing
    postprocessing/*
 
 
-Plotting
-==============
+Visualization
+=============
 
 .. toctree::
    :maxdepth: 1
    :glob:
 
-   plotting/*
+   visualization/*
