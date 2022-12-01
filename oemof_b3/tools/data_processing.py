@@ -610,14 +610,16 @@ def prepare_attr_name(sc, regions, overwrite):
             DataFrame with names set according to convention
         """
         sc_set_name = pd.DataFrame(columns=sc.columns)
-        # Write name in name col as <region>-<carrier>-<tech>
-        for region in regions:
-            _sc = sc.loc[sc["region"] == region]
-            _sc["name"] = _sc.apply(
-                lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-            )
 
-            sc_set_name = sc_set_name.append(_sc)
+        if not filter_df(sc, "region", list(regions)).empty:
+            # Write name in name col as <region>-<carrier>-<tech>
+            for region in regions:
+                _sc = sc.loc[sc["region"] == region]
+                _sc["name"] = _sc.apply(
+                        lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+                    )
+
+                sc_set_name = sc_set_name.append(_sc)
 
         return sc_set_name
 
