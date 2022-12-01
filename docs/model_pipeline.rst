@@ -82,6 +82,7 @@ Conventions
 A few more conventions are important to know:
 
 * Missing data is left empty.
+
 * There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units. In the plotting functions MW, MWh, EUR/MWh etc. are used as units. Therefore, please provide your data in just these units if you want to use the plotting functions. In the future we would like to drop this restriction.
 
 * The parameters :attr:`id_scal` and :attr:`id_ts` are optional and will be added automatically if you do not specify them.
@@ -90,7 +91,11 @@ A few more conventions are important to know:
 
 * If :attr:`region` is set to :attr:`ALL` in the model-own assumptions, :attr:`name` is to be left blank. The name will be automatically added per region modelling the energy system.
 
-* Different attributes can be set for :attr:`var_name`. Which component is assigned to which attributes can be found in chapter `Overview <https://oemoflex.readthedocs.io/en/latest/overview.html>`_ of the :attr:`oemoflex` documentation.
+* Different attributes can be set for :attr:`var_name`. oemof-B3 can process
+
+  * attributes of the components in oemoflex (which component is assigned to which attributes can be found in chapter `Overview <https://oemoflex.readthedocs.io/en/latest/overview.html>`_ of the :attr:`oemoflex` documentation) and
+  * attributes needed to calculate annuized costs. For this, :attr:`capacity_cost_overnight`, :attr:`storage_capacity_cost_overnight`, :attr:`wacc`, :attr:`lifetime` and :attr:`fixom_cost` must be passed with :attr:`var_name`.
+
 * Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
 
   * Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and
