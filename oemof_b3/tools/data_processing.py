@@ -616,8 +616,8 @@ def prepare_attr_name(sc, regions, overwrite):
             for region in regions:
                 _sc = sc.loc[sc["region"] == region]
                 _sc["name"] = _sc.apply(
-                        lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-                    )
+                    lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
+                )
 
                 sc_set_name = sc_set_name.append(_sc)
 
