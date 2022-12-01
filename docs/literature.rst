@@ -46,7 +46,7 @@ Brandenburg
 * Evaluation und Weiterentwicklung des Leitszenarios sowie Abschätzung der Wertschöpfungs- und Beschäftigungseffekte Prognos 2017 :cite:p:`hobohm_jens_evaluation_2017`
 
 Additional literature
-######
+#####################
 
 2030
 ----
