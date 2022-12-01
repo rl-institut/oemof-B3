@@ -494,7 +494,7 @@ def test_stack_unstack_timeseries_on_example_data():
     assert pd.testing.assert_frame_equal(df, df_unstacked) is None
 
 
-def test_stack_unstack_scalars_on_example_data():
+def test_unstack_stack_scalars_on_example_data():
     """
     This test checks oemof-B3 scalars remains unchanged through stacking
     and unstacking.
