@@ -35,6 +35,7 @@ or assign a different time series depending on the scenario.
 If you want to calculate only one scenario, you can use a single :attr:`scenario_key`.
 
 .. _model_scenario_setup_label:
+
 model
 -----
 
