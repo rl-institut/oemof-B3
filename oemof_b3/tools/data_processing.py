@@ -567,28 +567,30 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
-def prepare_attr_name(sc_with_region, sc_wo_region, regions):
+def prepare_attr_name(sc, regions, overwrite):
     r"""
     This function handles the values of the attribute 'name'.
 
     It ensures that the name is
-       1. empty if region is 'ALL'
-       2. set (according to convention) where name is empty and region is fixed
-       3. checked for all values that are not None and where region is fixed
+       1. set (according to convention) where name is empty and region is fixed
+       2. checked for all values that are not None
+
+    If 'overwrite' is true the names will be overwritten with names set according to the
+    convention. Otherwise the names passed by the user are used.
 
     Parameters
     ----------
-    sc_with_region : pd.DataFrame
-        DataFrame with scalar data in oemof-B3-resources format with fixed region
-    sc_wo_region : pd.DataFrame
-        DataFrame with scalar data in oemof-B3-resources format with region == 'ALL'
+    sc : pd.DataFrame
+        DataFrame with scalar data in oemof-B3-resources format
     regions : list
         List of regions
+    overwrite : Boolean
+        True if names are overwritten otherwise False
 
     Returns
     -------
     scalars_set_name : pd.DataFrame
-        DataFrame made of concatenated DataFrames with set names and fixed regions.
+        DataFrame made of concatenated DataFrames with set names.
     """
 
     def set_name(sc, regions):
@@ -646,21 +648,16 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
 
         return diff_name_sc
 
-    # PART 1: Ensure name is empty if region is 'ALL'
-    # Raise ValueError if name is not NaN and region is "ALL"
-    if not sc_wo_region["name"].isnull().values.all():
-        raise ValueError("Please leave 'name' empty if you set 'region' to 'ALL'.")
-
-    # PART 2: Ensure name is set (according to convention) where name is empty and region is fixed
+    # PART 1: Ensure name is set (according to convention) where name is empty and region is fixed
     # Save values where name is None and region is not "ALL" in new DataFrame
-    sc_wo_name = sc_with_region[sc_with_region["name"].isnull()]
+    sc_wo_name = sc[sc["name"].isnull()]
 
     # Save <region>-<carrier>-<tech> to name
     sc_add_name = set_name(sc_wo_name, regions)
 
-    # PART 3: Ensure name is checked for all values that are not None and where region is fixed
+    # PART 2: Ensure name is checked for all values that are not None and where region is fixed
     # Save values where name is not None and region is not "ALL" in new DataFrame
-    sc_with_name = sc_with_region[sc_with_region["name"].notnull()]
+    sc_with_name = sc[sc["name"].notnull()]
 
     sc_with_name_corrected = set_name(sc_with_name, sc_with_name["region"].unique())
 
@@ -671,11 +668,16 @@ def prepare_attr_name(sc_with_region, sc_wo_region, regions):
             "The name you have set for some of your scalar data differs "
             "from the convention (<region>-<carrier>-<tech>). \n"
             "We expected but could not find the following name(s): "
-            f"{expected_names}"
+            f"{expected_names}."
         )
+        if overwrite:
+            logger.warning("The names will be overwritten with ")
 
-    # PART 4: Concatenate DataFrame with corrected name and DataFrame with set name
-    scalars_set_name = pd.concat([sc_with_name, sc_add_name])
+    # PART 3: Concatenate DataFrame with corrected name and DataFrame with set name
+    if overwrite:
+        scalars_set_name = pd.concat([sc_with_name_corrected, sc_add_name])
+    else:
+        scalars_set_name = pd.concat([sc_with_name, sc_add_name])
 
     return scalars_set_name
 
@@ -707,25 +709,28 @@ def expand_regions(scalars, regions, where="ALL"):
 
     sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
 
-    if sc_wo_region.empty:
-        return sc_with_region
+    # REGIONALIZATION
+    if not sc_wo_region.empty:
+        # Ensure name is empty if region is 'ALL'
+        # Print user warning if name is not NaN and region is "ALL"
+        if not sc_wo_region["name"].isnull().values.all():
+            print(
+                "User warning: Please leave 'name' empty if you set 'region' to 'ALL'.\n"
+                "The name you have specified "
+                f"{sc_wo_region[sc_wo_region['name'].notnull()]['name'].values} "
+                f"will be overwritten."
+            )
 
-    sc_with_region = prepare_attr_name(sc_with_region, sc_wo_region, regions)
+        # Set region
+        for region in regions:
+            regionalized = sc_wo_region.copy()
+            regionalized["region"] = region
 
-    for region in regions:
-        regionalized = sc_wo_region.copy()
+            sc_with_region = pd.concat([sc_with_region, regionalized])
 
-        regionalized["name"] = regionalized.apply(
-            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-        )
+        sc_with_region = sc_with_region.reset_index(drop=True)
 
-        regionalized["region"] = region
-
-        sc_with_region = pd.concat([sc_with_region, regionalized])
-
-    sc_with_region = sc_with_region.reset_index(drop=True)
-
-    sc_with_region.index.name = config.settings.general.scal_index_name
+        sc_with_region.index.name = config.settings.general.scal_index_name
 
     return sc_with_region
 

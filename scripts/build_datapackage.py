@@ -48,6 +48,7 @@ from oemof_b3.tools.data_processing import (
     multi_load_b3_timeseries,
     unstack_timeseries,
     expand_regions,
+    prepare_attr_name,
     save_df,
 )
 from oemof_b3.config import config
@@ -280,6 +281,13 @@ if __name__ == "__main__":
 
     # Replace 'ALL' in the column regions by the actual regions
     scalars = expand_regions(scalars, model_structure["regions"])
+
+    # Check and set attribute 'name'
+    scalars = prepare_attr_name(
+        scalars,
+        model_structure["regions"],
+        config.settings.build_datapackage.overwrite_name,
+    )
 
     # get filters for scalars
     filters = OrderedDict(sorted(scenario_specs["filter_scalars"].items()))
