@@ -26,7 +26,6 @@ Explanations about the structure of the preprocessed datapackage can be found in
 `docu <https://oemof-b3.readthedocs.io/en/latest/index.html>`_.
 
 """
-import logging
 import sys
 import os
 from collections import OrderedDict
@@ -50,11 +49,8 @@ from oemof_b3.tools.data_processing import (
     unstack_timeseries,
     expand_regions,
     save_df,
-    initLogger,
 )
 from oemof_b3.config import config
-
-logger = logging.getLogger()
 
 
 def update_with_checks(old, new):
@@ -248,9 +244,7 @@ if __name__ == "__main__":
 
     destination = sys.argv[2]
 
-    logfile = sys.argv[3]
-    logger = config.add_snake_logger(logfile, "build_datapackage")
-    initLogger(logger)
+    logger = config.add_snake_logger("build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
 
