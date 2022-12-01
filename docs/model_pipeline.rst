@@ -49,16 +49,56 @@ Raw data
 
 Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
 As a first step, preprocessing scripts in the model pipeline (see :ref:`Prepare resources`) convert it into the
-oemof-B3-resources-format, explained in the next section. Raw data that represents model-own assumptions is provided in
-that format already.
+oemof-B3-resources-format, explained in the next section (:ref:`Schema`). Raw data that represents model-own assumptions is provided in
+that format already. When providing raw data you have to follow some conventions, which are summarized in the section :ref:`Conventions`.
 
-The following additional information about specific parameters should be considered:
-Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
-Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and such powered
-with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
-Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
-.. _prepare_resources_label_:
+.. _Schema_label:
+
+Schema
+------
+
+Raw data with model-own assumptions and oemof-B3-resources-format follow a common data schema defined in :file:`oemof_b3/schema/`.
+There is a separate schema for scalars and for timeseries:
+
+Scalars
+
+.. csv-table::
+   :delim: ;
+   :file: ../oemof_b3/schema/scalars.csv
+
+Time series
+
+.. csv-table::
+   :delim: ;
+   :file: ../oemof_b3/schema/timeseries.csv
+
+
+.. _conventions_label:
+
+Conventions
+-----------
+
+A few more conventions are important to know:
+
+* Missing data is left empty.
+* There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units. In the plotting functions MW, MWh, EUR/MWh etc. are used as units. Therefore, please provide your data in just these units if you want to use the plotting functions. In the future we would like to drop this restriction.
+
+* The parameters :attr:`id_scal` and :attr:`id_ts` are optional and will be added automatically if you do not specify them.
+
+* The parameter :attr:`name` must be specified in a certain fixed concatenation of parameters: :attr:`region`-:attr:`carrier`-:attr:`tech` (example: :attr:`B-biomass-gt`).
+
+* If :attr:`region` is set to :attr:`ALL` in the model-own assumptions, :attr:`name` is to be left blank. The name will be automatically added per region modelling the energy system.
+
+* Different attributes can be set for :attr:`var_name`. Which component is assigned to which attributes can be found in chapter `Overview <https://oemoflex.readthedocs.io/en/latest/overview.html>`_ of the :attr:`oemoflex` documentation.
+* Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
+
+  * Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and
+  * such powered with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
+  * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
+
+
+.. _prepare_resources_label:
 
 Prepare resources
 =================
@@ -79,57 +119,10 @@ Outputs
 Output files are saved in :file:`results/_resources`.
 
 The resources are preprocessed data that serve as material for building scenarios.
-They are a first intermediate result in oemof-B3.
-
-File storage
-^^^^^^^^^^^^
-
-Resources are saved in :file:`results/_resources`.
-
-Schema
-^^^^^^
-
-The resources follow a common data schema defined in :file:`oemof_b3/schema/`.
-There is a separate schema for scalars and for timeseries:
-
-Scalars
-
-.. csv-table::
-   :delim: ;
-   :file: ../oemof_b3/schema/scalars.csv
-
-Time series
-
-.. csv-table::
-   :delim: ;
-   :file: ../oemof_b3/schema/timeseries.csv
+They are a first intermediate result in oemof-B3 and follow the schema presented in section :ref:`Schema`.
 
 
-.. _conventions_resources_label_:
-
-Conventions
-^^^^^^^^^^^
-
-A few more conventions are important to know:
-
-* Missing data is left empty.
-* There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units. In the plotting functions MW, MWh, EUR/MWh etc. are used as units. Therefore, please provide your data in just these units if you want to use the plotting functions. In the future we would like to drop this restriction.
-
-* The parameters :attr:`id_scal` and :attr:`id_ts` are optional and will be added automatically if you do not specify them.
-
-* The parameter :attr:`name` must be specified in a certain fixed concatenation of parameters: :attr:`region`-:attr:`carrier`-:attr:`tech` (example: :attr:`B-biomass-g`).
-
-* If :attr:`region` is set to :attr:`ALL` in the model-own assumptions, :attr:`name` is to be left blank. The name will be automatically added per region modelling the energy system.
-
-* Different attributes can be set for :attr:`var_name`. Which component is assigned to which attributes can be found in chapter `Overview <https://oemoflex.readthedocs.io/en/latest/overview.html>`_ of the :attr:`oemoflex` documentation.
-* Components can receive keywords for the electricity-gas-relation-constraint via the attribute :attr:`output_parameters`.
-
-  * Keywords of components powered by gas start with :attr:`config.settings.optimize.gas_key` and
-  * such powered with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
-  * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
-
-
-.. _build_datapackage_label:
+.. _build_datapackages_label:
 
 Build datapackages
 ==================
@@ -219,7 +212,7 @@ data format. See oemoflex' documention on
 `postprocessed results <https://oemoflex.readthedocs.io/en/latest/overview.html#postprocess-results>`_
 for further information.
 
-.. _visualization_label_:
+.. _visualization_label:
 
 Visualization
 =============
