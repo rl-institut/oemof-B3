@@ -193,6 +193,8 @@ Output files are saved in :file:`results/scenario/optimized`.
 
 The results are optimized energy systems
 
+.. _postprocessing_label:
+
 Postprocessing
 ==============
 
