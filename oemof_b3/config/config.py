@@ -6,6 +6,7 @@ import yaml
 from dynaconf import Dynaconf
 
 CONFIG_PATH = pathlib.Path(__file__).parent
+ROOT_DIR = CONFIG_PATH.parent.parent
 
 settings = Dynaconf(
     envvar_prefix="DYNACONF",

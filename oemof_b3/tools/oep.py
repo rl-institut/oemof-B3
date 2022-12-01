@@ -1,7 +1,10 @@
 import json
+import requests
 
 from oemof_b3.schema import SCHEMA_SCAL, SCHEMA_TS, oemetadata_scal, oemetadata_ts
 from oemof_b3.tools import data_processing as dp
+
+OEP_HOST = "https://openenergy-platform.org"
 
 
 def load_metadata_json_to_dict(filepath):
@@ -110,3 +113,15 @@ def upload_df_to_oep_table(
             "Delete and recreate with the commands above, if you want to test your"
             " upload again."
         )
+
+
+def download_table_from_OEP(output_filename, table, schema):
+    """Downloads table from OEP and stores it as CSV in outputfile"""
+
+    table_url = f"{OEP_HOST}/api/v0/schema/{schema}/tables/{table}/rows?form=csv"
+    with open(output_filename, "wb") as outputfile, requests.get(
+        table_url, stream=True
+    ) as r:
+        for line in r.iter_lines():
+            outputfile.write(line + "\n".encode())
+
