@@ -1075,11 +1075,13 @@ class ScalarProcessor:
         self.scalars = pd.concat([self.scalars, _df])
 
 
-class B3_Data():
+class B3_Data:
     header = None
 
     def __init__(self, df):
-        self.df = format_header(df, self.header, config.settings.general.scal_index_name)
+        self.df = format_header(
+            df, self.header, config.settings.general.scal_index_name
+        )
 
     @classmethod
     def from_csv(cls, path):
@@ -1134,6 +1136,39 @@ class B3_Scalars(B3_Data):
     def expand_regions(self, regions, where="ALL"):
         expanded = expand_regions(self.df, regions, where)
         return B3_Scalars(expanded)
+
+    def append_unstacked_df(self, data, var_name=None):
+        r"""
+        Accepts a Series or DataFrame in unstacked form and appends it to the scalars.
+
+        Parameters
+        ----------
+        data : pd.Series or pd.DataFrame
+            Data to append
+        var_name : str
+            Name of the data to append
+
+        Returns
+        -------
+        None
+        """
+        assert not data.isna().all(), "Cannot append all NaN data."
+
+        _df = data.copy()
+
+        if isinstance(_df, pd.Series):
+            if var_name:
+                _df.name = var_name
+            if not var_name and _df.name is None:
+                raise ValueError(
+                    "If you pass pd.Series, it should have a name or you need to pass 'var_name'."
+                )
+
+            _df = pd.DataFrame(_df)
+
+        _df = stack_var_name(_df)
+
+        return B3_Scalars(pd.concat([self.df, _df]))
 
 
 class B3_Timeseries(B3_Data):

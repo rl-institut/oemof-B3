@@ -22,10 +22,9 @@ The script performs the following steps to prepare scalar data for parametrizati
 
 import sys
 
-import pandas as pd
 from oemof.tools.economics import annuity
 
-from oemof_b3.tools.data_processing import B3_Scalars, stack_var_name, save_df
+from oemof_b3.tools.data_processing import B3_Scalars, save_df
 from oemof_b3.config import config
 
 
@@ -58,13 +57,9 @@ def annuise_investment_cost(sc):
             1,
         )
 
-        annuised_investment_cost = pd.DataFrame(
-            annuised_investment_cost, columns=[var_name_cost.replace("_overnight", "")]
+        sc = sc.append_unstacked_df(
+            annuised_investment_cost, var_name_cost.replace("_overnight", "")
         )
-        annuised_investment_cost = stack_var_name(annuised_investment_cost)
-        annuised_investment_cost = B3_Scalars(annuised_investment_cost)
-
-        sc.df = pd.concat([sc.df, annuised_investment_cost.df])
 
     sc = sc.drop_var_name(
         [
