@@ -9,7 +9,7 @@ build_datapackage:
   el_gas_relation: electricity_gas_relation  # appears in optimize as well
   emission: emission
   additional_scalars_file: additional_scalars.csv
-  overwrite_name: true
+  overwrite_name: false
 
 optimize:
   filename_metadata: datapackage.json
