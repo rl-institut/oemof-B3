@@ -49,7 +49,7 @@ Raw data
 
 Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
 As a first step, preprocessing scripts in the model pipeline (see :ref:`Prepare resources`) convert it into the
-oemof-B3-resources-format, explained in the next section (:ref:`Schema`). Raw data that represents model-own assumptions is provided in
+oemof-B3-resources-format, explained in the next section (see :ref:`Schema`). Raw data that represents model-own assumptions is provided in
 that format already. When providing raw data you have to follow some conventions, which are summarized in the section :ref:`Conventions`.
 
 
@@ -168,7 +168,7 @@ A separate file, :file:`additional_scalars.csv`, can contain additional informat
 This file is not described in the metadata yet, but will become an official part of the datapackage in the future.
 
 Other than the examples, the datapackages representing actual scenarios are built automatically from the resources,
-the scenario informationscenario/<scenario.yml> and the `model structure <https://github.com/rl-institut/oemof-B3/tree/dev/oemof_b3/model/model_structure>`_.
+the scenario information :file:`scenarios/<scenario>.yml` and the `model structure <https://github.com/rl-institut/oemof-B3/tree/dev/oemof_b3/model/model_structure>`_.
 
 Components and their attributes are defined in
 `oemoflex <https://github.com/rl-institut/oemoflex/tree/dev/oemoflex/model/component_attrs.yml>`_.
