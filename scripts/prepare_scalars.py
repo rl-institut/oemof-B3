@@ -22,9 +22,10 @@ The script performs the following steps to prepare scalar data for parametrizati
 
 import sys
 
+import pandas as pd
 from oemof.tools.economics import annuity
 
-from oemof_b3.tools.data_processing import ScalarProcessor, load_b3_scalars, save_df
+from oemof_b3.tools.data_processing import B3_Scalars, stack_var_name, save_df
 from oemof_b3.config import config
 
 
@@ -35,7 +36,7 @@ def annuise_investment_cost(sc):
         ("storage_capacity_cost_overnight", "storage_fixom_cost"),
     ]:
 
-        invest_data = sc.get_unstacked_var(
+        invest_data = sc.get_unstacked_var_name(
             [var_name_cost, "lifetime", var_name_fixom_cost]
         )
 
@@ -44,12 +45,12 @@ def annuise_investment_cost(sc):
         # is defined for all techs uniformly. Could offer a more general and flexible solution.
 
         # wacc is defined per scenario, ignore other index levels
-        wacc = sc.get_unstacked_var("wacc")
+        wacc = sc.get_unstacked_var_name("wacc")
         wacc.index = wacc.index.get_level_values("scenario_key")
 
         # set wacc per scenario_key
-        scenario_keys = invest_data.index.get_level_values("scenario_key")
-        invest_data["wacc"] = wacc.loc[scenario_keys].values
+        invest_data = invest_data.join(wacc, on="scenario_key")
+        invest_data = invest_data["var_value"]
 
         annuised_investment_cost = invest_data.apply(
             lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"])
@@ -57,9 +58,15 @@ def annuise_investment_cost(sc):
             1,
         )
 
-        sc.append(var_name_cost.replace("_overnight", ""), annuised_investment_cost)
+        annuised_investment_cost = pd.DataFrame(
+            annuised_investment_cost, columns=[var_name_cost.replace("_overnight", "")]
+        )
+        annuised_investment_cost = stack_var_name(annuised_investment_cost)
+        annuised_investment_cost = B3_Scalars(annuised_investment_cost)
 
-    sc.drop(
+        sc.df = pd.concat([sc.df, annuised_investment_cost.df])
+
+    sc = sc.drop_var_name(
         [
             "wacc",
             "lifetime",
@@ -70,23 +77,21 @@ def annuise_investment_cost(sc):
         ]
     )
 
+    return sc
+
 
 if __name__ == "__main__":
     in_path = sys.argv[1]  # path to raw scalar data
     out_path = sys.argv[2]  # path to destination
 
-    df = load_b3_scalars(in_path)
+    sc = B3_Scalars.from_csv(in_path)
 
-    sc = ScalarProcessor(df)
+    sc = annuise_investment_cost(sc)
 
-    annuise_investment_cost(sc)
+    sc.df = sc.df.sort_values(by=["carrier", "tech", "var_name", "scenario_key"])
 
-    sc.scalars = sc.scalars.sort_values(
-        by=["carrier", "tech", "var_name", "scenario_key"]
-    )
+    sc.df.reset_index(inplace=True, drop=True)
 
-    sc.scalars.reset_index(inplace=True, drop=True)
+    sc.df.index.name = config.settings.general.scal_index_name
 
-    sc.scalars.index.name = config.settings.general.scal_index_name
-
-    save_df(sc.scalars, out_path)
+    save_df(sc.df, out_path)

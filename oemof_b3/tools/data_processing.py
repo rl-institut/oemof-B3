@@ -1110,7 +1110,7 @@ class B3_Scalars(B3_Data):
         return cls(df)
 
     def get_unstacked_var_name(self, var_name):
-        df = self.get_var_name(var_name)
+        df = self.get_var_name(var_name).df
 
         if df.empty:
             raise ValueError(f"No entries for {var_name} in df.")
