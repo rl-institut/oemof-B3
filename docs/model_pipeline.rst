@@ -129,6 +129,8 @@ A few more conventions are important to know:
   * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
 
+.. _build_datapackage_label:
+
 Build datapackages
 ==================
 
