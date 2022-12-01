@@ -113,7 +113,7 @@ Conventions
 A few more conventions are important to know:
 
 * Missing data is left empty.
-* There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units (e.g. MW, MWh, Eur/MWh, etc.).
+* There is no unit transformation within the model, i.e. the user needs to ensure the consistency of units. In the plotting functions MW, MWh, EUR/MWh etc. are used as units. Therefore, please provide your data in just these units if you want to use the plotting functions. In the future we would like to drop this restriction.
 
 * The parameters :attr:`id_scal` and :attr:`id_ts` are optional and will be added automatically if you do not specify them.
 
