@@ -36,7 +36,7 @@ If you want to calculate only one scenario, you can use a single :attr:`scenario
 
 .. _model_scenario_setup_label:
 
-model
+Model
 -----
 
 The :attr:`model` directory is structured as follow:
@@ -66,8 +66,8 @@ energy system) with information deviating from the default (cf.
 and
 `foreign_keys.yml <https://github.com/rl-institut/oemoflex/blob/dev/oemoflex/model/foreign_keys.yml>`_)
 
-config
-------
+Configuration
+--------------------
 
 The :attr:`config` directory is structured as follow:
 
