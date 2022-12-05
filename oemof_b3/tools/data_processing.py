@@ -989,53 +989,78 @@ def prepare_b3_timeseries(df_year, **kwargs):
     return df_year_stacked
 
 
-class ScalarProcessor:
-    r"""
-    This class allows to filter and unstack scalar data in a way that makes processing simpler.
-    """
+class B3_Data:
+    header = None
 
-    def __init__(self, scalars):
-        self.scalars = scalars
+    def __init__(self, df):
+        self.df = format_header(
+            df, self.header, config.settings.general.scal_index_name
+        )
 
-    def get_unstacked_var(self, var_name):
-        r"""
-        Filters the scalars for the given var_name and returns the data in unstacked form.
+    @classmethod
+    def from_csv(cls, path):
+        pass
 
-        Parameters
-        ----------
-        var_name : str
-            Name of the variable
+    def to_csv(self, path):
+        save_df(self.df, path)
 
-        Returns
-        -------
-        result : pd.DataFrame
-            Data in unstacked form.
-        """
-        _df = filter_df(self.scalars, "var_name", var_name)
+    def get_var_name(self, var_name):
+        pass
 
-        if _df.empty:
+    def drop_var_name(self, var_name):
+        pass
+
+    def aggregate(self, columns_to_aggregate, agg_method=None):
+        pass
+
+
+class B3_Scalars(B3_Data):
+    header = HEADER_B3_SCAL
+
+    @classmethod
+    def from_csv(cls, path):
+        if isinstance(path, list):
+            df = multi_load_b3_scalars(path)
+        else:
+            df = load_b3_scalars(path)
+        return cls(df)
+
+    def get_unstacked_var_name(self, var_name):
+        df = self.get_var_name(var_name).df
+
+        if df.empty:
             raise ValueError(f"No entries for {var_name} in df.")
 
-        _df = unstack_var_name(_df)
+        df = unstack_var_name(df)
 
-        result = _df.loc[:, "var_value"]
+        return df
 
-        return result
+    def get_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name)
+        return B3_Scalars(filtered)
 
-    def drop(self, var_name):
+    def drop_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name, inverse=True)
+        return B3_Scalars(filtered)
 
-        self.scalars = filter_df(self.scalars, "var_name", var_name, inverse=True)
+    def aggregate(self, columns_to_aggregate, agg_method=None):
+        aggregated = aggregate_scalars(self.df, columns_to_aggregate, agg_method)
+        return B3_Scalars(aggregated)
 
-    def append(self, var_name, data):
+    def expand_regions(self, regions, where="ALL"):
+        expanded = expand_regions(self.df, regions, where)
+        return B3_Scalars(expanded)
+
+    def append_unstacked_df(self, data, var_name=None):
         r"""
         Accepts a Series or DataFrame in unstacked form and appends it to the scalars.
 
         Parameters
         ----------
-        var_name : str
-            Name of the data to append
         data : pd.Series or pd.DataFrame
             Data to append
+        var_name : str
+            Name of the data to append
 
         Returns
         -------
@@ -1046,10 +1071,49 @@ class ScalarProcessor:
         _df = data.copy()
 
         if isinstance(_df, pd.Series):
-            _df.name = var_name
+            if var_name:
+                _df.name = var_name
+            if not var_name and _df.name is None:
+                raise ValueError(
+                    "If you pass pd.Series, it should have a name or you need to pass 'var_name'."
+                )
 
             _df = pd.DataFrame(_df)
 
         _df = stack_var_name(_df)
 
-        self.scalars = pd.concat([self.scalars, _df])
+        return B3_Scalars(pd.concat([self.df, _df]))
+
+
+class B3_Timeseries(B3_Data):
+    header = HEADER_B3_TS
+
+    @classmethod
+    def from_csv(cls, path):
+        if isinstance(path, list):
+            df = multi_load_b3_timeseries(path)
+        else:
+            df = load_b3_timeseries(path)
+        return cls(df)
+
+    def get_unstacked_var_name(self, var_name):
+        df = self.get_var_name(var_name)
+
+        if df.empty:
+            raise ValueError(f"No entries for {var_name} in df.")
+
+        df = unstack_timeseries(df)
+
+        return df
+
+    def get_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name)
+        return B3_Timeseries(filtered)
+
+    def drop_var_name(self, var_name):
+        filtered = filter_df(self.df, "var_name", var_name, inverse=True)
+        return B3_Timeseries(filtered)
+
+    def aggregate(self, columns_to_aggregate, agg_method=None):
+        aggregated = aggregate_timeseries(self.df, columns_to_aggregate, agg_method)
+        return B3_Timeseries(aggregated)
