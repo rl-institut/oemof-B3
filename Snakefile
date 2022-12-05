@@ -1,5 +1,6 @@
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 from oemof_b3.config.config import load_yaml
+import oemof_b3.config.config as config
 
 HTTP = HTTPRemoteProvider()
 
@@ -57,8 +58,13 @@ rule clean:
         """
 
 # Include rules for intermediate steps
-include: "snakemake_rules/prepare_resource.smk"
 include: "snakemake_rules/build_datapackage.smk"
 include: "snakemake_rules/optimization.smk"
 include: "snakemake_rules/postprocessing.smk"
 include: "snakemake_rules/visualization.smk"
+
+# prepare settings locally or download it from OEP (not implemented yet)
+if config.settings.general.prepare_resources_locally:
+    include: "snakemake_rules/prepare_resource.smk"
+else:
+    raise NotImplementedError("Alternatives to preparing resources locally are not yet implemented.")
