@@ -892,12 +892,16 @@ def unstack_var_name(df):
 
     unstacked = _df.unstack("var_name")
 
+    new_index = _df.index.droplevel(-1).unique()
+    unstacked = unstacked.reindex(new_index)
+
     return unstacked
 
 
 def stack_var_name(df):
     r"""
-    Given a DataFrame, this function will stack the variables.
+    Given a DataFrame, this function will stack the variables and format
+    the results in b3-format.
 
     Parameters
     ----------
@@ -920,6 +924,12 @@ def stack_var_name(df):
     stacked.name = "var_value"
 
     stacked = pd.DataFrame(stacked).reset_index()
+
+    stacked = sort_values(stacked)
+
+    stacked = format_header(
+        stacked, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
 
     return stacked
 
@@ -1041,9 +1051,5 @@ class ScalarProcessor:
             _df = pd.DataFrame(_df)
 
         _df = stack_var_name(_df)
-
-        _df = format_header(
-            _df, HEADER_B3_SCAL, config.settings.general.scal_index_name
-        )
 
         self.scalars = pd.concat([self.scalars, _df])
