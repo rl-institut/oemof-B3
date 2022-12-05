@@ -22,7 +22,7 @@ fills it with scalar and timeseries data, infers the metadata and saves it to th
 destination. Further, additional parameters like emission limit are saved in a separate file.
 
 Explanations about the structure of the preprocessed datapackage can be found in section
-:ref:`Preprocessed datapackages` of the
+:ref:`Build datapackages` of the
 `docu <https://oemof-b3.readthedocs.io/en/latest/index.html>`_.
 
 """
