@@ -62,9 +62,6 @@ except AttributeError:
     )
 
 
-SCHEMA = "model_draft"
-
-
 def save_dict_to_json(data, filepath, encoding="utf-8"):
     with open(filepath, "w", encoding=encoding) as f:
         return json.dump(data, f, sort_keys=False, indent=2)
@@ -168,7 +165,7 @@ if __name__ == "__main__":
 
         metadata = write_metadata(
             metadata,
-            SCHEMA,
+            config.settings.upload_results_to_oep.schema,
             table,
             f"Model results oemof-B3 {table}",
             ["RLI", "oemof_b3"],
@@ -209,12 +206,17 @@ if __name__ == "__main__":
             data_upload_df.to_sql(
                 table,
                 con=db.engine,
-                schema=SCHEMA,
+                schema=config.settings.upload_results_to_oep.schema,
                 if_exists="append",
                 index=False,
             )
 
-            logger.info("Inserted data to " + SCHEMA + "." + table)
+            logger.info(
+                "Inserted data to "
+                + config.settings.upload_results_to_oep.schema
+                + "."
+                + table
+            )
 
         except Exception as e:
             logger.error(e)
