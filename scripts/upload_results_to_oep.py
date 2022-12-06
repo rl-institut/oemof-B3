@@ -182,6 +182,8 @@ if __name__ == "__main__":
     # The next command will set up the tables. The collect_tables-function collects all metadata
     # files in a folder, creates the SQLAlchemy ORM objects and returns them. The tables are
     # ordered by foreign key. Having a valid metadata strings is necessary for the following steps.
+    # TODO: Once [this](https://github.com/OpenEnergyPlatform/oem2orm/issues/35) is resolved,
+    # we can collect and create single tables and do not have to leave the loop here.
     tables_orm = oem2orm.collect_tables_from_oem(db, metadata_path)
 
     # create tables
