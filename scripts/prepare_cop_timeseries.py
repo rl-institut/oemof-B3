@@ -173,9 +173,8 @@ if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to csv with b3 demands
     in_path2 = sys.argv[2]  # path to weather data
     out_path = sys.argv[3]  # path to timeseries of cops of small-scale heat pumps
-    logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile, "prepare_cop_timeseries")
+    logger = config.add_snake_logger("prepare_cop_timeseries")
 
     # Get constants
     # Quality grade of an air/water heat pump
