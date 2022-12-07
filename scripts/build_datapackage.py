@@ -58,6 +58,10 @@ from oemof_b3.config import config
 logger = logging.getLogger()
 
 
+def get_separator():
+    return config.settings.general.separator
+
+
 def update_with_checks(old, new):
     r"""
     Updates a Series or DataFrame with new data. Raises a warning if there is new data that is not
@@ -257,10 +261,8 @@ if __name__ == "__main__":
 
     model_structure = model_structures[scenario_specs["model_structure"]]
 
-    # Obtain the separator set in oemof-B3
+    SEP = ";"  # TODO: use get_separator()
     settings = load_yaml(settings)
-    SEP = settings["general"]["separator"]
-
     oemoflexconfig.config.settings.SEPARATOR = SEP
 
     # setup empty EnergyDataPackage
