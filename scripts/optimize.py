@@ -9,7 +9,7 @@ optimized : str
     ``results/{scenario}/optimized/`` Target path to store dump of oemof.solph.Energysystem
     with optimization results and parameters.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -20,15 +20,16 @@ Description
 -------------
 Given an EnergyDataPackage, this script creates an oemof.solph.EnergySystem and an
 oemof.solph.Model, which is optimized.
-The following constraints are added:
-- `emission_limit`: maximum amount of emissions
-- `equate_flows_by_keyword`: electricty-gas relation is set (electricity/gas = factor).
-    This constraint is only added if 'electricity_gas_relation' is added to the scalars.
-    To use this constraint you need to copy
-    [`equate_flows.py`](https://github.com/oemof/oemof-solph/blob/features/equate-flows/src/oemof/solph/constraints/equate_variables.py)
-    of oemof.solph into `/tools` directory of `oemof-B3`.
-The EnergySystem with results, meta-results and parameters is saved.
 
+The following constraints are added:
+    - `emission_limit`: maximum amount of emissions
+    - `equate_flows_by_keyword`: electricity-gas relation is set (electricity/gas = factor).
+      This constraint is only added if 'electricity_gas_relation' is added to the scalars.
+      To use this constraint you need to copy
+      [`equate_flows.py`](https://github.com/oemof/oemof-solph/blob/features/equate-flows/src/oemof/solph/constraints/equate_variables.py)
+      of oemof.solph into `/tools` directory of `oemof-B3`.
+
+The EnergySystem with results, meta-results and parameters is saved.
 """
 import logging
 import os
@@ -157,12 +158,10 @@ def add_electricity_gas_relation_constraints(model, relations):
     r"""
     Adds constraint `equate_flows_by_keyword` to `model`.
 
-    The components belonging to one constraint are selected by keywords. The keywords of components
-    powered by any gas start with `GAS_KEY` and such powered with electricity with `EL_KEY`,
-    respectively: <`GAS_KEY`>-<carrier>-<region>.
-    Attention: Although a value is provided for the keywords in the input data
-    (e.g. {"electricity-heat_central-B": 1}) this value does not have any effect, at the moment.
-    If a component is not to be taken into account the keyword must not be provided.
+    The components belonging to 'electricity' or 'gas' are selected by keywords. The keywords of
+    components powered by gas start with `config.settings.optimize.gas_key` and such powered by
+    electricity with `config.settings.optimize.el_key`, followed by `carrier` and `region` e.g.
+    <`GAS_KEY`>-<carrier>-<region>.
 
     Parameters
     ----------
@@ -200,7 +199,7 @@ if __name__ == "__main__":
     optimized = sys.argv[2]
 
     logfile = sys.argv[3]
-    logger = config.add_snake_logger(logfile, "optimize")
+    logger = config.add_snake_logger("optimize")
 
     # get additional scalars, set to None at first
     emission_limit = None

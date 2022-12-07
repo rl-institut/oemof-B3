@@ -7,7 +7,7 @@ scenario_specs : str
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
@@ -18,17 +18,22 @@ oemoflex.EnergyDatapackage
 Description
 -------------
 The script creates an empty EnergyDatapackage from the specifications given in the scenario_specs,
-fills it with scalar and timeseries data, infers the metadata and saves it to the given destination.
-Further, additional parameters like emission limit are saved in a separate file.
+fills it with scalar and timeseries data, infers the metadata and saves it to the given
+destination. Further, additional parameters like emission limit are saved in a separate file.
+
+Explanations about the structure of the preprocessed datapackage can be found in section
+:ref:`Build datapackages` of the
+`docu <https://oemof-b3.readthedocs.io/en/latest/index.html>`_.
+
 """
-import logging
 import sys
 import os
 from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemoflex.tools.helpers import load_yaml
+
+from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import (
     model_structures,
@@ -46,8 +51,6 @@ from oemof_b3.tools.data_processing import (
     save_df,
 )
 from oemof_b3.config import config
-
-logger = logging.getLogger()
 
 
 def update_with_checks(old, new):
@@ -241,8 +244,7 @@ if __name__ == "__main__":
 
     destination = sys.argv[2]
 
-    logfile = sys.argv[3]
-    logger = config.add_snake_logger(logfile, "build_datapackage")
+    logger = config.add_snake_logger("build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
 

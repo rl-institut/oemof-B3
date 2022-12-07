@@ -4,11 +4,13 @@ Inputs
 ------
 in_path : str
     ``raw/raw/scalars/costs_efficiencies.csv.csv``: path to raw scalar data.
+scenario_key : str
+    ``scenario_key`` matching the one in costs_efficiencies.csv file.
 out_path : str
     ``results/_tables/technical_and_cost_assumptions_{scenario_key}.csv``: target path for
     the table.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/_tables/technical_and_cost_assumptions_{scenario_key}.log``: path to logfile
 
 Outputs
 -------
@@ -47,9 +49,8 @@ if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     scenario_key = sys.argv[2]
     out_path = sys.argv[3]
-    logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile, "create_input_data_overview")
+    logger = config.add_snake_logger("create_input_data_overview")
 
     df = dp.load_b3_scalars(in_path)
 

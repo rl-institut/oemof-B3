@@ -1,8 +1,9 @@
 import logging
 import pathlib
+import sys
 
+import yaml
 from dynaconf import Dynaconf
-from oemoflex.tools.helpers import load_yaml
 
 CONFIG_PATH = pathlib.Path(__file__).parent
 
@@ -23,7 +24,6 @@ class LevelFilter(logging.Filter):
 
 DEBUG = settings.get("DEBUG", False)
 LOGGING_LEVEL = settings.get("LOGGING_LEVEL", logging.DEBUG if DEBUG else logging.INFO)
-LOGGING_FOLDER = "logs"
 
 root_logger = logging.getLogger()
 root_logger.setLevel(LOGGING_LEVEL)
@@ -34,16 +34,35 @@ stream_handler.setFormatter(stream_formatter)
 stream_handler.addFilter(LevelFilter(logging.ERROR))
 root_logger.addHandler(stream_handler)
 
+DEFAULT_LOGFILE = "snake.log"
 
-def add_snake_logger(logfile, rulename):
+
+def add_snake_logger(rulename):
+    """
+    Adds logging to file
+
+    Logfile is read from input parameters, ending with ".log"
+    This is done in order to add loggers for subprocesses (like data_preprocessing.py),
+    where logfile is unknown.
+    """
     logger = logging.getLogger(rulename)
+    logfile = next(
+        (item for item in sys.argv if item.endswith(".log")), DEFAULT_LOGFILE
+    )
+    handler = logging.FileHandler(logfile)
     file_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
-    handler = logging.FileHandler(logfile)
     handler.setFormatter(file_formatter)
     logger.addHandler(handler)
     return logger
+
+
+def load_yaml(file_path):
+    with open(file_path, "r") as yaml_file:
+        yaml_data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+
+    return yaml_data
 
 
 LABELS = load_yaml(CONFIG_PATH / "labels" / f"{settings.labels}.yml")

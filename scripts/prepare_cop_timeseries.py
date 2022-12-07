@@ -3,14 +3,14 @@ r"""
 Inputs
 -------
 in_path1 : str
-    ``raw/weatherdata``: path of input directory with weather data
-in_path2 : str
     ``raw/scalars/demands.csv``: path of scalar data as .csv
+in_path2 : str
+    ``raw/weatherdata``: path of input directory with weather data
 out_path : str
     ``results/_resources/ts_efficiency_heatpump_small.csv``: path of output file with timeseries
     data as .csv
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/_resources/ts_efficiency_heatpump_small.log``: path to logfile
 
 Outputs
 ---------
@@ -173,9 +173,8 @@ if __name__ == "__main__":
     in_path1 = sys.argv[1]  # path to csv with b3 demands
     in_path2 = sys.argv[2]  # path to weather data
     out_path = sys.argv[3]  # path to timeseries of cops of small-scale heat pumps
-    logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile, "prepare_cop_timeseries")
+    logger = config.add_snake_logger("prepare_cop_timeseries")
 
     # Get constants
     # Quality grade of an air/water heat pump
@@ -240,7 +239,7 @@ if __name__ == "__main__":
     final_cops = dp.format_header(
         df=final_cops,
         header=dp.HEADER_B3_TS,
-        index_name="id_ts",
+        index_name=config.settings.general.ts_index_name,
     )
 
     dp.save_df(final_cops, out_path)

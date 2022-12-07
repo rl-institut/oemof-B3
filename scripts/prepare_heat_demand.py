@@ -6,7 +6,7 @@ in_path1 : str
     ``raw/weatherdata``: path of input directory with weather data
 in_path2 : str
     ``raw/distribution_households.csv``: path of input file with household distributions data
-     as .csv
+    as .csv
 in_path3 : str
     ``raw/holidays.csv``: path of input file with holidays of all states in Germany as .csv
 in_path4 : str
@@ -20,7 +20,7 @@ out_path1 : str
 out_path2 : str
     ``results/_resources/ts_load_heat.csv``: path of output file with timeseries data as .csv
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/_resources/load_heat.log``: path to logfile
 
 Outputs
 ---------
@@ -412,9 +412,8 @@ if __name__ == "__main__":
     in_path5 = sys.argv[5]  # path to csv with b3 scalars
     out_path1 = sys.argv[6]
     out_path2 = sys.argv[7]
-    logfile = sys.argv[8]
 
-    logger = config.add_snake_logger(logfile, "prepare_heat_demand")
+    logger = config.add_snake_logger("prepare_heat_demand")
 
     CARRIERS = ["heat_central", "heat_decentral"]
 
@@ -504,6 +503,6 @@ if __name__ == "__main__":
     head_load = dp.format_header(
         df=total_heat_load,
         header=dp.HEADER_B3_TS,
-        index_name="id_ts",
+        index_name=config.settings.general.ts_index_name,
     )
     dp.save_df(head_load, out_path2)

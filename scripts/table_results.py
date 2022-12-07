@@ -7,7 +7,7 @@ in_path : str
 out_path : str
     ``results/{scenario}/tables/``: target path for results tables.
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 -------
@@ -107,9 +107,8 @@ def create_total_system_cost_table(scalars):
 if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     out_path = sys.argv[2]
-    logfile = sys.argv[3]
 
-    logger = config.add_snake_logger(logfile, "create_results_table")
+    logger = config.add_snake_logger("create_results_table")
 
     scalars = pd.read_csv(os.path.join(in_path, "scalars.csv"))
 

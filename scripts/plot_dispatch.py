@@ -3,29 +3,26 @@ r"""
 Inputs
 -------
 postprocessed : str
-    ``results/{scenario}/postprocessed/``: path to directory which contains the input data which
-    can be plotted
+    ``results/{scenario}/postprocessed/``: path to the directory containing the input data
+    that can be plotted
 plotted : str
     ``results/{scenario}/plotted/dispatch/``: path where a new directory is created and
     the plots are saved
 logfile : str
-    ``logs/{scenario}.log``: path to logfile
+    ``results/{scenario}/{scenario}.log``: path to logfile
 
 Outputs
 ---------
-.pdf
-    dispatch plot in pdf-format.
-.png
-    dispatch plot in png-format.
-.html
-    interactive plotly dispatch plot in html-format.
+* Static dispatch plots.
+* Interactive plotly dispatch plot in html-format.
 
 Description
 -------------
 The script creates dispatch plots based on plot_dispatch and plot_dispatch_plotly
 functions in oemoflex.
-The static plots are saved as pdf-files and the interactive plotly plots as html-files
-in a new directory called plotted.
+The static plots are saved with a file format defined by the *plot_filetype* variable in
+``oemof_b3/config/settings.yaml`` and the interactive plotly plots as html-files
+in a new directory called dispatch within directory plotted.
 Timeframes and the carrier for the plot can be chosen.
 """
 
@@ -71,9 +68,8 @@ def reduce_labels(ax, simple_labels_dict):
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
-    logfile = sys.argv[3]
 
-    logger = config.add_snake_logger(logfile, "plot_dispatch")
+    logger = config.add_snake_logger("plot_dispatch")
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(plotted):
@@ -213,7 +209,7 @@ if __name__ == "__main__":
             ax.xaxis.set_major_locator(locator)
 
             fig.tight_layout()
-            file_name = bus_name + "_" + start_date[5:7] + ".pdf"
-            plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
-            file_name = bus_name + "_" + start_date[5:7] + ".png"
+            file_name = (
+                bus_name + "_" + start_date[5:7] + config.settings.general.plot_filetype
+            )
             plt.savefig(os.path.join(plotted, file_name), bbox_inches="tight")
