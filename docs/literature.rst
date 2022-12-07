@@ -4,6 +4,8 @@
 Literature
 ~~~~~~~~~~
 
+The following references were mentioned in the working paper of the project `UMAS <https://reiner-lemoine-institut.de/umas/>`_
+
 Berlin
 ######
 
@@ -18,7 +20,7 @@ Berlin
 2050
 ----
 
-* ''Berlin Paris-konform machen'' :cite:p:`hirschl_berlin_2021`
+* Berlin Paris-konform machen :cite:p:`hirschl_berlin_2021`
 
 
 
@@ -35,7 +37,7 @@ Brandenburg
 2030
 ----
 
-* Energiestrategie 2030. Katalog der strategischen Maßnahmen~:cite:p:`ministerium_fur_wirtschaft_und_energie_des_landes_brandenburg_energiestrategie_2018`
+* Energiestrategie 2030. Katalog der strategischen Maßnahmen :cite:p:`ministerium_fur_wirtschaft_und_energie_des_landes_brandenburg_energiestrategie_2018`
 * Energiestrategie des Landes Brandenburg - 10. Monitoringbericht - Berichtsjahr 2018 :cite:p:`wirtschaftsforderung_land_brandenburg_gmbh_energiestrategie_2020`
 * Erneuerbare Energien Potenziale in Brandenburg 2030. Erschließbare technische Potenziale sowie Wertschöpfungs- und Beschäftigungseffekte – eine szenariobasierte Analyse (umfasst zwei Teilstudien vom IÖW für Greenpeace) :cite:p:`bost_erneuerbare_2012`
 
