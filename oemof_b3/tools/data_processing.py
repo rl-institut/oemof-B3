@@ -6,11 +6,13 @@ filtering, sorting, merging, aggregating and saving.
 
 import ast
 import os
-
 import numpy as np
 import pandas as pd
 
 from oemof_b3.config import config
+
+
+logger = config.add_snake_logger("data_processing")
 
 here = os.path.dirname(__file__)
 
@@ -248,7 +250,7 @@ def save_df(df, path):
     df.to_csv(path, index=True, sep=config.settings.general.separator)
 
     # Print user info
-    print(f"User info: The DataFrame has been saved to: {path}.")
+    logger.info(f"The DataFrame has been saved to: {path}.")
 
 
 def filter_df(df, column_name, values, inverse=False):
@@ -377,7 +379,7 @@ def update_filtered_df(df, filters):
     filtered_updated.index.name = config.settings.general.scal_index_name
 
     for iteration, filter in filters.items():
-        print(f"Applying set of filters no {iteration}.")
+        logger.info(f"Applying set of filters no {iteration}.")
 
         # Apply set of filters
         filtered = multi_filter_df(df, **filter)
@@ -392,7 +394,7 @@ def update_filtered_df(df, filters):
         )
 
         # inform about filtering updating
-        print(f"Updated data with data filtered by {filter}")
+        logger.info(f"Updated data with data filtered by {filter}")
 
     return filtered_updated
 
@@ -653,21 +655,23 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
         a_not_b = set_index_a.difference(set_index_b)
         if a_not_b:
             if how == "left":
-                print(
+                logger.warning(
                     f"There are {len(a_not_b)} elements in df_a but not in df_b"
                     f" and are lost (choose how='outer' to keep them): {a_not_b}"
                 )
             elif how == "outer":
-                print(
+                logger.info(
                     f"There are {len(a_not_b)} elements in df_a that are"
                     f" added to df_b: {a_not_b}"
                 )
 
         a_and_b = set_index_a.intersection(set_index_b)
-        print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+        logger.info(
+            f"There are {len(a_and_b)} elements in df_b that are updated by df_a."
+        )
 
         b_not_a = set_index_b.difference(set_index_a)
-        print(
+        logger.info(
             f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}"
         )
 
@@ -769,8 +773,8 @@ def stack_timeseries(df):
 
     _df_freq = pd.infer_freq(_df.index)
     if _df.index.freqstr is None:
-        print(
-            f"User info: The frequency of your data is not specified in the DataFrame, "
+        logger.info(
+            f"The frequency of your data is not specified in the DataFrame, "
             f"but is of the following frequency alias: {_df_freq}. "
             f"The frequency of your DataFrame is therefore automatically set to the "
             f"frequency with this alias."
@@ -841,9 +845,8 @@ def unstack_timeseries(df):
     lost_columns = ["source", "comment"]
     for col in lost_columns:
         if col in list(df.columns):
-            print(
-                f"User warning: Caution any remarks in column '{col}' are lost after "
-                f"unstacking."
+            logger.warning(
+                f"Caution any remarks in column '{col}' are lost after unstacking."
             )
 
     # Process values of series
@@ -891,12 +894,16 @@ def unstack_var_name(df):
 
     unstacked = _df.unstack("var_name")
 
+    new_index = _df.index.droplevel(-1).unique()
+    unstacked = unstacked.reindex(new_index)
+
     return unstacked
 
 
 def stack_var_name(df):
     r"""
-    Given a DataFrame, this function will stack the variables.
+    Given a DataFrame, this function will stack the variables and format
+    the results in b3-format.
 
     Parameters
     ----------
@@ -920,6 +927,12 @@ def stack_var_name(df):
 
     stacked = pd.DataFrame(stacked).reset_index()
 
+    stacked = sort_values(stacked)
+
+    stacked = format_header(
+        stacked, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
+
     return stacked
 
 
@@ -932,7 +945,7 @@ def round_setting_int(df, decimals):
 
     for col, dec in decimals.items():
         if col not in _df.columns:
-            print(f"No column named '{col}' found when trying to round.")
+            logger.warning(f"No column named '{col}' found when trying to round.")
             continue
         elif dec == 0:
             dtype = "Int64"
@@ -1040,9 +1053,5 @@ class ScalarProcessor:
             _df = pd.DataFrame(_df)
 
         _df = stack_var_name(_df)
-
-        _df = format_header(
-            _df, HEADER_B3_SCAL, config.settings.general.scal_index_name
-        )
 
         self.scalars = pd.concat([self.scalars, _df])

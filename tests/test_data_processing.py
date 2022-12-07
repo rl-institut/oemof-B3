@@ -6,6 +6,8 @@ import pytest
 from oemof_b3.tools.data_processing import (
     stack_timeseries,
     unstack_timeseries,
+    stack_var_name,
+    unstack_var_name,
     load_b3_scalars,
     load_b3_timeseries,
     save_df,
@@ -471,7 +473,7 @@ def test_unstack():
         pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise_different)
 
 
-def test_stack_unstack_on_example_data():
+def test_stack_unstack_timeseries_on_example_data():
     """
     This test checks if a DataFrame with a test sequence remains unchanged through stacking
     and unstacking
@@ -490,6 +492,27 @@ def test_stack_unstack_on_example_data():
     df_stacked = stack_timeseries(df)
     df_unstacked = unstack_timeseries(df_stacked)
     assert pd.testing.assert_frame_equal(df, df_unstacked) is None
+
+
+def test_unstack_stack_scalars_on_example_data():
+    """
+    This test checks oemof-B3 scalars remains unchanged through stacking
+    and unstacking.
+
+    ATTENTION: This only works if the input data is sorted in the standard
+    order defined in data_processing.py.
+    """
+    file_path = os.path.join(
+        os.path.abspath(os.path.join(this_path, os.pardir)),
+        "_files",
+        "oemof_b3_resources_scalars.csv",
+    )
+    df = load_b3_scalars(file_path)
+
+    df_unstacked = unstack_var_name(df)
+    df_stacked = stack_var_name(df_unstacked)
+
+    assert pd.testing.assert_frame_equal(df, df_stacked) is None
 
 
 def test_merge_a_into_b():
