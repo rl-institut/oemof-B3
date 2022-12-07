@@ -22,17 +22,17 @@ fills it with scalar and timeseries data, infers the metadata and saves it to th
 destination. Further, additional parameters like emission limit are saved in a separate file.
 
 Explanations about the structure of the preprocessed datapackage can be found in section
-:ref:`Preprocessed datapackages` of the
+:ref:`Build datapackages` of the
 `docu <https://oemof-b3.readthedocs.io/en/latest/index.html>`_.
 
 """
-import logging
 import sys
 import os
 from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
+
 from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import (
@@ -51,8 +51,6 @@ from oemof_b3.tools.data_processing import (
     save_df,
 )
 from oemof_b3.config import config
-
-logger = logging.getLogger()
 
 
 def update_with_checks(old, new):
@@ -246,8 +244,7 @@ if __name__ == "__main__":
 
     destination = sys.argv[2]
 
-    logfile = sys.argv[3]
-    logger = config.add_snake_logger(logfile, "build_datapackage")
+    logger = config.add_snake_logger("build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
 
