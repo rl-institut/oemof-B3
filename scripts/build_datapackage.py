@@ -4,8 +4,6 @@ Inputs
 -------
 scenario_specs : str
     ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
-settings : str
-    ``oemof_b3/config/settings.yaml``: path of input file (.yaml) containing oemof-B3 settings
 destination : str
     ``results/{scenario}/preprocessed``: path of output directory
 logfile : str
@@ -250,11 +248,10 @@ def calculate_emission_limit(
 
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
-    settings = sys.argv[2]
 
-    destination = sys.argv[3]
+    destination = sys.argv[2]
 
-    logfile = sys.argv[4]
+    logfile = sys.argv[3]
     logger = config.add_snake_logger(logfile, "build_datapackage")
 
     scenario_specs = load_yaml(scenario_specs)
@@ -262,7 +259,6 @@ if __name__ == "__main__":
     model_structure = model_structures[scenario_specs["model_structure"]]
 
     SEP = ";"  # TODO: use get_separator()
-    settings = load_yaml(settings)
     oemoflexconfig.config.settings.SEPARATOR = SEP
 
     # setup empty EnergyDataPackage
