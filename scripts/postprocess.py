@@ -50,9 +50,7 @@ if __name__ == "__main__":
     logfile = sys.argv[4]
     logger = config.add_snake_logger(logfile, "postprocess")
 
-    SEP = ";"  # TODO: use get_separator()
-
-    oemoflexconfig.config.settings.SEPARATOR = SEP
+    oemoflexconfig.config.settings.SEPARATOR = get_separator()
 
     try:
         es = EnergySystem()
