@@ -1,3 +1,3 @@
-id_ts;scenario_key;region;var_name;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
-int;str;str;str;str;str;str;str;str;str;str
-Numerical index;Key;Region;Variable name;Start of the timeindex following ISO 8601 date and time format;Stop of the timeindex following ISO 8601 date and time format;Time increment;Series;Unit of the variable;Source of the data;Additional information or notes such as the license or scope of validity
+id_ts;scenario_key;name;var_name;carrier;region;tech;type;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+int;str;str;str;str;str;str;str;str;str;str;str;str;str;str
+Numerical index;Key;Unique name of the oemof component;Variable name;Energy carrier;Region;Technology description;oemof.tabular facade type;Start of the timeindex following ISO 8601 date and time format;Stop of the timeindex following ISO 8601 date and time format;Time increment;Series;Unit of the variable;Source of the data;Additional information or notes such as the license or scope of validity

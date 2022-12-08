@@ -6,7 +6,10 @@ filtering, sorting, merging, aggregating and saving.
 
 import ast
 import os
+import warnings
+
 import numpy as np
+import oemof.tabular.facades
 import pandas as pd
 
 from oemof_b3.config import config
@@ -251,6 +254,38 @@ def save_df(df, path):
 
     # Print user info
     logger.info(f"The DataFrame has been saved to: {path}.")
+
+
+def load_tabular_results_scal(path):
+    r"""
+    Loads scalars as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0])
+
+
+def load_tabular_results_ts(path):
+    r"""
+    Loads timeseries as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
 
 def filter_df(df, column_name, values, inverse=False):
@@ -989,6 +1024,134 @@ def prepare_b3_timeseries(df_year, **kwargs):
     )
 
     return df_year_stacked
+
+
+def _get_component_id_in_tuple(oemof_tuple, delimiter="-"):
+    r"""
+    Returns the id of the component in an oemof tuple.
+    If the component is first in the tuple, will return 0,
+    if it is second, 1.
+
+    Parameters
+    ----------
+    oemof_tuple : tuple
+        tuple of the form (node, node) or (node, None).
+
+    Returns
+    -------
+    component_id : int
+        Position of the component in the tuple
+    """
+    # TODO: This is a dummy implementation that can easily fail
+    logger.warning(
+        "The implementation of _get_component_id_in_tuple is perliminary and not "
+        "very robust."
+    )
+    return max(enumerate(oemof_tuple), key=lambda x: len(x[1].split(delimiter)))[0]
+
+
+def _get_component_from_tuple(tuple, delimiter="-"):
+    # TODO: This is a dummy implementation that can easily fail
+    logger.warning(
+        "The implementation of _get_component_from_tuple is perliminary and not "
+        "very robust."
+    )
+    return max(tuple, key=lambda x: len(x.split(delimiter)))
+
+
+def _get_direction(oemof_tuple):
+    comp_id = _get_component_id_in_tuple(oemof_tuple)
+
+    directions = {
+        0: "out",
+        1: "in",
+    }
+
+    other_id = {
+        0: 1,
+        1: 0,
+    }[comp_id]
+
+    if oemof_tuple[other_id] == "nan":
+        return ""
+    else:
+        return directions[comp_id]
+
+
+def _get_region_carrier_tech_from_component(component, delimiter="-"):
+
+    if isinstance(component, oemof.tabular.facades.Facade):
+        region = component.region
+        carrier = component.carrier
+        tech = component.tech
+
+    elif isinstance(component, str):
+        split = component.split(delimiter)
+
+        if len(split) == 3:
+            region, carrier, tech = split
+
+        if len(split) > 3:
+
+            region, carrier, tech = "-".join(split[:2]), *split[2:]
+            warnings.warn(
+                f"Could not get region, carrier and tech by splitting "
+                f"component name into {split}. Assumed region='{region}', "
+                f"carrier='{carrier}', tech='{tech}'"
+            )
+
+    return region, carrier, tech
+
+
+def oemof_results_ts_to_oemof_b3(df):
+    r"""
+    Transforms data in oemof-tabular/oemoflex format to stacked b3 timeseries format.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+    """
+    _df = df.copy()
+
+    # The columns of oemof results are multiindex with 3 levels: (from, to, type).
+    # This is mapped to var_name = <type>_<in/out> with "in" if bus comes first (from),
+    # "out" if bus is second (to). If the multiindex entry is of the form (component, None, type),
+    # then var_name = type
+    component = df.columns.droplevel(2).map(_get_component_from_tuple)
+
+    # specify direction in var_name
+    direction = df.columns.droplevel(2).map(_get_direction)
+
+    var_name = df.columns.get_level_values(2)
+
+    var_name = list(zip(var_name, direction))
+
+    var_name = list(map(lambda x: "_".join(filter(None, x)), var_name))
+
+    # Introduce arbitrary unique columns before stacking.
+    _df.columns = range(len(_df.columns))
+
+    _df = stack_timeseries(_df)
+
+    # assign values to other columns
+    _df["region"], _df["carrier"], _df["tech"] = zip(
+        *component.map(_get_region_carrier_tech_from_component)
+    )
+
+    _df["name"] = component
+
+    _df["var_name"] = var_name
+
+    # ensure that the format follows b3 schema
+    _df = format_header(_df, HEADER_B3_TS, "id_ts")
+
+    return _df
 
 
 class ScalarProcessor:
