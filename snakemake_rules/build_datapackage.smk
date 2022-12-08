@@ -1,3 +1,5 @@
+from oemof_b3.config.config import load_yaml
+
 def get_paths_scenario_input(wildcards):
     scenario_specs = load_yaml(f"scenarios/{wildcards.scenario}.yml")
     paths_scenario_inputs = list()
