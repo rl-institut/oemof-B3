@@ -87,7 +87,7 @@ if __name__ == "__main__":
     scenario = "scenario_" + str(filepath.parts[1]).replace("-", "_").lower()
 
     # set up the logger
-    logger = config.add_snake_logger(logfile, "upload_results_to_oep")
+    logger = config.add_snake_logger("upload_results_to_oep")
 
     if not os.path.exists(metadata_path):
         os.makedirs(metadata_path)
