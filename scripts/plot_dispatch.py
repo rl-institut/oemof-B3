@@ -218,9 +218,7 @@ def get_df_for_aggregation(list_with_dfs):
         Result DataFrame with concatenated DataFrames
 
     """
-    df_concatenated = pd.concat(
-            list_with_dfs, axis=0, ignore_index=True
-        )
+    df_concatenated = pd.concat(list_with_dfs, axis=0, ignore_index=True)
 
     return df_concatenated
 
