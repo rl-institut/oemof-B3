@@ -17,15 +17,15 @@ Description
 -------------
 This script performs the following steps:
 
-* Create metadata (in oemetadata format, using the template in ``oemof-B3/schema/oemetadata.json``)
+* Setup a database connection with your credentials (can be saved in oemof_b3/config/.secrets.yaml
+* Find all csv files in input directory.
+* Create metadata for the data
+  (in oemetadata format, using the template in ``oemof-B3/schema/oemetadata.json``)
   for given model results (in oemof-B3-format) and saves them locally as json files.
 * Create tables on the OpenEnergyPlatform (OEP) based on the metadata.
-* Upload model results to the OEP tables.
+* Upload data to the OEP tables.
 * Validate metadata.
 * Upload metadata to the OEP tables.
-
-The script can delete existing tables on the OEP that have been uploaded with an affiliated OEP user
-account.
 
 The oemetadata format is a standardised json file format and is required for all data uploaded to
 the OEP. It includes the data model, the used data types, and general information about the data
