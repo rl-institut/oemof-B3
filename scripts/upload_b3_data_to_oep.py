@@ -56,8 +56,8 @@ logger = logging.getLogger()
 
 # try to get oep_user and oep_token from .secrets.yaml
 try:
-    os.environ["OEP_USER"] = config.settings.oep_user
-    os.environ["OEP_TOKEN"] = config.settings.oep_token
+    os.environ["OEP_USER"] = str(config.settings.oep_user)
+    os.environ["OEP_TOKEN"] = str(config.settings.oep_token)
 except AttributeError:
     logger.warning(
         "No oep_user and/or oep_token provided in oemof_b3/config/.secrets.yaml. "
