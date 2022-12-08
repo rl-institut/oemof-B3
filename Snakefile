@@ -1,5 +1,4 @@
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
-from oemof_b3.config.config import load_yaml
 import oemof_b3.config.config as config
 
 HTTP = HTTPRemoteProvider()
@@ -62,6 +61,7 @@ include: "snakemake_rules/build_datapackage.smk"
 include: "snakemake_rules/optimization.smk"
 include: "snakemake_rules/postprocessing.smk"
 include: "snakemake_rules/visualization.smk"
+include: "snakemake_rules/oep_upload_download.smk"
 
 # prepare settings locally or download it from OEP (not implemented yet)
 if config.settings.general.prepare_resources_locally:

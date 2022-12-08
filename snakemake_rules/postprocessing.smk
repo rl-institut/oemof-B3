@@ -12,3 +12,13 @@ rule join_scenario_results:
     input: get_scenarios_in_group
     output: directory("results/joined_scenarios/{scenario_group}/joined/")
     shell: "python scripts/join_scenarios.py {input} {output}"
+
+rule map_results_to_b3_format:
+    input:
+        "results/{scenario}/postprocessed"
+    output:
+        directory("results/{scenario}/b3_results/data")
+    params:
+        logfile="results/{scenario}/{scenario}.log"
+    shell:
+        "python scripts/map_results_to_b3_format.py {input} {output} {params.logfile}"

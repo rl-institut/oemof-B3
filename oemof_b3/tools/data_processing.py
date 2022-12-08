@@ -6,24 +6,26 @@ filtering, sorting, merging, aggregating and saving.
 
 import ast
 import os
+import warnings
 
 import numpy as np
+import oemof.tabular.facades
 import pandas as pd
 
 from oemof_b3.config import config
 
+from oemof_b3 import schema
+
+
+logger = config.add_snake_logger("data_processing")
 
 here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "schema")
 
-HEADER_B3_SCAL = pd.read_csv(
-    os.path.join(template_dir, "scalars.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_SCAL = schema.SCHEMA_SCAL.columns.columns
 
-HEADER_B3_TS = pd.read_csv(
-    os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_TS = schema.SCHEMA_TS.columns.columns
 
 
 def sort_values(df, reset_index=True):
@@ -249,7 +251,39 @@ def save_df(df, path):
     df.to_csv(path, index=True, sep=";")
 
     # Print user info
-    print(f"User info: The DataFrame has been saved to: {path}.")
+    logger.info(f"The DataFrame has been saved to: {path}.")
+
+
+def load_tabular_results_scal(path):
+    r"""
+    Loads scalars as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0])
+
+
+def load_tabular_results_ts(path):
+    r"""
+    Loads timeseries as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
 
 def filter_df(df, column_name, values, inverse=False):
@@ -378,7 +412,7 @@ def update_filtered_df(df, filters):
     filtered_updated.index.name = config.settings.general.scal_index_name
 
     for iteration, filter in filters.items():
-        print(f"Applying set of filters no {iteration}.")
+        logger.info(f"Applying set of filters no {iteration}.")
 
         # Apply set of filters
         filtered = multi_filter_df(df, **filter)
@@ -393,7 +427,7 @@ def update_filtered_df(df, filters):
         )
 
         # inform about filtering updating
-        print(f"Updated data with data filtered by {filter}")
+        logger.info(f"Updated data with data filtered by {filter}")
 
     return filtered_updated
 
@@ -654,21 +688,23 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
         a_not_b = set_index_a.difference(set_index_b)
         if a_not_b:
             if how == "left":
-                print(
+                logger.warning(
                     f"There are {len(a_not_b)} elements in df_a but not in df_b"
                     f" and are lost (choose how='outer' to keep them): {a_not_b}"
                 )
             elif how == "outer":
-                print(
+                logger.info(
                     f"There are {len(a_not_b)} elements in df_a that are"
                     f" added to df_b: {a_not_b}"
                 )
 
         a_and_b = set_index_a.intersection(set_index_b)
-        print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+        logger.info(
+            f"There are {len(a_and_b)} elements in df_b that are updated by df_a."
+        )
 
         b_not_a = set_index_b.difference(set_index_a)
-        print(
+        logger.info(
             f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}"
         )
 
@@ -770,8 +806,8 @@ def stack_timeseries(df):
 
     _df_freq = pd.infer_freq(_df.index)
     if _df.index.freqstr is None:
-        print(
-            f"User info: The frequency of your data is not specified in the DataFrame, "
+        logger.info(
+            f"The frequency of your data is not specified in the DataFrame, "
             f"but is of the following frequency alias: {_df_freq}. "
             f"The frequency of your DataFrame is therefore automatically set to the "
             f"frequency with this alias."
@@ -842,9 +878,8 @@ def unstack_timeseries(df):
     lost_columns = ["source", "comment"]
     for col in lost_columns:
         if col in list(df.columns):
-            print(
-                f"User warning: Caution any remarks in column '{col}' are lost after "
-                f"unstacking."
+            logger.warning(
+                f"Caution any remarks in column '{col}' are lost after unstacking."
             )
 
     # Process values of series
@@ -943,7 +978,7 @@ def round_setting_int(df, decimals):
 
     for col, dec in decimals.items():
         if col not in _df.columns:
-            print(f"No column named '{col}' found when trying to round.")
+            logger.warning(f"No column named '{col}' found when trying to round.")
             continue
         elif dec == 0:
             dtype = "Int64"
@@ -987,6 +1022,134 @@ def prepare_b3_timeseries(df_year, **kwargs):
     )
 
     return df_year_stacked
+
+
+def _get_component_id_in_tuple(oemof_tuple, delimiter="-"):
+    r"""
+    Returns the id of the component in an oemof tuple.
+    If the component is first in the tuple, will return 0,
+    if it is second, 1.
+
+    Parameters
+    ----------
+    oemof_tuple : tuple
+        tuple of the form (node, node) or (node, None).
+
+    Returns
+    -------
+    component_id : int
+        Position of the component in the tuple
+    """
+    # TODO: This is a dummy implementation that can easily fail
+    logger.warning(
+        "The implementation of _get_component_id_in_tuple is perliminary and not "
+        "very robust."
+    )
+    return max(enumerate(oemof_tuple), key=lambda x: len(x[1].split(delimiter)))[0]
+
+
+def _get_component_from_tuple(tuple, delimiter="-"):
+    # TODO: This is a dummy implementation that can easily fail
+    logger.warning(
+        "The implementation of _get_component_from_tuple is perliminary and not "
+        "very robust."
+    )
+    return max(tuple, key=lambda x: len(x.split(delimiter)))
+
+
+def _get_direction(oemof_tuple):
+    comp_id = _get_component_id_in_tuple(oemof_tuple)
+
+    directions = {
+        0: "out",
+        1: "in",
+    }
+
+    other_id = {
+        0: 1,
+        1: 0,
+    }[comp_id]
+
+    if oemof_tuple[other_id] == "nan":
+        return ""
+    else:
+        return directions[comp_id]
+
+
+def _get_region_carrier_tech_from_component(component, delimiter="-"):
+
+    if isinstance(component, oemof.tabular.facades.Facade):
+        region = component.region
+        carrier = component.carrier
+        tech = component.tech
+
+    elif isinstance(component, str):
+        split = component.split(delimiter)
+
+        if len(split) == 3:
+            region, carrier, tech = split
+
+        if len(split) > 3:
+
+            region, carrier, tech = "-".join(split[:2]), *split[2:]
+            warnings.warn(
+                f"Could not get region, carrier and tech by splitting "
+                f"component name into {split}. Assumed region='{region}', "
+                f"carrier='{carrier}', tech='{tech}'"
+            )
+
+    return region, carrier, tech
+
+
+def oemof_results_ts_to_oemof_b3(df):
+    r"""
+    Transforms data in oemof-tabular/oemoflex format to stacked b3 timeseries format.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+    """
+    _df = df.copy()
+
+    # The columns of oemof results are multiindex with 3 levels: (from, to, type).
+    # This is mapped to var_name = <type>_<in/out> with "in" if bus comes first (from),
+    # "out" if bus is second (to). If the multiindex entry is of the form (component, None, type),
+    # then var_name = type
+    component = df.columns.droplevel(2).map(_get_component_from_tuple)
+
+    # specify direction in var_name
+    direction = df.columns.droplevel(2).map(_get_direction)
+
+    var_name = df.columns.get_level_values(2)
+
+    var_name = list(zip(var_name, direction))
+
+    var_name = list(map(lambda x: "_".join(filter(None, x)), var_name))
+
+    # Introduce arbitrary unique columns before stacking.
+    _df.columns = range(len(_df.columns))
+
+    _df = stack_timeseries(_df)
+
+    # assign values to other columns
+    _df["region"], _df["carrier"], _df["tech"] = zip(
+        *component.map(_get_region_carrier_tech_from_component)
+    )
+
+    _df["name"] = component
+
+    _df["var_name"] = var_name
+
+    # ensure that the format follows b3 schema
+    _df = format_header(_df, HEADER_B3_TS, "id_ts")
+
+    return _df
 
 
 class ScalarProcessor:

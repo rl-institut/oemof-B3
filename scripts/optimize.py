@@ -199,7 +199,7 @@ if __name__ == "__main__":
     optimized = sys.argv[2]
 
     logfile = sys.argv[3]
-    logger = config.add_snake_logger(logfile, "optimize")
+    logger = config.add_snake_logger("optimize")
 
     # get additional scalars, set to None at first
     emission_limit = None

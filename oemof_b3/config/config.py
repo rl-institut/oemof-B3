@@ -1,5 +1,6 @@
 import logging
 import pathlib
+import sys
 
 import yaml
 from dynaconf import Dynaconf
@@ -33,13 +34,25 @@ stream_handler.setFormatter(stream_formatter)
 stream_handler.addFilter(LevelFilter(logging.ERROR))
 root_logger.addHandler(stream_handler)
 
+DEFAULT_LOGFILE = "snake.log"
 
-def add_snake_logger(logfile, rulename):
+
+def add_snake_logger(rulename):
+    """
+    Adds logging to file
+
+    Logfile is read from input parameters, ending with ".log"
+    This is done in order to add loggers for subprocesses (like data_preprocessing.py),
+    where logfile is unknown.
+    """
     logger = logging.getLogger(rulename)
+    logfile = next(
+        (item for item in sys.argv if item.endswith(".log")), DEFAULT_LOGFILE
+    )
+    handler = logging.FileHandler(logfile)
     file_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
-    handler = logging.FileHandler(logfile)
     handler.setFormatter(file_formatter)
     logger.addHandler(handler)
     return logger

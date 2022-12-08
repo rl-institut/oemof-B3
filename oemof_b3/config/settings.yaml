@@ -74,3 +74,6 @@ process_re_potential:
   var_name: capacity
   scenario_key: ""
   name: None
+
+upload_results_to_oep:
+  schema: model_draft
