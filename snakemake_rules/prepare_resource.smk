@@ -1,13 +1,3 @@
-rule prepare_example:
-    input: "examples/{scenario}/preprocessed/"
-    output: directory("results/{scenario}/preprocessed")
-    wildcard_constraints:
-        # Use this rule for the examples. Do not use build_datapackage.
-        scenario="|".join(scenario_groups["examples"])
-    run:
-        import shutil
-        shutil.copytree(src=input[0], dst=output[0])
-
 rule prepare_conv_pp:
     input:
         opsd="raw/conventional_power_plants_DE.csv",

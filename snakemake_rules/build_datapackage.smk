@@ -22,3 +22,13 @@ rule build_datapackage:
         # Do not use this rule for the examples. Use prepare_example instead
         scenario=r"(?!example_).*"
     shell: "python scripts/build_datapackage.py {input.scenario} {output} {params.logfile}"
+
+rule prepare_example:
+    input: "examples/{scenario}/preprocessed/"
+    output: directory("results/{scenario}/preprocessed")
+    wildcard_constraints:
+        # Use this rule for the examples. Do not use build_datapackage.
+        scenario="|".join(scenario_groups["examples"])
+    run:
+        import shutil
+        shutil.copytree(src=input[0], dst=output[0])
