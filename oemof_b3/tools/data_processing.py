@@ -14,6 +14,8 @@ import pandas as pd
 
 from oemof_b3.config import config
 
+from oemof_b3 import schema
+
 
 logger = config.add_snake_logger("data_processing")
 
@@ -21,13 +23,9 @@ here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "schema")
 
-HEADER_B3_SCAL = pd.read_csv(
-    os.path.join(template_dir, "scalars.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_SCAL = schema.SCHEMA_SCAL.columns.columns
 
-HEADER_B3_TS = pd.read_csv(
-    os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_TS = schema.SCHEMA_TS.columns.columns
 
 
 def sort_values(df, reset_index=True):
