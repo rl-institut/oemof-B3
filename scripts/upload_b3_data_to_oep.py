@@ -31,6 +31,7 @@ The oemetadata format is a standardised json file format and is required for all
 the OEP. It includes the data model, the used data types, and general information about the data
 context. Tables in sqlalchemy are created based on the information in the oemetadata.
 """
+from collections import namedtuple
 import logging
 import os
 import pathlib
@@ -55,8 +56,8 @@ logger = logging.getLogger()
 
 # try to get oep_user and oep_token from .secrets.yaml
 try:
-    os.environ["OEP_USER"] = config.settings.oep_user
-    os.environ["OEP_TOKEN"] = config.settings.oep_token
+    os.environ["OEP_USER"] = str(config.settings.oep_user)
+    os.environ["OEP_TOKEN"] = str(config.settings.oep_token)
 except AttributeError:
     logger.warning(
         "No oep_user and/or oep_token provided in oemof_b3/config/.secrets.yaml. "
@@ -65,12 +66,32 @@ except AttributeError:
 
 
 # define table names
-def get_table_name(filename, scenario):
-    return f"{os.path.splitext(filename)[0]}_{scenario}"
+def get_table_name(name_prefix, filename):
+    r"""
+    This is the naming convention for tables: Take a prefix,
+    make sure that it does not violate SQL table requirements
+    and prepend it to the name of the file.
+    """
+    file_name_wo_extension = os.path.splitext(filename)[0]
+
+    # make scenario name compatible with oep requirements
+    # (Names must consist of lowercase alpha-numeric words or underscores
+    # and start with a letter and must be have a maximumlength of 50)
+    name_prefix = name_prefix.replace("-", "_").lower()
+
+    return f"{name_prefix}_{file_name_wo_extension}"
 
 
-def write_metadata(metadata, schema, table, title, keywords):
-    metadata["name"] = table
+def get_title(title_prefix):
+    r"""
+    Because snakemake cannot pass space characters when calling the script
+    as 'shell', we have to use underscores and replace them with spaces here.
+    """
+    return title_prefix.replace("_", " ")
+
+
+def write_metadata(metadata, schema, name, title, keywords):
+    metadata["name"] = name
     metadata["title"] = title
     metadata["PublicationDate"] = str(date.today())
     # TODO: A method metadata.add_resource, add field would be handy
@@ -83,12 +104,9 @@ def write_metadata(metadata, schema, table, title, keywords):
 if __name__ == "__main__":
     filepath = pathlib.Path(sys.argv[1])
     metadata_path = pathlib.Path(sys.argv[2])
-    logfile = sys.argv[3]
-
-    # make scenario name compatible with oep requirements
-    # (Names must consist of lowercase alpha-numeric words or underscores
-    # and start with a letter and must be have a maximumlength of 50)
-    scenario = "scenario_" + str(filepath.parts[1]).replace("-", "_").lower()
+    name_prefix = sys.argv[3]
+    title_prefix = sys.argv[4]
+    logfile = sys.argv[5]
 
     # set up the logger
     logger = config.add_snake_logger("upload_results_to_oep")
@@ -97,13 +115,20 @@ if __name__ == "__main__":
         os.makedirs(metadata_path)
 
     # find data to upload
-    dict_table_filename = {
-        get_table_name(filename, scenario): filename
+    UploadCandidate = namedtuple("UploadCandidate", ["filename", "table_name", "title"])
+
+    upload_candidates = [
+        UploadCandidate(
+            filename=filename,
+            table_name=get_table_name(name_prefix, filename),
+            title=get_title(title_prefix),
+        )
         for filename in os.listdir(filepath)
         if filename.endswith(".csv")
-    }
+    ]
     logger.info(
-        "These files will be uploaded: " + ", ".join(dict_table_filename.values())
+        "These files will be uploaded: "
+        + ", ".join([uc.filename for uc in upload_candidates])
     )
 
     # To connect to the OEP you need your OEP Token and user name. Note: You ca view your token
@@ -115,7 +140,7 @@ if __name__ == "__main__":
     db = oem2orm.setup_db_connection()
 
     # Create the metadata and save it
-    for table, filename in dict_table_filename.items():
+    for filename, table, title in upload_candidates:
         data_upload_df = pd.read_csv(
             os.path.join(filepath, filename), encoding="utf8", sep=";", index_col=0
         )
@@ -123,16 +148,18 @@ if __name__ == "__main__":
         metadata = get_suitable_metadata_template(data_upload_df)
 
         metadata = write_metadata(
-            metadata,
-            config.settings.upload_results_to_oep.schema,
-            table,
-            f"Model results oemof-B3 {table}",
-            ["RLI", "oemof_b3"],
+            metadata=metadata,
+            schema=config.settings.upload_results_to_oep.schema,
+            name=table,
+            title=title,
+            keywords=["RLI", "oemof_b3"],
         )
 
-        save_metadata_dict_to_json(metadata, metadata_path / f"{table}.json")
+        metadata_destination = metadata_path / f"{table}.json"
 
-        logger.info(f"Saved metadata to: {metadata_path}")
+        save_metadata_dict_to_json(metadata, metadata_destination)
+
+        logger.info(f"Saved metadata to: {metadata_destination}")
 
     # Creating sql tables from oemetadata
     # The next command will set up the tables. The collect_tables-function collects all metadata
@@ -146,7 +173,7 @@ if __name__ == "__main__":
     oem2orm.create_tables(db, tables_orm)
 
     # Writing data into the tables
-    for table, filename in dict_table_filename.items():
+    for filename, table, _ in upload_candidates:
 
         logger.info(f"{filename} is processed")
 
