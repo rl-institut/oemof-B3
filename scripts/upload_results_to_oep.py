@@ -40,7 +40,11 @@ from datetime import date
 import pandas as pd
 
 from oemof_b3.config import config
-from oemof_b3.tools.oep import get_suitable_metadata_template, save_metadata_dict_to_json
+from oemof_b3.tools.oep import (
+    get_suitable_metadata_template,
+    save_metadata_dict_to_json,
+    upload_df_to_oep_table,
+)
 
 try:
     from oem2orm import oep_oedialect_oem2orm as oem2orm
@@ -156,33 +160,13 @@ if __name__ == "__main__":
         # Have a look in the OEP after it ran successfully!
         logger.info(f"{filename} is written into table {table}")
 
-        try:
-            data_upload_df.to_sql(
-                table,
-                con=db.engine,
-                schema=config.settings.upload_results_to_oep.schema,
-                if_exists="append",
-                index=False,
-            )
-
-            logger.info(
-                "Inserted data to "
-                + config.settings.upload_results_to_oep.schema
-                + "."
-                + table
-            )
-
-        except Exception as e:
-            logger.error(e)
-            logger.error("Writing to " + table + " failed!")
-            logger.error(
-                "Note that you cannot load the same data into the table twice."
-                " There will be an id conflict."
-            )
-            logger.error(
-                "Delete and recreate with the commands above, if you want to test your"
-                " upload again."
-            )
+        upload_df_to_oep_table(
+            df=data_upload_df,
+            name=table,
+            con=db.engine,
+            schema=config.settings.upload_results_to_oep.schema,
+            logger=logger,
+        )
 
         logger.info(f"{filename} writing into table ended")
 
