@@ -1,0 +1,3 @@
+id_ts;scenario_key;name;var_name;carrier;region;tech;type;timeindex_start;timeindex_stop;timeindex_resolution;series;var_unit;source;comment
+0;;B-electricity-demand;flow_in;electricity;B;demand;;2017-01-01 00:00:00;2017-01-01 02:00:00;H;[675, 666, 634];;;
+1;;B-h2-gt;flow_out;h2;B;gt;;2017-01-01 00:00:00;2017-01-01 02:00:00;H;[675, 666, 634];;;

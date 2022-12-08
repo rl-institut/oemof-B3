@@ -190,6 +190,16 @@ rule postprocess:
         logfile="results/{scenario}/{scenario}.log"
     shell: "python scripts/postprocess.py {input} {wildcards.scenario} {output} {params.logfile}"
 
+rule map_results_to_b3_format:
+    input:
+        "results/{scenario}/postprocessed"
+    output:
+        directory("results/{scenario}/b3_results")
+    params:
+        logfile="results/{scenario}/{scenario}.log"
+    shell:
+        "python scripts/map_results_to_b3_format.py {input} {output} {params.logfile}"
+
 rule table_results:
     input: "results/{scenario}/postprocessed/"
     output: directory("results/{scenario}/tables/")
