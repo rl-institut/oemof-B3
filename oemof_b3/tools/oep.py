@@ -4,7 +4,12 @@ from oemof_b3.schema import oemetadata_scal, oemetadata_ts, SCHEMA_SCAL, SCHEMA_
 from oemof_b3.tools import data_processing as dp
 
 
-def save_dict_to_json(data, filepath, encoding="utf-8"):
+def load_metadata_json_to_dict(filepath):
+    with open(filepath, "rb") as f:
+        return json.load(f)
+
+
+def save_metadata_dict_to_json(data, filepath, encoding="utf-8"):
     with open(filepath, "w", encoding=encoding) as f:
         return json.dump(data, f, sort_keys=False, indent=2)
 

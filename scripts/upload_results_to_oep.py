@@ -40,7 +40,7 @@ from datetime import date
 import pandas as pd
 
 from oemof_b3.config import config
-from oemof_b3.tools.oep import get_suitable_metadata_template, save_dict_to_json
+from oemof_b3.tools.oep import get_suitable_metadata_template, save_metadata_dict_to_json
 
 try:
     from oem2orm import oep_oedialect_oem2orm as oem2orm
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             ["RLI", "oemof_b3"],
         )
 
-        save_dict_to_json(metadata, metadata_path / f"{table}.json")
+        save_metadata_dict_to_json(metadata, metadata_path / f"{table}.json")
 
         logger.info(f"Saved metadata to: {metadata_path}")
 

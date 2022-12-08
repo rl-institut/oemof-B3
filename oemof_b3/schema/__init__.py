@@ -8,7 +8,11 @@ import pandas as pd
 here = os.path.dirname(__file__)
 
 
-def load_json_to_dict(filepath):
+def load_metadata_json_to_dict(filepath):
+    r"""
+    Mirrors the function with the same name in oeomof_b3.tools.oep to
+    avoid circular import.
+    """
     with open(filepath, "rb") as f:
         return json.load(f)
 
@@ -71,7 +75,7 @@ SCHEMA_SCAL = B3Schema.load_from_csv(os.path.join(here, "scalars.csv"))
 
 SCHEMA_TS = B3Schema.load_from_csv(os.path.join(here, "timeseries.csv"))
 
-oemetadata = load_json_to_dict(os.path.join(here, "oemetadata.json"))
+oemetadata = load_metadata_json_to_dict(os.path.join(here, "oemetadata.json"))
 
 oemetadata_scal = write_schema_to_metadata(SCHEMA_SCAL, oemetadata)
 
