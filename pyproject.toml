@@ -20,9 +20,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = ">=3.7, <3.9"
-numpy = "1.21.0"
-rtree = "0.9.7"
-pyyaml = "6.0"
+numpy = ">=1.21.0"
+rtree = ">=0.9.7"
+pyyaml = ">=6.0"
 dynaconf = "^3.1.7"
 snakemake = ">=5"
 oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", branch = "dev"}
@@ -44,6 +44,7 @@ pre-commit = "^2.17.0"
 [tool.poetry.extras]
 docs = ["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-bibtex"]
 preprocessing = ["geopandas"]
+upload_results_to_oep = ["oem2orm"]
 
 [tool.black]
 exclude = '''

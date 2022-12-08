@@ -49,9 +49,8 @@ if __name__ == "__main__":
     in_path = sys.argv[1]  # input data
     scenario_key = sys.argv[2]
     out_path = sys.argv[3]
-    logfile = sys.argv[4]
 
-    logger = config.add_snake_logger(logfile, "create_input_data_overview")
+    logger = config.add_snake_logger("create_input_data_overview")
 
     df = dp.load_b3_scalars(in_path)
 

@@ -309,9 +309,8 @@ def aggregate_by_region(bus_files, carrier):
 if __name__ == "__main__":
     postprocessed = sys.argv[1]
     plotted = sys.argv[2]
-    logfile = sys.argv[3]
 
-    logger = config.add_snake_logger(logfile, "plot_dispatch")
+    logger = config.add_snake_logger("plot_dispatch")
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(plotted):

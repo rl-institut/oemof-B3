@@ -1,5 +1,5 @@
 id_scal;scenario_key;name;var_name;carrier;region;tech;type;var_value
-0;base;BE-biomass-st;capacity;biomass;BE;gt;conversion;0
+1;base;BE-biomass-st;capacity;biomass;BE;gt;conversion;0
 3;base;BE-biomass-st;flow_in_biomass;biomass;BE;gt;conversion;0.0
 5;base;BE-biomass-st;flow_out_electricity;biomass;BE;gt;conversion;0.0
 7;base;BE-biomass-st;summed_variable_costs_in_biomass;biomass;BE;gt;conversion;0.0
