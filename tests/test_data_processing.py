@@ -474,12 +474,7 @@ def test_unstack_stack_scalars_on_example_data():
     ATTENTION: This only works if the input data is sorted in the standard
     order defined in data_processing.py.
     """
-    file_path = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
-        "_files",
-        "oemof_b3_resources_scalars.csv",
-    )
-    df = load_b3_scalars(file_path)
+    df = load_b3_scalars(path_file_sc)
 
     df_unstacked = unstack_var_name(df)
     df_stacked = stack_var_name(df_unstacked)
