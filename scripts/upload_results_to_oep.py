@@ -40,7 +40,7 @@ from datetime import date
 import pandas as pd
 
 from oemof_b3.config import config
-from oemof_b3.tools.oep import create_metadata, save_dict_to_json
+from oemof_b3.tools.oep import get_suitable_metadata_template, save_dict_to_json
 
 try:
     from oem2orm import oep_oedialect_oem2orm as oem2orm
@@ -115,7 +115,7 @@ if __name__ == "__main__":
             os.path.join(filepath, filename), encoding="utf8", sep=";", index_col=0
         )
 
-        metadata = create_metadata(data_upload_df)
+        metadata = get_suitable_metadata_template(data_upload_df)
 
         metadata = write_metadata(
             metadata,

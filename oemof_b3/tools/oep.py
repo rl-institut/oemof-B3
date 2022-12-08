@@ -34,10 +34,22 @@ def list_diff(sample, default):
         return (extra_items, missing_items)
 
 
-def create_metadata(data, template=None):
-    if template is not None:
-        pass
-    elif list_diff(data.columns, SCHEMA_SCAL.columns) is None:
+def get_suitable_metadata_template(data):
+    r"""
+    Returns the suitable metadata for your data in b3 format.
+
+    Parameters
+    ----------
+    data : pd.DataFrame
+        Data in b3 schema (scalars or timeseries)
+        that you want to create metadata for.
+
+    Returns
+    -------
+    metadata : dict
+        Metadata for scalars or timeseries
+    """
+    if list_diff(data.columns, SCHEMA_SCAL.columns) is None:
         template = oemetadata_scal
     elif list_diff(data.columns, SCHEMA_TS.columns) is None:
         template = oemetadata_ts
