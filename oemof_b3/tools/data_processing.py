@@ -1043,15 +1043,19 @@ def _get_component_id_in_tuple(oemof_tuple, delimiter="-"):
         Position of the component in the tuple
     """
     # TODO: This is a dummy implementation that can easily fail
-    logger.warning("The implementation of _get_component_id_in_tuple is perliminary and not "
-                   "very robust.")
+    logger.warning(
+        "The implementation of _get_component_id_in_tuple is perliminary and not "
+        "very robust."
+    )
     return max(enumerate(oemof_tuple), key=lambda x: len(x[1].split(delimiter)))[0]
 
 
 def _get_component_from_tuple(tuple, delimiter="-"):
     # TODO: This is a dummy implementation that can easily fail
-    logger.warning("The implementation of _get_component_from_tuple is perliminary and not "
-                   "very robust.")
+    logger.warning(
+        "The implementation of _get_component_from_tuple is perliminary and not "
+        "very robust."
+    )
     return max(tuple, key=lambda x: len(x.split(delimiter)))
 
 
