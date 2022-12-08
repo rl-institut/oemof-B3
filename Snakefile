@@ -313,7 +313,7 @@ rule upload_results_to_oep:
     output: directory("results/{scenario}/b3_results/metadata")
     params:
         logfile="results/{scenario}/{scenario}.log",
-        name_prefix="results_scenario_{scenario}",
+        name_prefix="results_{scenario}",
         title_prefix="Model_results_oemof-B3_{scenario}"
     shell: "python scripts/upload_b3_data_to_oep.py {input} {output} {params.name_prefix} {params.title_prefix} {params.logfile}"
 
