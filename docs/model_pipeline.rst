@@ -236,9 +236,9 @@ Outputs
 
 Output files are saved  in :file:`results/scenario/plotted`.
 
-.. _upload_to_oep_label:
+.. _oep_upload_download_label:
 
-Upload results to oep
+OEP upload/download
 =====================
 
 Rules
@@ -248,4 +248,4 @@ Rules
    :maxdepth: 1
    :glob:
 
-   upload_results_to_oep/*
+   oep_upload_download/*
