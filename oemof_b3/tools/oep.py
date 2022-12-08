@@ -1,7 +1,6 @@
 import json
 
-from oemof_b3.schema import (SCHEMA_SCAL, SCHEMA_TS, oemetadata_scal,
-                             oemetadata_ts)
+from oemof_b3.schema import SCHEMA_SCAL, SCHEMA_TS, oemetadata_scal, oemetadata_ts
 from oemof_b3.tools import data_processing as dp
 
 
