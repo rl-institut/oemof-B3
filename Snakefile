@@ -194,7 +194,7 @@ rule map_results_to_b3_format:
     input:
         "results/{scenario}/postprocessed"
     output:
-        directory("results/{scenario}/b3_results")
+        directory("results/{scenario}/b3_results/data")
     params:
         logfile="results/{scenario}/{scenario}.log"
     shell:

@@ -100,6 +100,7 @@ if __name__ == "__main__":
     dict_table_filename = {
         get_table_name(filename, scenario): filename
         for filename in os.listdir(filepath)
+        if filename.endswith(".csv")
     }
     logger.info(
         "These files will be uploaded: " + ", ".join(dict_table_filename.values())
