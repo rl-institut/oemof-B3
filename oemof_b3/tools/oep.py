@@ -1,6 +1,7 @@
 import json
 
-from oemof_b3.schema import oemetadata_scal, oemetadata_ts, SCHEMA_SCAL, SCHEMA_TS
+from oemof_b3.schema import (SCHEMA_SCAL, SCHEMA_TS, oemetadata_scal,
+                             oemetadata_ts)
 from oemof_b3.tools import data_processing as dp
 
 
@@ -66,7 +67,9 @@ def get_suitable_metadata_template(data):
     return metadata
 
 
-def upload_df_to_oep_table(df, name, con, schema, logger, if_exists="append", index=False):
+def upload_df_to_oep_table(
+    df, name, con, schema, logger, if_exists="append", index=False
+):
     r"""
     Parameters
     ----------
@@ -95,12 +98,7 @@ def upload_df_to_oep_table(df, name, con, schema, logger, if_exists="append", in
             index=index,
         )
 
-        logger.info(
-            "Inserted data to "
-            + schema
-            + "."
-            + name
-        )
+        logger.info("Inserted data to " + schema + "." + name)
 
     except Exception as e:
         logger.error(e)
