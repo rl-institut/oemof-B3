@@ -11,7 +11,7 @@ if __name__ == "__main__":
     logfile = sys.argv[3]
 
     target.mkdir(exist_ok=True)
-    logger = config.add_snake_logger(logfile, "map_results_to_b3_format")
+    logger = config.add_snake_logger("map_results_to_b3_format")
 
     scenario = postprocessed.parts[-2]
 
