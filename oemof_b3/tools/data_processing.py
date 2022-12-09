@@ -4,7 +4,6 @@ This module contains helper functions for processing the data in oemof-B3, such 
 filtering, sorting, merging, aggregating and saving.
 """
 
-import logging
 import ast
 import os
 import warnings
