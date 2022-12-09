@@ -285,7 +285,6 @@ if __name__ == "__main__":
     # Check and set attribute 'name'
     scalars = prepare_attr_name(
         scalars,
-        model_structure["regions"],
         config.settings.build_datapackage.overwrite_name,
     )
 

@@ -567,13 +567,13 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
-def prepare_attr_name(sc, regions, overwrite):
+def prepare_attr_name(sc, overwrite):
     r"""
     This function handles the values of the attribute 'name'.
 
     It ensures that the name is
-       1. set (according to convention) where name is empty and region is fixed
-       2. checked for all values that are not None
+       1. set (according to convention) where name is empty and region is fixed and
+       2. checked for all values that are not None.
 
     If 'overwrite' is true the names will be overwritten with names set according to the
     convention. Otherwise the names passed by the user are used.
@@ -581,91 +581,84 @@ def prepare_attr_name(sc, regions, overwrite):
     Parameters
     ----------
     sc : pd.DataFrame
-        DataFrame with scalar data in oemof-B3-resources format
-    regions : list
-        List of regions
+        DataFrame with scalar data in oemof-B3-resources format.
     overwrite : Boolean
-        True if names are overwritten otherwise False
+        True if names are overwritten otherwise False.
 
     Returns
     -------
     scalars_set_name : pd.DataFrame
-        DataFrame made of concatenated DataFrames with set names.
+        DataFrame made of concatenated DataFrames with formatted names.
+
     """
 
-    def set_name(sc, regions):
+    def get_name(region, carrier, tech):
         r"""
-        This functions sets 'name' so that it conforms to the convention <region>-<carrier>-<tech>
+        This function gets name according to oemof-b3's-naming convention:
+        <region>-<carrier>-<tech>.
 
         Parameters
         ----------
-        sc : pd.DataFrame
-            DataFrame in oemof-B3-resources format.
-        regions : list
-            List of regions
+        region : str
+            region
+        carrier : str
+            carrier
+        tech : str
+            technology
 
         Returns
         -------
-        sc_set_name : pd.DataFrame
-            DataFrame with names set according to convention
+        String containing name according to convention eg. B-ch4-gt.
+
         """
-        sc_set_name = pd.DataFrame(columns=sc.columns)
+        return f"{region}-{carrier}-{tech}"
 
-        if not filter_df(sc, "region", list(regions)).empty:
-            # Write name in name col as <region>-<carrier>-<tech>
-            for region in regions:
-                _sc = sc.loc[sc["region"] == region]
-                _sc["name"] = _sc.apply(
-                    lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-                )
-
-                sc_set_name = sc_set_name.append(_sc)
-
-        return sc_set_name
-
-    def compare_scalar_data(sc_1, sc_2, col):
+    def get_name_for_df(df):
         r"""
-        This functions compares the column of two DataFrames
-        It returns a DataFrame with scalars that diverge in name convention.
+        This function returns a series of names generated from the convention.
 
         Parameters
         ----------
-        sc_1 : pd.DataFrame
+        df : pd.DataFrame
             DataFrame in oemof-B3-resources format.
-        sc_2 : pd.DataFrame
-            DataFrame in oemof-B3-resources format.
-        col : str
-            Column that is compared
 
         Returns
         -------
-        diff_name_sc : pd.DataFrame
-            DataFrame with data where expected name not found
+        pd.Series with names set according to convention in get_name.
+
         """
-        sc_1 = sc_1.sort_values(by=col, ignore_index=True)
-        sc_2 = sc_2.sort_values(by=col, ignore_index=True)
-        cond = False  # To avoid flake 8 E712
+        # Check if carrier, region and tech exist as columns
+        if {"carrier", "region", "tech"}.issubset(df.columns):
+            return df.apply(lambda x: get_name(x["region"], x["carrier"], x["tech"]), 1)
+        else:
+            raise KeyError(
+                "Please provide a DataFrame that conforms to "
+                "oemof-B3-resources-format."
+            )
 
-        diff_name_sc = sc_2.loc[(sc_2[col].isin(sc_1[col])) == cond]
+    def check_name(df):
+        r"""
+        This function checks whether a name given by the user matches the one from the
+        oemof-B3 naming convention. It prints a warning if expected differs from given names and
+        prints a list with expected names.
 
-        return diff_name_sc
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
 
-    # PART 1: Ensure name is set (according to convention) where name is empty and region is fixed
-    # Save values where name is None and region is not "ALL" in new DataFrame
-    sc_wo_name = sc[sc["name"].isnull()]
+        """
+        # Get name of Dataframe
+        name_as_given = df["name"]
 
-    # Save <region>-<carrier>-<tech> to name
-    sc_add_name = set_name(sc_wo_name, regions)
+        # Get name according to convention
+        name_generated = get_name_for_df(df)
 
-    # PART 2: Ensure name is checked for all values that are not None and where region is fixed
-    # Save values where name is not None and region is not "ALL" in new DataFrame
-    sc_with_name = sc[sc["name"].notnull()]
+        # Get diff of names
+        diff_in_name = compare_scalar_data(name_as_given, name_generated)
 
-    sc_with_name_corrected = set_name(sc_with_name, sc_with_name["region"].unique())
-
-    sc_diff_in_name = compare_scalar_data(sc_with_name, sc_with_name_corrected, "name")
-    if not sc_diff_in_name["name"].empty:
-        expected_names = list(sc_diff_in_name["name"].unique())
+        # Save unique values of diff to a list and print as warning
+        expected_names = list(diff_in_name.unique())
         logger.warning(
             "The name you have set for some of your scalar data differs "
             "from the convention (<region>-<carrier>-<tech>). \n"
@@ -673,13 +666,69 @@ def prepare_attr_name(sc, regions, overwrite):
             f"{expected_names}."
         )
         if overwrite:
-            logger.warning("The names will be overwritten with ")
+            logger.warning(
+                "The names will be overwritten with names following the convention"
+            )
+
+    def set_name(df):
+        r"""
+        This function
+            1. checks the name if the name is not empty and
+            2. overwrites the name with the generated name if overwrite is true or the name is
+            empty
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format and formatted name.
+
+        """
+        if not df["name"].isnull().values.all():
+            check_name(df)
+
+        if overwrite or df["name"].isnull().values.all():
+            name_generated = get_name_for_df(df)
+            df["name"] = name_generated
+
+        return df
+
+    def compare_scalar_data(sc_1, sc_2):
+        r"""
+        This functions compares the column of two DataFrames
+        It returns a DataFrame with scalars that diverge in name convention.
+
+        Parameters
+        ----------
+        sc_1 : pd.Series
+            Series with given values
+        sc_2 : pd.Series
+            Series with expected values
+
+        Returns
+        -------
+        diff_name_sc : pd.Series
+            Series where expected values not found
+        """
+        diff_name_sc = sc_1.compare(sc_2)
+
+        return diff_name_sc["other"]
+
+    # PART 1: Ensure name is set (according to convention) where name is empty and region is fixed
+    # Save values where name is None and region is not "ALL" in new DataFrame
+    sc_wo_name = sc[sc["name"].isnull()]
+    sc_add_name = set_name(sc_wo_name)
+
+    # PART 2: Ensure name is checked for all values that are not None and where region is fixed
+    sc_with_name = sc[sc["name"].notnull()]
+    sc_with_name = set_name(sc_with_name)
 
     # PART 3: Concatenate DataFrame with corrected name and DataFrame with set name
-    if overwrite:
-        scalars_set_name = pd.concat([sc_with_name_corrected, sc_add_name])
-    else:
-        scalars_set_name = pd.concat([sc_with_name, sc_add_name])
+    scalars_set_name = pd.concat([sc_with_name, sc_add_name])
 
     return scalars_set_name
 
