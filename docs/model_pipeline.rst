@@ -236,3 +236,16 @@ Outputs
 
 Output files are saved  in :file:`results/scenario/plotted`.
 
+.. _oep_upload_download_label:
+
+OEP upload/download
+=====================
+
+Rules
+-----
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   oep_upload_download/*

@@ -1,4 +1,5 @@
 general:
+  prepare_resources_locally: True
   plot_filetype: .png
   ts_index_name: id_ts
   scal_index_name: id_scal
@@ -74,3 +75,6 @@ process_re_potential:
   var_name: capacity
   scenario_key: ""
   name: None
+
+upload_results_to_oep:
+  schema: model_draft
