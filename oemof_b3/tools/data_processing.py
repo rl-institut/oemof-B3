@@ -726,7 +726,7 @@ def prepare_attr_name(sc, overwrite):
 
         elif all_empty or overwrite:
             name_generated = get_name_for_df(df)
-            df["name"] = name_generated
+            df.loc[:, "name"] = name_generated
 
         return df
 
