@@ -29,9 +29,11 @@ import sys
 import pandas as pd
 
 from oemof.solph import EnergySystem
+from oemoflex import config as oemoflex_config
 from oemoflex.model.datapackage import ResultsDataPackage
 
 from oemof_b3.config import config
+
 
 if __name__ == "__main__":
 
@@ -42,6 +44,8 @@ if __name__ == "__main__":
     destination = sys.argv[3]
 
     logger = config.add_snake_logger("postprocess")
+
+    oemoflex_config.config.settings.SEPARATOR = config.settings.general.separator
 
     try:
         es = EnergySystem()
@@ -55,7 +59,8 @@ if __name__ == "__main__":
         rdp.to_csv_dir(destination)
 
         pd.Series({"objective": es.meta_results["objective"]}).to_csv(
-            os.path.join(destination, "objective.csv")
+            os.path.join(destination, "objective.csv"),
+            sep=config.settings.general.separator,
         )
 
     except:  # noqa: E722
