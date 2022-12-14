@@ -67,4 +67,6 @@ include: "snakemake_rules/oep_upload_download.smk"
 if config.settings.general.prepare_resources_locally:
     include: "snakemake_rules/prepare_resource.smk"
 else:
-    raise NotImplementedError("Alternatives to preparing resources locally are not yet implemented.")
+    rule download_resources:
+        output: "results/_resources"
+        shell: "python scripts/download_resources.py"
