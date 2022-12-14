@@ -32,7 +32,7 @@ from collections import OrderedDict
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemoflex import config as oemoflexconfig
+from oemoflex import config as oemoflex_config
 from oemof_b3.config.config import load_yaml
 
 from oemof_b3.model import (
@@ -51,10 +51,6 @@ from oemof_b3.tools.data_processing import (
     save_df,
 )
 from oemof_b3.config import config
-
-
-def get_separator():
-    return config.settings.general.separator
 
 
 def update_with_checks(old, new):
@@ -254,7 +250,7 @@ if __name__ == "__main__":
 
     model_structure = model_structures[scenario_specs["model_structure"]]
 
-    oemoflexconfig.config.settings.SEPARATOR = get_separator()
+    oemoflex_config.config.settings.SEPARATOR = config.settings.general.separator
 
     # setup empty EnergyDataPackage
     datetimeindex = pd.date_range(
