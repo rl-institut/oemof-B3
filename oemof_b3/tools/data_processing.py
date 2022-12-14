@@ -720,10 +720,11 @@ def prepare_attr_name(sc, overwrite):
             DataFrame in oemof-B3-resources format and formatted name.
 
         """
-        if not df["name"].isnull().values.all():
+        all_empty = df["name"].isnull().values.all()
+        if not all_empty:
             check_name(df)
 
-        if overwrite or df["name"].isnull().values.all():
+        elif all_empty or overwrite:
             name_generated = get_name_for_df(df)
             df["name"] = name_generated
 
