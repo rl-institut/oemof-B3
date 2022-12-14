@@ -1,7 +1,7 @@
 # oil: Öl  Raises error as "oil" is in "boiler" -> duplicate mappings
+oil-gt: Oil GT
 biomass-gt: Biomass GT
 biomass-st: Biomass DT
-biomass: Biomasse
 ch4-boiler: CH4 Boiler
 ch4-bpchp: CH4 KWK (Gegendruck)
 ch4-demand: CH4 Bedarf
