@@ -726,7 +726,9 @@ def prepare_attr_name(sc, overwrite):
 
         elif all_empty or overwrite:
             name_generated = get_name_for_df(df)
-            df.loc[:, "name"] = name_generated
+            _df = df.copy()  # To avoid SettingWithCopyWarning
+            _df.loc[:, "name"] = name_generated
+            df = _df
 
         return df
 
