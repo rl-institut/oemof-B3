@@ -702,7 +702,7 @@ def prepare_attr_name(sc, overwrite):
                 "The names will be overwritten with names following the convention"
             )
 
-    def set_name(df):
+    def set_name(df, overwrite):
         r"""
         This function
             1. checks the name if the name is not empty and
@@ -756,11 +756,11 @@ def prepare_attr_name(sc, overwrite):
     # PART 1: Ensure name is set (according to convention) where name is empty and region is fixed
     # Save values where name is None and region is not "ALL" in new DataFrame
     sc_wo_name = sc[sc["name"].isnull()]
-    sc_add_name = set_name(sc_wo_name)
+    sc_add_name = set_name(sc_wo_name, overwrite)
 
     # PART 2: Ensure name is checked for all values that are not None and where region is fixed
     sc_with_name = sc[sc["name"].notnull()]
-    sc_with_name = set_name(sc_with_name)
+    sc_with_name = set_name(sc_with_name, overwrite)
 
     # PART 3: Concatenate DataFrame with corrected name and DataFrame with set name
     scalars_set_name = pd.concat([sc_with_name, sc_add_name])
