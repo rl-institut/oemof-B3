@@ -599,6 +599,175 @@ def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
     return df_aggregated
 
 
+def prepare_attr_name(sc, overwrite):
+    r"""
+    This function handles the values of the attribute 'name'.
+
+    It ensures that the name is
+       1. set (according to convention) where name is empty and region is fixed and
+       2. checked for all values that are not None.
+
+    If 'overwrite' is true the names will be overwritten with names set according to the
+    convention. Otherwise the names passed by the user are used.
+
+    Parameters
+    ----------
+    sc : pd.DataFrame
+        DataFrame with scalar data in oemof-B3-resources format.
+    overwrite : Boolean
+        True if names are overwritten otherwise False.
+
+    Returns
+    -------
+    scalars_set_name : pd.DataFrame
+        DataFrame made of concatenated DataFrames with formatted names.
+
+    """
+
+    def get_name(region, carrier, tech):
+        r"""
+        This function gets name according to oemof-b3's-naming convention:
+        <region>-<carrier>-<tech>.
+
+        Parameters
+        ----------
+        region : str
+            region
+        carrier : str
+            carrier
+        tech : str
+            technology
+
+        Returns
+        -------
+        String containing name according to convention eg. B-ch4-gt.
+
+        """
+        return f"{region}-{carrier}-{tech}"
+
+    def get_name_for_df(df):
+        r"""
+        This function returns a series of names generated from the convention.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        Returns
+        -------
+        pd.Series with names set according to convention in get_name.
+
+        """
+        # Check if carrier, region and tech exist as columns
+        if {"carrier", "region", "tech"}.issubset(df.columns):
+            return df.apply(lambda x: get_name(x["region"], x["carrier"], x["tech"]), 1)
+        else:
+            raise KeyError(
+                "Please provide a DataFrame that conforms to "
+                "oemof-B3-resources-format."
+            )
+
+    def check_name(df):
+        r"""
+        This function checks whether a name given by the user matches the one from the
+        oemof-B3 naming convention. It prints a warning if expected differs from given names and
+        prints a list with expected names.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        """
+        # Get name of Dataframe
+        name_as_given = df["name"]
+
+        # Get name according to convention
+        name_generated = get_name_for_df(df)
+
+        # Get diff of names
+        diff_in_name = compare_scalar_data(name_as_given, name_generated)
+
+        # Save unique values of diff to a list and print as warning
+        expected_names = list(diff_in_name.unique())
+        logger.warning(
+            "The name you have set for some of your scalar data differs "
+            "from the convention (<region>-<carrier>-<tech>). \n"
+            "We expected but could not find the following name(s): "
+            f"{expected_names}."
+        )
+        if overwrite:
+            logger.warning(
+                "The names will be overwritten with names following the convention"
+            )
+
+    def set_name(df, overwrite):
+        r"""
+        This function
+            1. checks the name if the name is not empty and
+            2. overwrites the name with the generated name if overwrite is true or the name is
+            empty
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format and formatted name.
+
+        """
+        all_empty = df["name"].isnull().values.all()
+        if not all_empty:
+            check_name(df)
+
+        elif all_empty or overwrite:
+            name_generated = get_name_for_df(df)
+            _df = df.copy()  # To avoid SettingWithCopyWarning
+            _df.loc[:, "name"] = name_generated
+            df = _df
+
+        return df
+
+    def compare_scalar_data(sc_1, sc_2):
+        r"""
+        This functions compares the column of two DataFrames
+        It returns a DataFrame with scalars that diverge in name convention.
+
+        Parameters
+        ----------
+        sc_1 : pd.Series
+            Series with given values
+        sc_2 : pd.Series
+            Series with expected values
+
+        Returns
+        -------
+        diff_name_sc : pd.Series
+            Series where expected values not found
+        """
+        diff_name_sc = sc_1.compare(sc_2)
+
+        return diff_name_sc["other"]
+
+    # PART 1: Ensure name is set (according to convention) where name is empty and region is fixed
+    # Save values where name is None and region is not "ALL" in new DataFrame
+    sc_wo_name = sc[sc["name"].isnull()]
+    sc_add_name = set_name(sc_wo_name, overwrite)
+
+    # PART 2: Ensure name is checked for all values that are not None and where region is fixed
+    sc_with_name = sc[sc["name"].notnull()]
+    sc_with_name = set_name(sc_with_name, overwrite)
+
+    # PART 3: Concatenate DataFrame with corrected name and DataFrame with set name
+    scalars_set_name = pd.concat([sc_with_name, sc_add_name])
+
+    return scalars_set_name
+
+
 def expand_regions(scalars, regions, where="ALL"):
     r"""
     Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
@@ -626,23 +795,28 @@ def expand_regions(scalars, regions, where="ALL"):
 
     sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
 
-    if sc_wo_region.empty:
-        return sc_with_region
+    # REGIONALIZATION
+    if not sc_wo_region.empty:
+        # Ensure name is empty if region is 'ALL'
+        # Print user warning if name is not NaN and region is "ALL"
+        if not sc_wo_region["name"].isnull().values.all():
+            print(
+                "User warning: Please leave 'name' empty if you set 'region' to 'ALL'.\n"
+                "The name you have specified "
+                f"{sc_wo_region[sc_wo_region['name'].notnull()]['name'].values} "
+                f"will be overwritten."
+            )
 
-    for region in regions:
-        regionalized = sc_wo_region.copy()
+        # Set region
+        for region in regions:
+            regionalized = sc_wo_region.copy()
+            regionalized["region"] = region
 
-        regionalized["name"] = regionalized.apply(
-            lambda x: "-".join([region, x["carrier"], x["tech"]]), 1
-        )
+            sc_with_region = pd.concat([sc_with_region, regionalized])
 
-        regionalized["region"] = region
+        sc_with_region = sc_with_region.reset_index(drop=True)
 
-        sc_with_region = pd.concat([sc_with_region, regionalized])
-
-    sc_with_region = sc_with_region.reset_index(drop=True)
-
-    sc_with_region.index.name = config.settings.general.scal_index_name
+        sc_with_region.index.name = config.settings.general.scal_index_name
 
     return sc_with_region
 
