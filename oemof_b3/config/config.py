@@ -8,7 +8,7 @@ from dynaconf import Dynaconf
 CONFIG_PATH = pathlib.Path(__file__).parent
 
 settings = Dynaconf(
-    envvar_prefix="DYNACONF_oemof-B3",
+    envvar_prefix="DYNACONF",
     settings_files=[CONFIG_PATH / "settings.yaml", CONFIG_PATH / ".secrets.yaml"],
 )
 
