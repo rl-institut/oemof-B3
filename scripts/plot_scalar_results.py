@@ -162,7 +162,7 @@ def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
 
 
 def load_scalars(path):
-    df = pd.read_csv(path, sep=",", index_col=0)
+    df = pd.read_csv(path, sep=config.settings.general.separator, index_col=0)
     return df
 
 
