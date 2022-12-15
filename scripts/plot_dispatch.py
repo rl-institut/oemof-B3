@@ -60,13 +60,7 @@ def prepare_dispatch_data(bus_file):
     bus_name = os.path.splitext(bus_file)[0]
     bus_path = os.path.join(bus_directory, bus_file)
 
-    data = pd.read_csv(
-        bus_path,
-        header=[0, 1, 2],
-        parse_dates=[0],
-        index_col=[0],
-        sep=config.settings.general.separator,
-    )
+    data = pd.read_csv(bus_path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
 
     # convert data to SI-unit
     MW_to_W = 1e6
