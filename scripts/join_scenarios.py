@@ -22,9 +22,13 @@ import sys
 
 import pandas as pd
 
+from oemof_b3.config import config
+
 
 def load_scalars(path):
-    scalars = pd.read_csv(path, index_col=[0, 1, 2])
+    scalars = pd.read_csv(
+        path, index_col=[0, 1, 2], sep=config.settings.general.separator
+    )
     return scalars
 
 
@@ -44,4 +48,6 @@ if __name__ == "__main__":
     if not os.path.exists(destination):
         os.makedirs(destination)
 
-    joined_scalars.to_csv(os.path.join(destination, "scalars.csv"))
+    joined_scalars.to_csv(
+        os.path.join(destination, "scalars.csv"), sep=config.settings.general.separator
+    )
