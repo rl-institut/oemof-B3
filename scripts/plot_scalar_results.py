@@ -691,14 +691,13 @@ if __name__ == "__main__":
 
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-
         try:
+            for ax in axs:
+                add_vertical_line_in_plot(ax, position=6)
+                ax.tick_params(
+                    axis="both",
+                    labelsize=config.settings.plot_scalar_results.tick_label_size,
+                )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -742,14 +741,13 @@ if __name__ == "__main__":
 
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-
         try:
+            for ax in axs:
+                add_vertical_line_in_plot(ax, position=6)
+                ax.tick_params(
+                    axis="both",
+                    labelsize=config.settings.plot_scalar_results.tick_label_size,
+                )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -774,14 +772,13 @@ if __name__ == "__main__":
 
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-
         try:
+            for ax in axs:
+                add_vertical_line_in_plot(ax, position=6)
+                ax.tick_params(
+                    axis="both",
+                    labelsize=config.settings.plot_scalar_results.tick_label_size,
+                )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
@@ -805,14 +802,13 @@ if __name__ == "__main__":
 
         fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
 
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-
         try:
+            for ax in axs:
+                add_vertical_line_in_plot(ax, position=6)
+                ax.tick_params(
+                    axis="both",
+                    labelsize=config.settings.plot_scalar_results.tick_label_size,
+                )
             plt.tight_layout()
             plot.save_plot(output_path_plot)
 
