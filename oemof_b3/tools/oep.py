@@ -124,4 +124,3 @@ def download_table_from_OEP(output_filename, table, schema):
     ) as r:
         for line in r.iter_lines():
             outputfile.write(line + "\n".encode())
-
