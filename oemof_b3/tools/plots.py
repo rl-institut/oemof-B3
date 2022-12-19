@@ -17,19 +17,16 @@ IGNORE_DROP_LEVEL = config.settings.plot_scalar_results.ignore_drop_level
 
 
 def aggregate_regions(df):
-    # this is a work-around to use the dataprocessing function for postprocessed data,
-    # which is in a similar but not in the same format as preprocessed oemof_b3 resources.
     _df = df.copy()
-    _df.reset_index(inplace=True)
-    _df = _df.rename(columns={"scenario": "scenario_key"})
+
     agg_method = {
         "var_value": sum,
         "name": lambda x: "None",
     }
     _df = dp.aggregate_scalars(_df, "region", agg_method=agg_method)
-    _df = _df.rename(columns={"scenario_key": "scenario"})
+
     _df["name"] = _df.apply(lambda x: x["carrier"] + "-" + x["tech"], 1)
-    _df = _df.set_index("scenario")
+
     return _df
 
 
@@ -198,7 +195,7 @@ class ScalarPlot:
         ):
             logger.warning("Data is empty or all zero")
             return None, None
-        print(self.prepared_scalar_data)
+
         fig, ax = plt.subplots()
         plot_grouped_bar(ax, self.prepared_scalar_data, COLORS, unit=unit, stacked=True)
         ax.set_title(title)
