@@ -450,38 +450,6 @@ if __name__ == "__main__":
     scalars = load_scalars(scalars_path)
     scalars = set_scenario_labels(scalars)
 
-    def plot_capacities():
-        var_name = "capacity"
-        unit = "W"
-        output_path_plot = os.path.join(
-            target, "capacities" + config.settings.general.plot_filetype
-        )
-
-        plot = ScalarPlot(scalars)
-        plot.select_data(var_name=var_name)
-        plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-        fig, ax = plot.draw_plot(unit=unit, title=None)
-        try:
-            # Move the legend below current axis
-            ax.legend(
-                loc="upper left",
-                bbox_to_anchor=(1, 1),
-                fancybox=True,
-                ncol=1,
-                fontsize=14,
-            )
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-            plt.xticks(rotation=45, ha="right")
-
-            add_vertical_line_in_plot(ax, position=6)
-
-            plot.save_plot(output_path_plot)
-
-        except Exception as e:  # noqa 722
-            logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
     def plot_invest_out(carrier):
         var_name = f"invest_out_{carrier}"
@@ -927,7 +895,6 @@ if __name__ == "__main__":
         except Exception as e:  # noqa 722
             logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
-    plot_capacities()
     plot_invest_out_multi_carrier(CARRIERS_WO_CH4)
     plot_flow_out_multi_carrier(CARRIERS_WO_CH4)
     plot_demands(CARRIERS)
