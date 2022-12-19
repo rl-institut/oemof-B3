@@ -337,7 +337,7 @@ if __name__ == "__main__":
                 bus_files, carrier
             )
             plot_dispatch_data(df_aggregated, df_demand_aggregated, bus_name)
-        except:
+        except Exception:
             logger.warning(f"Could not plot dispatch for carrier {carrier}")
 
     for bus_file in selected_bus_files:
