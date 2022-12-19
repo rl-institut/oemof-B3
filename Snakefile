@@ -34,7 +34,7 @@ rule plot_all_resources:
         resource_plot=resource_plots
     )
 
-rule plot_all_examples:
+rule run_all_examples:
     input:
         expand(
             "results/{scenario}/plotted/{plot_type}",
@@ -42,7 +42,7 @@ rule plot_all_examples:
             plot_type=plot_type,
         )
 
-rule process_all_scenarios:
+rule run_all_scenarios:
     input:
         plots=expand(
             "results/{scenario}/plotted/{plot_type}",
