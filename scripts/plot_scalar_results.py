@@ -265,6 +265,9 @@ class ScalarPlot:
             r"""
             Ensures that the the MultiIndex covers the full product of the levels.
             """
+            if not isinstance(df, pd.MultiIndex):
+                return df
+
             # df.index.levels messes up the order of the levels, but we want to keep it
             ordered_levels = [
                 df.index.get_level_values(level).unique()
