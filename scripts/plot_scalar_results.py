@@ -535,10 +535,3 @@ if __name__ == "__main__":
         plt.savefig(
             os.path.join(target, "legend" + config.settings.general.plot_filetype)
         )
-
-    # for carrier in CARRIERS:
-    #     plot_storage_capacity(carrier)
-    #     plot_invest_out(carrier)
-    #     plot_storage_invest(carrier)
-    #     plot_flow_out(carrier)
-    #     plot_storage_out(carrier)
