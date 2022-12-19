@@ -1,9 +1,11 @@
+import os
+
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 import oemof_b3.config.config as config
 
 HTTP = HTTPRemoteProvider()
 
-
+# The following lines define groups of scenarios/examples
 scenario_groups = {
     "examples": [
         "example_base",
@@ -29,7 +31,8 @@ resource_plots = ['scal_conv_pp-capacity_net_el']
 
 # Target rules
 rule plot_all_resources:
-    input: expand(
+    input:
+        expand(
         "results/_resources/plots/{resource_plot}.png",
         resource_plot=resource_plots
     )
@@ -55,7 +58,8 @@ rule run_all_scenarios:
         )
 
 rule plot_grouped_scenarios:
-    input: expand(
+    input:
+        expand(
         "results/joined_scenarios/{scenario_group}/joined_plotted/",
         scenario_group="all-scenarios"
     )
