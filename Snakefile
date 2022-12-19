@@ -5,49 +5,60 @@ HTTP = HTTPRemoteProvider()
 
 
 scenario_groups = {
-    "examples": ["example_base", "example_more_re", "example_more_re_less_fossil"],
-    "all-scenarios": [os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")],
+    "examples": [
+        "example_base",
+        "example_more_re",
+        "example_more_re_less_fossil"
+    ],
+    "all-scenarios": [
+        os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")
+    ],
     "all-optimized": [
         scenario for scenario in os.listdir("results")
         if (
-                os.path.exists(os.path.join("results", scenario, "optimized", "es_dump.oemof"))
-                and not "example_" in scenario
+            os.path.exists(os.path.join("results", scenario, "optimized", "es_dump.oemof"))
+            and not "example_" in scenario
         )
     ]
 }
+
+plot_type = ["scalars", "dispatch"]
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
 
 
 # Target rules
 rule plot_all_resources:
-    input: expand("results/_resources/plots/{resource_plot}.png", resource_plot=resource_plots)
+    input: expand(
+        "results/_resources/plots/{resource_plot}.png",
+        resource_plot=resource_plots
+    )
 
 rule plot_all_examples:
     input:
         expand(
             "results/{scenario}/plotted/{plot_type}",
             scenario=scenario_groups["examples"],
-            plot_type=["scalars", "dispatch"],
+            plot_type=plot_type,
         )
-
-ALL_SCENARIOS = scenario_groups["all-scenarios"]
-PLOT_TYPE = ["scalars", "dispatch"]
 
 rule process_all_scenarios:
     input:
         plots=expand(
             "results/{scenario}/plotted/{plot_type}",
-            scenario=ALL_SCENARIOS,
-            plot_type=PLOT_TYPE,
+            scenario=scenario_groups["all-scenarios"],
+            plot_type=plot_type,
         ),
         tables=expand(
             "results/{scenario}/tables",
-            scenario=ALL_SCENARIOS,
+            scenario=scenario_groups["all-scenarios"],
         )
 
 rule plot_grouped_scenarios:
-    input: expand("results/joined_scenarios/{scenario_group}/joined_plotted/", scenario_group="all-scenarios")
+    input: expand(
+        "results/joined_scenarios/{scenario_group}/joined_plotted/",
+        scenario_group="all-scenarios"
+    )
 
 rule clean:
     shell:
