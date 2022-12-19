@@ -287,7 +287,10 @@ class ScalarPlot:
 
             ax = fig.add_subplot(n_facets, 1, i + 1)
 
-            plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
+            if not df.empty:
+                plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
+            else:
+                logger.warning("Data is empty - nothing to plot!")
 
             ax.set_title(facet_name)
 
