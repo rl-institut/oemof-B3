@@ -434,7 +434,7 @@ def plot_demands_stacked_carriers(carriers):
     plot.prepared_scalar_data = plot.prepared_scalar_data.reset_index()
     # Set index to "scenario" and "var_name"
     plot.prepared_scalar_data = plot.prepared_scalar_data.set_index(
-        ["scenario", "var_name"]
+        ["scenario_key", "var_name"]
     )
 
     # Show only var_value of prepared scalar data
@@ -494,8 +494,20 @@ def plot_demands_stacked_carriers(carriers):
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
 
 
-def load_scalars(path):
-    df = pd.read_csv(path, sep=config.settings.general.separator, index_col=0)
+def load_scalar_results(path, sep=config.settings.general.separator):
+
+    df = pd.read_csv(path, sep=sep)
+
+    df = df.rename(columns={"scenario": "scenario_key"})
+
+    df["var_value"] = pd.to_numeric(df["var_value"], errors="coerce").fillna(
+        df["var_value"]
+    )
+
+    df = dp.format_header(
+        df, dp.HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
+
     return df
 
 
@@ -516,7 +528,7 @@ if __name__ == "__main__":
         os.makedirs(target)
 
     # Load scalar data
-    scalars = load_scalars(scalars_path)
+    scalars = load_scalar_results(scalars_path)
     scalars = set_scenario_labels(scalars)
 
     plot_invest_out_multi_carrier(CARRIERS_WO_CH4)

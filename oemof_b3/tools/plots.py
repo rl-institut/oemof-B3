@@ -84,11 +84,14 @@ def prepare_scalar_data(
 
     # pivot
     df_pivot = pd.pivot_table(
-        df, index=["scenario", "region", "var_name"], columns="name", values="var_value"
+        df,
+        index=["scenario_key", "region", "var_name"],
+        columns="name",
+        values="var_value",
     )
 
     # restore order of scenarios after pivoting
-    df_pivot = df_pivot.reindex(scenario_order, level="scenario")
+    df_pivot = df_pivot.reindex(scenario_order, level="scenario_key")
 
     def drop_constant_multiindex_levels(df, ignore_drop_level=False):
         _df = df.copy()
@@ -195,7 +198,7 @@ class ScalarPlot:
         ):
             logger.warning("Data is empty or all zero")
             return None, None
-
+        print(self.prepared_scalar_data)
         fig, ax = plt.subplots()
         plot_grouped_bar(ax, self.prepared_scalar_data, COLORS, unit=unit, stacked=True)
         ax.set_title(title)
