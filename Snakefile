@@ -85,10 +85,10 @@ include: "snakemake_rules/build_datapackage.smk"
 include: "snakemake_rules/optimization.smk"
 include: "snakemake_rules/postprocessing.smk"
 include: "snakemake_rules/visualization.smk"
-include: "snakemake_rules/oep_upload_download.smk"
+include: "snakemake_rules/oep_upload.smk"
 
 # prepare settings locally or download it from OEP (not implemented yet)
 if config.settings.general.prepare_resources_locally:
     include: "snakemake_rules/prepare_resource.smk"
 else:
-    raise NotImplementedError("Alternatives to preparing resources locally are not yet implemented.")
+    include: "snakemake_rules/oep_download.smk"
