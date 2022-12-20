@@ -145,17 +145,6 @@ def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
     ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
 
 
-def select_data(df, **kwargs):
-    selected_df = df.copy()
-    for key, value in kwargs.items():
-        selected_df = dp.filter_df(selected_df, key, value)
-
-    if selected_df.empty:
-        logger.info("No data to plot.")
-
-    return selected_df
-
-
 def prepare_data(df, agg_regions=False):
 
     prepared_df = df.copy()
