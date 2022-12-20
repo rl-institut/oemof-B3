@@ -31,7 +31,12 @@ from oemof_b3.config import config
 from oemof_b3.config.config import COLORS, LABELS
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.plots import (
-    ScalarPlot,
+    select_data,
+    prepare_data,
+    swap_levels,
+    draw_plot,
+    draw_subplots,
+    save_plot,
     add_vertical_line_in_plot,
     aggregate_regions,
     draw_standalone_legend,
@@ -49,11 +54,10 @@ def plot_invest_out(carrier):
         target, var_name + config.settings.general.plot_filetype
     )
 
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    fig, ax = plot.draw_plot(unit=unit, title=None)
-    plot.save_plot(output_path_plot)
+    df = select_data(scalars, var_name=var_name)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    draw_plot(df, unit=unit, title=None)
+    save_plot(output_path_plot)
 
 
 def plot_storage_capacity(carrier):
@@ -64,11 +68,10 @@ def plot_storage_capacity(carrier):
     var_name = "storage_capacity"
     unit = "Wh"
 
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name, carrier=carrier)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    fig, ax = plot.draw_plot(unit=unit, title=None)
-    plot.save_plot(output_path_plot)
+    df = select_data(scalars, var_name=var_name, carrier=carrier)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    draw_plot(df, unit=unit, title=None)
+    save_plot(output_path_plot)
 
 
 def plot_storage_invest(carrier):
@@ -79,11 +82,10 @@ def plot_storage_invest(carrier):
     var_name = "invest"
     unit = "Wh"
 
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name, carrier=carrier)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.draw_plot(unit=unit, title=None)
-    plot.save_plot(output_path_plot)
+    df = select_data(scalars, var_name=var_name, carrier=carrier)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    draw_plot(df, unit=unit, title=None)
+    save_plot(output_path_plot)
 
 
 def plot_flow_out(carrier):
@@ -94,17 +96,16 @@ def plot_flow_out(carrier):
     var_name = f"flow_out_{carrier}"
     unit = "Wh"
 
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    plot.selected_scalars = dp.filter_df(
-        plot.selected_scalars,
+    df = select_data(scalars, var_name=var_name)
+    df = dp.filter_df(
+        df,
         "type",
         ["storage", "asymmetric_storage", "link"],
         inverse=True,
     )
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.draw_plot(unit=unit, title=None)
-    plot.save_plot(output_path_plot)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    draw_plot(df, unit=unit, title=None)
+    save_plot(output_path_plot)
 
 
 def plot_storage_out(carrier):
@@ -115,14 +116,11 @@ def plot_storage_out(carrier):
     var_name = f"flow_out_{carrier}"
     unit = "Wh"
 
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    plot.selected_scalars = dp.filter_df(
-        plot.selected_scalars, "type", ["storage", "asymmetric_storage"]
-    )
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.draw_plot(unit=unit, title=None)
-    plot.save_plot(output_path_plot)
+    df = select_data(var_name=var_name)
+    df = dp.filter_df(df, "type", ["storage", "asymmetric_storage"])
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    draw_plot(df, unit=unit, title=None)
+    save_plot(output_path_plot)
 
 
 def plot_invest_out_multi_carrier(carriers):
@@ -131,19 +129,19 @@ def plot_invest_out_multi_carrier(carriers):
     output_path_plot = os.path.join(
         target, "energy_usage" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
-    plot.prepared_scalar_data.sort_index(level=0, inplace=True)
-    fig, ax = plot.draw_plot(unit=unit, title=None)
-
     try:
+        df = select_data(scalars, var_name=var_name)
+        df = df.replace({"invest_out_*": ""}, regex=True)
+        df = prepare_data(
+            df, agg_regions=config.settings.plot_scalar_results.agg_regions
+        )
+        df = swap_levels(df)
+        df = df.sort_index(level=0)
+        fig, ax = draw_plot(df, unit=unit, title=None)
         # rotate hierarchical labels
         ax.texts.clear()
         set_hierarchical_xlabels(
-            plot.prepared_scalar_data.index,
+            df.index,
             ax=ax,
             rotation=[70, 70],
             ha="right",
@@ -165,7 +163,7 @@ def plot_invest_out_multi_carrier(carriers):
 
         add_vertical_line_in_plot(ax, position=6)
 
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -177,22 +175,20 @@ def plot_flow_out_multi_carrier(carriers):
     output_path_plot = os.path.join(
         target, "summed_energy" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    plot.selected_scalars = dp.filter_df(
-        plot.selected_scalars, column_name="type", values="storage", inverse=True
-    )
-    plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
-    plot.prepared_scalar_data.sort_index(level=0, inplace=True)
-    fig, ax = plot.draw_plot(unit=unit, title=None)
+
+    df = select_data(scalars, var_name=var_name)
+    df = dp.filter_df(df, column_name="type", values="storage", inverse=True)
+    df = df.replace({"flow_out_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+    df = df.sort_index(level=0)
+    fig, ax = draw_plot(df, unit=unit, title=None)
 
     try:
         # rotate hierarchical labels
         ax.texts.clear()
         set_hierarchical_xlabels(
-            plot.prepared_scalar_data.index,
+            df.index,
             ax=ax,
             rotation=[70, 70],
             ha="right",
@@ -214,7 +210,7 @@ def plot_flow_out_multi_carrier(carriers):
 
         add_vertical_line_in_plot(ax, position=6)
 
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -227,19 +223,19 @@ def plot_demands(carriers):
     output_path_plot = os.path.join(
         target, "demands" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name, tech=tech)
-    plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
-    plot.prepared_scalar_data.sort_index(level=0, inplace=True)
-    fig, ax = plot.draw_plot(unit=unit, title=None)
+
+    df = select_data(scalars, var_name=var_name, tech=tech)
+    df = df.replace({"flow_in_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+    df = df.sort_index(level=0)
+    fig, ax = draw_plot(df, unit=unit, title=None)
 
     try:
         # rotate hierarchical labels
         ax.texts.clear()
         set_hierarchical_xlabels(
-            plot.prepared_scalar_data.index,
+            df.index,
             ax=ax,
             rotation=[70, 70],
             ha="right",
@@ -261,7 +257,7 @@ def plot_demands(carriers):
 
         add_vertical_line_in_plot(ax, position=6)
 
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -274,15 +270,15 @@ def subplot_invest_out_multi_carrier(carriers):
         target,
         "invested_capacity_subplots" + config.settings.general.plot_filetype,
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
+
+    df = select_data(scalars, var_name=var_name)
 
     # replacing invest_out_<carrier> with <carrier> to subplot by carrier
-    plot.selected_scalars.replace({"invest_out_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
+    df = df.replace({"invest_out_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
 
-    fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+    fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     try:
         for ax in axs:
@@ -292,7 +288,7 @@ def subplot_invest_out_multi_carrier(carriers):
                 labelsize=config.settings.plot_scalar_results.tick_label_size,
             )
         plt.tight_layout()
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -304,18 +300,18 @@ def subplot_storage_invest_multi_carrier(carriers):
     output_path_plot = os.path.join(
         target, "storage_invest_subplots" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
+
+    df = select_data(scalars, var_name=var_name)
 
     # replacing invest with <carrier> to subplot by carrier
-    plot.selected_scalars["var_name"] = plot.selected_scalars["carrier"]
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
-    plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+    df["var_name"] = df["carrier"]
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+    draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     try:
         plt.tight_layout()
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -328,13 +324,13 @@ def subplot_demands(carriers):
     output_path_plot = os.path.join(
         target, "demands_subplots" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name, tech=tech)
-    plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
 
-    fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+    df = select_data(scalars, var_name=var_name, tech=tech)
+    df = df.replace({"flow_in_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+
+    fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     try:
         for ax in axs:
@@ -344,7 +340,7 @@ def subplot_demands(carriers):
                 labelsize=config.settings.plot_scalar_results.tick_label_size,
             )
         plt.tight_layout()
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -356,17 +352,15 @@ def subplot_energy_usage_multi_carrier(carriers):
     output_path_plot = os.path.join(
         target, "energy_usage_subplots" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    # exclude storage charging
-    plot.selected_scalars = dp.filter_df(
-        plot.selected_scalars, column_name="type", values="storage", inverse=True
-    )
-    plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
 
-    fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+    df = select_data(scalars, var_name=var_name)
+    # exclude storage charging
+    df = dp.filter_df(df, column_name="type", values="storage", inverse=True)
+    df = df.replace({"flow_in_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+
+    fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     try:
         for ax in axs:
@@ -376,7 +370,7 @@ def subplot_energy_usage_multi_carrier(carriers):
                 labelsize=config.settings.plot_scalar_results.tick_label_size,
             )
         plt.tight_layout()
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -388,16 +382,14 @@ def subplot_flow_out_multi_carrier(carriers):
     output_path_plot = os.path.join(
         target, "summed_energy_subplots" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
-    plot.selected_scalars = dp.filter_df(
-        plot.selected_scalars, column_name="type", values="storage", inverse=True
-    )
-    plot.selected_scalars.replace({"flow_out_*": ""}, regex=True, inplace=True)
-    plot.prepare_data(agg_regions=config.settings.plot_scalar_results.agg_regions)
-    plot.swap_levels()
 
-    fig, axs = plot.draw_subplots(unit=unit, title=None, figsize=(11, 13))
+    df = select_data(scalars, var_name=var_name)
+    df = dp.filter_df(df, column_name="type", values="storage", inverse=True)
+    df = df.replace({"flow_out_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+
+    fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     try:
         for ax in axs:
@@ -407,7 +399,7 @@ def subplot_flow_out_multi_carrier(carriers):
                 labelsize=config.settings.plot_scalar_results.tick_label_size,
             )
         plt.tight_layout()
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -417,56 +409,52 @@ def plot_demands_stacked_carriers(carriers):
     var_name = [f"flow_in_{carrier}" for carrier in carriers]
     tech = "demand"
     unit = "Wh"
+    MW_TO_W = 1e6
     output_path_plot = os.path.join(
         target, "demands_stacked" + config.settings.general.plot_filetype
     )
-    plot = ScalarPlot(scalars)
-    plot.select_data(var_name=var_name)
+
+    df = select_data(scalars, var_name=var_name)
     # Show only demands
-    plot.selected_scalars = dp.filter_df(
-        plot.selected_scalars, column_name="tech", values=tech, inverse=False
-    )
+    df = dp.filter_df(df, column_name="tech", values=tech, inverse=False)
     # Remove "flow_in_" from var_name
-    plot.selected_scalars.replace({"flow_in_*": ""}, regex=True, inplace=True)
+    df = df.replace({"flow_in_*": ""}, regex=True)
     # Aggregate regions
-    plot.prepared_scalar_data = aggregate_regions(plot.selected_scalars)
+    df = aggregate_regions(df)
     # Drop index
-    plot.prepared_scalar_data = plot.prepared_scalar_data.reset_index()
+    df = df.reset_index()
     # Set index to "scenario" and "var_name"
-    plot.prepared_scalar_data = plot.prepared_scalar_data.set_index(
-        ["scenario_key", "var_name"]
-    )
+    df = df.set_index(["scenario_key", "var_name"])
 
     # Show only var_value of prepared scalar data
-    plot.prepared_scalar_data = plot.prepared_scalar_data.filter(items=["var_value"])
+    df = df.filter(items=["var_value"])
 
     # Convert to SI units
-    plot.prepared_scalar_data *= MW_TO_W
+    df *= MW_TO_W
 
     # Remember index to apply it after unstacking
-    index = plot.prepared_scalar_data.index.get_level_values(0).unique()
+    index = df.index.get_level_values(0).unique()
     # Unstack prepared and filtered data regarding carriers
-    plot.prepared_scalar_data = plot.prepared_scalar_data.unstack("var_name")
+    df = df.unstack("var_name")
 
     # Reindex to keep previous scenario order
-    plot.prepared_scalar_data = plot.prepared_scalar_data.reindex(index)
+    df = df.reindex(index)
 
     # Get names of data's columns
-    column_names = plot.prepared_scalar_data.columns
+    column_names = df.columns
+
     # Reset multiindex
-    plot.prepared_scalar_data = plot.prepared_scalar_data.T.reset_index(drop=True).T
+    df = df.T.reset_index(drop=True).T
 
     # Rename the columns to their respective energy carrier and append "-demand" to match
     # the naming convention
     for column_num, column_name in enumerate(column_names):
-        plot.prepared_scalar_data.rename(
-            columns={column_num: column_name[1] + "-demand"}, inplace=True
-        )
+        df = df.rename(columns={column_num: column_name[1] + "-demand"})
 
     # rename and aggregate duplicated columns
-    plot.prepared_scalar_data = plots.map_labels(plot.prepared_scalar_data, LABELS)
+    df = plots.map_labels(df, LABELS)
 
-    fig, ax = plot.draw_plot(unit=unit, title=var_name)
+    fig, ax = draw_plot(df, unit=unit, title=var_name)
 
     # Reset plot title
     ax.set_title("")
@@ -488,7 +476,7 @@ def plot_demands_stacked_carriers(carriers):
 
         add_vertical_line_in_plot(ax, position=6)
 
-        plot.save_plot(output_path_plot)
+        save_plot(output_path_plot)
 
     except Exception as e:  # noqa 722
         logger.warning(f"Could not plot {output_path_plot}: {e}.")
@@ -520,8 +508,6 @@ if __name__ == "__main__":
     # User input
     CARRIERS = ["electricity", "heat_central", "heat_decentral", "h2", "ch4"]
     CARRIERS_WO_CH4 = ["electricity", "heat_central", "heat_decentral", "h2"]
-    MW_TO_W = 1e6
-    IGNORE_DROP_LEVEL = config.settings.plot_scalar_results.ignore_drop_level
 
     # create the directory plotted where all plots are saved
     if not os.path.exists(target):

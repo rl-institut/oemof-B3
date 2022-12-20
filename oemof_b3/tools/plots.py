@@ -64,7 +64,12 @@ def set_scenario_labels(df):
 
 
 def prepare_scalar_data(
-    df, colors_odict, labels_dict, conv_number, ignore_drop_level, tolerance=1e-3
+    df,
+    colors_odict,
+    labels_dict,
+    conv_number,
+    ignore_drop_level=IGNORE_DROP_LEVEL,
+    tolerance=1e-3,
 ):
     # drop data that is almost zero
     def _drop_near_zeros(df, tolerance):
@@ -77,7 +82,7 @@ def prepare_scalar_data(
         return df
 
     # remember order of scenarios
-    scenario_order = df.index.unique()
+    scenario_order = df["scenario_key"].unique()
 
     # pivot
     df_pivot = pd.pivot_table(
@@ -140,170 +145,155 @@ def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
     ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
 
 
-class ScalarPlot:
-    def __init__(self, scalars):
-        self.scalars = scalars
-        self.selected_scalars = None
-        self.prepared_scalar_data = None
-        self.plotted = False
+def select_data(df, **kwargs):
+    selected_df = df.copy()
+    for key, value in kwargs.items():
+        selected_df = dp.filter_df(selected_df, key, value)
 
-    def select_data(self, **kwargs):
-        self.selected_scalars = self.scalars.copy()
-        for key, value in kwargs.items():
-            self.selected_scalars = dp.filter_df(self.selected_scalars, key, value)
+    if selected_df.empty:
+        logger.info("No data to plot.")
 
-        if self.selected_scalars.empty:
-            logger.info("No data to plot.")
+    return selected_df
 
-        return self.selected_scalars
 
-    def prepare_data(self, agg_regions=False):
+def prepare_data(df, agg_regions=False):
 
-        self.prepared_scalar_data = self.selected_scalars.copy()
+    prepared_df = df.copy()
 
-        if agg_regions:
-            self.prepared_scalar_data = aggregate_regions(self.prepared_scalar_data)
+    if agg_regions:
+        prepared_df = aggregate_regions(prepared_df)
 
-        self.prepared_scalar_data = prepare_scalar_data(
-            df=self.prepared_scalar_data,
-            colors_odict=COLORS,
-            labels_dict=LABELS,
-            conv_number=MW_TO_W,
-            ignore_drop_level=IGNORE_DROP_LEVEL,
-        )
+    prepared_df = prepare_scalar_data(
+        df=prepared_df,
+        colors_odict=COLORS,
+        labels_dict=LABELS,
+        conv_number=MW_TO_W,
+        ignore_drop_level=IGNORE_DROP_LEVEL,
+    )
 
-        return self.prepared_scalar_data
+    return prepared_df
 
-    def swap_levels(self, swaplevels=(0, 1)):
 
-        if self.prepared_scalar_data is None:
-            logger.warning("No prepared data found")
+def swap_levels(df, swaplevels=(0, 1)):
 
-        elif not isinstance(self.prepared_scalar_data.index, pd.MultiIndex):
-            logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
+    if df is None:
+        logger.warning("No prepared data found")
 
+    elif not isinstance(df.index, pd.MultiIndex):
+        logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
+
+    else:
+        df = df.swaplevel(*swaplevels)
+
+    return df
+
+
+def draw_plot(df, unit, title):
+    # do not plot if the data is empty or all zeros.
+    if df.empty or (df == 0).all().all():
+        logger.warning("Data is empty or all zero")
+        return None, None
+
+    fig, ax = plt.subplots()
+    plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
+    ax.set_title(title)
+    # Shrink current axis's height by 10% on the bottom
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85])
+    set_hierarchical_xlabels(df.index)
+    # Put a legend below current axis
+    ax.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.18),
+        fancybox=True,
+        ncol=4,
+        fontsize=14,
+    )
+
+    return fig, ax
+
+
+def draw_subplots(
+    df, unit, title, figsize=None, facet_level=0, rotation=45, ha="right"
+):
+    # do not plot if the data is empty or all zeros.
+    if df.empty or (df == 0).all().all():
+        logger.warning("Data is empty or all zero")
+        return None, None
+
+    # Set fig size to default size if no fig size is passed
+    if not figsize:
+        figsize = plt.rcParams.get("figure.figsize")
+
+    fig = plt.figure(figsize=figsize)
+
+    def set_index_full_product(df):
+        r"""
+        Ensures that the the MultiIndex covers the full product of the levels.
+        """
+        if not isinstance(df, pd.MultiIndex):
+            return df
+
+        # df.index.levels messes up the order of the levels, but we want to keep it
+        ordered_levels = [
+            df.index.get_level_values(level).unique()
+            for level in range(df.index.nlevels)
+        ]
+
+        index_full_product = pd.MultiIndex.from_product(ordered_levels)
+
+        return df.reindex(index_full_product)
+
+    df = set_index_full_product(df)
+
+    grouped = df.groupby(level=facet_level)
+    n_facets = len(grouped)
+
+    for i, (facet_name, df) in enumerate(grouped):
+        df = df.reset_index(level=[0], drop=True)
+        df = df.fillna(0)
+        df = df.loc[:, (df != 0).any(axis=0)]
+
+        ax = fig.add_subplot(n_facets, 1, i + 1)
+
+        if not df.empty:
+            plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
         else:
-            self.prepared_scalar_data = self.prepared_scalar_data.swaplevel(*swaplevels)
+            logger.warning("Data is empty - nothing to plot!")
 
-        return self.prepared_scalar_data
+        ax.set_title(facet_name)
 
-    def draw_plot(self, unit, title):
-        # do not plot if the data is empty or all zeros.
-        if (
-            self.prepared_scalar_data.empty
-            or (self.prepared_scalar_data == 0).all().all()
-        ):
-            logger.warning("Data is empty or all zero")
-            return None, None
+        # rotate xticklabels
+        labels = ax.get_xticklabels()
+        for lb in labels:
+            lb.set_rotation(rotation)
+            lb.set_ha(ha)
 
-        fig, ax = plt.subplots()
-        plot_grouped_bar(ax, self.prepared_scalar_data, COLORS, unit=unit, stacked=True)
-        ax.set_title(title)
-        # Shrink current axis's height by 10% on the bottom
-        box = ax.get_position()
-        ax.set_position(
-            [box.x0, box.y0 + box.height * 0.15, box.width, box.height * 0.85]
-        )
-        set_hierarchical_xlabels(self.prepared_scalar_data.index)
-        # Put a legend below current axis
         ax.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, -0.18),
+            loc="center left",
+            bbox_to_anchor=(1.0, 0, 0, 1),
             fancybox=True,
-            ncol=4,
+            ncol=1,
             fontsize=14,
         )
+        ax.tick_params(
+            "both", labelsize=config.settings.plot_scalar_results.tick_label_size
+        )
 
-        self.plotted = True
+    fig.suptitle(title, fontsize="x-large")
 
-        return fig, ax
+    # show only ticklabels of last plot
+    axs = fig.get_axes()
 
-    def draw_subplots(
-        self, unit, title, figsize=None, facet_level=0, rotation=45, ha="right"
-    ):
-        # do not plot if the data is empty or all zeros.
-        if (
-            self.prepared_scalar_data.empty
-            or (self.prepared_scalar_data == 0).all().all()
-        ):
-            logger.warning("Data is empty or all zero")
-            return None, None
+    for ax in axs[:-1]:
+        ax.tick_params(labelbottom=False)
 
-        # Set fig size to default size if no fig size is passed
-        if not figsize:
-            figsize = plt.rcParams.get("figure.figsize")
+    return fig, axs
 
-        fig = plt.figure(figsize=figsize)
 
-        def set_index_full_product(df):
-            r"""
-            Ensures that the the MultiIndex covers the full product of the levels.
-            """
-            if not isinstance(df, pd.MultiIndex):
-                return df
-
-            # df.index.levels messes up the order of the levels, but we want to keep it
-            ordered_levels = [
-                df.index.get_level_values(level).unique()
-                for level in range(df.index.nlevels)
-            ]
-
-            index_full_product = pd.MultiIndex.from_product(ordered_levels)
-
-            return df.reindex(index_full_product)
-
-        self.prepared_scalar_data = set_index_full_product(self.prepared_scalar_data)
-
-        grouped = self.prepared_scalar_data.groupby(level=facet_level)
-        n_facets = len(grouped)
-
-        for i, (facet_name, df) in enumerate(grouped):
-            df = df.reset_index(level=[0], drop=True)
-            df = df.fillna(0)
-            df = df.loc[:, (df != 0).any(axis=0)]
-
-            ax = fig.add_subplot(n_facets, 1, i + 1)
-
-            if not df.empty:
-                plot_grouped_bar(ax, df, COLORS, unit=unit, stacked=True)
-            else:
-                logger.warning("Data is empty - nothing to plot!")
-
-            ax.set_title(facet_name)
-
-            # rotate xticklabels
-            labels = ax.get_xticklabels()
-            for lb in labels:
-                lb.set_rotation(rotation)
-                lb.set_ha(ha)
-
-            ax.legend(
-                loc="center left",
-                bbox_to_anchor=(1.0, 0, 0, 1),
-                fancybox=True,
-                ncol=1,
-                fontsize=14,
-            )
-            ax.tick_params(
-                "both", labelsize=config.settings.plot_scalar_results.tick_label_size
-            )
-
-        fig.suptitle(title, fontsize="x-large")
-
-        self.plotted = True
-
-        # show only ticklabels of last plot
-        axs = fig.get_axes()
-
-        for ax in axs[:-1]:
-            ax.tick_params(labelbottom=False)
-
-        return fig, axs
-
-    def save_plot(self, output_path_plot):
-        if self.plotted:
-            plt.savefig(output_path_plot, bbox_inches="tight")
-            logger.info(f"Plot has been saved to: {output_path_plot}.")
+def save_plot(output_path_plot):
+    plt.savefig(output_path_plot, bbox_inches="tight")
+    logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
 def get_auto_bar_yinterval(index, space_per_letter, rotation):
