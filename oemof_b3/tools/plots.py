@@ -29,25 +29,6 @@ def aggregate_regions(df):
     return _df
 
 
-def draw_standalone_legend(c_dict):
-    import matplotlib.patches as mpatches
-
-    fig = plt.figure(figsize=(14, 14))
-    patches = [
-        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
-    ]
-    fig.legend(
-        patches,
-        c_dict.keys(),
-        loc="center",
-        ncol=4,
-        fontsize=14,
-        frameon=False,
-    )
-    plt.tight_layout()
-    return fig
-
-
 def set_scenario_labels(df):
     """Replaces scenario name with scenario label if possible"""
 
@@ -60,32 +41,6 @@ def set_scenario_labels(df):
 
     df.index = df.index.map(get_scenario_label)
     return df
-
-
-def _drop_near_zeros(df, tolerance):
-    df = df.loc[abs(df["var_value"]) > tolerance]
-    return df
-
-
-def _drop_constant_multiindex_levels(df, ignore_drop_level=False):
-    _df = df.copy()
-    drop_levels = [name for name in _df.index.names if len(_df.index.unique(name)) <= 1]
-    if ignore_drop_level and ignore_drop_level in drop_levels:
-        drop_levels.remove(ignore_drop_level)
-    _df.index = _df.index.droplevel(drop_levels)
-    return _df
-
-
-def _sort_by_ranking(to_sort, order):
-    ranking = {key: i for i, key in enumerate(order)}
-    try:
-        concrete_order = [ranking[key] for key in to_sort]
-    except KeyError as e:
-        raise KeyError(f"Missing label for label {e}")
-
-    sorted_list = [x for _, x in sorted(zip(concrete_order, to_sort))]
-
-    return sorted_list
 
 
 def prepare_scalar_data(
@@ -159,30 +114,6 @@ def prepare_scalar_data(
         df_pivot *= conv_number
 
     return df_pivot
-
-
-def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
-    r"""
-    Add vertical line to axes.
-    """
-    spacing = 1
-
-    # Plot vertical line on secondary x-axis
-    ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
-
-
-def swap_multiindex_levels(df, swaplevels=(0, 1)):
-
-    if df is None:
-        logger.warning("No prepared data found")
-
-    elif not isinstance(df.index, pd.MultiIndex):
-        logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
-
-    else:
-        df = df.swaplevel(*swaplevels)
-
-    return df
 
 
 def draw_plot(df, unit, title):
@@ -288,26 +219,52 @@ def draw_subplots(
     return fig, axs
 
 
+def draw_standalone_legend(c_dict):
+    import matplotlib.patches as mpatches
+
+    fig = plt.figure(figsize=(14, 14))
+    patches = [
+        mpatches.Patch(color=color, label=label) for label, color in c_dict.items()
+    ]
+    fig.legend(
+        patches,
+        c_dict.keys(),
+        loc="center",
+        ncol=4,
+        fontsize=14,
+        frameon=False,
+    )
+    plt.tight_layout()
+    return fig
+
+
 def save_plot(output_path_plot):
     plt.savefig(output_path_plot, bbox_inches="tight")
     logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
-def _get_auto_bar_yinterval(index, space_per_letter, rotation):
-    # set intervals according to maximal length of labels
-    label_len_max = [
-        max([len(v) for v in index.get_level_values(i)]) for i in index.names
-    ]
+def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
+    r"""
+    Add vertical line to axes.
+    """
+    spacing = 1
 
-    bar_yinterval = [space_per_letter * i for i in label_len_max][:-1]
+    # Plot vertical line on secondary x-axis
+    ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
 
-    # if there is rotation, reduce the interval
-    bar_yinterval = [
-        interval * abs(np.sin(rotation)) + space_per_letter
-        for interval, rotation in zip(bar_yinterval, rotation)
-    ]
 
-    return bar_yinterval
+def swap_multiindex_levels(df, swaplevels=(0, 1)):
+
+    if df is None:
+        logger.warning("No prepared data found")
+
+    elif not isinstance(df.index, pd.MultiIndex):
+        logger.warning("Index is no  pandas MultiIndex. Cannot swap levels")
+
+    else:
+        df = df.swaplevel(*swaplevels)
+
+    return df
 
 
 # TODO: This function could move to oemoflex once it is more mature
@@ -396,3 +353,46 @@ def set_hierarchical_xlabels(
                     )
                 )
             xpos0 = xpos1
+
+
+def _get_auto_bar_yinterval(index, space_per_letter, rotation):
+    # set intervals according to maximal length of labels
+    label_len_max = [
+        max([len(v) for v in index.get_level_values(i)]) for i in index.names
+    ]
+
+    bar_yinterval = [space_per_letter * i for i in label_len_max][:-1]
+
+    # if there is rotation, reduce the interval
+    bar_yinterval = [
+        interval * abs(np.sin(rotation)) + space_per_letter
+        for interval, rotation in zip(bar_yinterval, rotation)
+    ]
+
+    return bar_yinterval
+
+
+def _drop_near_zeros(df, tolerance):
+    df = df.loc[abs(df["var_value"]) > tolerance]
+    return df
+
+
+def _drop_constant_multiindex_levels(df, ignore_drop_level=False):
+    _df = df.copy()
+    drop_levels = [name for name in _df.index.names if len(_df.index.unique(name)) <= 1]
+    if ignore_drop_level and ignore_drop_level in drop_levels:
+        drop_levels.remove(ignore_drop_level)
+    _df.index = _df.index.droplevel(drop_levels)
+    return _df
+
+
+def _sort_by_ranking(to_sort, order):
+    ranking = {key: i for i, key in enumerate(order)}
+    try:
+        concrete_order = [ranking[key] for key in to_sort]
+    except KeyError as e:
+        raise KeyError(f"Missing label for label {e}")
+
+    sorted_list = [x for _, x in sorted(zip(concrete_order, to_sort))]
+
+    return sorted_list
