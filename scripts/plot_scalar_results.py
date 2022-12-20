@@ -32,7 +32,7 @@ from oemof_b3.config.config import COLORS, LABELS
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.plots import (
     prepare_scalar_data,
-    swap_levels,
+    swap_multiindex_levels,
     draw_plot,
     draw_subplots,
     save_plot,
@@ -161,7 +161,7 @@ def plot_invest_out_multi_carrier(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
     # rotate hierarchical labels
@@ -206,7 +206,7 @@ def plot_flow_out_multi_carrier(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
 
@@ -252,7 +252,7 @@ def plot_demands(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
 
@@ -300,7 +300,7 @@ def subplot_invest_out_multi_carrier(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
@@ -329,7 +329,7 @@ def subplot_storage_invest_multi_carrier(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
     draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     plt.tight_layout()
@@ -350,7 +350,7 @@ def subplot_demands(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
@@ -379,7 +379,7 @@ def subplot_energy_usage_multi_carrier(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
@@ -407,7 +407,7 @@ def subplot_flow_out_multi_carrier(carriers):
     if config.settings.plot_scalar_results.agg_regions:
         df = aggregate_regions(df)
     df = prepare_scalar_data(df)
-    df = swap_levels(df)
+    df = swap_multiindex_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 

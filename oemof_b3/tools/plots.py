@@ -64,12 +64,38 @@ def set_scenario_labels(df):
 
 def prepare_scalar_data(
     df,
-    colors_odict=COLORS,
-    labels_dict=LABELS,
+    colors=COLORS,
+    labels=LABELS,
     conv_number=MW_TO_W,
     ignore_drop_level=IGNORE_DROP_LEVEL,
     tolerance=1e-3,
 ):
+    r"""
+    Expects data in b3 format. Does the following
+    * Reshape the data
+    * Sort according to order in colors
+    * relabel
+    * multiply to adapt order of magnitude
+    * Drop constant multiindex levels
+    * drop near zero entries
+
+    Parameters
+    ----------
+    df : pd.DataFrame in b3-format
+
+    colors : dict
+        Dictionary of colors.
+    labels : dict
+        Labels for renaming
+    conv_number : numeric
+        Conversion number data will be multiplied with
+    ignore_drop_level : bool
+    tolerance : numeric
+
+    Returns
+    -------
+    df_pivot
+    """
     # drop data that is almost zero
     def _drop_near_zeros(df, tolerance):
         df = df.loc[abs(df["var_value"]) > tolerance]
@@ -108,7 +134,7 @@ def prepare_scalar_data(
     df_pivot = drop_constant_multiindex_levels(df_pivot, ignore_drop_level)
 
     # rename and aggregate duplicated columns
-    df_pivot = plots.map_labels(df_pivot, labels_dict)
+    df_pivot = plots.map_labels(df_pivot, labels)
     df_pivot = df_pivot.groupby(level=0, axis=1).sum()
 
     # define ordering and use concrete_order as keys for colors_odict in plot_scalars
@@ -123,7 +149,7 @@ def prepare_scalar_data(
 
         return sorted_list
 
-    sorted_labels = sort_by_ranking(df_pivot.columns, colors_odict)
+    sorted_labels = sort_by_ranking(df_pivot.columns, colors)
 
     df_pivot = df_pivot[sorted_labels]
 
@@ -144,7 +170,7 @@ def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
     ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
 
 
-def swap_levels(df, swaplevels=(0, 1)):
+def swap_multiindex_levels(df, swaplevels=(0, 1)):
 
     if df is None:
         logger.warning("No prepared data found")
