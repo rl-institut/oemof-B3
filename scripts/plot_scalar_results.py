@@ -187,8 +187,6 @@ def plot_invest_out_multi_carrier(carriers):
         labelsize=config.settings.plot_scalar_results.tick_label_size,
     )
 
-    add_vertical_line_in_plot(ax, position=POS_VLINE)
-
     save_plot(output_path_plot)
 
 
@@ -233,8 +231,6 @@ def plot_flow_out_multi_carrier(carriers):
         labelsize=config.settings.plot_scalar_results.tick_label_size,
     )
 
-    add_vertical_line_in_plot(ax, position=POS_VLINE)
-
     save_plot(output_path_plot)
 
 
@@ -278,8 +274,6 @@ def plot_demands(carriers):
         axis="both",
         labelsize=config.settings.plot_scalar_results.tick_label_size,
     )
-
-    add_vertical_line_in_plot(ax, position=POS_VLINE)
 
     save_plot(output_path_plot)
 
