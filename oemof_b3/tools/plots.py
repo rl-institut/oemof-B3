@@ -17,13 +17,12 @@ IGNORE_DROP_LEVEL = config.settings.plot_scalar_results.ignore_drop_level
 
 
 def aggregate_regions(df):
+    # This function is here only to set the "name" after aggregation
+    # With further refactoring, it could be dropped and the
+    # dataprocessing function would suffice.
     _df = df.copy()
 
-    agg_method = {
-        "var_value": sum,
-        "name": lambda x: "None",
-    }
-    _df = dp.aggregate_scalars(_df, "region", agg_method=agg_method)
+    _df = dp.aggregate_scalars(_df, "region")
 
     _df["name"] = _df.apply(lambda x: x["carrier"] + "-" + x["tech"], 1)
 
