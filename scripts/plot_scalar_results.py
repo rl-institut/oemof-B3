@@ -47,6 +47,17 @@ from oemof_b3.tools.plots import (
 logger = logging.getLogger()
 
 
+def try_to_plot(func):
+    def decorated_func(*args, **kwargs):
+        try:
+            func(*args, **kwargs)
+        except Exception as e:
+            logger.warning(f"Could not plot '{func.__name__}' because: {e}.")
+
+    return decorated_func
+
+
+@try_to_plot
 def plot_invest_out(carrier):
     var_name = f"invest_out_{carrier}"
     unit = "W"
@@ -60,6 +71,7 @@ def plot_invest_out(carrier):
     save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_storage_capacity(carrier):
     title = f"storage_capacity_{carrier}"
     output_path_plot = os.path.join(
@@ -74,6 +86,7 @@ def plot_storage_capacity(carrier):
     save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_storage_invest(carrier):
     title = f"storage_invest_{carrier}"
     output_path_plot = os.path.join(
@@ -88,6 +101,7 @@ def plot_storage_invest(carrier):
     save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_flow_out(carrier):
     title = f"production_{carrier}"
     output_path_plot = os.path.join(
@@ -108,6 +122,7 @@ def plot_flow_out(carrier):
     save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_storage_out(carrier):
     title = f"storage_out_{carrier}"
     output_path_plot = os.path.join(
@@ -123,52 +138,48 @@ def plot_storage_out(carrier):
     save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_invest_out_multi_carrier(carriers):
     var_name = [f"invest_out_{carrier}" for carrier in carriers]
     unit = "W"
     output_path_plot = os.path.join(
         target, "energy_usage" + config.settings.general.plot_filetype
     )
-    try:
-        df = select_data(scalars, var_name=var_name)
-        df = df.replace({"invest_out_*": ""}, regex=True)
-        df = prepare_data(
-            df, agg_regions=config.settings.plot_scalar_results.agg_regions
-        )
-        df = swap_levels(df)
-        df = df.sort_index(level=0)
-        fig, ax = draw_plot(df, unit=unit, title=None)
-        # rotate hierarchical labels
-        ax.texts.clear()
-        set_hierarchical_xlabels(
-            df.index,
-            ax=ax,
-            rotation=[70, 70],
-            ha="right",
-            hlines=True,
-        )
+    df = select_data(scalars, var_name=var_name)
+    df = df.replace({"invest_out_*": ""}, regex=True)
+    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    df = swap_levels(df)
+    df = df.sort_index(level=0)
+    fig, ax = draw_plot(df, unit=unit, title=None)
+    # rotate hierarchical labels
+    ax.texts.clear()
+    set_hierarchical_xlabels(
+        df.index,
+        ax=ax,
+        rotation=[70, 70],
+        ha="right",
+        hlines=True,
+    )
 
-        # Move the legend below current axis
-        ax.legend(
-            loc="upper left",
-            bbox_to_anchor=(1, 1),
-            fancybox=True,
-            ncol=2,
-            fontsize=14,
-        )
-        ax.tick_params(
-            axis="both",
-            labelsize=config.settings.plot_scalar_results.tick_label_size,
-        )
+    # Move the legend below current axis
+    ax.legend(
+        loc="upper left",
+        bbox_to_anchor=(1, 1),
+        fancybox=True,
+        ncol=2,
+        fontsize=14,
+    )
+    ax.tick_params(
+        axis="both",
+        labelsize=config.settings.plot_scalar_results.tick_label_size,
+    )
 
-        add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=6)
 
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_flow_out_multi_carrier(carriers):
     var_name = [f"flow_out_{carrier}" for carrier in carriers]
     unit = "Wh"
@@ -184,38 +195,35 @@ def plot_flow_out_multi_carrier(carriers):
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
 
-    try:
-        # rotate hierarchical labels
-        ax.texts.clear()
-        set_hierarchical_xlabels(
-            df.index,
-            ax=ax,
-            rotation=[70, 70],
-            ha="right",
-            hlines=True,
-        )
+    # rotate hierarchical labels
+    ax.texts.clear()
+    set_hierarchical_xlabels(
+        df.index,
+        ax=ax,
+        rotation=[70, 70],
+        ha="right",
+        hlines=True,
+    )
 
-        # Move the legend below current axis
-        ax.legend(
-            loc="upper left",
-            bbox_to_anchor=(1, 1),
-            fancybox=True,
-            ncol=2,
-            fontsize=14,
-        )
-        ax.tick_params(
-            axis="both",
-            labelsize=config.settings.plot_scalar_results.tick_label_size,
-        )
+    # Move the legend below current axis
+    ax.legend(
+        loc="upper left",
+        bbox_to_anchor=(1, 1),
+        fancybox=True,
+        ncol=2,
+        fontsize=14,
+    )
+    ax.tick_params(
+        axis="both",
+        labelsize=config.settings.plot_scalar_results.tick_label_size,
+    )
 
-        add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=6)
 
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_demands(carriers):
     var_name = [f"flow_in_{carrier}" for carrier in carriers]
     tech = "demand"
@@ -231,38 +239,35 @@ def plot_demands(carriers):
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
 
-    try:
-        # rotate hierarchical labels
-        ax.texts.clear()
-        set_hierarchical_xlabels(
-            df.index,
-            ax=ax,
-            rotation=[70, 70],
-            ha="right",
-            hlines=True,
-        )
+    # rotate hierarchical labels
+    ax.texts.clear()
+    set_hierarchical_xlabels(
+        df.index,
+        ax=ax,
+        rotation=[70, 70],
+        ha="right",
+        hlines=True,
+    )
 
-        # Move the legend below current axis
-        ax.legend(
-            loc="upper left",
-            bbox_to_anchor=(1, 1),
-            fancybox=True,
-            ncol=1,
-            fontsize=14,
-        )
-        ax.tick_params(
-            axis="both",
-            labelsize=config.settings.plot_scalar_results.tick_label_size,
-        )
+    # Move the legend below current axis
+    ax.legend(
+        loc="upper left",
+        bbox_to_anchor=(1, 1),
+        fancybox=True,
+        ncol=1,
+        fontsize=14,
+    )
+    ax.tick_params(
+        axis="both",
+        labelsize=config.settings.plot_scalar_results.tick_label_size,
+    )
 
-        add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=6)
 
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def subplot_invest_out_multi_carrier(carriers):
     var_name = [f"invest_out_{carrier}" for carrier in carriers]
     unit = "W"
@@ -280,20 +285,17 @@ def subplot_invest_out_multi_carrier(carriers):
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
-    try:
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-        plt.tight_layout()
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    for ax in axs:
+        add_vertical_line_in_plot(ax, position=6)
+        ax.tick_params(
+            axis="both",
+            labelsize=config.settings.plot_scalar_results.tick_label_size,
+        )
+    plt.tight_layout()
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def subplot_storage_invest_multi_carrier(carriers):
     var_name = "invest"
     unit = "Wh"
@@ -309,14 +311,11 @@ def subplot_storage_invest_multi_carrier(carriers):
     df = swap_levels(df)
     draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
-    try:
-        plt.tight_layout()
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    plt.tight_layout()
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def subplot_demands(carriers):
     var_name = [f"flow_in_{carrier}" for carrier in carriers]
     tech = "demand"
@@ -332,20 +331,17 @@ def subplot_demands(carriers):
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
-    try:
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-        plt.tight_layout()
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    for ax in axs:
+        add_vertical_line_in_plot(ax, position=6)
+        ax.tick_params(
+            axis="both",
+            labelsize=config.settings.plot_scalar_results.tick_label_size,
+        )
+    plt.tight_layout()
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def subplot_energy_usage_multi_carrier(carriers):
     var_name = [f"flow_in_{carrier}" for carrier in carriers]
     unit = "Wh"
@@ -362,20 +358,17 @@ def subplot_energy_usage_multi_carrier(carriers):
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
-    try:
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-        plt.tight_layout()
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    for ax in axs:
+        add_vertical_line_in_plot(ax, position=6)
+        ax.tick_params(
+            axis="both",
+            labelsize=config.settings.plot_scalar_results.tick_label_size,
+        )
+    plt.tight_layout()
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def subplot_flow_out_multi_carrier(carriers):
     var_name = [f"flow_out_{carrier}" for carrier in carriers]
     unit = "Wh"
@@ -391,20 +384,17 @@ def subplot_flow_out_multi_carrier(carriers):
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
-    try:
-        for ax in axs:
-            add_vertical_line_in_plot(ax, position=6)
-            ax.tick_params(
-                axis="both",
-                labelsize=config.settings.plot_scalar_results.tick_label_size,
-            )
-        plt.tight_layout()
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    for ax in axs:
+        add_vertical_line_in_plot(ax, position=6)
+        ax.tick_params(
+            axis="both",
+            labelsize=config.settings.plot_scalar_results.tick_label_size,
+        )
+    plt.tight_layout()
+    save_plot(output_path_plot)
 
 
+@try_to_plot
 def plot_demands_stacked_carriers(carriers):
     var_name = [f"flow_in_{carrier}" for carrier in carriers]
     tech = "demand"
@@ -459,27 +449,23 @@ def plot_demands_stacked_carriers(carriers):
     # Reset plot title
     ax.set_title("")
 
-    try:
-        # Move the legend below current axis
-        ax.legend(
-            loc="upper left",
-            bbox_to_anchor=(1, 1),
-            fancybox=True,
-            ncol=1,
-            fontsize=14,
-        )
-        ax.tick_params(
-            axis="both",
-            labelsize=config.settings.plot_scalar_results.tick_label_size,
-        )
-        plt.xticks(rotation=45, ha="right")
+    # Move the legend below current axis
+    ax.legend(
+        loc="upper left",
+        bbox_to_anchor=(1, 1),
+        fancybox=True,
+        ncol=1,
+        fontsize=14,
+    )
+    ax.tick_params(
+        axis="both",
+        labelsize=config.settings.plot_scalar_results.tick_label_size,
+    )
+    plt.xticks(rotation=45, ha="right")
 
-        add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=6)
 
-        save_plot(output_path_plot)
-
-    except Exception as e:  # noqa 722
-        logger.warning(f"Could not plot {output_path_plot}: {e}.")
+    save_plot(output_path_plot)
 
 
 def load_scalar_results(path, sep=config.settings.general.separator):
