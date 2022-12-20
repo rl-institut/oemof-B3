@@ -46,6 +46,8 @@ from oemof_b3.tools.plots import (
 
 logger = logging.getLogger()
 
+POS_VLINE = 3
+
 
 def try_to_plot(func):
     def decorated_func(*args, **kwargs):
@@ -174,7 +176,7 @@ def plot_invest_out_multi_carrier(carriers):
         labelsize=config.settings.plot_scalar_results.tick_label_size,
     )
 
-    add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=POS_VLINE)
 
     save_plot(output_path_plot)
 
@@ -218,7 +220,7 @@ def plot_flow_out_multi_carrier(carriers):
         labelsize=config.settings.plot_scalar_results.tick_label_size,
     )
 
-    add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=POS_VLINE)
 
     save_plot(output_path_plot)
 
@@ -262,7 +264,7 @@ def plot_demands(carriers):
         labelsize=config.settings.plot_scalar_results.tick_label_size,
     )
 
-    add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=POS_VLINE)
 
     save_plot(output_path_plot)
 
@@ -286,7 +288,7 @@ def subplot_invest_out_multi_carrier(carriers):
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     for ax in axs:
-        add_vertical_line_in_plot(ax, position=6)
+        add_vertical_line_in_plot(ax, position=POS_VLINE)
         ax.tick_params(
             axis="both",
             labelsize=config.settings.plot_scalar_results.tick_label_size,
@@ -332,7 +334,7 @@ def subplot_demands(carriers):
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     for ax in axs:
-        add_vertical_line_in_plot(ax, position=6)
+        add_vertical_line_in_plot(ax, position=POS_VLINE)
         ax.tick_params(
             axis="both",
             labelsize=config.settings.plot_scalar_results.tick_label_size,
@@ -359,7 +361,7 @@ def subplot_energy_usage_multi_carrier(carriers):
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     for ax in axs:
-        add_vertical_line_in_plot(ax, position=6)
+        add_vertical_line_in_plot(ax, position=POS_VLINE)
         ax.tick_params(
             axis="both",
             labelsize=config.settings.plot_scalar_results.tick_label_size,
@@ -385,7 +387,7 @@ def subplot_flow_out_multi_carrier(carriers):
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
     for ax in axs:
-        add_vertical_line_in_plot(ax, position=6)
+        add_vertical_line_in_plot(ax, position=POS_VLINE)
         ax.tick_params(
             axis="both",
             labelsize=config.settings.plot_scalar_results.tick_label_size,
@@ -463,7 +465,7 @@ def plot_demands_stacked_carriers(carriers):
     )
     plt.xticks(rotation=45, ha="right")
 
-    add_vertical_line_in_plot(ax, position=6)
+    add_vertical_line_in_plot(ax, position=POS_VLINE)
 
     save_plot(output_path_plot)
 
