@@ -62,6 +62,32 @@ def set_scenario_labels(df):
     return df
 
 
+def _drop_near_zeros(df, tolerance):
+    df = df.loc[abs(df["var_value"]) > tolerance]
+    return df
+
+
+def _drop_constant_multiindex_levels(df, ignore_drop_level=False):
+    _df = df.copy()
+    drop_levels = [name for name in _df.index.names if len(_df.index.unique(name)) <= 1]
+    if ignore_drop_level and ignore_drop_level in drop_levels:
+        drop_levels.remove(ignore_drop_level)
+    _df.index = _df.index.droplevel(drop_levels)
+    return _df
+
+
+def _sort_by_ranking(to_sort, order):
+    ranking = {key: i for i, key in enumerate(order)}
+    try:
+        concrete_order = [ranking[key] for key in to_sort]
+    except KeyError as e:
+        raise KeyError(f"Missing label for label {e}")
+
+    sorted_list = [x for _, x in sorted(zip(concrete_order, to_sort))]
+
+    return sorted_list
+
+
 def prepare_scalar_data(
     df,
     colors=COLORS,
@@ -97,10 +123,6 @@ def prepare_scalar_data(
     df_pivot
     """
     # drop data that is almost zero
-    def _drop_near_zeros(df, tolerance):
-        df = df.loc[abs(df["var_value"]) > tolerance]
-        return df
-
     df = _drop_near_zeros(df, tolerance)
 
     if df.empty:
@@ -120,36 +142,15 @@ def prepare_scalar_data(
     # restore order of scenarios after pivoting
     df_pivot = df_pivot.reindex(scenario_order, level="scenario_key")
 
-    def drop_constant_multiindex_levels(df, ignore_drop_level=False):
-        _df = df.copy()
-        drop_levels = [
-            name for name in _df.index.names if len(_df.index.unique(name)) <= 1
-        ]
-        if ignore_drop_level and ignore_drop_level in drop_levels:
-            drop_levels.remove(ignore_drop_level)
-        _df.index = _df.index.droplevel(drop_levels)
-        return _df
-
     # Drop levels that are all the same, e.g. 'ALL' for aggregated regions
-    df_pivot = drop_constant_multiindex_levels(df_pivot, ignore_drop_level)
+    df_pivot = _drop_constant_multiindex_levels(df_pivot, ignore_drop_level)
 
     # rename and aggregate duplicated columns
     df_pivot = plots.map_labels(df_pivot, labels)
     df_pivot = df_pivot.groupby(level=0, axis=1).sum()
 
     # define ordering and use concrete_order as keys for colors_odict in plot_scalars
-    def sort_by_ranking(to_sort, order):
-        ranking = {key: i for i, key in enumerate(order)}
-        try:
-            concrete_order = [ranking[key] for key in to_sort]
-        except KeyError as e:
-            raise KeyError(f"Missing label for label {e}")
-
-        sorted_list = [x for _, x in sorted(zip(concrete_order, to_sort))]
-
-        return sorted_list
-
-    sorted_labels = sort_by_ranking(df_pivot.columns, colors)
+    sorted_labels = _sort_by_ranking(df_pivot.columns, colors)
 
     df_pivot = df_pivot[sorted_labels]
 
@@ -292,7 +293,7 @@ def save_plot(output_path_plot):
     logger.info(f"Plot has been saved to: {output_path_plot}.")
 
 
-def get_auto_bar_yinterval(index, space_per_letter, rotation):
+def _get_auto_bar_yinterval(index, space_per_letter, rotation):
     # set intervals according to maximal length of labels
     label_len_max = [
         max([len(v) for v in index.get_level_values(i)]) for i in index.names
@@ -351,7 +352,7 @@ def set_hierarchical_xlabels(
 
     if bar_yinterval is None:
         SPACE_PER_LETTER = 0.05
-        bar_yinterval = get_auto_bar_yinterval(index, SPACE_PER_LETTER, rotation)
+        bar_yinterval = _get_auto_bar_yinterval(index, SPACE_PER_LETTER, rotation)
 
     if isinstance(bar_yinterval, (float, int)):
         bar_yinterval = [bar_yinterval] * n_intervals
