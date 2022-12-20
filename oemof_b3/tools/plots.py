@@ -75,45 +75,47 @@ def prepare_scalar_data(
 
     Returns
     -------
-    df_pivot
+    df_prepared
     """
     # drop data that is almost zero
-    df = _drop_near_zeros(df, tolerance)
+    _df = df.copy()
 
-    if df.empty:
-        return df
+    _df = _drop_near_zeros(_df, tolerance)
+
+    if _df.empty:
+        return _df
 
     # remember order of scenarios
-    scenario_order = df["scenario_key"].unique()
+    scenario_order = _df["scenario_key"].unique()
 
     # pivot
-    df_pivot = pd.pivot_table(
-        df,
+    _df = pd.pivot_table(
+        _df,
         index=["scenario_key", "region", "var_name"],
         columns="name",
         values="var_value",
     )
 
     # restore order of scenarios after pivoting
-    df_pivot = df_pivot.reindex(scenario_order, level="scenario_key")
+    _df = _df.reindex(scenario_order, level="scenario_key")
 
     # Drop levels that are all the same, e.g. 'ALL' for aggregated regions
-    df_pivot = _drop_constant_multiindex_levels(df_pivot, ignore_drop_level)
+    _df = _drop_constant_multiindex_levels(_df, ignore_drop_level)
 
     # rename and aggregate duplicated columns
-    df_pivot = plots.map_labels(df_pivot, labels)
-    df_pivot = df_pivot.groupby(level=0, axis=1).sum()
+    _df = plots.map_labels(_df, labels)
+    _df = _df.groupby(level=0, axis=1).sum()
 
     # define ordering and use concrete_order as keys for colors_odict in plot_scalars
-    sorted_labels = _sort_by_ranking(df_pivot.columns, colors)
+    sorted_labels = _sort_by_ranking(_df.columns, colors)
 
-    df_pivot = df_pivot[sorted_labels]
+    df_prepared = _df[sorted_labels]
 
     # convert data to SI-Units
     if conv_number is not None:
-        df_pivot *= conv_number
+        _df *= conv_number
 
-    return df_pivot
+    return df_prepared
 
 
 def draw_plot(df, unit, title):
