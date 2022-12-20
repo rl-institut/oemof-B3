@@ -6,6 +6,7 @@ import oemof_b3.config.config as config
 HTTP = HTTPRemoteProvider()
 
 # The following lines define groups of scenarios/examples
+# To get a desired order in the plots, define a list of scenarios here.
 scenario_groups = {
     "examples": [
         "example_base",
@@ -14,6 +15,14 @@ scenario_groups = {
     ],
     "all-scenarios": [
         os.path.splitext(scenario)[0] for scenario in os.listdir("scenarios")
+    ],
+    "all-custom-order": [
+        "2050-80-el_eff",
+        "2050-95-el_eff",
+        "2050-100-el_eff",
+        "2050-80-gas_moreCH4",
+        "2050-95-gas_moreCH4",
+        "2050-100-gas_moreCH4",
     ],
     "all-optimized": [
         scenario for scenario in os.listdir("results")

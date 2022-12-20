@@ -110,7 +110,9 @@ if __name__ == "__main__":
 
     logger = config.add_snake_logger("create_results_table")
 
-    scalars = pd.read_csv(os.path.join(in_path, "scalars.csv"))
+    scalars = pd.read_csv(
+        os.path.join(in_path, "scalars.csv"), sep=config.settings.general.separator
+    )
 
     # Workaround to conform to oemof-b3 format
     scalars.rename(columns={"scenario": "scenario_key"}, inplace=True)
