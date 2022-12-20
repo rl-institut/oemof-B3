@@ -31,7 +31,7 @@ from oemof_b3.config import config
 from oemof_b3.config.config import COLORS, LABELS
 from oemof_b3.tools import data_processing as dp
 from oemof_b3.tools.plots import (
-    prepare_data,
+    prepare_scalar_data,
     swap_levels,
     draw_plot,
     draw_subplots,
@@ -67,7 +67,9 @@ def plot_invest_out(carrier):
     )
 
     df = dp.multi_filter_df(scalars, var_name=var_name)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     draw_plot(df, unit=unit, title=None)
     save_plot(output_path_plot)
 
@@ -82,7 +84,9 @@ def plot_storage_capacity(carrier):
     unit = "Wh"
 
     df = dp.multi_filter_df(scalars, var_name=var_name, carrier=carrier)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     draw_plot(df, unit=unit, title=None)
     save_plot(output_path_plot)
 
@@ -97,7 +101,9 @@ def plot_storage_invest(carrier):
     unit = "Wh"
 
     df = dp.multi_filter_df(scalars, var_name=var_name, carrier=carrier)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     draw_plot(df, unit=unit, title=None)
     save_plot(output_path_plot)
 
@@ -118,7 +124,9 @@ def plot_flow_out(carrier):
         ["storage", "asymmetric_storage", "link"],
         inverse=True,
     )
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     draw_plot(df, unit=unit, title=None)
     save_plot(output_path_plot)
 
@@ -134,7 +142,9 @@ def plot_storage_out(carrier):
 
     df = dp.multi_filter_df(var_name=var_name)
     df = dp.filter_df(df, "type", ["storage", "asymmetric_storage"])
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     draw_plot(df, unit=unit, title=None)
     save_plot(output_path_plot)
 
@@ -148,7 +158,9 @@ def plot_invest_out_multi_carrier(carriers):
     )
     df = dp.multi_filter_df(scalars, var_name=var_name)
     df = df.replace({"invest_out_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
@@ -191,7 +203,9 @@ def plot_flow_out_multi_carrier(carriers):
     df = dp.multi_filter_df(scalars, var_name=var_name)
     df = dp.filter_df(df, column_name="type", values="storage", inverse=True)
     df = df.replace({"flow_out_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
@@ -235,7 +249,9 @@ def plot_demands(carriers):
 
     df = dp.multi_filter_df(scalars, var_name=var_name, tech=tech)
     df = df.replace({"flow_in_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
     df = df.sort_index(level=0)
     fig, ax = draw_plot(df, unit=unit, title=None)
@@ -281,7 +297,9 @@ def subplot_invest_out_multi_carrier(carriers):
 
     # replacing invest_out_<carrier> with <carrier> to subplot by carrier
     df = df.replace({"invest_out_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
@@ -308,7 +326,9 @@ def subplot_storage_invest_multi_carrier(carriers):
 
     # replacing invest with <carrier> to subplot by carrier
     df["var_name"] = df["carrier"]
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
     draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
 
@@ -327,7 +347,9 @@ def subplot_demands(carriers):
 
     df = dp.multi_filter_df(scalars, var_name=var_name, tech=tech)
     df = df.replace({"flow_in_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
@@ -354,7 +376,9 @@ def subplot_energy_usage_multi_carrier(carriers):
     # exclude storage charging
     df = dp.filter_df(df, column_name="type", values="storage", inverse=True)
     df = df.replace({"flow_in_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))
@@ -380,7 +404,9 @@ def subplot_flow_out_multi_carrier(carriers):
     df = dp.multi_filter_df(scalars, var_name=var_name)
     df = dp.filter_df(df, column_name="type", values="storage", inverse=True)
     df = df.replace({"flow_out_*": ""}, regex=True)
-    df = prepare_data(df, agg_regions=config.settings.plot_scalar_results.agg_regions)
+    if config.settings.plot_scalar_results.agg_regions:
+        df = aggregate_regions(df)
+    df = prepare_scalar_data(df)
     df = swap_levels(df)
 
     fig, axs = draw_subplots(df, unit=unit, title=None, figsize=(11, 13))

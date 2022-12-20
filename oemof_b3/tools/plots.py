@@ -65,9 +65,9 @@ def set_scenario_labels(df):
 
 def prepare_scalar_data(
     df,
-    colors_odict,
-    labels_dict,
-    conv_number,
+    colors_odict=COLORS,
+    labels_dict=LABELS,
+    conv_number=MW_TO_W,
     ignore_drop_level=IGNORE_DROP_LEVEL,
     tolerance=1e-3,
 ):
@@ -143,24 +143,6 @@ def add_vertical_line_in_plot(ax, position, linewidth=1, color="black"):
 
     # Plot vertical line on secondary x-axis
     ax.axvline(x=(position - 0.5) * spacing, color=color, linewidth=linewidth)
-
-
-def prepare_data(df, agg_regions=False):
-
-    prepared_df = df.copy()
-
-    if agg_regions:
-        prepared_df = aggregate_regions(prepared_df)
-
-    prepared_df = prepare_scalar_data(
-        df=prepared_df,
-        colors_odict=COLORS,
-        labels_dict=LABELS,
-        conv_number=MW_TO_W,
-        ignore_drop_level=IGNORE_DROP_LEVEL,
-    )
-
-    return prepared_df
 
 
 def swap_levels(df, swaplevels=(0, 1)):
