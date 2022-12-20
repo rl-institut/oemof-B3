@@ -155,24 +155,7 @@ def draw_subplots(
 
     fig = plt.figure(figsize=figsize)
 
-    def set_index_full_product(df):
-        r"""
-        Ensures that the the MultiIndex covers the full product of the levels.
-        """
-        if not isinstance(df.index, pd.MultiIndex):
-            return df
-
-        # df.index.levels messes up the order of the levels, but we want to keep it
-        ordered_levels = [
-            df.index.get_level_values(level).unique()
-            for level in range(df.index.nlevels)
-        ]
-
-        index_full_product = pd.MultiIndex.from_product(ordered_levels)
-
-        return df.reindex(index_full_product)
-
-    df = set_index_full_product(df)
+    df = _set_index_full_product(df)
 
     grouped = df.groupby(level=facet_level)
     n_facets = len(grouped)
@@ -375,6 +358,23 @@ def _get_auto_bar_yinterval(index, space_per_letter, rotation):
 def _drop_near_zeros(df, tolerance):
     df = df.loc[abs(df["var_value"]) > tolerance]
     return df
+
+
+def _set_index_full_product(df):
+    r"""
+    Ensures that the the MultiIndex covers the full product of the levels.
+    """
+    if not isinstance(df.index, pd.MultiIndex):
+        return df
+
+    # df.index.levels messes up the order of the levels, but we want to keep it
+    ordered_levels = [
+        df.index.get_level_values(level).unique() for level in range(df.index.nlevels)
+    ]
+
+    index_full_product = pd.MultiIndex.from_product(ordered_levels)
+
+    return df.reindex(index_full_product)
 
 
 def _drop_constant_multiindex_levels(df, ignore_drop_level=False):
