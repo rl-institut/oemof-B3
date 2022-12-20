@@ -1,6 +1,8 @@
 import json
-import requests
 
+import pandas as pd
+
+from oemof_b3.config import config
 from oemof_b3.schema import SCHEMA_SCAL, SCHEMA_TS, oemetadata_scal, oemetadata_ts
 from oemof_b3.tools import data_processing as dp
 
@@ -116,11 +118,6 @@ def upload_df_to_oep_table(
 
 
 def download_table_from_OEP(output_filename, table, schema):
-    """Downloads table from OEP and stores it as CSV in outputfile"""
-
     table_url = f"{OEP_HOST}/api/v0/schema/{schema}/tables/{table}/rows?form=csv"
-    with open(output_filename, "wb") as outputfile, requests.get(
-        table_url, stream=True
-    ) as r:
-        for line in r.iter_lines():
-            outputfile.write(line + "\n".encode())
+    df = pd.read_csv(table_url, index_col=0)
+    df.to_csv(output_filename, index=False, sep=config.settings.general.separator)
