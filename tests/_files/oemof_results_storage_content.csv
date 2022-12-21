@@ -1,7 +1,7 @@
-from,B-electricity-liion_battery,B-h2-cavern
-to,nan,nan
-type,storage_content,storage_content
-timeindex,,
-2017-01-01 00:00:00,120,2000
-2017-01-01 01:00:00,40,2200
-2017-01-01 02:00:00,0,2500
+from;B-electricity-liion_battery;B-h2-cavern
+to;nan;nan
+type;storage_content;storage_content
+timeindex;;
+2017-01-01 00:00:00;120;2000
+2017-01-01 01:00:00;40;2200
+2017-01-01 02:00:00;0;2500
