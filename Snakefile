@@ -66,6 +66,13 @@ rule run_all_scenarios:
             scenario=scenario_groups["all-scenarios"],
         )
 
+rule upload_all_scenarios_to_oep:
+    input:
+        expand(
+            "results/{scenario}/b3_results/metadata",
+            scenario=scenario_groups["all-scenarios"]
+        )
+
 rule plot_grouped_scenarios:
     input:
         expand(

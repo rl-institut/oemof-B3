@@ -7,7 +7,6 @@ rule download_resources:
         "results/_resources/ts_efficiency_heatpump_small.csv",
         "results/_resources/scal_load_heat.csv",
         "results/_resources/ts_load_heat.csv",
-        "results/_resources/scal_power_potential_wind_pv.csv",
     shell: "python scripts/download_resources.py {output}"
 
 rule download_all_resources:
