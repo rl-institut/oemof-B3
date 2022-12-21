@@ -254,7 +254,7 @@ def save_df(df, path):
     logger.info(f"The DataFrame has been saved to: {path}.")
 
 
-def load_tabular_results_scal(path):
+def load_tabular_results_scal(path, sep=config.settings.general.separator):
     r"""
     Loads scalars as given by oemof.tabular/oemoflex.
 
@@ -267,10 +267,10 @@ def load_tabular_results_scal(path):
     -------
     pd.DataFrame
     """
-    return pd.read_csv(path, header=[0])
+    return pd.read_csv(path, header=[0], sep=sep)
 
 
-def load_tabular_results_ts(path):
+def load_tabular_results_ts(path, sep=config.settings.general.separator):
     r"""
     Loads timeseries as given by oemof.tabular/oemoflex.
 
@@ -283,7 +283,7 @@ def load_tabular_results_ts(path):
     -------
     pd.DataFrame
     """
-    return pd.read_csv(path, header=[0, 1, 2], parse_dates=[0], index_col=[0])
+    return pd.read_csv(path, header=[0, 1, 2], parse_dates=[0], index_col=[0], sep=sep)
 
 
 def filter_df(df, column_name, values, inverse=False):
