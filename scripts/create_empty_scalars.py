@@ -17,15 +17,16 @@ Description
 The script creates an empty DataFrame for scalar data that serve as a template for input data.
 """
 import sys
-
+import os
 import pandas as pd
+
 from oemoflex.model.datapackage import EnergyDataPackage
 
 from oemof_b3.config.config import load_yaml, settings
 from oemof_b3.model import bus_attrs_update, component_attrs_update, model_structures
-
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
+    load_b3_scalars,
     format_header,
     sort_values,
     save_df,
@@ -117,6 +118,25 @@ def add_wacc(sc):
     return sc
 
 
+def save_empty_scalars(sc, path):
+
+    if os.path.exists(path):
+        all_sc = load_b3_scalars(path)
+
+        if all_sc.empty:
+            all_sc = sc
+        else:
+            all_sc = all_sc.append(sc, ignore_index=True)
+            all_sc.index.name = sc.index.name
+
+    else:
+        all_sc = sc
+
+    all_sc.drop_duplicates(inplace=True)
+
+    save_df(all_sc, path)
+
+
 if __name__ == "__main__":
     scenario_specs = sys.argv[1]
 
@@ -155,4 +175,4 @@ if __name__ == "__main__":
 
     empty_scalars = sort_values(empty_scalars)
 
-    save_df(empty_scalars, destination)
+    save_empty_scalars(empty_scalars, destination)
