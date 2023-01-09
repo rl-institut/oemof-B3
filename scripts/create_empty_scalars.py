@@ -34,6 +34,34 @@ from oemof_b3.tools.data_processing import (
 NON_REGIONAL = settings.create_empty_scalars.non_regional
 
 
+def get_edp_from_scenario(scenario_specs):
+    model_structure = model_structures[scenario_specs["model_structure"]]
+
+    # setup empty EnergyDataPackage
+    datetimeindex = pd.date_range(
+        start=scenario_specs["datetimeindex"]["start"],
+        freq=scenario_specs["datetimeindex"]["freq"],
+        periods=scenario_specs["datetimeindex"]["periods"],
+    )
+
+    # setup default structure
+    edp = EnergyDataPackage.setup_default(
+        basepath=destination,
+        datetimeindex=datetimeindex,
+        bus_attrs_update=bus_attrs_update,
+        component_attrs_update=component_attrs_update,
+        name=scenario_specs["name"],
+        regions=model_structure["regions"],
+        links=model_structure["links"],
+        busses=model_structure["busses"],
+        components=model_structure["components"],
+    )
+
+    edp.stack_components()
+
+    return edp
+
+
 def format_input_scalars(df):
     _df = df.copy()
 
@@ -95,29 +123,8 @@ if __name__ == "__main__":
     destination = sys.argv[2]
 
     scenario_specs = load_yaml(scenario_specs)
-    model_structure = model_structures[scenario_specs["model_structure"]]
 
-    # setup empty EnergyDataPackage
-    datetimeindex = pd.date_range(
-        start=scenario_specs["datetimeindex"]["start"],
-        freq=scenario_specs["datetimeindex"]["freq"],
-        periods=scenario_specs["datetimeindex"]["periods"],
-    )
-
-    # setup default structure
-    edp = EnergyDataPackage.setup_default(
-        basepath=destination,
-        datetimeindex=datetimeindex,
-        bus_attrs_update=bus_attrs_update,
-        component_attrs_update=component_attrs_update,
-        name=scenario_specs["name"],
-        regions=model_structure["regions"],
-        links=model_structure["links"],
-        busses=model_structure["busses"],
-        components=model_structure["components"],
-    )
-
-    edp.stack_components()
+    edp = get_edp_from_scenario(scenario_specs)
 
     components = edp.data["component"].reset_index()
 
