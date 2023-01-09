@@ -20,7 +20,8 @@ import sys
 
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
-from oemof_b3.config.config import load_yaml
+
+from oemof_b3.config.config import load_yaml, settings
 from oemof_b3.model import bus_attrs_update, component_attrs_update, model_structures
 
 from oemof_b3.tools.data_processing import (
@@ -30,18 +31,7 @@ from oemof_b3.tools.data_processing import (
     save_df,
 )
 
-NON_REGIONAL = [
-    "capacity_cost",
-    "carrier_cost",
-    "efficiency",
-    "expandable",
-    "marginal_cost",
-    "electric_efficiency",
-    "thermal_efficiency",
-    "condensing_efficiency",
-    "loss_rate",
-    "storage_capacity_cost",
-]
+NON_REGIONAL = settings.create_empty_scalars.non_regional
 
 
 def format_input_scalars(df):
