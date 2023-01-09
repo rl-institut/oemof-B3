@@ -21,8 +21,8 @@ import sys
 import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
 from oemof_b3.config.config import load_yaml
+from oemof_b3.model import bus_attrs_update, component_attrs_update, model_structures
 
-from oemof_b3.model import bus_attrs_update, component_attrs_update
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
     format_header,
@@ -88,6 +88,7 @@ if __name__ == "__main__":
     destination = sys.argv[2]
 
     scenario_specs = load_yaml(scenario_specs)
+    model_structure = model_structures[scenario_specs["model_structure"]]
 
     # setup empty EnergyDataPackage
     datetimeindex = pd.date_range(
@@ -103,10 +104,10 @@ if __name__ == "__main__":
         bus_attrs_update=bus_attrs_update,
         component_attrs_update=component_attrs_update,
         name=scenario_specs["name"],
-        regions=scenario_specs["regions"],
-        links=scenario_specs["links"],
-        busses=scenario_specs["busses"],
-        components=scenario_specs["components"],
+        regions=model_structure["regions"],
+        links=model_structure["links"],
+        busses=model_structure["busses"],
+        components=model_structure["components"],
     )
 
     edp.stack_components()
@@ -116,7 +117,7 @@ if __name__ == "__main__":
     empty_scalars = format_input_scalars(components)
 
     # set scenario name
-    empty_scalars.loc[:, "scenario"] = scenario_specs["name"]
+    empty_scalars.loc[:, "scenario_key"] = scenario_specs["name"]
 
     # if empty raw scalars should be created, reverse the annuisation as well.
     # if empty resources scalars are needed, set this to False.
