@@ -94,3 +94,11 @@ create_empty_scalars:
      "loss_rate",
      "storage_capacity_cost",
   ]
+  wacc: {
+      "var_name": "wacc",
+      "carrier": "ALL",
+      "region": "ALL",
+      "tech": "ALL",
+      "type": "ALL",
+      "var_unit": "None",
+  }

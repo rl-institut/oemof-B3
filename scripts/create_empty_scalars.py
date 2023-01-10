@@ -101,19 +101,8 @@ def expand_scalars(df, column, where, expand):
     return _df_wo_cc
 
 
-def add_wacc(sc):
-    sc = sc.append(
-        {
-            "scenario_key": scenario_specs["name"],
-            "var_name": "wacc",
-            "carrier": "ALL",
-            "region": "ALL",
-            "tech": "ALL",
-            "type": "ALL",
-            "var_unit": "None",
-        },
-        ignore_index=True,
-    )
+def add_new_entry_to_scalars(sc, new_entry_dict):
+    sc = sc.append(new_entry_dict, ignore_index=True)
 
     return sc
 
@@ -171,7 +160,10 @@ if __name__ == "__main__":
             expand=["storage_capacity_cost_overnight", "storage_fixom_cost"],
         )
 
-    empty_scalars = add_wacc(empty_scalars)
+    # Add wacc
+    wacc_dict = {"scenario_key": scenario_specs["name"]}
+    wacc_dict.update(settings.create_empty_scalars.wacc)
+    empty_scalars = add_new_entry_to_scalars(empty_scalars, wacc_dict)
 
     empty_scalars = sort_values(empty_scalars)
 
