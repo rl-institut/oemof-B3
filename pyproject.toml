@@ -25,7 +25,7 @@ rtree = ">=0.9.7"
 pyyaml = ">=6.0"
 dynaconf = "^3.1.7"
 snakemake = ">=5"
-oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", branch = "dev"}
+oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", tag = "0.0.1"}
 Sphinx = {version = "^4.3.2", optional = true}
 sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 sphinxcontrib-bibtex = {version = "^2.4.1", optional = true}
