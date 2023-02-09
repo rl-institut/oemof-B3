@@ -691,12 +691,13 @@ def prepare_attr_name(sc, overwrite):
 
         # Save unique values of diff to a list and print as warning
         expected_names = list(diff_in_name.unique())
-        logger.warning(
-            "The name you have set for some of your scalar data differs "
-            "from the convention (<region>-<carrier>-<tech>). \n"
-            "We expected but could not find the following name(s): "
-            f"{expected_names}."
-        )
+        if expected_names:
+            logger.warning(
+                "The name you have set for some of your scalar data differs "
+                "from the convention (<region>-<carrier>-<tech>). \n"
+                "We expected but could not find the following name(s): "
+                f"{expected_names}."
+            )
         if overwrite:
             logger.warning(
                 "The names will be overwritten with names following the convention"
