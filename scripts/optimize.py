@@ -268,8 +268,7 @@ if __name__ == "__main__":
         )
 
         with Timer(text="Solved the model.", logger=logger.info):
-            write_LP = config.settings.optimize.lp_writing
-            if write_LP:
+            if config.settings.optimize.write_lp_file:
                 m.write(
                     os.path.join(optimized, "optimized.lp"),
                     io_options={"symbolic_solver_labels": True},

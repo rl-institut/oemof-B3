@@ -19,7 +19,7 @@ optimize:
   solve_kwargs:
     tee: True
     keepfiles: True
-  lp_writing: False
+  write_lp_file: False
   cmdline_options:
     AllowableGap: 0.01
   debug: true
