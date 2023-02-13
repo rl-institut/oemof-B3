@@ -22,7 +22,7 @@ following sections.
    :alt: schematic of model pipeline
    :align: center
 
-.. created with snakemake --rulegraph process_all_scenarios plot_grouped_scenarios plot_all_examples | dot -Tpdf > docs/_img/model_pipeline.svg
+.. created with snakemake --rulegraph run_all_scenarios plot_grouped_scenarios run_all_examples | dot -Tpdf > docs/_img/model_pipeline.svg
 
 The subdirectories of oemof-B3 shown below contain configurations and data of the model.
 :file:`Examples` contains pre-fabricated datapackages that can readily be optimized. The directory
