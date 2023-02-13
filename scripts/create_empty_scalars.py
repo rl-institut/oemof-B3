@@ -23,7 +23,9 @@ import pandas as pd
 from oemoflex.model.datapackage import EnergyDataPackage
 
 from oemof_b3.config.config import load_yaml, settings
-from oemof_b3.model import bus_attrs_update, component_attrs_update, model_structures
+from oemof_b3.model import bus_attrs_update, model_structures
+from oemof_b3 import model
+import oemof_b3
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
     load_b3_scalars,
@@ -127,44 +129,49 @@ def save_empty_scalars(sc, path):
 
 
 if __name__ == "__main__":
-    scenario_specs = sys.argv[1]
+    scenarios_dir = sys.argv[1]
 
     destination = sys.argv[2]
 
-    scenario_specs = load_yaml(scenario_specs)
+    scenarios = os.listdir(scenarios_dir)
 
-    edp = get_edp_from_scenario(scenario_specs)
+    for scenario_specs in scenarios:
+        component_attrs_update = load_yaml(os.path.join(model.here, "component_attrs_update.yml"))
 
-    components = edp.data["component"].reset_index()
+        scenario_specs = load_yaml(os.path.join(scenarios_dir, scenario_specs))
 
-    empty_scalars = format_input_scalars(components)
+        edp = get_edp_from_scenario(scenario_specs)
 
-    # set scenario name
-    empty_scalars.loc[:, "scenario_key"] = scenario_specs["name"]
+        components = edp.data["component"].reset_index()
 
-    # if empty raw scalars should be created, reverse the annuisation as well.
-    # if empty resources scalars are needed, set this to False.
-    raw_scalars = True
-    if raw_scalars:
-        empty_scalars = expand_scalars(
-            empty_scalars,
-            column="var_name",
-            where="capacity_cost",
-            expand=["capacity_cost_overnight", "lifetime", "fixom_cost"],
-        )
+        empty_scalars = format_input_scalars(components)
 
-        empty_scalars = expand_scalars(
-            empty_scalars,
-            column="var_name",
-            where="storage_capacity_cost",
-            expand=["storage_capacity_cost_overnight", "storage_fixom_cost"],
-        )
+        # set scenario name
+        empty_scalars.loc[:, "scenario_key"] = scenario_specs["name"]
 
-    # Add wacc
-    wacc_dict = {"scenario_key": scenario_specs["name"]}
-    wacc_dict.update(settings.create_empty_scalars.wacc)
-    empty_scalars = add_new_entry_to_scalars(empty_scalars, wacc_dict)
+        # if empty raw scalars should be created, reverse the annuisation as well.
+        # if empty resources scalars are needed, set this to False.
+        raw_scalars = True
+        if raw_scalars:
+            empty_scalars = expand_scalars(
+                empty_scalars,
+                column="var_name",
+                where="capacity_cost",
+                expand=["capacity_cost_overnight", "lifetime", "fixom_cost"],
+            )
 
-    empty_scalars = sort_values(empty_scalars)
+            empty_scalars = expand_scalars(
+                empty_scalars,
+                column="var_name",
+                where="storage_capacity_cost",
+                expand=["storage_capacity_cost_overnight", "storage_fixom_cost"],
+            )
 
-    save_empty_scalars(empty_scalars, destination)
+        # Add wacc
+        wacc_dict = {"scenario_key": scenario_specs["name"]}
+        wacc_dict.update(settings.create_empty_scalars.wacc)
+        empty_scalars = add_new_entry_to_scalars(empty_scalars, wacc_dict)
+
+        empty_scalars = sort_values(empty_scalars)
+
+        save_empty_scalars(empty_scalars, destination)

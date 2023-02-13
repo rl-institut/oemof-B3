@@ -1,4 +1,4 @@
 rule create_empty_scalars:
-    input: "scenarios/{scenario}.yml"
-    output: "raw/scalars/scalars_{scenario}.csv"
+    input: directory("scenarios/")
+    output: "raw/scalars/empty_scalars.csv"
     shell: "python scripts/create_empty_scalars.py {input} {output}"
