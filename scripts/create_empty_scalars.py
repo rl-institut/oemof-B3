@@ -25,7 +25,6 @@ from oemoflex.model.datapackage import EnergyDataPackage
 from oemof_b3.config.config import load_yaml, settings
 from oemof_b3.model import bus_attrs_update, model_structures
 from oemof_b3 import model
-import oemof_b3
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
     load_b3_scalars,
