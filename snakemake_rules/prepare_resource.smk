@@ -1,3 +1,9 @@
+rule download_raw_data:
+    params:
+        url=""
+    output: "raw_test/test.csv"
+    shell: "python scripts/download_raw.py {params.url} {output}"
+
 rule prepare_conv_pp:
     input:
         opsd="raw/conventional_power_plants_DE.csv",
