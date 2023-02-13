@@ -136,7 +136,9 @@ if __name__ == "__main__":
     scenarios = os.listdir(scenarios_dir)
 
     for scenario_specs in scenarios:
-        component_attrs_update = load_yaml(os.path.join(model.here, "component_attrs_update.yml"))
+        component_attrs_update = load_yaml(
+            os.path.join(model.here, "component_attrs_update.yml")
+        )
 
         scenario_specs = load_yaml(os.path.join(scenarios_dir, scenario_specs))
 
