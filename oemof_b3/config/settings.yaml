@@ -103,3 +103,4 @@ create_empty_scalars:
       "type": "ALL",
       "var_unit": "None",
   }
+  drop_default_scalars: True

@@ -70,7 +70,8 @@ def format_input_scalars(df):
     _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
 
     # Keep only those rows whose values are not set
-    _df = _df.loc[_df.loc[:, "var_value"].isna()]
+    if settings.create_empty_scalars.drop_default_scalars:
+        _df = _df.loc[_df.loc[:, "var_value"].isna()]
 
     # Combine those parameters that are valid for all regions
     _df.loc[_df["var_name"].isin(NON_REGIONAL), ["name", "region"]] = [None, "ALL"]
