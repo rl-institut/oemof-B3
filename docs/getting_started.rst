@@ -32,10 +32,6 @@ To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in 
 If the environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
 `Pandoc Installation <https://pandoc.org/installing.html>`_.
 
-For the optimization, oemof-B3 needs a solver. Check out the
-`oemof.solph documentation <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_
-for installation notes.
-
 To test if everything works, you can run the examples. To do this, please follow the instructions in chapter :ref:`examples`.
 
 
