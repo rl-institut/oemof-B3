@@ -1,7 +1,7 @@
 rule download_raw_data:
     params:
-        url=""
-    output: "raw_test/test.csv"
+        url="https://sandbox.zenodo.org/record/1164716/files/oemof-B3-raw-data-v0.0.2.zip"
+    output: "raw_test/oemof-B3-raw-data.zip"
     shell: "python scripts/download_raw.py {params.url} {output}"
 
 rule prepare_conv_pp:
