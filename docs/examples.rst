@@ -11,7 +11,7 @@ To run all example scenarios, execute on a linux system:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES> plot_all_examples
+     snakemake -j<NUMBER_OF_CPU_CORES> run_all_examples
 
 
 The energy system of Brandenburg and Berlin is represented by two nodes, one for each of the regions.
