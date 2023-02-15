@@ -58,6 +58,7 @@ def update_with_checks(old, new):
     r"""
     Updates a Series or DataFrame with new data. Raises a warning if there is new data that is not
     in the index of the old data.
+
     Parameters
     ----------
     old : pd.Series or pd.DataFrame
