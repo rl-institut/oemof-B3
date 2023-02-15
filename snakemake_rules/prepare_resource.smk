@@ -1,7 +1,12 @@
 rule download_raw_data:
+    # target rule for download of raw input data
+    input: "raw/oemof-B3-raw-data.zip"
+
+rule download_zenodo:
     params:
-        url="https://sandbox.zenodo.org/record/1164716/files/oemof-B3-raw-data-v0.0.2.zip"
-    output: "raw_test/oemof-B3-raw-data.zip"
+        url="https://sandbox.zenodo.org/record/1164716/files/oemof-B3-raw-data-v0.0.2.zip",
+        raw="raw"
+    output: "raw/oemof-B3-raw-data.zip"
     shell: "python scripts/download_raw.py {params.url} {output}"
 
 rule prepare_conv_pp:

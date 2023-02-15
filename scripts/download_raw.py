@@ -16,9 +16,9 @@ def unzip(zip_filepath, destination):
 
 if __name__ == "__main__":
     url = sys.argv[1]
-    raw = Path(sys.argv[2])
-    zip_filepath = raw / "oemof-B3-raw-data.zip"
+    zip_filepath = Path(sys.argv[2])
+    directory = zip_filepath.parent
 
     download_from_zenodo(url, zip_filepath)
 
-    unzip(zip_filepath, raw)
+    unzip(zip_filepath, directory)
