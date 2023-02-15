@@ -151,7 +151,7 @@ scenario information and the information about the model structure.
 A preprocessed datapackage represents an instance of an :class:`oemof.solph.EnergySystem`.
 
 A datapackage is a collection of data in form of csv-files and metadata in form of a json.
-The data consists one file for all busses and one for each
+The data consists of one file for all busses and one for each
 component, stored in :file:`results/<scenario>/preprocessed/data/elements` (scalar data) and
 :file:`results/<scenario>/preprocessed/data/sequences` (time series for e.g. renewable feed-in or demand profiles),
 stored in separate folders.
@@ -191,7 +191,7 @@ Outputs
 
 Output files are saved in :file:`results/scenario/optimized`.
 
-The results are optimized energy systems
+The results are optimized energy systems.
 
 .. _postprocessing_label:
 
