@@ -123,6 +123,13 @@ To run the scenarios, execute:
 
 ::
 
+     snakemake -j<NUMBER_OF_CPU_CORES> run_all_scenarios
+
+
+Alternatively you can run a single scenario with:
+
+::
+
      snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/postprocessed
 
 whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
