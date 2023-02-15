@@ -10,7 +10,7 @@ def download_from_zenodo(url, target_directory):
 
 
 def unzip(zip_filepath, destination):
-    with ZipFile(zip_filepath, 'r') as zObject:
+    with ZipFile(zip_filepath, "r") as zObject:
         zObject.extractall(path=destination)
 
 
