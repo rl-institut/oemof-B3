@@ -135,6 +135,8 @@ Alternatively you can run a single scenario with:
 whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
 To run the scenarios, the corresponding raw data in the raw directory is required.
 
+.. note:: Please note that the debug mode is activated as default. This will execute only three time steps of the optimization. To turn off the debug mode you need to set debug to `false` in :file:`oemof_b3/config/settings.yaml`.
+
 
 Alternatively, to create just the output file or directory of one rule, run:
 
