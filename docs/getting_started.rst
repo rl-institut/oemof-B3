@@ -16,7 +16,7 @@ Using oemof-B3
 Installation
 ------------
 
-Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.8 or 3.9 (newer versions may be supported, but installation can take very long).
 
 In order to install oemof-B3, proceed with the following steps:
 
