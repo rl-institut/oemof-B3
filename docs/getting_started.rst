@@ -92,7 +92,7 @@ How can snakemake help at workflow management? The main characteristics of snake
 
 - Lightweight workflow management
 - Text-based, python syntax
-- split large data-/workflow into single steps, defined by rules
+- Split large data-/workflow into single steps, defined by rules
 - Infers dependencies and execution order (DAG)
 - Reproducible and scalable data analyses
 - Supported languages: BASH commands, Python, Inline python code, R script, R markdown files
@@ -121,7 +121,7 @@ To run the scenarios, execute:
 
      snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/postprocessed
 
-whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
+whereby scenario_name corresponds to the name in the YAML file of the respective scenario in the scenarios directory.
 To run the scenarios, the corresponding raw data in the raw directory is required.
 
 
