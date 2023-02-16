@@ -1,0 +1,14 @@
+v0.0.3
+======
+
+# New features
+
+# Bug fixes
+
+# Documentation
+
+# Tests
+
+# Other changes
+
+# Contributors
