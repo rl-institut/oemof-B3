@@ -2,10 +2,10 @@
 r"""
 Inputs
 -------
-scenario_specs : str
-    ``scenarios/{scenario}.yml``: path of input file (.yml) containing scenario specifications
+scenarios_dir : str
+    ``scenarios``: path to scenarios directory
 destination : str
-    path of output directory
+    ``raw/scalars/empty_scalars.csv``: path of output directory for empty scalars of all scenarios
 
 Outputs
 ---------
