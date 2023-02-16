@@ -4,7 +4,7 @@
 Literature
 ~~~~~~~~~~
 
-The following references were mentioned in the working paper of the project `UMAS <https://reiner-lemoine-institut.de/umas/>`_
+The following references were mentioned in the working paper of the project `UMAS <https://reiner-lemoine-institut.de/en/umas/>`_.
 
 Berlin
 ######

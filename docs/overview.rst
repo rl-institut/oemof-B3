@@ -18,5 +18,3 @@ The model is a perfect-foresight, cost minimizing linear optimization model base
 `oemof.tabular <https://github.com/oemof/oemof-tabular>`_
 and `oemoflex <https://github.com/rl-institut/oemoflex>`_.
 
-Oemof-B3 is currently under heavy development, which means that first full scenario runs will be
-available in the coming months.

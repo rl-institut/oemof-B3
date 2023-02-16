@@ -10,7 +10,7 @@ Model pipeline
     :backlinks: top
 
 The main functionality of oemof-B3 is a data processing pipeline which is managed using snakemake.
-The pipeline preprocesses raw data into scalar and time series resources that is used to
+The pipeline preprocesses raw data into scalar and time series resources that are used to
 build tabular datapackages representing single energy system optimization problems. These can be
 understood by `oemof.tabular <https://github.com/oemof/oemof-tabular>`_ and optimized by
 `oemof.solph <https://github.com/oemof/oemof-solph>`_. In the next steps, the results of the
@@ -27,7 +27,10 @@ following sections.
 The subdirectories of oemof-B3 shown below contain configurations and data of the model.
 :file:`Examples` contains pre-fabricated datapackages that can readily be optimized. The directory
 :file:`scenarios` contains :file:`.yml`-files defining individual scenarios. Raw data is not part
-of the repo and has to be provided in :file:`raw`. Intermediate and final results as well as the
+of the repo and has to be provided in :file:`raw`. You can use the raw data we provide.
+For instructions on how to automatically load the raw data into oemof-B3, see section section :ref:`How to run the model`.
+
+Intermediate and final results as well as the
 corresponding logfiles are saved in :file:`results`.
 
 .. code-block::
@@ -44,9 +47,6 @@ corresponding logfiles are saved in :file:`results`.
 
 Raw data
 ========
-.. There is no rule for getting raw data yet - it has to be provided manually.
-.. in the future, raw data can be downloaded automatically, which will include a rule here, too.
-
 Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded from Zenodo at the beginning.
 As a first step, preprocessing scripts in the model pipeline (see :ref:`Prepare resources`) convert it into the
 oemof-B3-resources-format, explained in the next section (see :ref:`Schema`). Raw data that represents model-own assumptions is provided in
@@ -151,7 +151,7 @@ scenario information and the information about the model structure.
 A preprocessed datapackage represents an instance of an :class:`oemof.solph.EnergySystem`.
 
 A datapackage is a collection of data in form of csv-files and metadata in form of a json.
-The data consists one file for all busses and one for each
+The data consists of one file for all busses and one for each
 component, stored in :file:`results/<scenario>/preprocessed/data/elements` (scalar data) and
 :file:`results/<scenario>/preprocessed/data/sequences` (time series for e.g. renewable feed-in or demand profiles),
 stored in separate folders.
@@ -191,7 +191,7 @@ Outputs
 
 Output files are saved in :file:`results/scenario/optimized`.
 
-The results are optimized energy systems
+The results are optimized energy systems.
 
 .. _postprocessing_label:
 
