@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "oemof-B3"
-version = "0.0.2"
+version = "0.0.3dev"
 description = "oemof-B3 - an open-source energy system model for Brandenburg/Berlin"
 authors = [
   "Jann Launer <jann.launer@rl-institut.de>",
