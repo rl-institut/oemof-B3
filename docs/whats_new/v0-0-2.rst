@@ -1,20 +1,36 @@
 v0.0.2
 ======
+The model oemof-B3 was fundamentally restructured and improved (see https://github.com/rl-institut/oemof-B3/pulls?page=2&q=is%3Apr+milestone%3Av0.0.2).
+Among many changes, the following are the most important ones:
 
 # New features
-
-
-# Bug fixes
-
+- Upload and download of data from oep
+- Raw data can be downloaded from Zenodo
+- Constants have been moved to oemof_b3.config.settings.yaml
+- Names of components are checked
 
 # Documentation
-
-
-# Tests
+- Major improvements of the documentation
+- Model pipeline has been updated
 
 
 # Other changes
+- Snakemake rules have been separated into modules in snakemake_rules.
+- Create empty data for scalars updated and automated
+- Logging has been improved
 
 
 # Contributors
+- jnnr
+- MaGering
+- SabineHaas
+- juliusmeier
+- henhuy
+- monika-o
+- c-moeller
+- Stefanie08
+- chrwm
+- khelfen
+- mjazimm
+
 
