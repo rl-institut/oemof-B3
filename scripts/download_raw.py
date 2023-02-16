@@ -1,3 +1,22 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+url : str
+    Path to raw data on zenodo
+zip_filepath : str
+    Path to raw directory in oemof-B3
+
+Outputs
+---------
+directory : str
+    Path of output directory
+
+Description
+-------------
+The script downloads raw data from zenodo as a zip file and unpacks the zip file to raw directory
+"""
+
 import sys
 from pathlib import Path
 
