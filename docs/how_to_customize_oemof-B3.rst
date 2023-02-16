@@ -25,7 +25,7 @@ With :attr:`start` you define the start date and time. It must be given in the I
 With :attr:`freq` you set the frequency  in e.g. "H" (hours) and with :attr:`periods` the number of time steps.
 
 In :attr:`model_structure` you pass the structure of your energy system (see section :ref:`model`).
-With :attr:`paths_scalars` and :attr:`paths_scalars` you provide all paths to your scalar and time
+With :attr:`paths_scalars` and :attr:`paths_timeseries` you provide all paths to your scalar and time
 series data.
 A filter selection is specified for scalar data in :attr:`filter_scalars` and for time series in
 :attr:`filter_timeseries`. Time series additionally can be filtered by a start time index.

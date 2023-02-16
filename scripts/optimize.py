@@ -84,8 +84,8 @@ def get_electricity_gas_relations(scalars):
     Returns
     -------
     pd.DataFrame
-        Contains rows of scalars with 'var_name' `EL_GAS_RELATION`
-    If no relation is given returns None.
+        Contains rows of scalars with 'var_name' `EL_GAS_RELATION`.
+        If no relation is given returns None.
     """
     relations_raw = scalars.loc[
         scalars.var_name == config.settings.optimize.el_gas_relation

@@ -32,10 +32,6 @@ To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in 
 If the environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
 `Pandoc Installation <https://pandoc.org/installing.html>`_.
 
-For the optimization, oemof-B3 needs a solver. Check out the
-`oemof.solph documentation <https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver>`_
-for installation notes.
-
 To test if everything works, you can run the examples. To do this, please follow the instructions in chapter :ref:`examples`.
 
 
@@ -96,7 +92,7 @@ How can snakemake help at workflow management? The main characteristics of snake
 
 - Lightweight workflow management
 - Text-based, python syntax
-- split large data-/workflow into single steps, defined by rules
+- Split large data-/workflow into single steps, defined by rules
 - Infers dependencies and execution order (DAG)
 - Reproducible and scalable data analyses
 - Supported languages: BASH commands, Python, Inline python code, R script, R markdown files
@@ -132,7 +128,7 @@ Alternatively you can run a single scenario with:
 
      snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/postprocessed
 
-whereby scenario_name corresponds to the name in the YAML file of the respective scenario in scenarios directory.
+whereby scenario_name corresponds to the name in the YAML file of the respective scenario in the scenarios directory.
 To run the scenarios, the corresponding raw data in the raw directory is required.
 
 .. note:: Please note that the debug mode is activated as default. This will execute only three time steps of the optimization. To turn off the debug mode you need to set debug to `false` in :file:`oemof_b3/config/settings.yaml`.
