@@ -15,7 +15,7 @@ filename_kreise : str
     ``raw/lookup_table_brandenburg_kreise.csv``: Path incl. file name of lookup table Kreise and
     NUTS of Brandenburg
 filename_assumptions : str
-    ``raw/scalars_base_2050.csv``: Path incl. file name of assumptions
+    ``raw/scalars/potentials.csv``: Path incl. file name of assumptions
 output_dir : str
     ``results/_resources/RE_potential/``: Path of output directory where power and area potential of
     single areas and of "Landkreise" is saved
@@ -32,7 +32,7 @@ Description
 Please note that this script is not integrated into the pipeline, yet.
 
 Calculates the area and power potential of photovoltaics and wind energy. The area of single areas
-are retrieved from csv files and processed. The resulting area and power potential for "Landkreise"
+are retrieved from csv-files and processed. The resulting area and power potential for "Landkreise"
 is saved in `output_dir/power_potential_wind_kreise.csv` for wind and in
 `output_dir/power_potential_pv_kreise.csv` for pv:
     - power potential in column 'power_potential'

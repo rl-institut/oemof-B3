@@ -16,7 +16,7 @@ Using oemof-B3
 Installation
 ------------
 
-Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
 In order to install oemof-B3, proceed with the following steps:
 
@@ -28,21 +28,12 @@ In order to install oemof-B3, proceed with the following steps:
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
-Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml).
-If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
+To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in conda environment config (environment.yml).
+If the environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from
+`Pandoc Installation <https://pandoc.org/installing.html>`_.
 
-Oemof-B3 further needs demandlib in order to create heat load profiles. Due to an alleged clash of pandas versions,
-the demandlib cannot be installed with `poetry install`. A separate installation is therefore necessary:
+To test if everything works, you can run the examples. To do this, please follow the instructions in chapter :ref:`examples`.
 
-::
-
-    pip install demandlib
-
-The clash of the pandas version should be fixed with the release of oemof-B3 0.0.2.
-
-For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
-
-To test if everything works, you can run the examples.
 
 For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
@@ -73,13 +64,6 @@ Simply type
 in the Anaconda prompt.
 
 
-Required data
--------------
-
-Raw input data is currently **not** provided with the github repository but will be published at a
-later stage. More information about the raw data format can be found here: :ref:`Raw data`
-
-
 Workflow management with snakemake: Separating the steps
 --------------------------------------------------------
 
@@ -101,7 +85,7 @@ How can snakemake help at workflow management? The main characteristics of snake
 
 - Lightweight workflow management
 - Text-based, python syntax
-- split large data-/workflow into single steps, defined by rules
+- Split large data-/workflow into single steps, defined by rules
 - Infers dependencies and execution order (DAG)
 - Reproducible and scalable data analyses
 - Supported languages: BASH commands, Python, Inline python code, R script, R markdown files
@@ -115,14 +99,39 @@ More features which facilitate the workflow management are
 - Modularity
 - Report generation
 
-Snakemake on Linux
-------------------
 
-To run all example scenarios, execute:
+.. _how_to_run_model_label:
+
+How to run the model
+--------------------
+
+To run the model, raw input data has to be downloaded from zenodo first via:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES> plot_all_examples
+    snakemake -j1 download_raw_data
+
+To use preprocessed resources from the OEP instead, set `prepare_resources_locally: False` in
+`oemof_b3.config.settings.yaml`.
+
+To run the scenarios, execute:
+
+::
+
+     snakemake -j<NUMBER_OF_CPU_CORES> run_all_scenarios
+
+
+Alternatively you can run a single scenario with:
+
+::
+
+     snakemake -j<NUMBER_OF_CPU_CORES> results/<scenario_name>/postprocessed
+
+whereby scenario_name corresponds to the name in the YAML file of the respective scenario in the scenarios directory.
+To run the scenarios, the corresponding raw data in the raw directory is required.
+
+.. note:: Please note that the debug mode is activated as default. This will execute only three time steps of the optimization. To turn off the debug mode you need to set debug to `false` in :file:`oemof_b3/config/settings.yaml`.
+
 
 Alternatively, to create just the output file or directory of one rule, run:
 
@@ -130,8 +139,9 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
+
 Snakemake on Windows
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 When running snakemake with output files in subfolders on Windows with
 

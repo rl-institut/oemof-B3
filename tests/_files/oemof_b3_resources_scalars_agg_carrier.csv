@@ -1,6 +1,6 @@
 id_scal;scenario_key;name;var_name;carrier;region;tech;type;var_value;var_unit;source;comment
-0;base;None;capacity;All;BE;gt;conversion;0.0;;;
-1;base;None;capacity;All;BB;gt;conversion;400000.0;;;
+0;base;None;capacity;All;BB;gt;conversion;400000.0;;;
+1;base;None;capacity;All;BE;gt;conversion;0.0;;;
 2;base;None;flow_in_biomass;All;BB;gt;conversion;2692790078.846871;;;
 3;base;None;flow_in_biomass;All;BE;gt;conversion;0.0;;;
 4;base;None;flow_out_electricity;All;BB;gt;conversion;1023260209.6668;;;

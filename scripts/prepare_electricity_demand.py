@@ -11,14 +11,14 @@ output_file : str
 Outputs
 ---------
 pandas.DataFrame
-    with normalized load data of 50 Hertz region in Germany from the years 2015, 2016, 2017, 2018
+    with normalized load data of 50Hertz region in Germany from the years 2015, 2016, 2017, 2018
     and 2019. The data is normalized with the total electricity demand of the corresponding year.
 
 Description
 -------------
 The corresponding snakemake rule of the preparation of the electricity demand profile
 downloads the 60 min timeseries data from OPSD and keeps it locally.
-The script takes this data and filters for the load data of the 50 Hertz region in Germany.
+The script takes this data and filters for the load data of the 50Hertz region in Germany.
 The load data is normalized with the total electricity demand of the corresponding year and put
 into the timeseries template format. The years 2015 to 2019 (including) are available.
 Note: the electricity demand profile for electric vehicle charging is prepared in
@@ -30,17 +30,7 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
-
-
-# global variables
-OPSD_YEARS = list(
-    range(2015, 2020)
-)  # opsd load time series are prepared for these years
-REGIONS = ["BB", "B"]
-TS_VAR_UNIT = "None"
-TS_SOURCE = "https://data.open-power-system-data.org/time_series/2020-10-06"
-TS_COMMENT = "DE_50hertz actual load data"
-COL_SELECT = "DE_50hertz_load_actual_entsoe_transparency"
+from oemof_b3.config import config
 
 
 def prepare_load_profile_time_series(ts_raw, year, region):
@@ -75,16 +65,24 @@ def prepare_load_profile_time_series(ts_raw, year, region):
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series).rename(columns={"var_name": "region"})
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+        df=ts_stacked,
+        header=dp.HEADER_B3_TS,
+        index_name=config.settings.general.ts_index_name,
     )
 
     # add additional information as required by template
     ts_prepared.loc[:, "region"] = region
-    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
-    ts_prepared.loc[:, "var_name"] = "electricity-demand-profile"
-    ts_prepared.loc[:, "source"] = TS_SOURCE
-    ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
+    ts_prepared.loc[
+        :, "var_unit"
+    ] = config.settings.prepare_electricity_demand.ts_var_unit
+    ts_prepared.loc[:, "var_name"] = config.settings.prepare_electricity_demand.var_name
+    ts_prepared.loc[:, "source"] = config.settings.prepare_electricity_demand.ts_source
+    ts_prepared.loc[
+        :, "comment"
+    ] = config.settings.prepare_electricity_demand.ts_comment
+    ts_prepared.loc[
+        :, "scenario_key"
+    ] = "ALL"  # The profile is not varied in different scenarios
 
     return ts_prepared
 
@@ -100,11 +98,11 @@ if __name__ == "__main__":
     ts_raw = pd.read_csv(opsd_ts_data, index_col=0)
     ts_raw.index = pd.to_datetime(ts_raw.index, utc=True)
     # filter for 50hertz actual load
-    ts_raw = ts_raw[[COL_SELECT]]
+    ts_raw = ts_raw[[config.settings.prepare_electricity_demand.col_select]]
 
     # prepare time series for each year and region
-    for year in OPSD_YEARS:
-        for region in REGIONS:
+    for year in config.settings.prepare_electricity_demand.opsd_years:
+        for region in config.settings.prepare_electricity_demand.regions:
             # prepare opsd 50hertz actual load time series
             load_ts = prepare_load_profile_time_series(
                 ts_raw=ts_raw, year=year, region=region
@@ -115,7 +113,7 @@ if __name__ == "__main__":
 
     # set index
     time_series_df.reset_index(drop=True, inplace=True)
-    time_series_df.index.name = "id_ts"
+    time_series_df.index.name = config.settings.general.ts_index_name
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

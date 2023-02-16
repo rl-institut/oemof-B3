@@ -6,7 +6,7 @@ input_dir : str
     ``results/_resources/RE_potential/``: Path to input directory of renewable potential
 output_scalars : str
     ``results/_resources/scal_power_potential_wind_pv.csv``: Path incl. file name of scalar output,
-     which is input to energy system model
+    which is input to energy system model
 output_tables : str
     ``results/_tables/potential_wind_pv_kreise.csv``: Path incl. file name of output for results
     documentation
@@ -34,6 +34,7 @@ import sys
 import os
 
 from oemof_b3.tools import data_processing as dp
+from oemof_b3.config import config
 
 if __name__ == "__main__":
     input_dir = sys.argv[1]
@@ -73,18 +74,18 @@ if __name__ == "__main__":
 
     # format header of `potentials` according to template
     scalar_df = dp.format_header(
-        df=potentials, header=dp.HEADER_B3_SCAL, index_name="id_scal"
+        df=potentials,
+        header=dp.HEADER_B3_SCAL,
+        index_name=config.settings.general.scal_index_name,
     )
 
     # add additional information as required by template
-    scalar_df.loc[:, "scenario_key"] = ""
-    scalar_df.loc[:, "name"] = "None"
-    scalar_df.loc[:, "var_name"] = "capacity"
+    scalar_df.loc[:, "scenario_key"] = config.settings.process_re_potential.scenario_key
+    scalar_df.loc[:, "name"] = config.settings.process_re_potential.name
+    scalar_df.loc[:, "var_name"] = config.settings.process_re_potential.var_name
     scalar_df.loc[:, "type"] = "volatile"
-    scalar_df.loc[:, "var_unit"] = "MW"
-    scalar_df.loc[
-        :, "source"
-    ] = "area potentials - https://sandbox.zenodo.org/record/746695/"
+    scalar_df.loc[:, "var_unit"] = config.settings.process_re_potential.var_unit
+    scalar_df.loc[:, "source"] = config.settings.process_re_potential.source
 
     dp.save_df(df=scalar_df, path=output_scalars)
 

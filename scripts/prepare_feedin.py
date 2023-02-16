@@ -22,7 +22,7 @@ pd.DataFrame
 Description
 -------------
 This script prepares wind, pv and run-of-the-river (ror) feed-in time series for the regions Berlin
-and Brandenburg. Raw data is read from csvs from https://www.renewables.ninja/ (wind+pv) and
+and Brandenburg. Raw data is read from csv-files from https://www.renewables.ninja/ (wind+pv) and
 https://zenodo.org/record/1044463 (ror) and is then formatted to fit the time series template of
 oemof-B3 (`schema/timeseries.csv`).
 
@@ -32,20 +32,7 @@ import sys
 import pandas as pd
 import os
 import oemof_b3.tools.data_processing as dp
-
-# global variables
-YEARS = list(range(2010, 2020))
-# specific to wind and pv time series
-NUTS_DE30 = "DE30"
-NUTS_DE40 = "DE40"
-RENAME_NUTS = {NUTS_DE30: "B", NUTS_DE40: "BB"}
-TS_VAR_UNIT = "None"
-TS_SOURCE = "https://www.renewables.ninja/"
-TS_COMMENT = "navigate to country Germany"
-# specific to ror time series
-REGIONS = ["BB", "B"]
-TS_SOURCE_ROR = "https://zenodo.org/record/1044463"
-TS_COMMENT_ROR = "Isolated ror availability time series from DIW data"
+from oemof_b3.config import config
 
 
 def prepare_wind_and_pv_time_series(filename_ts, year, type):
@@ -74,24 +61,32 @@ def prepare_wind_and_pv_time_series(filename_ts, year, type):
     # extract one specific `year`
     time_series = time_series[time_series.index.year == year]
     # get time series for B and BB only
-    time_series_regions = time_series.loc[:, [NUTS_DE30, NUTS_DE40]].rename(
-        columns=RENAME_NUTS
-    )
+    time_series_regions = time_series.loc[
+        :,
+        [
+            config.settings.prepare_feedin.nuts_de30,
+            config.settings.prepare_feedin.nuts_de40,
+        ],
+    ].rename(columns=config.settings.prepare_feedin.rename_nuts)
 
     # bring time series to oemof-B3 format with `stack_timeseries()` and `format_header()`
     ts_stacked = dp.stack_timeseries(time_series_regions).rename(
         columns={"var_name": "region"}
     )
     ts_prepared = dp.format_header(
-        df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+        df=ts_stacked,
+        header=dp.HEADER_B3_TS,
+        index_name=config.settings.general.ts_index_name,
     )
 
     # add additional information as required by template
-    ts_prepared.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_prepared.loc[:, "var_unit"] = config.settings.prepare_feedin.ts_var_unit
     ts_prepared.loc[:, "var_name"] = f"{type}-profile"
-    ts_prepared.loc[:, "source"] = TS_SOURCE
-    ts_prepared.loc[:, "comment"] = TS_COMMENT
-    ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
+    ts_prepared.loc[:, "source"] = config.settings.prepare_feedin.ts_source
+    ts_prepared.loc[:, "comment"] = config.settings.prepare_feedin.ts_comment
+    ts_prepared.loc[
+        :, "scenario_key"
+    ] = "ALL"  # The profile is not varied in different scenarios
 
     return ts_prepared
 
@@ -124,7 +119,7 @@ def prepare_ror_time_series(filename_ts, region):
 
     # prepare for all years
     ts_df = pd.DataFrame()
-    for year in YEARS:
+    for year in config.settings.prepare_feedin.years:
         time_series = ts_raw.copy()
         new_index = pd.date_range(
             f"{year}-01-01 00:00:00", f"{year}-12-31 23:00:00", freq="H"
@@ -153,17 +148,19 @@ def prepare_ror_time_series(filename_ts, region):
             columns={"var_name": "region"}
         )
         ts_prepared = dp.format_header(
-            df=ts_stacked, header=dp.HEADER_B3_TS, index_name="id_ts"
+            df=ts_stacked,
+            header=dp.HEADER_B3_TS,
+            index_name=config.settings.general.ts_index_name,
         )
-        ts_prepared.loc[:, "scenario_key"] = f"ts_{year}"
+        ts_prepared.loc[:, "scenario_key"] = "ALL"
         ts_df = pd.concat([ts_df, ts_prepared])
 
     # add additional information as required by template
     ts_df.loc[:, "region"] = region
-    ts_df.loc[:, "var_unit"] = TS_VAR_UNIT
+    ts_df.loc[:, "var_unit"] = config.settings.prepare_feedin.ts_var_unit
     ts_df.loc[:, "var_name"] = "hydro-ror-profile"
-    ts_df.loc[:, "source"] = TS_SOURCE_ROR
-    ts_df.loc[:, "comment"] = TS_COMMENT_ROR
+    ts_df.loc[:, "source"] = config.settings.prepare_feedin.ts_source_ror
+    ts_df.loc[:, "comment"] = config.settings.prepare_feedin.ts_comment_ror
 
     return ts_df
 
@@ -178,7 +175,7 @@ if __name__ == "__main__":
     time_series_df = pd.DataFrame()
 
     # prepare time series for each year
-    for year in YEARS:
+    for year in config.settings.prepare_feedin.years:
         # prepare wind time series
         wind_ts = prepare_wind_and_pv_time_series(
             filename_ts=filename_wind,
@@ -195,7 +192,7 @@ if __name__ == "__main__":
         time_series_df = pd.concat([time_series_df, wind_ts, pv_ts], axis=0)
 
     # prepare ror time series
-    for region in REGIONS:
+    for region in config.settings.prepare_feedin.regions:
         ror_ts = prepare_ror_time_series(filename_ts=filename_ror, region=region)
 
         # add time series to `time_series_df`
@@ -203,7 +200,7 @@ if __name__ == "__main__":
 
     # set index
     time_series_df.reset_index(drop=True, inplace=True)
-    time_series_df.index.name = "id_ts"
+    time_series_df.index.name = config.settings.general.ts_index_name
 
     # create output directory in case it does not exist, yet and save data to `output_file`
     output_dir = os.path.dirname(output_file)

@@ -7,6 +7,13 @@ Examples
 To give a quick intro into oemof-B3's capabilities, we provide 3 simple
 `examples <https://github.com/rl-institut/oemof-B3/tree/dev/examples>`_.
 
+To run all example scenarios, execute on a linux system:
+
+::
+
+     snakemake -j<NUMBER_OF_CPU_CORES> run_all_examples
+
+
 The energy system of Brandenburg and Berlin is represented by two nodes, one for each of the regions.
 
 Modelled components are 

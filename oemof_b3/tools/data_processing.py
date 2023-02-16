@@ -1,37 +1,31 @@
 # coding: utf-8
 r"""
-Inputs
--------
-HEADER_B3_SCAL : pandas.DataFrame
-``oemof_b3/schema/scalars.csv``: Header of scalars template
-
-HEADER_B3_TS : pandas.DataFrame
-``oemof_b3/schema/timeseries.csv``: Header of timeseries template
-
-Description
--------------
-This script contains some helper functions for processing the data in oemof-B3, such as loading,
+This module contains helper functions for processing the data in oemof-B3, such as loading,
 filtering, sorting, merging, aggregating and saving.
-
 """
 
-import os
 import ast
-import pandas as pd
-import numpy as np
+import os
+import warnings
 
+import numpy as np
+import oemof.tabular.facades
+import pandas as pd
+
+from oemof_b3.config import config
+
+from oemof_b3 import schema
+
+
+logger = config.add_snake_logger("data_processing")
 
 here = os.path.dirname(__file__)
 
 template_dir = os.path.join(here, "..", "schema")
 
-HEADER_B3_SCAL = pd.read_csv(
-    os.path.join(template_dir, "scalars.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_SCAL = schema.SCHEMA_SCAL.columns.columns
 
-HEADER_B3_TS = pd.read_csv(
-    os.path.join(template_dir, "timeseries.csv"), index_col=0, delimiter=";"
-).columns
+HEADER_B3_TS = schema.SCHEMA_TS.columns.columns
 
 
 def sort_values(df, reset_index=True):
@@ -42,9 +36,20 @@ def sort_values(df, reset_index=True):
     if reset_index:
         _df = _df.reset_index(drop=True)
 
-        _df.index.name = "id_scal"
+        _df.index.name = config.settings.general.scal_index_name
 
     return _df
+
+
+def sum_series(series):
+    """
+    Enables ndarray summing into one list
+    """
+    summed_series = sum(series)
+    if isinstance(summed_series, np.ndarray):
+        return summed_series.tolist()
+    else:
+        return summed_series
 
 
 def get_list_diff(list_a, list_b):
@@ -111,7 +116,7 @@ def format_header(df, header, index_name):
     return df_formatted
 
 
-def load_b3_scalars(path, sep=";"):
+def load_b3_scalars(path, sep=config.settings.general.separator):
     """
     This function loads scalars from a csv file.
 
@@ -134,12 +139,12 @@ def load_b3_scalars(path, sep=";"):
         df["var_value"]
     )
 
-    df = format_header(df, HEADER_B3_SCAL, "id_scal")
+    df = format_header(df, HEADER_B3_SCAL, config.settings.general.scal_index_name)
 
     return df
 
 
-def load_b3_timeseries(path, sep=";"):
+def load_b3_timeseries(path, sep=config.settings.general.separator):
     """
     This function loads a stacked time series from a csv file.
 
@@ -158,11 +163,76 @@ def load_b3_timeseries(path, sep=";"):
     # Read data
     df = pd.read_csv(path, sep=sep)
 
-    df = format_header(df, HEADER_B3_TS, "id_ts")
+    df = format_header(df, HEADER_B3_TS, config.settings.general.ts_index_name)
 
     df.loc[:, "series"] = df.loc[:, "series"].apply(lambda x: ast.literal_eval(x), 1)
 
     return df
+
+
+def _multi_load(paths, load_func):
+    r"""
+    Wraps a load_func to allow loading several dataframes at once.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+    load_func : func
+        A function that is able to load data from a single path
+
+    Returns
+    -------
+    result : pd.DataFrame
+        DataFrame containing the concatenated results
+    """
+    if isinstance(paths, list):
+        pass
+    elif isinstance(paths, str):
+        return load_func(paths)
+    else:
+        raise ValueError(f"{paths} has to be either list of paths or path.")
+
+    dfs = []
+    for path in paths:
+        df = load_func(path)
+        dfs.append(df)
+
+    result = pd.concat(dfs)
+
+    return result
+
+
+def multi_load_b3_scalars(paths):
+    r"""
+    Loads scalars from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_scalars)
+
+
+def multi_load_b3_timeseries(paths):
+    r"""
+    Loads stacked timeseries from several csv files.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return _multi_load(paths, load_b3_timeseries)
 
 
 def save_df(df, path):
@@ -178,10 +248,42 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True, sep=";")
+    df.to_csv(path, index=True, sep=config.settings.general.separator)
 
     # Print user info
-    print(f"User info: The DataFrame has been saved to: {path}.")
+    logger.info(f"The DataFrame has been saved to: {path}.")
+
+
+def load_tabular_results_scal(path, sep=config.settings.general.separator):
+    r"""
+    Loads scalars as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0], sep=sep)
+
+
+def load_tabular_results_ts(path, sep=config.settings.general.separator):
+    r"""
+    Loads timeseries as given by oemof.tabular/oemoflex.
+
+    Parameters
+    ----------
+    paths : str or list of str
+        Path or list of paths to data.
+
+    Returns
+    -------
+    pd.DataFrame
+    """
+    return pd.read_csv(path, header=[0, 1, 2], parse_dates=[0], index_col=[0], sep=sep)
 
 
 def filter_df(df, column_name, values, inverse=False):
@@ -221,6 +323,115 @@ def filter_df(df, column_name, values, inverse=False):
     return df_filtered
 
 
+def multi_filter_df(df, **kwargs):
+    r"""
+    Applies several filters in a row to a DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data in oemof_b3 format.
+    kwargs : Additional keyword arguments
+        Filters to apply
+
+    Returns
+    -------
+    filtered_df : pd.DataFrame
+        Filtered data
+    """
+    filtered_df = df.copy()
+    for key, value in kwargs.items():
+        filtered_df = filter_df(filtered_df, key, value)
+    return filtered_df
+
+
+def multi_filter_df_simultaneously(df, inverse=False, **kwargs):
+    r"""
+    Applies several filters simultaneously to a DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Data in oemof_b3 format.
+    inverse : bool
+        If True, matching entries are dropped
+        and the rest of the DataFrame kept.
+    kwargs : Additional keyword arguments
+        Filters to apply
+
+    Returns
+    -------
+    filtered_df : pd.DataFrame
+        Filtered data
+    """
+    _df = df.copy()
+
+    all_wheres = []
+
+    for key, value in kwargs.items():
+        if isinstance(value, list):
+            where = _df[key].isin(value)
+
+        else:
+            where = _df[key] == value
+
+        all_wheres.append(where)
+
+    all_wheres = pd.concat(all_wheres, 1).all(1)
+
+    if inverse:
+        all_wheres = ~all_wheres
+
+    df_filtered = _df.loc[all_wheres]
+
+    return df_filtered
+
+
+def update_filtered_df(df, filters):
+    r"""
+    Accepts an oemof-b3 Dataframe, filters it, subsequently update
+    the result with data filtered with other filters.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Scalar data in oemof-b3 format to filter
+    filters : dict of dict
+        Several filters to be applied subsequently
+
+    Returns
+    -------
+    filtered : pd.DataFrame
+    """
+    assert isinstance(filters, dict)
+    for value in filters.values():
+        assert isinstance(value, dict)
+
+    # Prepare empty dataframe to be updated with filtered data
+    filtered_updated = pd.DataFrame(columns=HEADER_B3_SCAL)
+    filtered_updated.index.name = config.settings.general.scal_index_name
+
+    for iteration, filter in filters.items():
+        logger.info(f"Applying set of filters no {iteration}.")
+
+        # Apply set of filters
+        filtered = multi_filter_df(df, **filter)
+
+        # Update result with new filtered data
+        filtered_updated = merge_a_into_b(
+            filtered,
+            filtered_updated,
+            how="outer",
+            on=["name", "region", "carrier", "tech", "var_name"],
+            verbose=False,
+        )
+
+        # inform about filtering updating
+        logger.info(f"Updated data with data filtered by {filter}")
+
+    return filtered_updated
+
+
 def isnull_any(df):
     return df.isna().any().any()
 
@@ -248,6 +459,29 @@ def aggregate_units(units):
         return unique_units[0]
 
 
+def aggregate_data(df, groupby, agg_method=None):
+    r"""
+    This functions aggregates data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame in oemof-B3-resources format.
+    groupby : list
+        The columns to group df by
+    agg_method : dict
+        Dictionary to specify aggregation method.
+
+    Returns
+    -------
+    df_aggregated : pd.DataFrame
+        Aggregated data.
+    """
+    # Groupby and aggregate
+    return df.groupby(groupby, sort=False, dropna=False).agg(agg_method)
+
+
 def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     r"""
     This functions aggregates scalar data in oemof-B3-resources format and sums up
@@ -269,6 +503,8 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     """
     _df = df.copy()
 
+    _df = format_header(_df, HEADER_B3_SCAL, config.settings.general.scal_index_name)
+
     if not isinstance(columns_to_aggregate, list):
         columns_to_aggregate = [columns_to_aggregate]
 
@@ -285,20 +521,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
             "var_unit": aggregate_units,
         }
 
-    # When any of the groupby columns has empty entries, print a warning
-    _df_groupby = _df[groupby]
-    if isnull_any(_df_groupby):
-        columns_with_nan = _df_groupby.columns[_df_groupby.isna().any()].to_list()
-        print(f"Some of the groupby columns contain NaN: {columns_with_nan}.")
-
-        for item in columns_with_nan:
-            groupby.remove(item)
-        _df.drop(columns_with_nan, axis=1)
-
-        print("Removed the columns containing NaN from the DataFrame.")
-
-    # Groupby and aggregate
-    df_aggregated = _df.groupby(groupby, sort=False).agg(agg_method)
+    df_aggregated = aggregate_data(df, groupby, agg_method)
 
     # Assign "ALL" to the columns that where aggregated.
     for col in columns_to_aggregate:
@@ -307,12 +530,299 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     # Reset the index
     df_aggregated.reset_index(inplace=True)
 
-    df_aggregated = format_header(df_aggregated, HEADER_B3_SCAL, "id_scal")
+    df_aggregated = format_header(
+        df_aggregated, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
 
     return df_aggregated
 
 
-def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
+def aggregate_timeseries(df, columns_to_aggregate, agg_method=None):
+    r"""
+    This functions aggregates timeseries data in oemof-B3-resources format and sums up
+    by region, carrier, tech or type.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame in oemof-B3-resources format.
+    columns_to_aggregate : string or list
+        The columns to sum together ('region', 'carrier', 'tech' or 'type).
+    agg_method : dict
+        Dictionary to specify aggregation method.
+
+    Returns
+    -------
+    df_aggregated : pd.DataFrame
+        Aggregated data.
+    """
+    _df = df.copy()
+
+    _df = format_header(_df, HEADER_B3_TS, config.settings.general.ts_index_name)
+    _df.series = _df.series.apply(lambda x: np.array(x))
+
+    if not isinstance(columns_to_aggregate, list):
+        columns_to_aggregate = [columns_to_aggregate]
+
+    # Define the columns that are split and thus not aggregated
+    groupby = [
+        "scenario_key",
+        "region",
+        "var_name",
+        "timeindex_start",
+        "timeindex_stop",
+        "timeindex_resolution",
+    ]
+
+    groupby = list(set(groupby).difference(set(columns_to_aggregate)))
+
+    # Define how to aggregate if
+    if not agg_method:
+        agg_method = {
+            "series": sum_series,
+            "var_unit": aggregate_units,
+        }
+
+    df_aggregated = aggregate_data(_df, groupby, agg_method)
+
+    # Assign "ALL" to the columns that where aggregated.
+    for col in columns_to_aggregate:
+        df_aggregated[col] = "All"
+
+    # Reset the index
+    df_aggregated.reset_index(inplace=True)
+
+    df_aggregated = format_header(
+        df_aggregated, HEADER_B3_TS, config.settings.general.ts_index_name
+    )
+
+    return df_aggregated
+
+
+def prepare_attr_name(sc, overwrite):
+    r"""
+    This function handles the values of the attribute 'name'.
+
+    It ensures that the name is
+       1. set (according to convention) where name is empty and region is fixed and
+       2. checked for all values that are not None.
+
+    If 'overwrite' is true the names will be overwritten with names set according to the
+    convention. Otherwise the names passed by the user are used.
+
+    Parameters
+    ----------
+    sc : pd.DataFrame
+        DataFrame with scalar data in oemof-B3-resources format.
+    overwrite : Boolean
+        True if names are overwritten otherwise False.
+
+    Returns
+    -------
+    scalars_set_name : pd.DataFrame
+        DataFrame made of concatenated DataFrames with formatted names.
+
+    """
+
+    def get_name(region, carrier, tech):
+        r"""
+        This function gets name according to oemof-b3's-naming convention:
+        <region>-<carrier>-<tech>.
+
+        Parameters
+        ----------
+        region : str
+            region
+        carrier : str
+            carrier
+        tech : str
+            technology
+
+        Returns
+        -------
+        String containing name according to convention eg. B-ch4-gt.
+
+        """
+        return f"{region}-{carrier}-{tech}"
+
+    def get_name_for_df(df):
+        r"""
+        This function returns a series of names generated from the convention.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        Returns
+        -------
+        pd.Series with names set according to convention in get_name.
+
+        """
+        # Check if carrier, region and tech exist as columns
+        if {"carrier", "region", "tech"}.issubset(df.columns):
+            return df.apply(lambda x: get_name(x["region"], x["carrier"], x["tech"]), 1)
+        else:
+            raise KeyError(
+                "Please provide a DataFrame that conforms to "
+                "oemof-B3-resources-format."
+            )
+
+    def check_name(df):
+        r"""
+        This function checks whether a name given by the user matches the one from the
+        oemof-B3 naming convention. It prints a warning if expected differs from given names and
+        prints a list with expected names.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        """
+        # Get name of Dataframe
+        name_as_given = df["name"]
+
+        # Get name according to convention
+        name_generated = get_name_for_df(df)
+
+        # Get diff of names
+        diff_in_name = compare_scalar_data(name_as_given, name_generated)
+
+        # Save unique values of diff to a list and print as warning
+        expected_names = list(diff_in_name.unique())
+        if expected_names:
+            logger.warning(
+                "The name you have set for some of your scalar data differs "
+                "from the convention (<region>-<carrier>-<tech>). \n"
+                "We expected but could not find the following name(s): "
+                f"{expected_names}."
+            )
+        if overwrite:
+            logger.warning(
+                "The names will be overwritten with names following the convention"
+            )
+
+    def set_name(df, overwrite):
+        r"""
+        This function
+            1. checks the name if the name is not empty and
+            2. overwrites the name with the generated name if overwrite is true or the name is
+            empty
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format.
+
+        Returns
+        -------
+        df : pd.DataFrame
+            DataFrame in oemof-B3-resources format and formatted name.
+
+        """
+        all_empty = df["name"].isnull().values.all()
+        if not all_empty:
+            check_name(df)
+
+        elif all_empty or overwrite:
+            name_generated = get_name_for_df(df)
+            _df = df.copy()  # To avoid SettingWithCopyWarning
+            _df.loc[:, "name"] = name_generated
+            df = _df
+
+        return df
+
+    def compare_scalar_data(sc_1, sc_2):
+        r"""
+        This functions compares the column of two DataFrames
+        It returns a DataFrame with scalars that diverge in name convention.
+
+        Parameters
+        ----------
+        sc_1 : pd.Series
+            Series with given values
+        sc_2 : pd.Series
+            Series with expected values
+
+        Returns
+        -------
+        diff_name_sc : pd.Series
+            Series where expected values not found
+        """
+        diff_name_sc = sc_1.compare(sc_2)
+
+        return diff_name_sc["other"]
+
+    # PART 1: Ensure name is set (according to convention) where name is empty and region is fixed
+    # Save values where name is None and region is not "ALL" in new DataFrame
+    sc_wo_name = sc[sc["name"].isnull()]
+    sc_add_name = set_name(sc_wo_name, overwrite)
+
+    # PART 2: Ensure name is checked for all values that are not None and where region is fixed
+    sc_with_name = sc[sc["name"].notnull()]
+    sc_with_name = set_name(sc_with_name, overwrite)
+
+    # PART 3: Concatenate DataFrame with corrected name and DataFrame with set name
+    scalars_set_name = pd.concat([sc_with_name, sc_add_name])
+
+    return scalars_set_name
+
+
+def expand_regions(scalars, regions, where="ALL"):
+    r"""
+    Expects scalars in oemof_b3 format (defined in ''oemof_b3/schema/scalars.csv'') and regions.
+    Returns scalars with new rows included for each region in those places where region equals
+    `where`.
+
+    Parameters
+    ----------
+    scalars : pd.DataFrame
+        Data in oemof_b3 format to expand
+    regions : list
+        List of regions
+    where : str
+        Key that should be expanded
+    Returns
+    -------
+    sc_with_region : pd.DataFrame
+        Data with expanded regions in oemof_b3 format
+    """
+    _scalars = format_header(
+        scalars, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
+
+    sc_with_region = _scalars.loc[scalars["region"] != where, :].copy()
+
+    sc_wo_region = _scalars.loc[scalars["region"] == where, :].copy()
+
+    # REGIONALIZATION
+    if not sc_wo_region.empty:
+        # Ensure name is empty if region is 'ALL'
+        # Print user warning if name is not NaN and region is "ALL"
+        if not sc_wo_region["name"].isnull().values.all():
+            print(
+                "User warning: Please leave 'name' empty if you set 'region' to 'ALL'.\n"
+                "The name you have specified "
+                f"{sc_wo_region[sc_wo_region['name'].notnull()]['name'].values} "
+                f"will be overwritten."
+            )
+
+        # Set region
+        for region in regions:
+            regionalized = sc_wo_region.copy()
+            regionalized["region"] = region
+
+            sc_with_region = pd.concat([sc_with_region, regionalized])
+
+        sc_with_region = sc_with_region.reset_index(drop=True)
+
+        sc_with_region.index.name = config.settings.general.scal_index_name
+
+    return sc_with_region
+
+
+def merge_a_into_b(df_a, df_b, on, how="left", indicator=False, verbose=True):
     r"""
     Writes scalar data from df_a into df_b, according to 'on'. Where df_a provides no data,
     the values of df_b are used. If how='outer', data from df_a that is not in df_b will be
@@ -349,24 +859,29 @@ def merge_a_into_b(df_a, df_b, on, how="left", indicator=False):
     set_index_a = set(map(tuple, pd.Index(_df_a.loc[:, on].replace(np.nan, "NaN"))))
     set_index_b = set(map(tuple, pd.Index(_df_b.loc[:, on].replace(np.nan, "NaN"))))
 
-    a_not_b = set_index_a.difference(set_index_b)
-    if a_not_b:
-        if how == "left":
-            print(
-                f"There are {len(a_not_b)} elements in df_a but not in df_b"
-                f" and are lost (choose how='outer' to keep them): {a_not_b}"
-            )
-        elif how == "outer":
-            print(
-                f"There are {len(a_not_b)} elements in df_a that are"
-                f" added to df_b: {a_not_b}"
-            )
+    if verbose:
+        a_not_b = set_index_a.difference(set_index_b)
+        if a_not_b:
+            if how == "left":
+                logger.warning(
+                    f"There are {len(a_not_b)} elements in df_a but not in df_b"
+                    f" and are lost (choose how='outer' to keep them): {a_not_b}"
+                )
+            elif how == "outer":
+                logger.info(
+                    f"There are {len(a_not_b)} elements in df_a that are"
+                    f" added to df_b: {a_not_b}"
+                )
 
-    a_and_b = set_index_a.intersection(set_index_b)
-    print(f"There are {len(a_and_b)} elements in df_b that are updated by df_a.")
+        a_and_b = set_index_a.intersection(set_index_b)
+        logger.info(
+            f"There are {len(a_and_b)} elements in df_b that are updated by df_a."
+        )
 
-    b_not_a = set_index_b.difference(set_index_a)
-    print(f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}")
+        b_not_a = set_index_b.difference(set_index_a)
+        logger.info(
+            f"There are {len(b_not_a)} elements in df_b that are unchanged: {b_not_a}"
+        )
 
     # Merge a with b, ignoring all data in b
     merged = _df_b.drop(columns=_df_b.columns.drop(on)).merge(
@@ -466,8 +981,8 @@ def stack_timeseries(df):
 
     _df_freq = pd.infer_freq(_df.index)
     if _df.index.freqstr is None:
-        print(
-            f"User info: The frequency of your data is not specified in the DataFrame, "
+        logger.info(
+            f"The frequency of your data is not specified in the DataFrame, "
             f"but is of the following frequency alias: {_df_freq}. "
             f"The frequency of your DataFrame is therefore automatically set to the "
             f"frequency with this alias."
@@ -503,7 +1018,7 @@ def stack_timeseries(df):
 
         dict_stacked_column = dict(zip(df_stacked_cols, column_data))
         df_stacked_column = pd.DataFrame(data=dict_stacked_column)
-        df_stacked = df_stacked.append(df_stacked_column, ignore_index=True)
+        df_stacked = pd.concat([df_stacked, df_stacked_column], ignore_index=True)
 
     # Save name of the index in the unstacked DataFrame as name of the index of "timeindex_start"
     # column of stacked DataFrame, so that it can be extracted from it when unstacked again.
@@ -538,9 +1053,8 @@ def unstack_timeseries(df):
     lost_columns = ["source", "comment"]
     for col in lost_columns:
         if col in list(df.columns):
-            print(
-                f"User warning: Caution any remarks in column '{col}' are lost after "
-                f"unstacking."
+            logger.warning(
+                f"Caution any remarks in column '{col}' are lost after unstacking."
             )
 
     # Process values of series
@@ -580,7 +1094,7 @@ def unstack_var_name(df):
     """
     _df = df.copy()
 
-    _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
+    _df = format_header(_df, HEADER_B3_SCAL, config.settings.general.scal_index_name)
 
     _df = _df.set_index(
         ["scenario_key", "name", "region", "carrier", "tech", "type", "var_name"]
@@ -588,12 +1102,16 @@ def unstack_var_name(df):
 
     unstacked = _df.unstack("var_name")
 
+    new_index = _df.index.droplevel(-1).unique()
+    unstacked = unstacked.reindex(new_index)
+
     return unstacked
 
 
 def stack_var_name(df):
     r"""
-    Given a DataFrame, this function will stack the variables.
+    Given a DataFrame, this function will stack the variables and format
+    the results in b3-format.
 
     Parameters
     ----------
@@ -617,7 +1135,196 @@ def stack_var_name(df):
 
     stacked = pd.DataFrame(stacked).reset_index()
 
+    stacked = sort_values(stacked)
+
+    stacked = format_header(
+        stacked, HEADER_B3_SCAL, config.settings.general.scal_index_name
+    )
+
     return stacked
+
+
+def round_setting_int(df, decimals):
+    r"""
+    Rounds the columns of a DataFrame to the specified decimals. For zero decimals,
+    it changes the dtype to Int64. Tolerates NaNs.
+    """
+    _df = df.copy()
+
+    for col, dec in decimals.items():
+        if col not in _df.columns:
+            logger.warning(f"No column named '{col}' found when trying to round.")
+            continue
+        elif dec == 0:
+            dtype = "Int64"
+        else:
+            dtype = float
+
+        _df[col] = pd.to_numeric(_df[col], errors="coerce").round(dec).astype(dtype)
+
+    return _df
+
+
+def prepare_b3_timeseries(df_year, **kwargs):
+    """
+    This function takes time series in column format, stacks them, assigns
+    values to additional columns and formats the header in order to prepare data in a b3 time
+    series format
+
+    Parameters
+    ----------
+    df_year : pd.Dataframe
+        DataFrame with total normalized data in year to be processed
+    kwargs : Additional keyword arguments
+        time series data (region, scenario key and unit)
+
+    Returns
+    -------
+    df_stacked : pd.DataFrame
+         DataFrame that contains stacked time series
+
+    """
+    # Stack time series with data of a year
+    df_year_stacked = stack_timeseries(df_year)
+
+    # Add region, scenario key and unit to stacked time series
+    for key, value in kwargs.items():
+        df_year_stacked[key] = value
+
+    # Make sure that header is in correct format
+    df_year_stacked = format_header(
+        df_year_stacked, HEADER_B3_TS, config.settings.general.ts_index_name
+    )
+
+    return df_year_stacked
+
+
+def _get_component_id_in_tuple(oemof_tuple, delimiter="-"):
+    r"""
+    Returns the id of the component in an oemof tuple.
+    If the component is first in the tuple, will return 0,
+    if it is second, 1.
+
+    Parameters
+    ----------
+    oemof_tuple : tuple
+        tuple of the form (node, node) or (node, None).
+
+    Returns
+    -------
+    component_id : int
+        Position of the component in the tuple
+    """
+    # TODO: This is a dummy implementation that can easily fail
+    logger.warning(
+        "The implementation of _get_component_id_in_tuple is perliminary and not "
+        "very robust."
+    )
+    return max(enumerate(oemof_tuple), key=lambda x: len(x[1].split(delimiter)))[0]
+
+
+def _get_component_from_tuple(tuple, delimiter="-"):
+    # TODO: This is a dummy implementation that can easily fail
+    logger.warning(
+        "The implementation of _get_component_from_tuple is perliminary and not "
+        "very robust."
+    )
+    return max(tuple, key=lambda x: len(x.split(delimiter)))
+
+
+def _get_direction(oemof_tuple):
+    comp_id = _get_component_id_in_tuple(oemof_tuple)
+
+    directions = {
+        0: "out",
+        1: "in",
+    }
+
+    other_id = {
+        0: 1,
+        1: 0,
+    }[comp_id]
+
+    if oemof_tuple[other_id] == "nan":
+        return ""
+    else:
+        return directions[comp_id]
+
+
+def _get_region_carrier_tech_from_component(component, delimiter="-"):
+
+    if isinstance(component, oemof.tabular.facades.Facade):
+        region = component.region
+        carrier = component.carrier
+        tech = component.tech
+
+    elif isinstance(component, str):
+        split = component.split(delimiter)
+
+        if len(split) == 3:
+            region, carrier, tech = split
+
+        if len(split) > 3:
+
+            region, carrier, tech = "-".join(split[:2]), *split[2:]
+            warnings.warn(
+                f"Could not get region, carrier and tech by splitting "
+                f"component name into {split}. Assumed region='{region}', "
+                f"carrier='{carrier}', tech='{tech}'"
+            )
+
+    return region, carrier, tech
+
+
+def oemof_results_ts_to_oemof_b3(df):
+    r"""
+    Transforms data in oemof-tabular/oemoflex format to stacked b3 timeseries format.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Time series in oemof-tabular/oemoflex format.
+    """
+    _df = df.copy()
+
+    # The columns of oemof results are multiindex with 3 levels: (from, to, type).
+    # This is mapped to var_name = <type>_<in/out> with "in" if bus comes first (from),
+    # "out" if bus is second (to). If the multiindex entry is of the form (component, None, type),
+    # then var_name = type
+    component = df.columns.droplevel(2).map(_get_component_from_tuple)
+
+    # specify direction in var_name
+    direction = df.columns.droplevel(2).map(_get_direction)
+
+    var_name = df.columns.get_level_values(2)
+
+    var_name = list(zip(var_name, direction))
+
+    var_name = list(map(lambda x: "_".join(filter(None, x)), var_name))
+
+    # Introduce arbitrary unique columns before stacking.
+    _df.columns = range(len(_df.columns))
+
+    _df = stack_timeseries(_df)
+
+    # assign values to other columns
+    _df["region"], _df["carrier"], _df["tech"] = zip(
+        *component.map(_get_region_carrier_tech_from_component)
+    )
+
+    _df["name"] = component
+
+    _df["var_name"] = var_name
+
+    # ensure that the format follows b3 schema
+    _df = format_header(_df, HEADER_B3_TS, "id_ts")
+
+    return _df
 
 
 class ScalarProcessor:
@@ -672,6 +1379,8 @@ class ScalarProcessor:
         -------
         None
         """
+        assert not data.isna().all(), "Cannot append all NaN data."
+
         _df = data.copy()
 
         if isinstance(_df, pd.Series):
@@ -681,6 +1390,4 @@ class ScalarProcessor:
 
         _df = stack_var_name(_df)
 
-        _df = format_header(_df, HEADER_B3_SCAL, "id_scal")
-
-        self.scalars = self.scalars.append(_df)
+        self.scalars = pd.concat([self.scalars, _df])

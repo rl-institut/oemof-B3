@@ -1,0 +1,7 @@
+from;B-electricity;B-h2-gt
+to;B-electricity-demand;B-electricity
+type;flow;flow
+timeindex;;
+2017-01-01 00:00:00;675;675
+2017-01-01 01:00:00;666;666
+2017-01-01 02:00:00;634;634

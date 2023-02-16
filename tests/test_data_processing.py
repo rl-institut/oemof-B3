@@ -4,65 +4,53 @@ import pandas as pd
 import pytest
 
 from oemof_b3.tools.data_processing import (
+    HEADER_B3_SCAL,
+    HEADER_B3_TS,
     stack_timeseries,
     unstack_timeseries,
+    stack_var_name,
+    unstack_var_name,
     load_b3_scalars,
     load_b3_timeseries,
+    load_tabular_results_ts,
     save_df,
     filter_df,
+    update_filtered_df,
     aggregate_scalars,
+    aggregate_timeseries,
     check_consistency_timeindex,
     merge_a_into_b,
+    oemof_results_ts_to_oemof_b3,
 )
 
 # Paths
-this_path = os.path.realpath(__file__)
+this_path = os.path.abspath(os.path.dirname(__file__))
 
-path_file_sc = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_scalars.csv",
+
+def full_path(filename):
+    return os.path.join(this_path, "_files", filename)
+
+
+path_file_sc = full_path("oemof_b3_resources_scalars.csv")
+path_file_sc_scenarios = full_path("oemof_b3_resources_scalars_scenarios.csv")
+path_file_sc_update_scenarios_expected = full_path(
+    "oemof_b3_resources_scalars_update_scenarios_expected.csv"
 )
-
-path_file_sc_mixed_types = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_scalars_mixed_types.csv",
+path_file_sc_mixed_types = full_path("oemof_b3_resources_scalars_mixed_types.csv")
+path_file_ts_stacked = full_path("oemof_b3_resources_timeseries_stacked.csv")
+path_oemof_results_flows = full_path("oemof_results_flows.csv")
+path_oemof_b3_results_timeseries_flows = full_path(
+    "oemof_b3_results_timeseries_flows.csv"
 )
-
-path_file_ts_stacked = os.path.join(
-    os.path.abspath(os.path.join(this_path, os.pardir)),
-    "_files",
-    "oemof_b3_resources_timeseries_stacked.csv",
+path_oemof_results_storage_content = full_path("oemof_results_storage_content.csv")
+path_oemof_b3_results_timeseries_storage_content = full_path(
+    "oemof_b3_results_timeseries_storage_content.csv"
 )
 
 # Headers
-sc_cols_list = [
-    "scenario_key",
-    "name",
-    "var_name",
-    "carrier",
-    "region",
-    "tech",
-    "type",
-    "var_value",
-    "var_unit",
-    "source",
-    "comment",
-]
+sc_cols_list = list(HEADER_B3_SCAL)
 
-ts_cols_list = [
-    "scenario_key",
-    "region",
-    "var_name",
-    "timeindex_start",
-    "timeindex_stop",
-    "timeindex_resolution",
-    "series",
-    "var_unit",
-    "source",
-    "comment",
-]
+ts_cols_list = list(HEADER_B3_TS)
 
 ts_row_wise_cols = [
     "var_name",
@@ -143,7 +131,7 @@ def test_save_df_sc():
     # Scalars
 
     path_file_saved = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_saved.csv",
     )
@@ -174,7 +162,7 @@ def test_save_df_ts():
     """
 
     path_file_stacked_saved = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_timeseries_stacked_saved.csv",
     )
@@ -209,7 +197,7 @@ def test_filter_df_sc_region_BE():
 
     # Load expected filtered scalars
     path_file_filtered_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_filtered_BE.csv",
     )
@@ -245,7 +233,7 @@ def test_filter_df_sc_type_conversion():
 
     # Load expected filtered scalars
     path_file_filtered_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_filtered_conversion.csv",
     )
@@ -266,6 +254,21 @@ def test_filter_df_sc_raises_error():
         filter_df(df, "something", ["conversion"])
 
 
+def test_update_filtered_df():
+
+    df = load_b3_scalars(path_file_sc_scenarios)
+    df_filtered_expected = load_b3_scalars(path_file_sc_update_scenarios_expected)
+
+    filters = {
+        1: {"scenario_key": "2050-base", "var_name": ["capacity_cost", "efficiency"]},
+        2: {"scenario_key": "2050-eff", "var_name": ["capacity_cost", "efficiency"]},
+    }
+
+    df_filtered = update_filtered_df(df, filters)
+
+    pd.testing.assert_frame_equal(df_filtered_expected, df_filtered, check_dtype=False)
+
+
 def test_filter_df_ts():
     """
     This test checks whether time series is filtered by a key "region" and value "BE_BB"
@@ -274,13 +277,13 @@ def test_filter_df_ts():
     # Read stacked time series
     df = load_b3_timeseries(path_file_ts_stacked)
 
-    df_BE_BB = filter_df(df, "region", ["BE_BB"])
+    df_BE_BB = filter_df(df, "region", ["BE"])
 
     # Load expected filtered stacked time series
     path_file_filtered_ts = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
-        "oemof_b3_resources_timeseries_stacked_filtered_BE_BB.csv",
+        "oemof_b3_resources_timeseries_stacked_filtered_BE.csv",
     )
     df_filtered_ts_expected = load_b3_timeseries(path_file_filtered_ts)
 
@@ -303,7 +306,7 @@ def test_df_agg_sc():
 
     # Load expected aggregated DataFrame
     path_file_agg_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_agg_region.csv",
     )
@@ -319,7 +322,7 @@ def test_df_agg_sc():
 
     # Load expected aggregated DataFrame
     path_file_agg_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_agg_carrier.csv",
     )
@@ -335,7 +338,7 @@ def test_df_agg_sc():
 
     # Load expected aggregated DataFrame
     path_file_agg_sc = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_scalars_agg_tech.csv",
     )
@@ -347,7 +350,17 @@ def test_df_agg_sc():
     )
 
 
-@pytest.mark.skip(reason="Timeseries aggregation is not implemented yet.")
+def test_df_agg_sc_with_nan():
+    """
+    This test checks whether scalars containing nan are aggregated by a key
+    """
+
+    df = load_b3_scalars(path_file_sc)
+    df["carrier"].iloc[1] = np.nan
+    df_agg_by_region = aggregate_scalars(df, "region")
+    assert np.isnan(df_agg_by_region["carrier"].iloc[1])
+
+
 def test_df_agg_ts():
     """
     This test checks whether a time series is aggregated by a key
@@ -356,11 +369,11 @@ def test_df_agg_ts():
     df = load_b3_timeseries(path_file_ts_stacked)
 
     # Aggregate by region
-    df_agg_by_region = df  # TODO: implement: aggregate_timeseries(df, "region")
+    df_agg_by_region = aggregate_timeseries(df, "region")
 
     # Load expected filtered stacked time series
     path_file_agg_ts = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_b3_resources_timeseries_stacked_agg_region.csv",
     )
@@ -432,14 +445,14 @@ def test_unstack():
         pd.testing.assert_frame_equal(ts_column_wise_again, ts_column_wise_different)
 
 
-def test_stack_unstack_on_example_data():
+def test_stack_unstack_timeseries_on_example_data():
     """
     This test checks if a DataFrame with a test sequence remains unchanged through stacking
     and unstacking
     """
 
     file_path = os.path.join(
-        os.path.abspath(os.path.join(this_path, os.pardir)),
+        this_path,
         "_files",
         "oemof_tabular_sequence.csv",
     )
@@ -451,6 +464,22 @@ def test_stack_unstack_on_example_data():
     df_stacked = stack_timeseries(df)
     df_unstacked = unstack_timeseries(df_stacked)
     assert pd.testing.assert_frame_equal(df, df_unstacked) is None
+
+
+def test_unstack_stack_scalars_on_example_data():
+    """
+    This test checks oemof-B3 scalars remains unchanged through stacking
+    and unstacking.
+
+    ATTENTION: This only works if the input data is sorted in the standard
+    order defined in data_processing.py.
+    """
+    df = load_b3_scalars(path_file_sc)
+
+    df_unstacked = unstack_var_name(df)
+    df_stacked = stack_var_name(df_unstacked)
+
+    assert pd.testing.assert_frame_equal(df, df_stacked) is None
 
 
 def test_merge_a_into_b():
@@ -485,3 +514,31 @@ def test_merge_a_into_b():
     c = merge_a_into_b(a, b, on=["A"], how="outer")
 
     assert c.equals(expected_result)
+
+
+def test_oemof_results_flows_to_b3_ts():
+    df = load_tabular_results_ts(path_oemof_results_flows)
+
+    df_expected = load_b3_timeseries(path_oemof_b3_results_timeseries_flows)
+
+    df = oemof_results_ts_to_oemof_b3(df)
+
+    df[["timeindex_start", "timeindex_stop"]] = df[
+        ["timeindex_start", "timeindex_stop"]
+    ].astype(str)
+
+    pd.testing.assert_frame_equal(df, df_expected)
+
+
+def test_oemof_results_storage_content_to_b3_ts():
+    df = load_tabular_results_ts(path_oemof_results_storage_content)
+
+    df_expected = load_b3_timeseries(path_oemof_b3_results_timeseries_storage_content)
+
+    df = oemof_results_ts_to_oemof_b3(df)
+
+    df[["timeindex_start", "timeindex_stop"]] = df[
+        ["timeindex_start", "timeindex_stop"]
+    ].astype(str)
+
+    pd.testing.assert_frame_equal(df, df_expected)

@@ -1,6 +1,6 @@
 # oemof-B3
 
-Oemof-B3 is an energy system model of Berlin and Brandenburg. It represents many sectors:
+oemof-B3 is an energy system model of Berlin and Brandenburg. It represents many sectors:
 Electricity, central and decentral heat, hydrogen, CO2 and methane. It is a multi-node-model, which
 means that several distinct regions are represented that are connected via transmission lines.
 
@@ -11,14 +11,14 @@ The model is a perfect-foresight, cost minimizing linear optimization model that
 [oemof.tabular](https://github.com/oemof/oemof-tabular),
 and [oemoflex](https://github.com/rl-institut/oemoflex).
 
-Oemof-B3 is currently under heavy development, which means that first full scenario runs will be
+oemof-B3 is currently under heavy development, which means that first full scenario runs will be
 available in the coming months.
 
 ## Getting started
 
 ### Installation
 
-Currently, Oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
 In order to install oemof-B3, proceed with the following steps:
 
@@ -30,26 +30,20 @@ In order to install oemof-B3, proceed with the following steps:
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
-Oemof-B3 needs pandoc (version > 2) in order to create reports. Pandoc is included in conda environment config (environment.yml). 
+To create reports oemof-B3 requires pandoc (version > 2). Pandoc is included in conda environment config (environment.yml). 
 If environment is build otherwise, pandoc must be installed manually. It can be installed following instructions from [Pandoc Installation](https://pandoc.org/installing.html).
-
-Oemof-B3 further needs demandlib in order to create heat load profiles. Due to a conflict of required pandas versions,
-the demandlib cannot be installed with `poetry install`. A separate installation is therefore necessary:
-
-    pip install demandlib
-
-The clash of the pandas version should be fixed with the release of oemof-B3 0.0.2.
 
 For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
 
-To test if everything works, you can run the examples.
+To test if everything works, you can run the examples (cf. :ref:`How to run the model`).
 
 For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
 ### Data
 
-The raw data necessary to run the scenarios is not part of the model. It is not public yet and will
-be provided in the coming months. 
+Download the raw data for the model from zenodo via:
+
+    snakemake -j1 download_raw_data
 
 ### Documentation
 
