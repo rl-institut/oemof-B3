@@ -81,3 +81,26 @@ process_re_potential:
 
 upload_results_to_oep:
   schema: model_draft
+
+create_empty_scalars:
+  non_regional: [
+     "capacity_cost",
+     "carrier_cost",
+     "efficiency",
+     "expandable",
+     "marginal_cost",
+     "electric_efficiency",
+     "thermal_efficiency",
+     "condensing_efficiency",
+     "loss_rate",
+     "storage_capacity_cost",
+  ]
+  wacc: {
+      "var_name": "wacc",
+      "carrier": "ALL",
+      "region": "ALL",
+      "tech": "ALL",
+      "type": "ALL",
+      "var_unit": "None",
+  }
+  drop_default_scalars: True
