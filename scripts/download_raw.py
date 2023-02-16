@@ -6,8 +6,6 @@ url : str
     Path to raw data on zenodo
 zip_filepath : str
     Path to raw directory in oemof-B3
-directory : str
-    Path of output directory
 
 Description
 -------------
