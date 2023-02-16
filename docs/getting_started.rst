@@ -64,13 +64,6 @@ Simply type
 in the Anaconda prompt.
 
 
-Required data
--------------
-
-Raw input data is currently **not** provided with the github repository but will be published at a
-later stage. More information about the raw data format can be found here: :ref:`Raw data`
-
-
 Workflow management with snakemake: Separating the steps
 --------------------------------------------------------
 
@@ -112,8 +105,14 @@ More features which facilitate the workflow management are
 How to run the model
 --------------------
 
-Snakemake on Linux
-^^^^^^^^^^^^^^^^^^
+To run the model, raw input data has to be downloaded from zenodo first via:
+
+::
+
+    snakemake -j1 download_raw_data
+
+To use preprocessed resources from the OEP instead, set `prepare_resources_locally: False` in
+`oemof_b3.config.settings.yaml`.
 
 To run the scenarios, execute:
 

@@ -47,7 +47,7 @@ Raw data
 .. There is no rule for getting raw data yet - it has to be provided manually.
 .. in the future, raw data can be downloaded automatically, which will include a rule here, too.
 
-Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded separately and provided in the directory :file:`raw/`.
+Raw data from external source comes in different formats. It is not part of the model on GitHub, but has to be downloaded from Zenodo at the beginning.
 As a first step, preprocessing scripts in the model pipeline (see :ref:`Prepare resources`) convert it into the
 oemof-B3-resources-format, explained in the next section (see :ref:`Schema`). Raw data that represents model-own assumptions is provided in
 that format already. When providing raw data you have to follow some conventions, which are summarized in the section :ref:`Conventions`.

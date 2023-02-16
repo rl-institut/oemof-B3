@@ -41,8 +41,9 @@ For developers: Please activate pre-commit hooks (via `pre-commit install`) in o
 
 ### Data
 
-The raw data necessary to run the scenarios is not part of the model. It is not public yet and will
-be provided in the coming months. 
+Download the raw data for the model from zenodo via:
+
+    snakemake -j1 download_raw_data
 
 ### Documentation
 
