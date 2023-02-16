@@ -1,3 +1,14 @@
+rule download_raw_data:
+    # target rule for download of raw input data
+    input: "raw/oemof-B3-raw-data.zip"
+
+rule download_zenodo:
+    params:
+        url="https://zenodo.org/record/7533832/files/oemof-B3-raw-data.zip",
+        raw="raw"
+    output: "raw/oemof-B3-raw-data.zip"
+    shell: "python scripts/download_raw.py {params.url} {output}"
+
 rule prepare_conv_pp:
     input:
         opsd="raw/conventional_power_plants_DE.csv",
