@@ -89,4 +89,5 @@ autodoc_mock_imports = [
     "oemof_b3.config.config",
     "geopandas",
     "shapely",
+    "oem2orm",
 ]
