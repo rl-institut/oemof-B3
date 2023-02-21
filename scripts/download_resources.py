@@ -2,7 +2,7 @@
 r"""
 Inputs
 -------
-paths : list
+target_paths : list
     List of table names from OEP to be downloaded
 
 Description
