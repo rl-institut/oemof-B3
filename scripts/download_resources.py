@@ -1,3 +1,15 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+paths : list
+    List of table names from OEP to be downloaded
+
+Description
+-------------
+The script downloads a list of tables from the OEP and saves them as csv.
+"""
+
 import pathlib
 import sys
 
