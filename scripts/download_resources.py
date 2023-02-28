@@ -7,7 +7,7 @@ target_paths : list
 
 Description
 -------------
-The script downloads a list of tables from the OEP and saves them as csv.
+The script downloads a list of tables from the OEP and saves them as csv files to ``results/_resources`` dir.
 """
 
 import pathlib
