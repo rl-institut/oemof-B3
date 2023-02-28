@@ -3,7 +3,7 @@ r"""
 Inputs
 -------
 target_paths : list
-    List of table names from OEP to be downloaded
+    List of PosixPaths of table names from OEP to be downloaded
 
 Description
 -------------
