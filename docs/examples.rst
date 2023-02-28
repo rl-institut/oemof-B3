@@ -7,7 +7,7 @@ Examples
 To give a quick intro into oemof-B3's capabilities, we provide 3 simple
 `examples <https://github.com/rl-institut/oemof-B3/tree/dev/examples>`_.
 
-To run all example scenarios, execute on a linux system:
+To run all example scenarios, execute:
 
 ::
 

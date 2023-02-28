@@ -140,26 +140,6 @@ Alternatively, to create just the output file or directory of one rule, run:
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
 
-Snakemake on Windows
-^^^^^^^^^^^^^^^^^^^^
-
-When running snakemake with output files in subfolders on Windows with
-
-::
-
-     snakemake -j<NUMBER_OF_CPU_CORES>
-
-a ``MissingRuleException`` is raised. The process is unable to specify the output files in subfolders.
-This bug is an `open issue <https://github.com/snakemake/snakemake/issues/46>`_
-in snakemake.
-A current workaround is described in `pypsa-eur <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_.
-is to run snakemake with the flag ``--keep-target-files`` to the command.
-
-::
-
-     snakemake -j<NUMBER_OF_CPU_CORES> --keep-target-files
-
-
 Contributing to oemof-B3
 ========================
 
