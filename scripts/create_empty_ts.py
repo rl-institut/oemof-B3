@@ -64,7 +64,7 @@ def get_sub_dict(subsub_key, dict):
     return subsub_dict
 
 
-def set_ts_values(periods, date_rng, name):
+def create_empty_ts_with_zero_or_nan_values(periods, date_rng, name):
     """
     Returns a pandas DataFrame with time series values set to either zeros or
     NaNs, based on settings.yaml
@@ -99,8 +99,9 @@ def set_ts_values(periods, date_rng, name):
         )
     else:
         raise KeyError(
-            f"{ts_values} is not a valid option. "
-            f"Please provide a valid value for ts_values in settings.yaml"
+            f"{ts_values} is not a valid option. Valid options are: 'zeros' or"
+            f"'empty'. Please provide a valid value for ts_values in "
+            f"settings.yaml"
         )
 
     return df
@@ -135,7 +136,7 @@ def create_empty_ts(name):
     date_rng = pd.date_range(start=start, periods=periods, freq=freq)
 
     # Create DataFrame with ts of zeros from date range and name
-    df = set_ts_values(periods, date_rng, name)
+    df = create_empty_ts_with_zero_or_nan_values(periods, date_rng, name)
 
     return df
 
