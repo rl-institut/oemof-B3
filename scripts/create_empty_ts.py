@@ -231,12 +231,12 @@ if __name__ == "__main__":
         load_names = [
             attr_subdict["profile"]
             for attr_subdict in foreign_keys_profile
-            if "demand" in attr_subdict["profile"]
+            if "demand" in attr_subdict["profile"]  # noqa: E713
         ]
         feedin_names = [
             attr_subdict["profile"]
             for attr_subdict in foreign_keys_profile
-            if not "demand" in attr_subdict["profile"]
+            if not "demand" in attr_subdict["profile"]  # noqa: E713
         ]
         efficiency_names = [
             attr_subdict["efficiency"] for attr_subdict in foreign_keys_efficiency
