@@ -94,6 +94,7 @@ include: "snakemake_rules/postprocessing.smk"
 include: "snakemake_rules/visualization.smk"
 include: "snakemake_rules/oep_upload.smk"
 include: "snakemake_rules/create_empty_scalars.smk"
+include: "snakemake_rules/create_empty_ts.smk"
 
 # prepare settings locally or download it from OEP (not implemented yet)
 if config.settings.general.prepare_resources_locally:
