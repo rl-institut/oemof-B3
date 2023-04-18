@@ -32,7 +32,11 @@ from datetime import datetime
 from oemof_b3.config.config import load_yaml, settings
 from oemof_b3.model import model_structures
 from oemof_b3 import model
-from oemof_b3.tools.data_processing import HEADER_B3_TS, stack_timeseries, load_b3_timeseries
+from oemof_b3.tools.data_processing import (
+    HEADER_B3_TS,
+    stack_timeseries,
+    load_b3_timeseries,
+)
 
 
 def get_sub_dict(subsub_key, _dict):
@@ -126,7 +130,9 @@ def create_empty_ts(name):
     datetime_format = settings.create_empty_ts.datetime_format
 
     # Get start date from scenario specifications
-    start = datetime.strptime(scenario_specs["filter_timeseries"]["timeindex_start"], datetime_format)
+    start = datetime.strptime(
+        scenario_specs["filter_timeseries"]["timeindex_start"], datetime_format
+    )
 
     # Get periods and freq from scenario specifications
     periods = scenario_specs["datetimeindex"]["periods"]
@@ -184,24 +190,24 @@ def get_df_of_all_empty_ts(profile_names, _region):
 
 def drop_duplicates(_df):
     """
-        Remove duplicate rows from a pandas DataFrame based on specified columns.
+    Remove duplicate rows from a pandas DataFrame based on specified columns.
 
-        Parameters
-        ----------
-        _df : pandas DataFrame
-            The DataFrame to remove duplicates from.
+    Parameters
+    ----------
+    _df : pandas DataFrame
+        The DataFrame to remove duplicates from.
 
-        Returns
-        -------
-        _df : pandas DataFrame
-            The updated DataFrame with duplicate rows removed.
+    Returns
+    -------
+    _df : pandas DataFrame
+        The updated DataFrame with duplicate rows removed.
 
-        Notes
-        -----
-        Duplicate rows are determined based on the values in the specified columns. By default, all columns
-        except the "series" column are used to determine duplicates. If there are multiple rows with the same
-        values in the specified columns, only the first occurrence is kept and subsequent occurrences are
-        dropped.
+    Notes
+    -----
+    Duplicate rows are determined based on the values in the specified columns. By default, all columns
+    except the "series" column are used to determine duplicates. If there are multiple rows with the same
+    values in the specified columns, only the first occurrence is kept and subsequent occurrences are
+    dropped.
     """
     columns = [col for col in _df.columns if col != "series"]
 
@@ -300,12 +306,18 @@ if __name__ == "__main__":
 
             if efficiency_names:
                 df_efficiencies = get_df_of_all_empty_ts(efficiency_names, region)
-                all_efficiencies_ts = pd.concat([all_efficiencies_ts, df_efficiencies], ignore_index=True)
+                all_efficiencies_ts = pd.concat(
+                    [all_efficiencies_ts, df_efficiencies], ignore_index=True
+                )
 
     ts_dict = {
         "load": (load_names, all_load_ts, path_empty_load_ts),
         "feedin": (feedin_names, all_feedin_ts, path_empty_ts_feedin),
-        "efficiency": (efficiency_names, all_efficiencies_ts, path_empty_ts_efficiencies),
+        "efficiency": (
+            efficiency_names,
+            all_efficiencies_ts,
+            path_empty_ts_efficiencies,
+        ),
     }
 
     for ts_type, (ts_name, ts_df, ts_path) in ts_dict.items():
