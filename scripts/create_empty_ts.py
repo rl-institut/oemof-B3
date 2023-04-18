@@ -35,7 +35,6 @@ from oemof_b3 import model
 from oemof_b3.tools.data_processing import (
     HEADER_B3_TS,
     stack_timeseries,
-    load_b3_timeseries,
 )
 
 
@@ -204,10 +203,10 @@ def drop_duplicates(_df):
 
     Notes
     -----
-    Duplicate rows are determined based on the values in the specified columns. By default, all columns
-    except the "series" column are used to determine duplicates. If there are multiple rows with the same
-    values in the specified columns, only the first occurrence is kept and subsequent occurrences are
-    dropped.
+    Duplicate rows are determined based on the values in the specified columns. By default, all
+    columns except the "series" column are used to determine duplicates. If there are multiple rows
+    with the same values in the specified columns, only the first occurrence is kept and subsequent
+    occurrences are dropped.
     """
     columns = [col for col in _df.columns if col != "series"]
 
