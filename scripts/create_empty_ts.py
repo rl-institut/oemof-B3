@@ -126,7 +126,7 @@ def create_empty_ts(name):
     datetime_format = settings.create_empty_ts.datetime_format
 
     # Get start date from scenario specifications
-    start = datetime.strptime(scenario_specs["datetimeindex"]["start"], datetime_format)
+    start = datetime.strptime(scenario_specs["filter_timeseries"]["timeindex_start"], datetime_format)
 
     # Get periods and freq from scenario specifications
     periods = scenario_specs["datetimeindex"]["periods"]
