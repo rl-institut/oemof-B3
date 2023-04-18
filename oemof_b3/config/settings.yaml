@@ -109,6 +109,7 @@ create_empty_ts:
   {
       "datetime_format": "%Y-%m-%d %H:%M:%S",
       "filter_ts": "empty_ts",
-      "ts_values": "zeros"  # Set to 'zeros' or 'empty'
+      "ts_values": "zeros",  # Set to 'zeros' or 'empty'
+      "overwrite": false
   }
 

@@ -228,7 +228,7 @@ def save_ts(_df, path):
 
 
     """
-    if not os.path.exists(path):
+    if not os.path.exists(path) or settings.create_empty_ts.overwrite:
 
         _df.index.name = "id_ts"
 
