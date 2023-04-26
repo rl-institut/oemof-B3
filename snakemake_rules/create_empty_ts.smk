@@ -1,5 +1,5 @@
 rule create_empty_ts:
-    input: directory("scenarios/")
+    input: "scenarios/"
     output:
         "raw/time_series/empty_ts_load.csv",
         "raw/time_series/empty_ts_feedin.csv",
