@@ -87,6 +87,13 @@ rule clean:
         echo "Removed all results."
         """
 
+rule clean_on_win_sys:
+    shell:
+        """
+        for /d %p in (results\*) do @if not exist "%p\.gitkeep" rd /s /q "%p"
+        echo "Removed all results."
+        """
+
 # Include rules for intermediate steps
 include: "snakemake_rules/build_datapackage.smk"
 include: "snakemake_rules/optimization.smk"
