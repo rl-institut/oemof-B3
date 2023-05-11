@@ -148,22 +148,5 @@ If needed, all calculated scenarios in the directory :file:`results` can be dele
 Contributing to oemof-B3
 ========================
 
-In case you want to develop your own scenarios and calculations based on oemof-B3,
-by perhaps adding components, there are two additional snakemake rules for the modified energy system.
-Executing the rule
-
-::
-
-    snakemake -j1 create_empty_scalars
-
-will create empty scalars. The rule
-
-::
-
-    snakemake -j1 create_empty_ts
-
-will create empty time series data.
-The empty scalars and time series data can be used to perform a quick test run and verify your energy system model.
-
 You can write `issues <https://github.com/rl-institut/oemof-B3/issues>`_ to announce bugs or
 to propose enhancements.
