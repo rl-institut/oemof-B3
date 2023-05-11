@@ -14,7 +14,7 @@ To run all example scenarios, execute:
      snakemake -j<NUMBER_OF_CPU_CORES> run_all_examples
 
 
-The energy system of Brandenburg (BB) and Berlin (BE) is represented by two nodes, one for each of the regions.
+The energy system of Brandenburg and Berlin is represented by two nodes, one for each of the regions.
 
 Modelled components are 
 
@@ -27,7 +27,7 @@ The examples are limited to the electricity sector, the heat sector is not model
 
 Data for capacities of wind, photovoltaic and biomass as well as electricity demand have been taken
 from the grid development plan
-(`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/2022-11/NEP_2035_V2021_1_Entwurf_Teil1_1.pdf>`_, p. 41 ff.)
+(`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/paragraphs-files/NEP_2035_V2021_1_Entwurf_Teil1.pdf>`_, p. 41 ff.)
 :cite:`NEP2021_Entwurf_1`.
 Data for efficiencies and costs (specific annuity, fuel costs) are based on different sources as well
 as on own assumptions.
