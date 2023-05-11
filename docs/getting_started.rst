@@ -143,13 +143,7 @@ Alternatively, to create just the output file or directory of one rule, run:
 Contributing to oemof-B3
 ========================
 
-Executing the rule
-
-::
-
-    snakemake -j1 create_empty_scalars
-
-will create empty scalars. The rule
+The rule
 
 ::
 
