@@ -321,5 +321,5 @@ if __name__ == "__main__":
 
     for ts_type, (ts_name, ts_data, ts_path) in ts_dict.items():
         if ts_name:
-            drop_duplicates(ts_data)
+            ts_data = drop_duplicates(ts_data)
             save_ts(ts_data, ts_path)
