@@ -29,6 +29,8 @@ import numpy as np
 
 from datetime import datetime
 
+from oemoflex.model.model_structure import module_path
+
 from oemof_b3.config.config import load_yaml, settings
 from oemof_b3.model import model_structures
 from oemof_b3 import model
@@ -258,6 +260,9 @@ if __name__ == "__main__":
     all_feedin_ts = pd.DataFrame(columns=HEADER_B3_TS)
     all_efficiencies_ts = pd.DataFrame(columns=HEADER_B3_TS)
 
+    component_attrs_file = (os.path.join(module_path, "component_attrs.yml"),)
+    component_attrs = load_yaml(component_attrs_file[0])
+
     for scenario_specs in scenarios:
         scenario_specs = load_yaml(os.path.join(scenarios_dir, scenario_specs))
         model_structure = model_structures[scenario_specs["model_structure"]]
@@ -266,8 +271,18 @@ if __name__ == "__main__":
             os.path.join(model.here, "component_attrs_update.yml")
         )
 
+        # Get all foreign_keys that contain "profile" from component_attrs
+        foreign_keys_profile = get_sub_dict("profile", component_attrs)
+
         # Get all foreign_keys that contain "profile" from component_attrs_update
-        foreign_keys_profile = get_sub_dict("profile", component_attrs_update)
+        foreign_keys_profile.extend(get_sub_dict("profile", component_attrs_update))
+
+        # Drop the ones that are not listed in model_structure
+        foreign_keys_profile = [
+            fk
+            for fk in foreign_keys_profile
+            if fk["profile"].split("-profile")[0] in model_structure["components"]
+        ]
 
         # Get all foreign_keys that contain "efficiency" from component_attrs_update
         foreign_keys_efficiency = get_sub_dict("efficiency", component_attrs_update)
