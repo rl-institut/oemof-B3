@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+authors:
+  - family-names: "Launer"
+    given-names: "Jann"
+    alias: "@jnnr"
+    affiliation: "Reiner Lemoine Institut"
+    orcid: ""
+  - family-names: "Gering"
+    given-names: "Marie"
+    alias: "@MaGering"
+    affiliation: "Reiner Lemoine Institut"
+    orcid: ""
+title: "oemof-B3"
+type: software
+license: AGPL-3.0
+version: 0.0.2
+doi:
+date-released: 2023-02-16
+url: "https://github.com/rl-institut/oemof-B3"
