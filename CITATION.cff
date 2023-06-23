@@ -20,7 +20,7 @@ authors:
     given-names: "Julius"
     alias: "@juliusmeier"
     affiliation: "Reiner Lemoine Institut"
-    orcid: ""
+    orcid: "https://orcid.org/0000-0002-9651-7877"
   - family-names: "Huyskens"
     given-names: "Hendrik"
     alias: "@henhuy"
