@@ -38,6 +38,7 @@ path_file_sc_update_scenarios_expected = full_path(
 )
 path_file_sc_mixed_types = full_path("oemof_b3_resources_scalars_mixed_types.csv")
 path_file_ts_stacked = full_path("oemof_b3_resources_timeseries_stacked.csv")
+path_file_ts_stacked_comments = full_path("oemof_b3_resources_timeseries_stacked_comments.csv")
 path_oemof_results_flows = full_path("oemof_results_flows.csv")
 path_oemof_b3_results_timeseries_flows = full_path(
     "oemof_b3_results_timeseries_flows.csv"
@@ -480,6 +481,21 @@ def test_unstack_stack_scalars_on_example_data():
     df_stacked = stack_var_name(df_unstacked)
 
     assert pd.testing.assert_frame_equal(df, df_stacked) is None
+
+
+def test_unstack_warning_source_comment(capfd):
+    df_wo_comments = load_b3_timeseries(path_file_ts_stacked)
+    df_with_comments = load_b3_timeseries(path_file_ts_stacked_comments)
+
+    # TODO: Assert that unstack_timeseries(df_wo_comments) does not give the warning:
+    # "Caution any remarks in column 'comments' are lost after unstacking."
+    # TODO: When the following is executed:
+    unstack_timeseries(df_wo_comments)
+
+    # TODO: Assert WARNING with unstack_timeseries(df_with_comments):
+    # "WARNING - Caution any remarks in column 'comments' are lost after unstacking."
+    # TODO: When the following is executed:
+    unstack_timeseries(df_with_comments)
 
 
 def test_merge_a_into_b():
