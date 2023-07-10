@@ -486,6 +486,11 @@ def test_unstack_stack_scalars_on_example_data():
 
 
 def test_unstack_warning_source_comment():
+    """
+    This test checks whether oemof-B3 scalars columns source and comments
+    are empty before unstacking. A caution message will be raised if source and comments are
+    not empty.
+    """
     df_wo_comments = load_b3_timeseries(path_file_ts_stacked)
     df_with_comments = load_b3_timeseries(path_file_ts_stacked_comments)
 
@@ -499,6 +504,7 @@ def test_unstack_warning_source_comment():
     # TODO: When the following is executed:
     unstack_timeseries(df_with_comments)
 
+test_unstack_warning_source_comment()
 
 def test_merge_a_into_b():
     r"""
