@@ -485,7 +485,7 @@ def test_unstack_stack_scalars_on_example_data():
     assert pd.testing.assert_frame_equal(df, df_stacked) is None
 
 
-def test_unstack_warning_source_comment(capfd):
+def test_unstack_warning_source_comment():
     df_wo_comments = load_b3_timeseries(path_file_ts_stacked)
     df_with_comments = load_b3_timeseries(path_file_ts_stacked_comments)
 
