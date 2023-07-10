@@ -504,8 +504,6 @@ def test_unstack_warning_source_comment():
     # TODO: When the following is executed:
     unstack_timeseries(df_with_comments)
 
-test_unstack_warning_source_comment()
-
 def test_merge_a_into_b():
     r"""
     Tests merge function.
