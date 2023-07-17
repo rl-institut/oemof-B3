@@ -2,8 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
-import unittest
-import warnings
 
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
