@@ -2,6 +2,8 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
+import unittest
+import warnings
 
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
@@ -487,9 +489,9 @@ def test_unstack_stack_scalars_on_example_data():
 
 def test_unstack_warning_source_comment():
     """
-    This test checks whether oemof-B3 scalars columns source and comments
-    are empty before unstacking. A caution message will be raised if source and comments are
-    not empty.
+    This test verifies whether the caution message is appropriately raised
+    when executing the function unstack_timeseries(). The caution message will
+    be raised if source and comments are not empty.
     """
     df_wo_comments = load_b3_timeseries(path_file_ts_stacked)
     df_with_comments = load_b3_timeseries(path_file_ts_stacked_comments)
@@ -503,6 +505,7 @@ def test_unstack_warning_source_comment():
     # "WARNING - Caution any remarks in column 'comments' are lost after unstacking."
     # TODO: When the following is executed:
     unstack_timeseries(df_with_comments)
+
 
 def test_merge_a_into_b():
     r"""
