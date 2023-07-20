@@ -505,7 +505,7 @@ class test_unstack_warning_source_comment(unittest.TestCase):
             "oemof_b3.tools.data_processing.logger.warning"
         ) as mock_logger_warning:
             # Call the function with df_with_comments, which should raise a warning
-            unstacked_df = unstack_timeseries(self.df_with_comments)
+            unstack_timeseries(self.df_with_comments)
 
         # Check if the logger.warning was called with the expected messages
         expected_warnings = [
@@ -513,7 +513,8 @@ class test_unstack_warning_source_comment(unittest.TestCase):
             "Caution any remarks in column 'comment' are lost after unstacking.",
         ]
 
-        # Check if any of the expected warning messages are contained in the captured warning messages
+        # Check if any of the expected warning messages are contained
+        # in the captured warning messages
         self.assertTrue(
             any(
                 warning_msg in str(warning[0])
@@ -529,7 +530,7 @@ class test_unstack_warning_source_comment(unittest.TestCase):
             "oemof_b3.tools.data_processing.logger.warning"
         ) as mock_logger_warning:
             # Call the function with df_wo_comments, which should not raise a warning
-            unstacked_df = unstack_timeseries(self.df_wo_comments)
+            unstack_timeseries(self.df_wo_comments)
 
         # Check that logger.warning was not called in this case
         mock_logger_warning.assert_not_called()
