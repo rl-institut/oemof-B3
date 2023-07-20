@@ -501,25 +501,33 @@ class test_unstack_warning_source_comment(unittest.TestCase):
     # Assert WARNING with unstack_timeseries(df_with_comments)
     def test_unstack_warning_source_comment(self):
         # Patch the logger.warning method to capture the warning calls
-        with patch('oemof_b3.tools.data_processing.logger.warning') as mock_logger_warning:
+        with patch(
+            "oemof_b3.tools.data_processing.logger.warning"
+        ) as mock_logger_warning:
             # Call the function with df_with_comments, which should raise a warning
             unstacked_df = unstack_timeseries(self.df_with_comments)
 
         # Check if the logger.warning was called with the expected messages
         expected_warnings = [
             "Caution any remarks in column 'source' are lost after unstacking.",
-            "Caution any remarks in column 'comment' are lost after unstacking."
+            "Caution any remarks in column 'comment' are lost after unstacking.",
         ]
 
         # Check if any of the expected warning messages are contained in the captured warning messages
-        self.assertTrue(any(
-            warning_msg in str(warning[0]) for warning in mock_logger_warning.call_args_list for warning_msg in
-            expected_warnings))
+        self.assertTrue(
+            any(
+                warning_msg in str(warning[0])
+                for warning in mock_logger_warning.call_args_list
+                for warning_msg in expected_warnings
+            )
+        )
 
     # Assert that unstack_timeseries(df_wo_comments) does not give the warning:
     def test_unstack_no_warning(self):
         # Patch the logger.warning method to capture the warning calls
-        with patch('oemof_b3.tools.data_processing.logger.warning') as mock_logger_warning:
+        with patch(
+            "oemof_b3.tools.data_processing.logger.warning"
+        ) as mock_logger_warning:
             # Call the function with df_wo_comments, which should not raise a warning
             unstacked_df = unstack_timeseries(self.df_wo_comments)
 
@@ -527,7 +535,7 @@ class test_unstack_warning_source_comment(unittest.TestCase):
         mock_logger_warning.assert_not_called()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
 
 
