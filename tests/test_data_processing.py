@@ -515,12 +515,10 @@ class test_unstack_warning_source_comment(unittest.TestCase):
 
         # Check if any of the expected warning messages are contained
         # in the captured warning messages
+        warnings_called = [call[0][0] for call in mock_logger_warning.call_args_list]
+
         self.assertTrue(
-            any(
-                warning_msg in str(warning[0])
-                for warning in mock_logger_warning.call_args_list
-                for warning_msg in expected_warnings
-            )
+            any(warning_msg in warnings_called for warning_msg in expected_warnings)
         )
 
     # Assert that unstack_timeseries(df_wo_comments) does not give the warning:
