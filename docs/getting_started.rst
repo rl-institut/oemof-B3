@@ -154,5 +154,14 @@ Executing the rule
 
 will create empty scalars.
 
+The rule
+
+::
+
+    snakemake -j1 create_empty_ts
+
+will create empty time series data.
+The empty scalars and time series data can be used to verify your energy system model in the preprocessing stage.
+
 You can write `issues <https://github.com/rl-institut/oemof-B3/issues>`_ to announce bugs or
 to propose enhancements.
