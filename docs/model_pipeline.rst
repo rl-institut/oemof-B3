@@ -97,6 +97,15 @@ A few more conventions are important to know:
   * such powered with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
   * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
+* The capacity of specific components of a scenario can be expanded during an optimization, if the facade attribute `expandable` is set on `True`.
+
+  * To adjust this setting, the attribute needs to be specified in the file :attr:`costs_efficiencies.csv`.
+  * An overview of all facades, which includes `expandable` can be found in the facade attributes overview <https://oemof-tabular.readthedocs.io/en/latest/facades.html#>`_ provided by oemof.tabular.
+
+* The capacity potential and the already installed capacity of specific components can be set individually
+
+  * In the file :attr:`capacities.csv`, the already installed capacity can be set for the attribute :attr:`capacity` in :attr:`var_name`.
+  * In the file :attr:`potentials.csv`, the potential capacity can be set for the attribute :attr:`capacity_potential` in :attr:`var_name`.
 
 .. _prepare_resources_label:
 
