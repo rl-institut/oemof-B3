@@ -4,11 +4,6 @@
 Model pipeline
 ~~~~~~~~~~~~~~
 
-.. contents:: `Contents`
-    :depth: 1
-    :local:
-    :backlinks: top
-
 The main functionality of oemof-B3 is a data processing pipeline which is managed using snakemake.
 The pipeline preprocesses raw data into scalar and time series resources that are used to
 build tabular datapackages representing single energy system optimization problems. These can be

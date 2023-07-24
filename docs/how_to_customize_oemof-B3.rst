@@ -4,11 +4,6 @@
 How to customize oemof-B3
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. contents:: `Contents`
-    :depth: 1
-    :local:
-    :backlinks: top
-
 To use oemof-B3, you may want to modify some files, depending on what you want to model.
 
 While you define scenarios in the directory :attr:`scenarios`, you can specify the structure of

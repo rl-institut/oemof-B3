@@ -4,11 +4,6 @@
 Getting started
 ~~~~~~~~~~~~~~~
 
-.. contents:: `Contents`
-    :depth: 1
-    :local:
-    :backlinks: top
-
 Using oemof-B3
 ==============
 
