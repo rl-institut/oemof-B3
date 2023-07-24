@@ -102,10 +102,14 @@ A few more conventions are important to know:
   * To adjust this setting, the attribute needs to be specified in the file :attr:`costs_efficiencies.csv`.
   * An overview of all facades, which includes `expandable` can be found in the facade attributes overview <https://oemof-tabular.readthedocs.io/en/latest/facades.html#>`_ provided by oemof.tabular.
 
-* The capacity potential and the already installed capacity of specific components can be set individually
+* The maximum capacity and the already installed capacity of specific components can be set individually
 
-  * In the file :attr:`capacities.csv`, the already installed capacity can be set for the attribute :attr:`capacity` in :attr:`var_name`.
-  * In the file :attr:`potentials.csv`, the potential capacity can be set for the attribute :attr:`capacity_potential` in :attr:`var_name`.
+  * In the file :attr:`capacities.csv`, the already installed capacity can be set as 0 for
+    a Greenfield assumption or as a positive numeric value for a Brownfield assumption.
+    Changes can be donefor the attribute :attr:`capacity` in :attr:`var_name`.
+  * In the file :attr:`potentials.csv`, the maximum capacity can be set for the attribute
+    :attr:`capacity_potential` in :attr:`var_name`. If the :attr:`capacity_potential` is left empty,
+    an infinite capacity potential is assumed.
 
 .. _prepare_resources_label:
 
