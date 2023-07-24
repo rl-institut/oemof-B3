@@ -2,6 +2,8 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
+import unittest
+from unittest.mock import patch
 
 from oemof_b3.tools.data_processing import (
     HEADER_B3_SCAL,
@@ -38,6 +40,9 @@ path_file_sc_update_scenarios_expected = full_path(
 )
 path_file_sc_mixed_types = full_path("oemof_b3_resources_scalars_mixed_types.csv")
 path_file_ts_stacked = full_path("oemof_b3_resources_timeseries_stacked.csv")
+path_file_ts_stacked_comments = full_path(
+    "oemof_b3_resources_timeseries_stacked_comments.csv"
+)
 path_oemof_results_flows = full_path("oemof_results_flows.csv")
 path_oemof_b3_results_timeseries_flows = full_path(
     "oemof_b3_results_timeseries_flows.csv"
@@ -480,6 +485,57 @@ def test_unstack_stack_scalars_on_example_data():
     df_stacked = stack_var_name(df_unstacked)
 
     assert pd.testing.assert_frame_equal(df, df_stacked) is None
+
+
+class test_unstack_warning_source_comment(unittest.TestCase):
+    """
+    This test verifies whether the caution message is appropriately raised
+    when executing the function unstack_timeseries(). The caution message will
+    be raised if source and comments are not empty.
+    """
+
+    def setUp(self):
+        self.df_with_comments = load_b3_timeseries(path_file_ts_stacked_comments)
+        self.df_wo_comments = load_b3_timeseries(path_file_ts_stacked)
+
+    # Assert WARNING with unstack_timeseries(df_with_comments)
+    def test_unstack_warning_source_comment(self):
+        # Patch the logger.warning method to capture the warning calls
+        with patch(
+            "oemof_b3.tools.data_processing.logger.warning"
+        ) as mock_logger_warning:
+            # Call the function with df_with_comments, which should raise a warning
+            unstack_timeseries(self.df_with_comments)
+
+        # Check if the logger.warning was called with the expected messages
+        expected_warnings = [
+            "Caution any remarks in column 'source' are lost after unstacking.",
+            "Caution any remarks in column 'comment' are lost after unstacking.",
+        ]
+
+        # Check if any of the expected warning messages are contained
+        # in the captured warning messages
+        warnings_called = [call[0][0] for call in mock_logger_warning.call_args_list]
+
+        self.assertTrue(
+            any(warning_msg in warnings_called for warning_msg in expected_warnings)
+        )
+
+    # Assert that unstack_timeseries(df_wo_comments) does not give the warning:
+    def test_unstack_no_warning(self):
+        # Patch the logger.warning method to capture the warning calls
+        with patch(
+            "oemof_b3.tools.data_processing.logger.warning"
+        ) as mock_logger_warning:
+            # Call the function with df_wo_comments, which should not raise a warning
+            unstack_timeseries(self.df_wo_comments)
+
+        # Check that logger.warning was not called in this case
+        mock_logger_warning.assert_not_called()
+
+
+if __name__ == "__main__":
+    unittest.main()
 
 
 def test_merge_a_into_b():
