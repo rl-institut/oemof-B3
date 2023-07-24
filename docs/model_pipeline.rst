@@ -106,10 +106,10 @@ A few more conventions are important to know:
 
   * In the file :attr:`capacities.csv`, the already installed capacity can be set as 0 for
     a Greenfield assumption or as a positive numeric value for a Brownfield assumption.
-    Changes can be donefor the attribute :attr:`capacity` in :attr:`var_name`.
-  * In the file :attr:`potentials.csv`, the maximum capacity can be set for the attribute
-    :attr:`capacity_potential` in :attr:`var_name`. If the :attr:`capacity_potential` is left empty,
-    an infinite capacity potential is assumed.
+    Changes can be done for the attribute :attr:`capacity` in :attr:`var_name`.
+  * In the file :attr:`potentials.csv`, the maximum capacity can be set as a positive numeric value
+    for the attribute :attr:`capacity_potential` in :attr:`var_name`. If the
+    :attr:`capacity_potential` is left empty, an infinite capacity potential is assumed.
 
 .. _prepare_resources_label:
 
