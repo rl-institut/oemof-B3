@@ -134,6 +134,12 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
+If needed, all calculated scenarios in the directory :file:`results` can be deleted with the following rule:
+
+::
+
+    snakemake -j1 clean
+
 
 Contributing to oemof-B3
 ========================
