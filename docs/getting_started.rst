@@ -138,5 +138,21 @@ Alternatively, to create just the output file or directory of one rule, run:
 Contributing to oemof-B3
 ========================
 
+You can use oemof-B3 to calculate your own scenarios.
+To adapt the energy system of Brandenburg and Berlin according to your requirements, a modification
+of the componentes in the subdirectory oemof_b3 can be done.
+But you can also modify oemof_b3 to define your own energy system of another city or district.
+For all these use cases, the data in the raw directory
+must be adapted. For this purpose, it is advisable to have energy system-specific empty scalar data
+and time series created for each scenario.
+
+Executing the rule
+
+::
+
+    snakemake -j1 create_empty_scalars
+
+will create empty scalars.
+
 You can write `issues <https://github.com/rl-institut/oemof-B3/issues>`_ to announce bugs or
 to propose enhancements.
