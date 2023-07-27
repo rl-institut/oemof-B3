@@ -132,6 +132,9 @@ def prepare_vehicle_charging_demand(input_dir, balanced=True, const_share=None):
             parse_dates=True,
             thousands=",",
         ).drop(columns=["Unnamed: 0"], axis=1)
+        ts_raw.index = pd.to_datetime(
+            ts_raw.index, infer_datetime_format=True, errors="coerce", utc=True
+        )
         ts = ts_raw[ts_raw.index.year == year]
 
         # resample (15 min to hourly), unit is kW
