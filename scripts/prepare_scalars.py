@@ -49,7 +49,9 @@ def annuise_investment_cost(sc):
 
         # set wacc per scenario_key
         scenario_keys = invest_data.index.get_level_values("scenario_key")
-        invest_data["wacc"] = wacc.loc[scenario_keys].values
+        wacc_array = wacc.loc[scenario_keys].values
+        wacc_list = [value for sublist in wacc_array for value in sublist]
+        invest_data["wacc"] = wacc_list
 
         annuised_investment_cost = invest_data.apply(
             lambda x: annuity(x[var_name_cost], x["lifetime"], x["wacc"])
