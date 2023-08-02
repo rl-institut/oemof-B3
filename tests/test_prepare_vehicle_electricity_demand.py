@@ -1,5 +1,5 @@
 import os
-from pandas.util.testing import assert_frame_equal, assert_series_equal
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 from scripts.prepare_vehicle_charging_demand import prepare_vehicle_charging_demand
 from oemof_b3.tools.data_processing import load_b3_timeseries, save_df

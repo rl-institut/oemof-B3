@@ -1,5 +1,5 @@
 import os
-from pandas.util.testing import assert_frame_equal, assert_series_equal
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 from scripts.prepare_feedin import prepare_wind_and_pv_time_series
 from oemof_b3.tools.data_processing import load_b3_timeseries, save_df
