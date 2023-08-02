@@ -38,6 +38,8 @@ import os
 import sys
 import pandas as pd
 import numpy as np
+from oemof_b3.config.config import load_yaml
+from oemof_b3 import model
 import oemof_b3.tools.data_processing as dp
 from oemof_b3.config import config
 
@@ -191,6 +193,14 @@ if __name__ == "__main__":
     # Get regions from heat demand
     regions = sc_filtered.loc[:, "region"].unique()
 
+    # Get name of the efficiency profile from file component_attrs_update
+    component_attrs_update = load_yaml(
+        os.path.join(model.here, "component_attrs_update.yml")
+    )
+    eff_col_name = component_attrs_update["electricity-heatpump_small"]["foreign_keys"][
+        "efficiency"
+    ]
+
     # Create empty data frame for results / output
     final_cops = pd.DataFrame(columns=dp.HEADER_B3_TS)
 
@@ -222,7 +232,7 @@ if __name__ == "__main__":
                 )
             )
 
-            cops["efficiency-profile"] = calc_cops(temp_high, temp_low, QUALITY_GRADE)
+            cops[eff_col_name] = calc_cops(temp_high, temp_low, QUALITY_GRADE)
 
             cops_ts_info = {
                 "region": region,
