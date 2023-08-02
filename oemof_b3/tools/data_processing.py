@@ -248,7 +248,12 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True, sep=config.settings.general.separator)
+    df.to_csv(
+        path,
+        index=True,
+        sep=config.settings.general.separator,
+        date_format="%Y-%m-%d %H:%M:%S",
+    )
 
     # Print user info
     logger.info(f"The DataFrame has been saved to: {path}.")
