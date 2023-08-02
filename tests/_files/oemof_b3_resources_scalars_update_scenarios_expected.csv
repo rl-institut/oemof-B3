@@ -1,3 +1,3 @@
 id_scal;scenario_key;name;var_name;carrier;region;tech;type;var_value;var_unit;source;comment
-0;2050-eff;B-biomass-st;capacity_cost;biomass;B;gt;conversion;0.45;None;own assumption;
+0;2050-eff;B-biomass-st;capacity_cost;biomass;B;gt;conversion;0.45;MW;own assumption;
 1;2050-base;B-biomass-st;efficiency;biomass;B;gt;conversion;0.4;None;own assumption;
