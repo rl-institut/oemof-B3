@@ -229,8 +229,10 @@ def smooth_profiles(df):
         ts.loc[ts.between_time(start, end).index] = average
         return ts
 
-    df["sum UC work"] = df.groupby(df.index.date)["sum UC work"].apply(
-        lambda x: balance_between_hours(ts=x, start=WORK_START, end=WORK_END)
+    df["sum UC work"] = (
+        df.groupby(df.index.date)["sum UC work"]
+        .apply(lambda x: balance_between_hours(ts=x, start=WORK_START, end=WORK_END))
+        .values
     )
 
     # for home: determine which hours of the day should belong to next day
@@ -244,8 +246,10 @@ def smooth_profiles(df):
             f"`HOME_START` is {HOME_START}."
         )
 
-    df["sum UC home"] = df.groupby(df["temp"])["sum UC home"].apply(
-        lambda x: balance_between_hours(ts=x, start=HOME_START, end=HOME_END)
+    df["sum UC home"] = (
+        df.groupby(df["temp"])["sum UC home"]
+        .apply(lambda x: balance_between_hours(ts=x, start=HOME_START, end=HOME_END))
+        .values
     )
 
     # get total charging df after balancing
