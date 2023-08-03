@@ -522,7 +522,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     if not agg_method:
         agg_method = {
             "var_value": sum,
-            "name": lambda x: "None",
+            "name": lambda x: np.nan,
             "var_unit": aggregate_units,
         }
 
