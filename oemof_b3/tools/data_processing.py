@@ -1258,7 +1258,10 @@ def _get_direction(oemof_tuple):
 
 def _get_region_carrier_tech_from_component(component, delimiter="-"):
 
-    if isinstance(component, oemof.tabular.facades.Facade):
+    typemap_facades = oemof.tabular.facades.TYPEMAP
+    typemap_values = list(typemap_facades.values())
+
+    if isinstance(component, classmethod) and (component in typemap_values):
         region = component.region
         carrier = component.carrier
         tech = component.tech
