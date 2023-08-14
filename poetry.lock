@@ -1881,7 +1881,7 @@ dev = ["pytest"]
 [[package]]
 name = "oemof.solph"
 version = "0.5.1.dev3"
-description = ""
+description = "A model generator for energy system modelling and optimisation."
 optional = false
 python-versions = ">=3.8"
 files = []
@@ -1976,7 +1976,7 @@ dev = ["black (==20.8b1)", "coverage", "flake8", "pytest"]
 type = "git"
 url = "https://git@github.com/rl-institut/oemoflex"
 reference = "features/update_tabular"
-resolved_reference = "19e0ccdd8acda2964d31d3fc2c0e52a471bc44d4"
+resolved_reference = "a569b722cf49ec98b662fdceab0391783274c633"
 
 [[package]]
 name = "openpyxl"
