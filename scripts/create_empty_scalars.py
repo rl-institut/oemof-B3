@@ -104,7 +104,8 @@ def expand_scalars(df, column, where, expand):
 
 
 def add_new_entry_to_scalars(sc, new_entry_dict):
-    sc = sc.append(new_entry_dict, ignore_index=True)
+    new_entry_df = pd.DataFrame([new_entry_dict])
+    sc = pd.concat([sc, new_entry_df], ignore_index=True)
 
     return sc
 
@@ -117,7 +118,7 @@ def save_empty_scalars(sc, path):
         if all_sc.empty:
             all_sc = sc
         else:
-            all_sc = all_sc.append(sc, ignore_index=True)
+            all_sc = pd.concat([all_sc, sc], ignore_index=True)
             all_sc.index.name = sc.index.name
 
     else:
