@@ -107,7 +107,6 @@ def add_new_entry_to_scalars(sc, new_entry_dict):
     new_entry_df = pd.DataFrame([new_entry_dict])
     sc = pd.concat([sc, new_entry_df], ignore_index=True)
 
-
     return sc
 
 
