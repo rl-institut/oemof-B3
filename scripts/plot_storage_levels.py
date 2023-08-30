@@ -133,7 +133,7 @@ if __name__ == "__main__":
     MW_to_W = 1e6
 
     data = pd.read_csv(
-        STORAGE_LEVEL_FILE, header=[0, 1, 2], parse_dates=[0], index_col=[0], delimiter=';'
+        STORAGE_LEVEL_FILE, header=[0, 1, 2], parse_dates=[0], index_col=[0]
     )
 
     # select carrier
