@@ -73,7 +73,7 @@ rule report:
         shutil.copy(src=input[0], dst=output[0])
         shutil.copy(src=input[1], dst=output[0])
 
-        if platform.system() != "Windows":
+        if platform.system() == "Linux" or platform.system() == "Darwin":
             # static pdf report
             shell(
             """
@@ -107,5 +107,8 @@ rule report:
             os.remove(os.path.join(output[0], "report.md"))
             os.remove(os.path.join(output[0], "report_interactive.md"))
 
-        else:
+        elif platform.system() == "Windows":
             raise UserWarning("Sorry, at the moment the report is not available for Windows users.")
+        else:
+            raise UserWarning("Sorry, the report is not supported for the system you are using. "
+                              "Please use either a Linux or a Darwin System.")
