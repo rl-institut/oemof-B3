@@ -6,7 +6,10 @@ try:
 
 except ImportError:
     raise ImportError(
-        "No module named 'geopandas'. You need to install 'geopandas' in order to use this script."
+        "No module named 'geopandas'. You need to install 'geopandas' in order to use this "
+        "script. Please execute 'poetry install -E preprocessing' to install it. \nCheck also "
+        "our documentation if you are running into problems on "
+        "[`How to install geopandas`](https://oemof-b3.readthedocs.io/en/latest/getting_started.html#how-to-install-geopandas)"
     )
 
 
