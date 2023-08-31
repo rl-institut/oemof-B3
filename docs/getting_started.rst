@@ -45,10 +45,17 @@ If you have installation problems, consider opening an
 `issue <https://github.com/rl-institut/oemof-B3/issues>`_.
 
 
-How to install geopandas under Windows
---------------------------------------
-Geopandas is necessary in `oemof-B3` for a small subset of the modeling steps. Therefore it is part of the extras requirements.
-The installation of geopandas on Windows can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
+How to install geopandas
+------------------------
+Geopandas is necessary in `oemof-B3` for a small subset of the modeling steps. Therefore it is part
+of the extras requirements. To install geopandas execute
+
+::
+
+    poetry install -E preprocessing
+
+
+The installation of geopandas on **Windows** can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
 
 Simply type
 
