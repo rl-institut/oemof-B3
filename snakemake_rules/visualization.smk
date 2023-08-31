@@ -67,38 +67,48 @@ rule report:
     run:
         import os
         import shutil
+        import platform
+
         os.makedirs(output[0])
         shutil.copy(src=input[0], dst=output[0])
         shutil.copy(src=input[1], dst=output[0])
-        # static pdf report
-        shell(
-        """
-        pandoc -V geometry:a4paper,margin=2.5cm \
-        --lua-filter report/pandoc_filter.lua \
-        --resource-path={params.all_plots} \
-        --metadata title="Results for scenario {wildcards.scenario}" \
-        {output}/report.md -o {output}/report.pdf
-        """
-        )
-        # static html report
-        shell(
-        """
-        pandoc --resource-path={params.all_plots} \
-        --lua-filter report/pandoc_filter.lua \
-        --metadata title="Results for scenario {wildcards.scenario}" \
-        --self-contained -s --include-in-header=report/report.css \
-        {output}/report.md -o {output}/report.html
-        """
-        )
-        # interactive html report
-        shell(
-        """
-        pandoc --resource-path={params.all_plots} \
-        --lua-filter report/pandoc_filter.lua \
-        --metadata title="Results for scenario {wildcards.scenario}" \
-        --self-contained -s --include-in-header=report/report.css \
-        {output}/report_interactive.md -o {output}/report_interactive.html
-        """
-        )
-        os.remove(os.path.join(output[0], "report.md"))
-        os.remove(os.path.join(output[0], "report_interactive.md"))
+
+        if platform.system() == "Linux" or platform.system() == "Darwin":
+            # static pdf report
+            shell(
+            """
+            pandoc -V geometry:a4paper,margin=2.5cm \
+            --lua-filter report/pandoc_filter.lua \
+            --resource-path={params.all_plots} \
+            --metadata title="Results for scenario {wildcards.scenario}" \
+            {output}/report.md -o {output}/report.pdf
+            """
+            )
+            # static html report
+            shell(
+            """
+            pandoc --resource-path={params.all_plots} \
+            --lua-filter report/pandoc_filter.lua \
+            --metadata title="Results for scenario {wildcards.scenario}" \
+            --self-contained -s --include-in-header=report/report.css \
+            {output}/report.md -o {output}/report.html
+            """
+            )
+            # interactive html report
+            shell(
+            """
+            pandoc --resource-path={params.all_plots} \
+            --lua-filter report/pandoc_filter.lua \
+            --metadata title="Results for scenario {wildcards.scenario}" \
+            --self-contained -s --include-in-header=report/report.css \
+            {output}/report_interactive.md -o {output}/report_interactive.html
+            """
+            )
+            os.remove(os.path.join(output[0], "report.md"))
+            os.remove(os.path.join(output[0], "report_interactive.md"))
+
+        elif platform.system() == "Windows":
+            raise UserWarning("Sorry, at the moment the report is not available for Windows users.")
+        else:
+            raise UserWarning("Sorry, the report is not supported for the system you are using. "
+                              "Please use either a Linux or a Darwin System.")
