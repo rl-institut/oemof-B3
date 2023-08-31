@@ -2,6 +2,7 @@
 biomass-gt: Biomass GT
 biomass-st: Biomass ST
 biomass: Biomass
+ch4: CH4
 ch4-boiler: CH4 boiler
 ch4-bpchp: CH4 backpressure CHP
 ch4-demand: CH4 demand
@@ -42,3 +43,4 @@ heat_decentral-storage: Heat dec. storage
 hydro-ror: Hydro ROR
 solar-pv: PV
 wind-onshore: Wind on
+oil: Oil
