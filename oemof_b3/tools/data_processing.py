@@ -1058,9 +1058,10 @@ def unstack_timeseries(df):
     lost_columns = ["source", "comment"]
     for col in lost_columns:
         if col in list(df.columns):
-            logger.warning(
-                f"Caution any remarks in column '{col}' are lost after unstacking."
-            )
+            if not _df[col].isna().all() or _df[col].values.all() == "None":
+                logger.warning(
+                    f"Caution any remarks in column '{col}' are lost after unstacking."
+                )
 
     # Process values of series
     values_series = []
