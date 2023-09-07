@@ -71,7 +71,7 @@ def add_region_to_register(register, regions):
     register["coordinates"] = list(zip(register.lon, register.lat))
     register["coordinates"] = register["coordinates"].apply(Point)
     register_gdf = gpd.GeoDataFrame(register, geometry="coordinates", crs=4326)
-    new_register_gdf = gpd.sjoin(register_gdf, regions, op="within")
+    new_register_gdf = gpd.sjoin(register_gdf, regions, predicate="within")
     new_register = pd.DataFrame(new_register_gdf)
 
     return new_register
