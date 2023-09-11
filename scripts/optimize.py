@@ -259,7 +259,9 @@ if __name__ == "__main__":
 
         # save solver log to scenario specific location
         solve_kwargs = config.settings.optimize.solve_kwargs
-        solve_kwargs["logfile"] = logfile.split(".")[0] + "_solver_log.log"
+        solve_kwargs["logfile"] = (
+            logfile.split("." + logfile.split(".")[-1])[0] + "_solver_log.log"
+        )
 
         logger.info(
             f"Solving with solver '{config.settings.optimize.solver}' "
