@@ -141,8 +141,8 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
-Calculated scenarios in the directory :file:`results` can be deleted with two kinds of rules.
-Based on the used operating system, Linux and Darwin/macOS based systems can execute the rule:
+The calculations of scenarios in the :file:`results` directory can be deleted on Darwin/macOS
+systems by executing the following rule:
 
 ::
 
