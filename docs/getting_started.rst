@@ -4,11 +4,6 @@
 Getting started
 ~~~~~~~~~~~~~~~
 
-.. contents:: `Contents`
-    :depth: 1
-    :local:
-    :backlinks: top
-
 Using oemof-B3
 ==============
 
@@ -50,10 +45,17 @@ If you have installation problems, consider opening an
 `issue <https://github.com/rl-institut/oemof-B3/issues>`_.
 
 
-How to install geopandas under Windows
---------------------------------------
-Geopandas is necessary in `oemof-B3` for a small subset of the modeling steps. Therefore it is part of the extras requirements.
-The installation of geopandas on Windows can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
+How to install geopandas
+------------------------
+Geopandas is necessary in `oemof-B3` for a small subset of the modeling steps. Therefore it is part
+of the extras requirements. To install geopandas execute
+
+::
+
+    poetry install -E preprocessing
+
+
+The installation of geopandas on **Windows** can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
 
 Simply type
 
@@ -139,9 +141,37 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
+The calculations of scenarios in the :file:`results` directory can be deleted on Darwin/macOS
+systems by executing the following rule:
+
+::
+
+    snakemake -j1 clean
+
+To remove all scenario results on a Windows based system, the following rule can be executed:
+
+::
+
+    snakemake -j1 clean_on_win_sys
 
 Contributing to oemof-B3
 ========================
+
+You can use oemof-B3 to calculate your own scenarios.
+To adapt the energy system of Brandenburg and Berlin according to your requirements, a modification
+of the componentes in the subdirectory oemof_b3 can be done.
+But you can also modify oemof_b3 to define your own energy system of another city or district.
+For all these use cases, the data in the raw directory
+must be adapted. For this purpose, it is advisable to have energy system-specific empty scalar data
+and time series created for each scenario.
+
+Executing the rule
+
+::
+
+    snakemake -j1 create_empty_scalars
+
+will create empty scalars.
 
 The rule
 
@@ -151,7 +181,6 @@ The rule
 
 will create empty time series data.
 The empty scalars and time series data can be used to verify your energy system model in the preprocessing stage.
-
 
 You can write `issues <https://github.com/rl-institut/oemof-B3/issues>`_ to announce bugs or
 to propose enhancements.

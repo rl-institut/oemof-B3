@@ -11,8 +11,19 @@ The model is a perfect-foresight, cost minimizing linear optimization model that
 [oemof.tabular](https://github.com/oemof/oemof-tabular),
 and [oemoflex](https://github.com/rl-institut/oemoflex).
 
-oemof-B3 is currently under heavy development, which means that first full scenario runs will be
-available in the coming months.
+There are six scenarios available, that you can calculate with oemof-B3:
+- 2050-80-el_eff
+- 2050-80-gas_moreCH4
+- 2050-95-el_eff
+- 2050-95-gas_moreCH4
+- 2050-100-el_eff
+- 2050-100-gas_moreCH4
+
+All six refer to the target year 2050. A further distinction is made between an emissions reduction
+of 80, 95 or 100 percent. Furthermore, the scenarios differ in their degree of electrification. 
+Scenarios with the index 'el_eff' represent strongly electrified scenarios, while 'gas_moreCH4'
+represent scenarios with increased use of methane.
+In the documentation you will find instructions on how to run the scenarios with oemof-B3.
 
 ## Getting started
 
