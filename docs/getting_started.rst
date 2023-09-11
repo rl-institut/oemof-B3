@@ -141,12 +141,18 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
-If needed, all calculated scenarios in the directory :file:`results` can be deleted with the following rule:
+Calculated scenarios in the directory :file:`results` can be deleted with two kinds of rules.
+Based on the used operating system, Linux and Darwin/macOS based systems can execute the rule:
 
 ::
 
     snakemake -j1 clean
 
+To remove all scenario results on a Windows based system, the following rule can be executed:
+
+::
+
+    snakemake -j1 clean_on_win_sys
 
 Contributing to oemof-B3
 ========================
