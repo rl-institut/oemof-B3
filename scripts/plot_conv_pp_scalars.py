@@ -169,4 +169,7 @@ if __name__ == "__main__":
     # TODO: Check if oemoflex' function can be imported and used here
     plot_grouped_bar(ax, df_pivot, COLORS, UNIT)
 
-    plt.savefig(target + config.settings.general.plot_filetype, bbox_inches="tight")
+    # Create the target path according to file type set in settings
+    target_path = target.split(".")[0] + config.settings.general.plot_filetype
+
+    plt.savefig(target_path, bbox_inches="tight")
