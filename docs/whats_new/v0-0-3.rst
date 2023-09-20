@@ -2,13 +2,29 @@ v0.0.3
 ======
 
 # New features
+* The oemoflex version has been updated to v0.0.2 which leads to an increase in oemof-tabular and oemof.solph version
+* It is possible to create an file which holds empty values for all needes scalars of the energy system
 
 # Bug fixes
+* Several bugs in the plotting functions have been fixed
+* The warning that data gets lost in column comment and source is only displayed if it applies
+* Windows user are informed that they can not create an report yet
 
 # Documentation
+* The documentation has been revised and extended
 
 # Tests
-
-# Other changes
+* A test for warning of lost data in column comment and source while stacking and unstacking
 
 # Contributors
+- jnnr
+- MaGering
+- SabineHaas
+- juliusmeier
+- henhuy
+- monika-o
+- c-moeller
+- Stefanie08
+- chrwm
+- khelfen
+- mjazimm
