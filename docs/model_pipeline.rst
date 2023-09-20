@@ -100,7 +100,7 @@ A few more conventions are important to know:
 * The capacity of specific components of a scenario can be expanded during an optimization, if the facade attribute `expandable` is set on `True`.
 
   * To adjust this setting, the attribute needs to be specified in the file :attr:`costs_efficiencies.csv`.
-  * An overview of all facades, which includes `expandable` can be found in the facade attributes overview <https://oemof-tabular.readthedocs.io/en/latest/facades.html#>`_ provided by oemof.tabular.
+  * An overview of all facades, which includes `expandable`, can be found in the `facade attributes overview <https://oemof-tabular.readthedocs.io/en/latest/facades.html#>`_ provided by oemof.tabular.
 
 * There is a distinction between the maximum capacity and the already installed capacity of specific components.
   Both of the two attributes can be set individually:
