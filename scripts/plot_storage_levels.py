@@ -108,7 +108,7 @@ def multiplot_df(df, figsize=None, sharex=True, colors=None, **kwargs):
     if colors:
         assert all(name_col in colors for name_col in df.columns)
 
-    for ax, (name_col, series) in zip(axs, df.iteritems()):
+    for ax, (name_col, series) in zip(axs, df.items()):
 
         ax.plot(series, color=colors[name_col], **kwargs)
 

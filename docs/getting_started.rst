@@ -11,15 +11,49 @@ Using oemof-B3
 Installation
 ------------
 
-Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.8, 3.9 or 3.10 (newer versions may be supported, but installation can take very long).
 
-In order to install oemof-B3, proceed with the following steps:
+Additionally, you need to install the python dependency manager `poetry <https://python-poetry.org/>`_.
+It is recommended to install poetry system-wide via the command below or
+`pipx <https://python-poetry.org/docs/#installing-with-pipx>`_:
 
-- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
-- enter folder
-- create virtual environment using conda: `conda env create environment.yml`
-- activate environment: `conda activate oemof-B3`
-- install oemof-B3 package using poetry, via: `poetry install`
+::
+
+    curl -sSL https://install.python-poetry.org | python3 -
+    poetry install
+
+
+**In order to install oemof-B3, proceed with the following steps:**
+
+1. Clone oemof-B3 into local folder:
+
+::
+
+    git clone git@github.com:rl-institut/oemof-B3.git
+
+2. Enter folder
+
+::
+
+    cd oemof-B3
+
+3. Create virtual environment using conda:
+
+::
+
+    conda env create environment.yml
+
+4. Activate environment:
+
+::
+
+    conda activate oemof-B3
+
+5. Install oemof-B3 package using poetry, via:
+
+::
+
+    poetry install
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
@@ -163,7 +197,7 @@ of the componentes in the subdirectory oemof_b3 can be done.
 But you can also modify oemof_b3 to define your own energy system of another city or district.
 For all these use cases, the data in the raw directory
 must be adapted. For this purpose, it is advisable to have energy system-specific empty scalar data
-and time series created for each scenario.
+and time series created for each scenario. See further information in :ref:`How to customize oemof-B3`.
 
 Executing the rule
 

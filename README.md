@@ -29,15 +29,33 @@ In the documentation you will find instructions on how to run the scenarios with
 
 ### Installation
 
-Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.8, 3.9 or 3.10 (newer versions may be supported, but installation can take very long).
 
-In order to install oemof-B3, proceed with the following steps:
+Additionally, you need to install the python dependency manager [poetry](https://python-poetry.org/).
+It is recommended to install poetry system-wide via the command below or
+[pipx](https://python-poetry.org/docs/#installing-with-pipx):
 
-- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
-- enter folder
-- create virtual environment using conda: `conda env create environment.yml`
-- activate environment: `conda activate oemof-B3`
-- install oemof-B3 package using poetry, via: `poetry install`
+    curl -sSL https://install.python-poetry.org | python3 -
+    poetry install
+
+
+**In order to install oemof-B3, proceed with the following steps:**
+
+1. Clone oemof-B3 into local folder:
+
+       git clone git@github.com:rl-institut/oemof-B3.git
+2. Enter folder
+
+       cd oemof-B3
+3. Create virtual environment using conda:
+
+       conda env create environment.yml
+4. Activate environment:
+
+       conda activate oemof-B3
+5. Install oemof-B3 package using poetry, via:
+
+       poetry install
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
@@ -46,7 +64,7 @@ If environment is build otherwise, pandoc must be installed manually. It can be 
 
 For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
 
-To test if everything works, you can run the examples (cf. :ref:`How to run the model`).
+To test if everything works, you can run the [examples](https://oemof-b3.readthedocs.io/en/latest/examples.html).
 
 For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
