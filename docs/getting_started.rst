@@ -13,6 +13,16 @@ Installation
 
 Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
+Additionally, you need to install the python dependency manager `poetry <https://python-poetry.org/>`_.
+It is recommended to install poetry system-wide via the command below or
+`pipx <https://python-poetry.org/docs/#installing-with-pipx>`_:
+
+::
+
+    conda env create -f environment.yml
+    conda activate digipipe
+
+
 In order to install oemof-B3, proceed with the following steps:
 
 - git-clone oemof-B3 into local folder via https:
