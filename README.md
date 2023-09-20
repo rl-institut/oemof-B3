@@ -31,6 +31,14 @@ In the documentation you will find instructions on how to run the scenarios with
 
 Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
 
+Additionally, you need to install the python dependency manager [poetry](https://python-poetry.org/).
+It is recommended to install poetry system-wide via the command below or
+[pipx](https://python-poetry.org/docs/#installing-with-pipx):
+
+    curl -sSL https://install.python-poetry.org | python3 -
+    poetry install
+
+
 In order to install oemof-B3, proceed with the following steps:
 
 - git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
@@ -46,7 +54,7 @@ If environment is build otherwise, pandoc must be installed manually. It can be 
 
 For the optimization, oemof-B3 needs a solver. Check out the [oemof.solph](https://oemof-solph.readthedocs.io/en/latest/readme.html#installing-a-solver) documentation for installation notes.
 
-To test if everything works, you can run the examples (cf. :ref:`How to run the model`).
+To test if everything works, you can run the [examples](https://oemof-b3.readthedocs.io/en/latest/examples.html).
 
 For developers: Please activate pre-commit hooks (via `pre-commit install`) in order to follow our coding styles.
 
