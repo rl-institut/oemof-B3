@@ -197,7 +197,7 @@ of the componentes in the subdirectory oemof_b3 can be done.
 But you can also modify oemof_b3 to define your own energy system of another city or district.
 For all these use cases, the data in the raw directory
 must be adapted. For this purpose, it is advisable to have energy system-specific empty scalar data
-and time series created for each scenario. See further information in :ref:`how_to_customize_oemof-B3`.
+and time series created for each scenario.
 
 Executing the rule
 
