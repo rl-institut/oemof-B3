@@ -19,8 +19,8 @@ It is recommended to install poetry system-wide via the command below or
 
 ::
 
-    conda env create -f environment.yml
-    conda activate digipipe
+    curl -sSL https://install.python-poetry.org | python3 -
+    poetry install
 
 
 **In order to install oemof-B3, proceed with the following steps:**
