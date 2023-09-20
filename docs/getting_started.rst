@@ -25,33 +25,31 @@ It is recommended to install poetry system-wide via the command below or
 
 **In order to install oemof-B3, proceed with the following steps:**
 
-- Clone oemof-B3 into local folder via https:
-
-::
-
-    git clone https://github.com/rl-institut/oemof-B3.git
-
-
-or via ssh:
+1. Clone oemof-B3 into local folder:
 
 ::
 
     git clone git@github.com:rl-institut/oemof-B3.git
 
-- Enter folder
-- Create virtual environment using conda:
+2. Enter folder
+
+::
+
+    cd oemof-B3
+
+3. Create virtual environment using conda:
 
 ::
 
     conda env create environment.yml
 
-- Activate environment:
+4. Activate environment:
 
 ::
 
     conda activate oemof-B3
 
-- Install oemof-B3 package using poetry, via:
+5. Install oemof-B3 package using poetry, via:
 
 ::
 
