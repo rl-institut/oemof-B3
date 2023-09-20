@@ -33,11 +33,22 @@ Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, bu
 
 In order to install oemof-B3, proceed with the following steps:
 
-- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
+- git-clone oemof-B3 into local folder via https:
+
+       git clone https://github.com/rl-institut/oemof-B3.git
+  or via ssh:
+
+       git clone git@github.com:rl-institut/oemof-B3.git
 - enter folder
-- create virtual environment using conda: `conda env create environment.yml`
-- activate environment: `conda activate oemof-B3`
-- install oemof-B3 package using poetry, via: `poetry install`
+- create virtual environment using conda:
+
+       conda env create environment.yml
+- activate environment:
+
+       conda activate oemof-B3
+- install oemof-B3 package using poetry, via:
+
+       poetry install
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
