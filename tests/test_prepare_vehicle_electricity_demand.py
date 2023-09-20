@@ -1,5 +1,6 @@
 import os
-from pandas.util.testing import assert_frame_equal, assert_series_equal
+import pytest
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 from scripts.prepare_vehicle_charging_demand import prepare_vehicle_charging_demand
 from oemof_b3.tools.data_processing import load_b3_timeseries, save_df
@@ -50,7 +51,7 @@ def test_prepare_vehicle_charging_demand_smoothing():
     # temporarily save df and load again for correct dtypes
     df = _save_and_reload_ts(df)
 
-    assert sum(df["series"].iloc[0]) == float(1)
+    assert pytest.approx(sum(df["series"].iloc[0]), 0.000000001) == float(1)
 
 
 def teardown_function():

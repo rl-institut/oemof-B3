@@ -108,7 +108,7 @@ def multiplot_df(df, figsize=None, sharex=True, colors=None, **kwargs):
     if colors:
         assert all(name_col in colors for name_col in df.columns)
 
-    for ax, (name_col, series) in zip(axs, df.iteritems()):
+    for ax, (name_col, series) in zip(axs, df.items()):
 
         ax.plot(series, color=colors[name_col], **kwargs)
 
@@ -133,7 +133,11 @@ if __name__ == "__main__":
     MW_to_W = 1e6
 
     data = pd.read_csv(
-        STORAGE_LEVEL_FILE, header=[0, 1, 2], parse_dates=[0], index_col=[0]
+        STORAGE_LEVEL_FILE,
+        header=[0, 1, 2],
+        parse_dates=[0],
+        index_col=[0],
+        delimiter=";",
     )
 
     # select carrier

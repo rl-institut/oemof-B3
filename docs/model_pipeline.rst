@@ -4,11 +4,6 @@
 Model pipeline
 ~~~~~~~~~~~~~~
 
-.. contents:: `Contents`
-    :depth: 1
-    :local:
-    :backlinks: top
-
 The main functionality of oemof-B3 is a data processing pipeline which is managed using snakemake.
 The pipeline preprocesses raw data into scalar and time series resources that are used to
 build tabular datapackages representing single energy system optimization problems. These can be
@@ -102,6 +97,18 @@ A few more conventions are important to know:
   * such powered with electricity with :attr:`config.settings.optimize.el_key` followed by :attr:`carrier` and :attr:`region` (example: :attr:`{"electricity-heat_decentral-B": 1}`).
   * Do not provide :attr:`output_parameters` or leave their :attr:`var_value` empty to neglect a component in the constraint.
 
+* The capacity of specific components of a scenario can be expanded during an optimization, if the facade attribute `expandable` is set on `True`.
+
+  * To adjust this setting, the attribute needs to be specified in the file :attr:`costs_efficiencies.csv`.
+  * An overview of all facades, which includes `expandable`, can be found in the `facade attributes overview <https://oemof-tabular.readthedocs.io/en/latest/facades.html#>`_ provided by oemof.tabular.
+
+* There is a distinction between the maximum capacity and the already installed capacity of specific components.
+  Both of the two attributes can be set individually:
+
+  * The attribute :attr:`capacity` in :attr:`var_name` relates to the already installed capacity. The value can be set to 0 for
+    a Greenfield assumption or to a positive numeric value for a Brownfield assumption.
+  * The attribute :attr:`capacity_potential` in :attr:`var_name` relates to the maximum capacity,
+    which can be set to a positive numeric value or left empty. In the latter case, an infinite capacity potential is assumed.
 
 .. _prepare_resources_label:
 

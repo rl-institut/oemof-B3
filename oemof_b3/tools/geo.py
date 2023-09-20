@@ -6,7 +6,10 @@ try:
 
 except ImportError:
     raise ImportError(
-        "No module named 'geopandas'. You need to install 'geopandas' in order to use this script."
+        "No module named 'geopandas'. You need to install 'geopandas' in order to use this "
+        "script. Please execute 'poetry install -E preprocessing' to install it. \nCheck also "
+        "our documentation if you are running into problems on "
+        "[`How to install geopandas`](https://oemof-b3.readthedocs.io/en/latest/getting_started.html#how-to-install-geopandas)"  # noqa: E501
     )
 
 
@@ -71,7 +74,7 @@ def add_region_to_register(register, regions):
     register["coordinates"] = list(zip(register.lon, register.lat))
     register["coordinates"] = register["coordinates"].apply(Point)
     register_gdf = gpd.GeoDataFrame(register, geometry="coordinates", crs=4326)
-    new_register_gdf = gpd.sjoin(register_gdf, regions, op="within")
+    new_register_gdf = gpd.sjoin(register_gdf, regions, predicate="within")
     new_register = pd.DataFrame(new_register_gdf)
 
     return new_register

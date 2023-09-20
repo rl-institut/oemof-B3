@@ -4,11 +4,6 @@
 Getting started
 ~~~~~~~~~~~~~~~
 
-.. contents:: `Contents`
-    :depth: 1
-    :local:
-    :backlinks: top
-
 Using oemof-B3
 ==============
 
@@ -16,15 +11,49 @@ Using oemof-B3
 Installation
 ------------
 
-Currently, oemof-B3 needs python 3.7 or 3.8 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.8, 3.9 or 3.10 (newer versions may be supported, but installation can take very long).
 
-In order to install oemof-B3, proceed with the following steps:
+Additionally, you need to install the python dependency manager `poetry <https://python-poetry.org/>`_.
+It is recommended to install poetry system-wide via the command below or
+`pipx <https://python-poetry.org/docs/#installing-with-pipx>`_:
 
-- git-clone oemof-B3 into local folder: `git clone https://github.com/rl-institut/oemof-B3.git`
-- enter folder
-- create virtual environment using conda: `conda env create environment.yml`
-- activate environment: `conda activate oemof-B3`
-- install oemof-B3 package using poetry, via: `poetry install`
+::
+
+    curl -sSL https://install.python-poetry.org | python3 -
+    poetry install
+
+
+**In order to install oemof-B3, proceed with the following steps:**
+
+1. Clone oemof-B3 into local folder:
+
+::
+
+    git clone git@github.com:rl-institut/oemof-B3.git
+
+2. Enter folder
+
+::
+
+    cd oemof-B3
+
+3. Create virtual environment using conda:
+
+::
+
+    conda env create environment.yml
+
+4. Activate environment:
+
+::
+
+    conda activate oemof-B3
+
+5. Install oemof-B3 package using poetry, via:
+
+::
+
+    poetry install
 
 Alternatively, you can create a virtual environment using other approaches, such as `virtualenv`.
 
@@ -50,10 +79,17 @@ If you have installation problems, consider opening an
 `issue <https://github.com/rl-institut/oemof-B3/issues>`_.
 
 
-How to install geopandas under Windows
---------------------------------------
-Geopandas is necessary in `oemof-B3` for a small subset of the modeling steps. Therefore it is part of the extras requirements.
-The installation of geopandas on Windows can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
+How to install geopandas
+------------------------
+Geopandas is necessary in `oemof-B3` for a small subset of the modeling steps. Therefore it is part
+of the extras requirements. To install geopandas execute
+
+::
+
+    poetry install -E preprocessing
+
+
+The installation of geopandas on **Windows** can be challenging. According to the geopandas documentation (https://geopandas.org/getting_started/install.html) there are multiple ways to install it. We recommend to use the conda-forge channel:
 
 Simply type
 
@@ -139,29 +175,46 @@ Alternatively, to create just the output file or directory of one rule, run:
 
      snakemake -j<NUMBER_OF_CPU_CORES> <output file or folder>
 
-
-Snakemake on Windows
-^^^^^^^^^^^^^^^^^^^^
-
-When running snakemake with output files in subfolders on Windows with
+The calculations of scenarios in the :file:`results` directory can be deleted on Darwin/macOS
+systems by executing the following rule:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES>
+    snakemake -j1 clean
 
-a ``MissingRuleException`` is raised. The process is unable to specify the output files in subfolders.
-This bug is an `open issue <https://github.com/snakemake/snakemake/issues/46>`_
-in snakemake.
-A current workaround is described in `pypsa-eur <https://pypsa-eur.readthedocs.io/en/latest/tutorial.html?highlight=windows#how-to-use-the-snakemake-rules>`_.
-is to run snakemake with the flag ``--keep-target-files`` to the command.
+To remove all scenario results on a Windows based system, the following rule can be executed:
 
 ::
 
-     snakemake -j<NUMBER_OF_CPU_CORES> --keep-target-files
-
+    snakemake -j1 clean_on_win_sys
 
 Contributing to oemof-B3
 ========================
+
+You can use oemof-B3 to calculate your own scenarios.
+To adapt the energy system of Brandenburg and Berlin according to your requirements, a modification
+of the componentes in the subdirectory oemof_b3 can be done.
+But you can also modify oemof_b3 to define your own energy system of another city or district.
+For all these use cases, the data in the raw directory
+must be adapted. For this purpose, it is advisable to have energy system-specific empty scalar data
+and time series created for each scenario. See further information in :ref:`How to customize oemof-B3`.
+
+Executing the rule
+
+::
+
+    snakemake -j1 create_empty_scalars
+
+will create empty scalars.
+
+The rule
+
+::
+
+    snakemake -j1 create_empty_ts
+
+will create empty time series data.
+The empty scalars and time series data can be used to verify your energy system model in the preprocessing stage.
 
 You can write `issues <https://github.com/rl-institut/oemof-B3/issues>`_ to announce bugs or
 to propose enhancements.

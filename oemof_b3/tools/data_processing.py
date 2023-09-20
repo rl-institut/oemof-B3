@@ -248,7 +248,12 @@ def save_df(df, path):
         Path to save the csv file
     """
     # Save scalars to csv file
-    df.to_csv(path, index=True, sep=config.settings.general.separator)
+    df.to_csv(
+        path,
+        index=True,
+        sep=config.settings.general.separator,
+        date_format="%Y-%m-%d %H:%M:%S",
+    )
 
     # Print user info
     logger.info(f"The DataFrame has been saved to: {path}.")
@@ -517,7 +522,7 @@ def aggregate_scalars(df, columns_to_aggregate, agg_method=None):
     if not agg_method:
         agg_method = {
             "var_value": sum,
-            "name": lambda x: "None",
+            "name": lambda x: np.nan,
             "var_unit": aggregate_units,
         }
 
@@ -1053,9 +1058,10 @@ def unstack_timeseries(df):
     lost_columns = ["source", "comment"]
     for col in lost_columns:
         if col in list(df.columns):
-            logger.warning(
-                f"Caution any remarks in column '{col}' are lost after unstacking."
-            )
+            if not _df[col].isna().all() or _df[col].values.all() == "None":
+                logger.warning(
+                    f"Caution any remarks in column '{col}' are lost after unstacking."
+                )
 
     # Process values of series
     values_series = []
@@ -1253,7 +1259,10 @@ def _get_direction(oemof_tuple):
 
 def _get_region_carrier_tech_from_component(component, delimiter="-"):
 
-    if isinstance(component, oemof.tabular.facades.Facade):
+    typemap_facades = oemof.tabular.facades.TYPEMAP
+    typemap_values = list(typemap_facades.values())
+
+    if isinstance(component, classmethod) and (component in typemap_values):
         region = component.region
         carrier = component.carrier
         tech = component.tech

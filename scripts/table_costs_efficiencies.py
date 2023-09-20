@@ -92,7 +92,7 @@ if __name__ == "__main__":
         units = df.loc[:, idx["var_unit", group]]
         units = units.stack()
 
-        result = pd.concat([values, units], 1)
+        result = pd.concat([values, units], axis=1)
         result.columns = [name, name + "_unit"]
 
         result.index = result.index.remove_unused_levels()
@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
         combined.append(result)
 
-    df = pd.concat(combined, 1)
+    df = pd.concat(combined, axis=1)
 
     df.index = df.index.droplevel(2)
 

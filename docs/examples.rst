@@ -7,7 +7,7 @@ Examples
 To give a quick intro into oemof-B3's capabilities, we provide 3 simple
 `examples <https://github.com/rl-institut/oemof-B3/tree/dev/examples>`_.
 
-To run all example scenarios, execute on a linux system:
+To run all example scenarios, execute:
 
 ::
 
@@ -27,7 +27,7 @@ The examples are limited to the electricity sector, the heat sector is not model
 
 Data for capacities of wind, photovoltaic and biomass as well as electricity demand have been taken
 from the grid development plan
-(`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/paragraphs-files/NEP_2035_V2021_1_Entwurf_Teil1.pdf>`_, p. 41 ff.)
+(`Netzentwicklungsplan <https://www.netzentwicklungsplan.de/sites/default/files/2022-11/NEP_2035_V2021_1_Entwurf_Teil1_1.pdf>`_, p. 41 ff.)
 :cite:`NEP2021_Entwurf_1`.
 Data for efficiencies and costs (specific annuity, fuel costs) are based on different sources as well
 as on own assumptions.

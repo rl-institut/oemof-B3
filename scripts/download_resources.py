@@ -1,3 +1,16 @@
+# coding: utf-8
+r"""
+Inputs
+-------
+target_paths : list
+    List of PosixPaths of table names from OEP to be downloaded
+
+Description
+-------------
+The script downloads a list of tables from the OEP and saves them as csv files to
+``results/_resources`` dir.
+"""
+
 import pathlib
 import sys
 

@@ -41,7 +41,7 @@ def write_schema_to_metadata(schema, metadata, num_resource=0):
         "description"
     ] = schema.index["description"]
 
-    for i, (name, (type, description)) in enumerate(schema.columns.iteritems()):
+    for i, (name, (type, description)) in enumerate(schema.columns.items()):
         _metadata["resources"][num_resource]["schema"]["fields"][i + 1]["name"] = name
         _metadata["resources"][num_resource]["schema"]["fields"][i + 1]["type"] = type
         _metadata["resources"][num_resource]["schema"]["fields"][i + 1][
