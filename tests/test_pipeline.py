@@ -8,13 +8,9 @@ output_rule = "raw/scalars/empty_scalars.csv"
 output_file_path = os.path.join(os.getcwd(), output_rule)
 
 
-def check_if_output_exists(path):
-    return os.path.exists(path)
-
-
-def rename_file(before, after):
+def rename_file(file_path, before, after):
     # Split the path and file name
-    directory, filename = os.path.split(output_file_path)
+    directory, filename = os.path.split(file_path)
 
     # Add "_original" before the file extension
     new_filename = filename.replace(before, after)
@@ -23,7 +19,7 @@ def rename_file(before, after):
     new_file_path = os.path.join(directory, new_filename)
 
     # Check if file with name after already exists
-    if check_if_output_exists(new_file_path):
+    if os.path.exists(new_file_path):
         raise FileExistsError(
             f"File {new_file_path} already exists and therefore we can not rename your file"
             f" {filename}.\n"
@@ -31,13 +27,17 @@ def rename_file(before, after):
         )
 
     # Rename the file
-    os.rename(output_file_path, new_file_path)
+    os.rename(file_path, new_file_path)
     print(f"File '{filename}' has been")
+
+    return new_file_path
 
 
 def test_empty_scalars():
-    if check_if_output_exists(output_file_path):
-        rename_file(".csv", "_original.csv")
+    rename = False
+    if os.path.exists(output_file_path):
+        rename = True
+        renamed_file_path = rename_file(output_file_path, ".csv", "_original.csv")
 
     try:
         # Run the snakemake rule: create_empty_scalars
@@ -53,16 +53,18 @@ def test_empty_scalars():
 
         os.remove(output_file_path)
 
-        rename_file("_original.csv", ".csv")
+        if rename:
+            rename_file(renamed_file_path, "_original.csv", ".csv")
 
-    except (BaseException):
+    except BaseException:
         print(
             f"The workflow {output_rule} could not be executed correctly. "
             f"Changes will be reverted."
         )
 
         # Revert changes
-        if check_if_output_exists():
+        if os.path.exists(output_file_path):
             os.remove(output_file_path)
 
-        rename_file("_original.csv", ".csv")
+        if rename:
+            rename_file(renamed_file_path, "_original.csv", ".csv")
