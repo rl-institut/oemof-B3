@@ -4,8 +4,8 @@ import snakemake
 # Navigate up one directory because of snakemake pipeline structure
 os.chdir("..")
 
-output_rule = "raw/scalars/empty_scalars.csv"
-output_file_path = os.path.join(os.getcwd(), output_rule)
+# List of rules in snakemake pipeline of oemof-B3, which are tested
+output_rule_list = ["raw/scalars/empty_scalars.csv"]
 
 
 def rename_file(file_path, before, after):
@@ -33,38 +33,49 @@ def rename_file(file_path, before, after):
     return new_file_path
 
 
-def test_empty_scalars():
-    rename = False
-    if os.path.exists(output_file_path):
-        rename = True
-        renamed_file_path = rename_file(output_file_path, ".csv", "_original.csv")
+def test_pipeline():
+    # Loop over each rule which is tested in the snakemake pipeline
+    for output_rule in output_rule_list:
+        # Get absolute path
+        output_file_path = os.path.join(os.getcwd(), output_rule)
 
-    try:
-        # Run the snakemake rule: create_empty_scalars
-        output = snakemake.snakemake(
-            targets=[output_rule],
-            snakefile="Snakefile",
-        )
-
-        assert output
-
-        # Check if the output file was created
-        assert os.path.exists(output_file_path)
-
-        os.remove(output_file_path)
-
-        if rename:
-            rename_file(renamed_file_path, "_original.csv", ".csv")
-
-    except BaseException:
-        print(
-            f"The workflow {output_rule} could not be executed correctly. "
-            f"Changes will be reverted."
-        )
-
-        # Revert changes
+        # Introduce a variable which indicates if data already calculated by user exists
+        rename = False
         if os.path.exists(output_file_path):
+            # Set renaming indicator to true because user data exists
+            rename = True
+            # Rename existing user data
+            renamed_file_path = rename_file(output_file_path, ".csv", "_original.csv")
+
+        try:
+            # Run the snakemake rule in this loop
+            output = snakemake.snakemake(
+                targets=[output_rule],
+                snakefile="Snakefile",
+            )
+
+            # Check if snakemake rule exited without error (true)
+            assert output
+
+            # Check if the output file was created
+            assert os.path.exists(output_file_path)
+
+            # Remove the file created for this test
             os.remove(output_file_path)
 
-        if rename:
-            rename_file(renamed_file_path, "_original.csv", ".csv")
+            # If file had to be renamed revert the changes
+            if rename:
+                rename_file(renamed_file_path, "_original.csv", ".csv")
+
+        except BaseException:
+            print(
+                f"The workflow {output_rule} could not be executed correctly. "
+                f"Changes will be reverted."
+            )
+
+            # Revert changes
+            if os.path.exists(output_file_path):
+                os.remove(output_file_path)
+
+            if rename:
+                rename_file(renamed_file_path, "_original.csv", ".csv")
