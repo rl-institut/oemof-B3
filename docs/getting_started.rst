@@ -11,7 +11,7 @@ Using oemof-B3
 Installation
 ------------
 
-Currently, oemof-B3 needs python 3.8, 3.9 or 3.10 (newer versions may be supported, but installation can take very long).
+Currently, oemof-B3 needs python 3.9 or 3.10 (newer versions may be supported, but installation can take very long).
 
 Additionally, you need to install the python dependency manager `poetry <https://python-poetry.org/>`_.
 It is recommended to install poetry system-wide via the command below or
