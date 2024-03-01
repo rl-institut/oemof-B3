@@ -2001,8 +2001,8 @@ dev = ["black (==20.8b1)", "coverage", "flake8", "pytest"]
 [package.source]
 type = "git"
 url = "https://github.com/rl-institut/oemoflex.git"
-reference = "fix/postprocessing_pandas_concat_error"
-resolved_reference = "0fc2956b633a595540d1cbb7ffba4f4ec1d41e27"
+reference = "dev"
+resolved_reference = "1c7e9831379fa80ed85cf3ad794689c73421858b"
 
 [[package]]
 name = "omi"
@@ -4007,4 +4007,4 @@ preprocessing = ["geopandas"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10, <3.11"
-content-hash = "287c9bc363c946e6d1c08da51c5d02172750055f1bb06b3242ea3922181f5eed"
+content-hash = "2b38ef6673f702d364027cbc78105f1ff98f9dddb4938a76f3f23c9fdc9e8b5f"
