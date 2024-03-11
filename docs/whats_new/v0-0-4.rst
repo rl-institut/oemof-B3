@@ -1,0 +1,23 @@
+v0.0.4
+======
+
+# New features
+* oemof-B3 now runs with latest release of oemoflex -> v0.0.3
+* Hence it runs with oemof.tabular -> version v0.0.5
+
+# Bug fixes
+* Wrong zenodo link to raw data has been fixed
+* documentation build has been fixed (commit 07084684e8897ac34327a41bae990a3d881226d8)
+
+# Contributors
+- jnnr
+- MaGering
+- SabineHaas
+- juliusmeier
+- henhuy
+- monika-o
+- c-moeller
+- Stefanie08
+- chrwm
+- khelfen
+- mjazimm
