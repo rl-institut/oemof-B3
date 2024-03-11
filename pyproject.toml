@@ -19,13 +19,13 @@ requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = ">=3.8, <3.11"
+python = ">=3.10, <3.11"
 numpy = ">=1.21.0"
 rtree = ">=0.9.7"
 pyyaml = ">=6.0"
 dynaconf = "^3.1.7"
 snakemake = ">=5"
-oemoflex = { git = "https://git@github.com/rl-institut/oemoflex", tag = "0.0.2a"}
+oemoflex = {git = "https://github.com/rl-institut/oemoflex.git", rev = "0.0.3"}
 Sphinx = {version = "^4.3.2", optional = true}
 sphinx-rtd-theme = {version = "^1.0.0", optional = true}
 sphinxcontrib-bibtex = {version = "^2.4.1", optional = true}
@@ -35,6 +35,7 @@ demandlib = "^0.1.8"
 pandas = ">=1.1.0"
 boto3 = "1.26.125"
 oem2orm = "^0.3.2"
+pulp = ">=2.0.0,<2.8.0" # Todo: Delete with higher version. pulp==2.8.0 is error prone
 
 [tool.poetry.dev-dependencies]
 black = "20.8b1"
