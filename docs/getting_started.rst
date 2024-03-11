@@ -41,7 +41,7 @@ It is recommended to install poetry system-wide via the command below or
 
 ::
 
-    conda env create environment.yml
+    conda env create -f environment.yml
 
 4. Activate environment:
 

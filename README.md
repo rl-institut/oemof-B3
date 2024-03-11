@@ -49,7 +49,7 @@ It is recommended to install poetry system-wide via the command below or
        cd oemof-B3
 3. Create virtual environment using conda:
 
-       conda env create environment.yml
+       conda env create -f environment.yml
 4. Activate environment:
 
        conda activate oemof-B3
