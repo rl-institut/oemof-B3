@@ -69,13 +69,13 @@ ts_row_wise_cols = [
 ts_column_wise = pd.DataFrame(
     np.random.randint(0, 10, size=(25, 3)),
     columns=list("ABC"),
-    index=pd.date_range("2021-01-01", "2021-01-02", freq="H"),
+    index=pd.date_range("2021-01-01", "2021-01-02", freq="h"),
 )
 
 ts_column_wise_different = pd.DataFrame(
     np.random.randint(0, 5, size=(25, 3)),
     columns=list("ABC"),
-    index=pd.date_range("2021-01-01", "2021-01-02", freq="H"),
+    index=pd.date_range("2021-01-01", "2021-01-02", freq="h"),
 )
 
 
@@ -407,7 +407,7 @@ def test_check_consistency():
 
     assert timeindex_start == pd.to_datetime("2021-01-01 00:00:00")
     assert timeindex_stop == pd.to_datetime("2021-01-02 00:00:00")
-    assert frequency == "H"
+    assert frequency == "h"
 
     df_stacked_modified = df_stacked.copy()
     df_stacked_modified.at["timeindex_resolution", 1] = "M"
@@ -464,7 +464,7 @@ def test_stack_unstack_timeseries_on_example_data():
 
     df = pd.read_csv(file_path, index_col=0, sep=";")
     df.index = pd.to_datetime(df.index)
-    df = df.asfreq("H")
+    df = df.asfreq("h")
 
     df_stacked = stack_timeseries(df)
     df_unstacked = unstack_timeseries(df_stacked)

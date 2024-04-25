@@ -4,7 +4,7 @@ rule download_raw_data:
 
 rule download_zenodo:
     params:
-        url="https://zenodo.org/record/7533832/files/oemof-B3-raw-data.zip",
+        url="https://zenodo.org/record/8364204/files/oemof-B3-raw-data.zip",
         raw="raw"
     output: "raw/oemof-B3-raw-data.zip"
     shell: "python scripts/download_raw.py {params.url} {output}"

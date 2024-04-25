@@ -1,0 +1,23 @@
+v0.0.4
+======
+
+# New features
+
+# Bug fixes
+
+# Documentation
+
+# Tests
+
+# Contributors
+- jnnr
+- MaGering
+- SabineHaas
+- juliusmeier
+- henhuy
+- monika-o
+- c-moeller
+- Stefanie08
+- chrwm
+- khelfen
+- mjazimm
