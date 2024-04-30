@@ -1,64 +1,35 @@
 import os
+import subprocess
 import snakemake
-import shutil
 
-# Navigate up one directory because of snakemake pipeline structure
-os.chdir("..")
 
-# Choose whether you want to delete test filst or not
-delete_switch = True
+def install_with_extra(extra):
+    try:
+        subprocess.run(["poetry", "install", "-E", extra], check=True)
+        print(
+            f"Successfully installed packages with extra environment {extra} using Poetry!"
+        )
+    except subprocess.CalledProcessError as e:
+        print(
+            f"Error installing packages with extra environment {extra} using Poetry: {e}"
+        )
 
-# List of rules in snakemake pipeline of oemof-B3, which are tested
-# Todo: Put entries also in lists, we need to loop over renaming cf. empty_ts
-output_rule_list = [
-    "raw/scalars/empty_scalars.csv",
-    "results/_resources/scal_conv_pp.csv",
-    "results/_resources/ts_feedin.csv",
-    "results/_resources/ts_load_electricity.csv",
-    "results/_resources/ts_load_electricity_vehicles.csv",
-    "results/_resources/scal_costs_efficiencies.csv",
-    "results/_resources/ts_efficiency_heatpump_small.csv",
-    "results/_tables/technical_and_cost_assumptions_2050-base.csv",
-    "results/_resources/plots/scal_conv_pp-capacity_net_el.png",
-    "results/2050-100-el_eff/preprocessed",
-    "results/2050-100-el_eff/optimized",
-    "results/2050-100-el_eff/postprocessed",
-    # "results/joined_scenarios/{scenario_group}/joined",
-    "results/2050-100-el_eff/b3_results/data",
-    "results/2050-100-el_eff/tables",
-    # "results/joined_scenarios/{scenario_group}/joined_tables",
-    "results/2050-100-el_eff/plotted/dispatch",
-    "results/2050-100-el_eff/plotted/storage_level",
-    "results/2050-100-el_eff/plotted/scalars",
-    # "results/joined_scenarios/{scenario_group}/joined_plotted",
-    "results/2050-100-el_eff/report",
-]
-zip_rule_list = [
-    "raw/oemof-B3-raw-data.zip",
-]
-multiple_rule_list = [
-    [
-        "raw/time_series/empty_ts_load.csv",
-        "raw/time_series/empty_ts_feedin.csv",
-        "raw/time_series/empty_ts_efficiencies.csv",
-    ],
-    ["results/_resources/scal_load_heat.csv", "results/_resources/ts_load_heat.csv"],
-    [
-        "results/_resources/scal_power_potential_wind_pv.csv",
-        "results/_tables/potential_wind_pv_kreise.csv",
-    ],
-    [
-        "results/_resources/ts_feedin.csv",
-        "results/_resources/ts_load_electricity.csv",
-        "results/_resources/ts_load_electricity_vehicles.csv",
-        "results/_resources/scal_costs_efficiencies.csv",
-        "results/_resources/ts_efficiency_heatpump_small.csv",
-        "results/_resources/scal_load_heat.csv",
-        "results/_resources/ts_load_heat.csv",
-    ],
-]
 
-# Todo: Implement check if geopandas and other needed packages installed
+def get_repo_path(current_path):
+    target_path = current_path  # as the starting point
+
+    # Define the target directory name
+    target_directory = "oemof-B3"
+
+    # Loop until the target path is found
+    while os.path.basename(target_path) != target_directory:
+        target_path = os.path.dirname(target_path)
+        if target_path == os.path.expanduser("~"):
+            raise ValueError(
+                f"Target directory '{target_directory}' not found in the path hierarchy."
+            )
+
+    return target_path
 
 
 def rename_path(file_path, before, after):
@@ -87,40 +58,32 @@ def rename_path(file_path, before, after):
 
 
 def remove_test_data(path):
-    if delete_switch:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+    if os.path.isfile(path):
+        os.remove(path)
 
 
-def test_pipeline():
+def pipeline_file_output_test(delete_switch, output_rule_list):
     # Loop over each rule which is tested in the snakemake pipeline
-    for output_rule in output_rule_list:
+    for sublist in output_rule_list:
         # Get absolute path
-        output_path = os.path.join(os.getcwd(), output_rule)
+        absolute_path_list = [os.path.join(os.getcwd(), entry) for entry in sublist]
 
-        # Introduce a variable which indicates if data already calculated by user exists
-        rename = False
-        if os.path.exists(output_path):
-            rename = True
+        renamed_path = []
+        for raw_file_path in absolute_path_list:
 
-        if os.path.isfile(output_path):
-            # Get file extension
-            file_extension = output_path[output_path.rfind(".") + 1 :]
-            # Rename existing user data
-            renamed_path = rename_path(
-                output_path, "." + file_extension, "_original." + file_extension
-            )
-
-        elif os.path.isdir(output_path):
-            renamed_path = output_path + "_original"
-            shutil.move(output_path, renamed_path)
+            if os.path.isfile(raw_file_path):
+                # Get file extension
+                file_extension = raw_file_path[raw_file_path.rfind(".") + 1 :]
+                # Rename existing user data
+                renamed_file = rename_path(
+                    raw_file_path, "." + file_extension, "_original." + file_extension
+                )
+                renamed_path.append(renamed_file)
 
         try:
             # Run the snakemake rule in this loop
             output = snakemake.snakemake(
-                targets=[output_rule],
+                targets=sublist,
                 snakefile="Snakefile",
             )
 
@@ -128,38 +91,45 @@ def test_pipeline():
             assert output
 
             # Check if the output file was created
-            assert os.path.exists(output_path)
+            for raw_file_path in absolute_path_list:
+                assert os.path.exists(raw_file_path)
 
-            # Remove the file created for this test
-            remove_test_data(output_path)
+            for raw_file_path in sublist:
+                # Remove the file created for this test
+                if os.path.exists(raw_file_path):
+                    if delete_switch or renamed_path:
+                        remove_test_data(raw_file_path)
 
             # If file had to be renamed revert the changes
-            if rename:
-                if os.path.isfile(renamed_path):
+            for renamed_file in renamed_path:
+                if os.path.isfile(renamed_file):
                     rename_path(
-                        renamed_path,
+                        renamed_file,
                         "_original." + file_extension,
                         "." + file_extension,
                     )
-                elif os.path.isdir(renamed_path):
-                    shutil.move(renamed_path, output_path)
 
         except BaseException:
             # Revert changes
-            if os.path.exists(output_path):
-                remove_test_data(output_path)
+            for remove_raw_file_path in sublist:
+                # Remove the file created for this test
+                if os.path.exists(remove_raw_file_path):
+                    remove_test_data(remove_raw_file_path)
 
-            if rename:
-                if os.path.isfile(renamed_path):
+            # If file had to be renamed revert the changes
+            for renamed_file in renamed_path:
+                if os.path.isfile(renamed_file):
                     rename_path(
-                        renamed_path,
+                        renamed_file,
                         "_original." + file_extension,
                         "." + file_extension,
                     )
-                elif os.path.isdir(renamed_path):
-                    shutil.move(renamed_path, output_path)
 
             raise AssertionError(
-                f"The workflow {output_rule} could not be executed correctly. "
+                f"The workflow {raw_file_path} could not be executed correctly. "
                 f"Changes were reverted."
+                "\n"
+                f"{absolute_path_list}"
+                "\n"
+                f"{sublist}"
             )
