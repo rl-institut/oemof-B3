@@ -1,7 +1,7 @@
 import os
 import snakemake
 import shutil
-from tests.test_pipeline import get_repo_path, pipeline_file_output_test
+from oemof_b3.tools.testing_pipeline import get_repo_path, pipeline_file_output_test
 
 
 # Delete data from test run of pipeline if True otherwise False

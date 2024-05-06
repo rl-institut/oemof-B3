@@ -1,5 +1,5 @@
 import os
-from tests.test_pipeline import (
+from oemof_b3.tools.testing_pipeline import (
     get_repo_path,
     install_with_extra,
     pipeline_file_output_test,
