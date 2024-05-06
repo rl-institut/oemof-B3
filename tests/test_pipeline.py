@@ -4,6 +4,19 @@ import snakemake
 
 
 def install_with_extra(extra):
+    """
+    This function installs extra packages stored in tool.poetry.extras
+
+    Inputs
+    -------
+    extra : str
+        Name of extra packages in a list.
+
+    Outputs
+    -------
+    None
+
+    """
     try:
         subprocess.run(["poetry", "install", "-E", extra], check=True)
         print(
