@@ -5,7 +5,7 @@ import snakemake
 
 def install_with_extra(extra):
     """
-    This function installs extra packages stored in tool.poetry.extras
+    This function installs extra packages stored in tool.poetry.extras.
 
     Inputs
     -------
@@ -40,7 +40,7 @@ def get_repo_path(current_path):
     Outputs
     -------
     target_path : str
-        Geoinformation of all regions in Germany
+        Absolut path to target directory
 
     """
     target_path = current_path  # as the starting point
