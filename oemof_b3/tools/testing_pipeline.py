@@ -10,7 +10,7 @@ def install_with_extra(extra):
     Inputs
     -------
     extra : str
-        Name of extra packages in a list.
+        Name of extra packages in a list
 
     Outputs
     -------
@@ -29,6 +29,20 @@ def install_with_extra(extra):
 
 
 def get_repo_path(current_path):
+    """
+    This function sets the current path to the target directory.
+
+    Inputs
+    -------
+    current_path : str
+        Path to the current directory
+
+    Outputs
+    -------
+    target_path : str
+        Geoinformation of all regions in Germany
+
+    """
     target_path = current_path  # as the starting point
 
     # Define the target directory name
@@ -46,16 +60,35 @@ def get_repo_path(current_path):
 
 
 def rename_path(file_path, before, after):
+    """
+    This function renames existing files in directories by appending
+    the suffix "_original" to their filenames.
+
+    Inputs
+    -------
+    file_path : str
+        Absolute path to a directory
+    before : str
+        Original extension
+    after : str
+        Renamed extension
+
+    Outputs
+    -------
+    new_file_path : str
+        Renamed absolute file path
+
+    """
     # Split the path and file name
     directory, filename = os.path.split(file_path)
 
-    # Add "_original" before the file extension
+    # Add suffix "_original" before the file extension
     new_filename = filename.replace(before, after)
 
     # Join the directory and new filename to get the new path
     new_file_path = os.path.join(directory, new_filename)
 
-    # Check if file with name after already exists
+    # Check if file with new suffix already exists
     if os.path.exists(new_file_path):
         raise FileExistsError(
             f"File {new_file_path} already exists and therefore we can not rename your file"
@@ -65,7 +98,7 @@ def rename_path(file_path, before, after):
 
     # Rename the file
     os.rename(file_path, new_file_path)
-    print(f"File '{filename}' has been")
+    print(f"File '{filename}' has been renamed.")
 
     return new_file_path
 
