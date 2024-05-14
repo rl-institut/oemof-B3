@@ -107,6 +107,28 @@ def remove_test_data(path):
     if os.path.isfile(path):
         os.remove(path)
 
+def get_abs_path_list(output_rule_list):
+    """
+    This function finds the absolut file path for each rule
+    in the output_rule_list.
+
+    Inputs
+    -------
+    output_rule_list : str
+        File path of rule
+
+    Outputs
+    -------
+    absolute_path_list : str
+        Absolute file path
+
+    """
+    # Loop over each rule which is tested in the snakemake pipeline
+    for sublist in output_rule_list:
+        # Get absolute path
+        absolute_path_list = [os.path.join(os.getcwd(), entry) for entry in sublist]
+
+    return absolute_path_list
 
 def pipeline_file_output_test(delete_switch, output_rule_list):
     # Loop over each rule which is tested in the snakemake pipeline
