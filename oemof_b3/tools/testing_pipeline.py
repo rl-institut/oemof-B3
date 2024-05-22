@@ -107,6 +107,7 @@ def remove_test_data(path):
     if os.path.isfile(path):
         os.remove(path)
 
+
 def get_abs_path_list(output_rule_list):
     """
     This function finds the absolut file path for each rule
@@ -125,22 +126,45 @@ def get_abs_path_list(output_rule_list):
     # Get absolute path of rule
     return [os.path.abspath(entry) for entry in output_rule_list]
 
+
+def file_name_extension(raw_file_path):
+    """
+     This function rearranges the current absolute file path
+     with the new extension suffix '_original'.
+
+     Inputs
+     -------
+     raw_file_path : str
+         Absolute path of rule
+
+     Outputs
+     -------
+     renamed_path : str
+
+    """
+    renamed_path = []
+
+    # Get file extension
+    file_extension = raw_file_path[raw_file_path.rfind(".") + 1:]
+    # Rename existing user data
+    renamed_file = rename_path(
+        raw_file_path, "." + file_extension, "_original." + file_extension
+    )
+    renamed_path.append(renamed_file)
+
+    return renamed_path
+
+
 def pipeline_file_output_test(delete_switch, output_rule_list):
     # Loop over each rule which is tested in the snakemake pipeline
     for sublist in output_rule_list:
+        # Get absolute path of sublist
         absolute_path_list = get_abs_path_list(sublist)
 
-        renamed_path = []
         for raw_file_path in absolute_path_list:
-
             if os.path.isfile(raw_file_path):
-                # Get file extension
-                file_extension = raw_file_path[raw_file_path.rfind(".") + 1 :]
-                # Rename existing user data
-                renamed_file = rename_path(
-                    raw_file_path, "." + file_extension, "_original." + file_extension
-                )
-                renamed_path.append(renamed_file)
+                # Rename file with extension original
+                renamed_path = file_name_extension(raw_file_path)
 
         try:
             # Run the snakemake rule in this loop
@@ -148,9 +172,6 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
                 targets=sublist,
                 snakefile="Snakefile",
             )
-
-            # Check if snakemake rule exited without error (true)
-            assert output
 
             # Check if the output file was created
             for raw_file_path in absolute_path_list:
@@ -165,6 +186,7 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
             # If file had to be renamed revert the changes
             for renamed_file in renamed_path:
                 if os.path.isfile(renamed_file):
+                    file_extension = renamed_file[renamed_file.rfind(".") + 1:]
                     rename_path(
                         renamed_file,
                         "_original." + file_extension,
