@@ -119,22 +119,16 @@ def get_abs_path_list(output_rule_list):
 
     Outputs
     -------
-    absolute_path_list : str
-        Absolute file path
+    None
 
     """
-    # Loop over each rule which is tested in the snakemake pipeline
-    for sublist in output_rule_list:
-        # Get absolute path
-        absolute_path_list = [os.path.join(os.getcwd(), entry) for entry in sublist]
-
-    return absolute_path_list
+    # Get absolute path of rule
+    return [os.path.abspath(entry) for entry in output_rule_list]
 
 def pipeline_file_output_test(delete_switch, output_rule_list):
     # Loop over each rule which is tested in the snakemake pipeline
     for sublist in output_rule_list:
-        # Get absolute path
-        absolute_path_list = [os.path.join(os.getcwd(), entry) for entry in sublist]
+        absolute_path_list = get_abs_path_list(sublist)
 
         renamed_path = []
         for raw_file_path in absolute_path_list:
