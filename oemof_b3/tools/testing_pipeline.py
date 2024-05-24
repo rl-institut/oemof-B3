@@ -220,12 +220,32 @@ def clean_file(sublist, delete_switch, renamed_path):
 
 
 def pipeline_file_output_test(delete_switch, output_rule_list):
+    """
+    This function tests the Snakemake pipeline for a list of output rules
+    and reverts all changes made in the target directory.
+
+     Inputs
+     -------
+    delete_switch : bool
+        If True, delete the data created during the test run.
+        If False, do not delete the data.
+    output_rule_list : list of str
+        Nested list with sublist containing paths to target files
+        associated with a specific rule.
+
+
+     Outputs
+     -------
+     None
+
+    """
     # Loop over each rule which is tested in the snakemake pipeline
     for sublist in output_rule_list:
         # Get absolute path of sublist
         absolute_path_list = get_abs_path_list(sublist)
 
         for raw_file_path in absolute_path_list:
+            # Check if file already exists in directory
             if os.path.isfile(raw_file_path):
                 # Rename file with extension original
                 renamed_path = file_name_extension(raw_file_path)
