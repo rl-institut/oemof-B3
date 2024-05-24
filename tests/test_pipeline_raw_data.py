@@ -1,3 +1,7 @@
+"""
+This script checks the snakemake pipeline for target rules that create
+empty time series and scalars in the folder raw.
+"""
 import os
 import snakemake
 import shutil
