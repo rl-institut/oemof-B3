@@ -1,6 +1,7 @@
 import os
 import subprocess
 import snakemake
+import logging
 
 
 def install_with_extra(extra):
@@ -155,6 +156,69 @@ def file_name_extension(raw_file_path):
     return renamed_path
 
 
+def rule_test(sublist):
+    """
+     This function runs the rule from the output rule sublist.
+
+     Inputs
+     -------
+     sublist : str
+         Path of rule
+
+     Outputs
+     -------
+     None
+
+    """
+    # Run the snakemake rule in this loop
+    output = snakemake.snakemake(
+        targets=sublist,
+        snakefile="Snakefile",
+    )
+
+    # Check if snakemake rule exited without error (true)
+    assert output, f"Snakemake rule failed for targets: {sublist}"
+
+    # Log the success
+    logging.info(f"Snakemake rule executed successfully for targets: {sublist}")
+
+
+def clean_file(sublist, delete_switch, renamed_path):
+    """
+     This function removes test data files and reverts renamed files.
+
+     Inputs
+     -------
+    sublist : list of str
+        List of target paths of rules
+    delete_switch : bool
+        If True, delete the data created during the test run.
+        If False, do not delete the data.
+    renamed_path : list of str
+        List of renamed target paths
+
+     Outputs
+     -------
+     None
+
+    """
+    # Remove the file created for this test
+    for raw_file_path in sublist:
+        if os.path.exists(raw_file_path):
+            if delete_switch or renamed_path:
+                remove_test_data(raw_file_path)
+
+        # If file had to be renamed revert the changes
+    for renamed_file in renamed_path:
+        if os.path.isfile(renamed_file):
+            file_extension = renamed_file[renamed_file.rfind(".") + 1:]
+            rename_path(
+                renamed_file,
+                "_original." + file_extension,
+                "." + file_extension,
+            )
+
+
 def pipeline_file_output_test(delete_switch, output_rule_list):
     # Loop over each rule which is tested in the snakemake pipeline
     for sublist in output_rule_list:
@@ -167,47 +231,19 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
                 renamed_path = file_name_extension(raw_file_path)
 
         try:
-            # Run the snakemake rule in this loop
-            output = snakemake.snakemake(
-                targets=sublist,
-                snakefile="Snakefile",
-            )
+            # Run the snakemake rule
+            rule_test(sublist)
 
             # Check if the output file was created
             for raw_file_path in absolute_path_list:
                 assert os.path.exists(raw_file_path)
 
-            for raw_file_path in sublist:
-                # Remove the file created for this test
-                if os.path.exists(raw_file_path):
-                    if delete_switch or renamed_path:
-                        remove_test_data(raw_file_path)
-
-            # If file had to be renamed revert the changes
-            for renamed_file in renamed_path:
-                if os.path.isfile(renamed_file):
-                    file_extension = renamed_file[renamed_file.rfind(".") + 1:]
-                    rename_path(
-                        renamed_file,
-                        "_original." + file_extension,
-                        "." + file_extension,
-                    )
+            # Revert file changes
+            clean_file(sublist, delete_switch, renamed_path)
 
         except BaseException:
-            # Revert changes
-            for remove_raw_file_path in sublist:
-                # Remove the file created for this test
-                if os.path.exists(remove_raw_file_path):
-                    remove_test_data(remove_raw_file_path)
-
-            # If file had to be renamed revert the changes
-            for renamed_file in renamed_path:
-                if os.path.isfile(renamed_file):
-                    rename_path(
-                        renamed_file,
-                        "_original." + file_extension,
-                        "." + file_extension,
-                    )
+            # Revert file changes
+            clean_file(sublist, delete_switch, renamed_path)
 
             raise AssertionError(
                 f"The workflow {raw_file_path} could not be executed correctly. "
