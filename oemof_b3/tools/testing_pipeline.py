@@ -156,17 +156,14 @@ def file_name_extension(raw_file_path):
      renamed_path : str
 
     """
-    renamed_path = []
-
     # Get file extension
     file_extension = raw_file_path[raw_file_path.rfind(".") + 1:]
     # Rename existing user data
     renamed_file = rename_path(
         raw_file_path, "." + file_extension, "_original." + file_extension
     )
-    renamed_path.append(renamed_file)
 
-    return renamed_path
+    return renamed_file
 
 
 def rule_test(sublist):
@@ -221,7 +218,7 @@ def clean_file(sublist, delete_switch, renamed_path):
             if delete_switch or renamed_path:
                 remove_test_data(raw_file_path)
 
-        # If file had to be renamed revert the changes
+    # If file had to be renamed revert the changes
     for renamed_file in renamed_path:
         if os.path.isfile(renamed_file):
             file_extension = renamed_file[renamed_file.rfind(".") + 1:]
@@ -256,11 +253,13 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
         # Get absolute path of sublist
         absolute_path_list = get_abs_path_list(sublist)
 
+        renamed_path = []
         for raw_file_path in absolute_path_list:
             # Check if file already exists in directory
             if os.path.isfile(raw_file_path):
                 # Rename file with extension original
-                renamed_path = file_name_extension(raw_file_path)
+                renamed_file = file_name_extension(raw_file_path)
+                renamed_path.append(renamed_file)
 
         try:
             # Run the snakemake rule
