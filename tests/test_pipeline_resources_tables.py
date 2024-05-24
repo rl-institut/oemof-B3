@@ -1,3 +1,7 @@
+"""
+This script checks the snakemake pipeline for target rules in folder _resources
+and _tables in the results' folder.
+"""
 import os
 from oemof_b3.tools.testing_pipeline import (
     get_repo_path,
