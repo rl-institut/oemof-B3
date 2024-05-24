@@ -105,6 +105,19 @@ def rename_path(file_path, before, after):
 
 
 def remove_test_data(path):
+    """
+    This function removes test data.
+
+    Inputs
+    -------
+    path : str
+        Path of test data
+
+    Outputs
+    -------
+    None
+
+    """
     if os.path.isfile(path):
         os.remove(path)
 
@@ -232,7 +245,6 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
     output_rule_list : list of str
         Nested list with sublist containing paths to target files
         associated with a specific rule.
-
 
      Outputs
      -------
