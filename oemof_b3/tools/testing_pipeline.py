@@ -1,3 +1,7 @@
+"""
+This script contains functions to test the files and folders created
+through the snakemake pipeline.
+"""
 import os
 import subprocess
 import snakemake
