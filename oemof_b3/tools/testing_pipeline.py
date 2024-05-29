@@ -147,21 +147,21 @@ def get_abs_path_list(output_rule_list):
 
 def file_name_extension(raw_file_path):
     """
-     This function rearranges the current absolute file path
-     with the new extension suffix '_original'.
+    This function rearranges the current absolute file path
+    with the new extension suffix '_original'.
 
-     Inputs
-     -------
-     raw_file_path : str
-         Absolute path of rule
+    Inputs
+    -------
+    raw_file_path : str
+        Absolute path of rule
 
-     Outputs
-     -------
-     renamed_path : str
+    Outputs
+    -------
+    renamed_path : str
 
     """
     # Get file extension
-    file_extension = raw_file_path[raw_file_path.rfind(".") + 1:]
+    file_extension = raw_file_path[raw_file_path.rfind(".") + 1 :]
     # Rename existing user data
     renamed_file = rename_path(
         raw_file_path, "." + file_extension, "_original." + file_extension
@@ -172,16 +172,16 @@ def file_name_extension(raw_file_path):
 
 def rule_test(sublist):
     """
-     This function runs the rule from the output rule sublist.
+    This function runs the rule from the output rule sublist.
 
-     Inputs
-     -------
-     sublist : str
-         Path of rule
+    Inputs
+    -------
+    sublist : str
+        Path of rule
 
-     Outputs
-     -------
-     None
+    Outputs
+    -------
+    None
 
     """
     # Run the snakemake rule in this loop
@@ -225,7 +225,7 @@ def clean_file(sublist, delete_switch, renamed_path):
     # If file had to be renamed revert the changes
     for renamed_file in renamed_path:
         if os.path.isfile(renamed_file):
-            file_extension = renamed_file[renamed_file.rfind(".") + 1:]
+            file_extension = renamed_file[renamed_file.rfind(".") + 1 :]
             rename_path(
                 renamed_file,
                 "_original." + file_extension,
@@ -259,11 +259,27 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
 
         renamed_path = []
         for raw_file_path in absolute_path_list:
-            # Check if file already exists in directory
-            if os.path.isfile(raw_file_path):
-                # Rename file with extension original
-                renamed_file = file_name_extension(raw_file_path)
-                renamed_path.append(renamed_file)
+            try:
+                # Check if file already exists in directory
+                if os.path.isfile(raw_file_path):
+                    # Rename file with extension original
+                    renamed_file = file_name_extension(raw_file_path)
+                    renamed_path.append(renamed_file)
+                else:
+                    # Check for the file with the _original suffix
+                    original_file_path = raw_file_path.replace(
+                        os.path.splitext(raw_file_path)[1],
+                        "_original" + os.path.splitext(raw_file_path)[1],
+                    )
+                    if os.path.exists(original_file_path):
+                        raise FileExistsError(
+                            f"File {original_file_path} already exists."
+                            f"Please rename the file {raw_file_path} first."
+                        )
+
+            except FileNotFoundError as e:
+                print(e)
+                continue
 
         try:
             # Run the snakemake rule
