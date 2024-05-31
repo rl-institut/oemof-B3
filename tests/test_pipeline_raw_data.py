@@ -33,6 +33,11 @@ def test_raw_dir():
     # Check if raw dir already exists
     if os.path.isdir(absolute_path):
         renamed_path = absolute_path + "_original"
+        if os.path.isdir(renamed_path):
+            raise FileExistsError(
+                f"The directory {renamed_path} already exists. \n"
+                f"The test can not be executed. Please rename the directory {renamed_path} first."
+            )
         shutil.move(absolute_path, renamed_path)
     else:
         renamed_path = None
