@@ -1,6 +1,7 @@
 import os
 import subprocess
 import snakemake
+import shutil
 
 
 def install_with_extra(extra):
@@ -103,6 +104,48 @@ def rename_path(file_path, before, after):
     return new_file_path
 
 
+def get_raw_path():
+    this_path = os.path.abspath(os.getcwd())
+    repo_path = get_repo_path(this_path)
+    raw_dir_path = os.path.join(repo_path, "raw")
+
+    return raw_dir_path
+
+
+def check_raw_data_exists():
+    raw_dir_path = get_raw_path()
+
+    raw_dir_rule = "raw/oemof-B3-raw-data.zip"
+
+    if not os.path.isdir(raw_dir_path):
+        output = snakemake.snakemake(
+            targets=[raw_dir_rule],
+            snakefile="Snakefile",
+        )
+
+        if not output:
+            raise FileExistsError(
+                f"The output corresponding to rule {raw_dir_rule} could not be created. \n"
+                f"Hence this tests are failing."
+            )
+
+        return False
+    else:
+        return True
+
+
+def remove_raw_data_created(exists):
+    raw_dir_path = get_raw_path()
+
+    if not exists:
+        if os.path.isdir(raw_dir_path):
+            shutil.rmtree(raw_dir_path)
+        else:
+            raise FileNotFoundError(
+                f"Something went wrong. {raw_dir_path} has been created but could not be found."
+            )
+
+
 def remove_test_data(path):
     if os.path.isfile(path):
         os.remove(path)
@@ -133,6 +176,9 @@ def get_abs_path_list(output_rule_list):
 
 
 def pipeline_file_output_test(delete_switch, output_rule_list):
+    # Raw data is needed for some rules and therefore is created if missing
+    raw_data_exists = check_raw_data_exists()
+
     # Loop over each rule which is tested in the snakemake pipeline
     for sublist in output_rule_list:
         # Get absolute path
@@ -203,3 +249,6 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
                 "\n"
                 f"{sublist}"
             )
+
+    # Remove raw data if it has been created. It is needed as input data for the tests
+    remove_raw_data_created(raw_data_exists)
