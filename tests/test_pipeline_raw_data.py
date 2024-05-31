@@ -38,7 +38,7 @@ def test_raw_dir():
     try:
         # Run the snakemake rule in this loop
         output = snakemake.snakemake(
-            targets=raw_dir_rule,
+            targets=[raw_dir_rule],
             snakefile="Snakefile",
         )
 
