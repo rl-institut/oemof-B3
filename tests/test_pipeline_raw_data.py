@@ -53,12 +53,14 @@ def test_raw_dir():
         if os.path.isdir(renamed_path):
             shutil.move(renamed_path, absolute_path)
 
-    except BaseException:
+    except BaseException as e:
         if os.path.isdir(absolute_path):
             shutil.rmtree(absolute_path)
 
         if os.path.isdir(renamed_path):
             shutil.move(renamed_path, absolute_path)
+
+        raise Exception(f"The test of {raw_dir_rule} failed.") from e
 
 
 def test_pipeline_raw():
