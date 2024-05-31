@@ -34,6 +34,8 @@ def test_raw_dir():
     if os.path.isdir(absolute_path):
         renamed_path = absolute_path + "_original"
         shutil.move(absolute_path, renamed_path)
+    else:
+        renamed_path = None
 
     try:
         # Run the snakemake rule in this loop
@@ -50,15 +52,17 @@ def test_raw_dir():
             if os.path.isdir(absolute_path):
                 shutil.rmtree(absolute_path)
 
-        if os.path.isdir(renamed_path):
-            shutil.move(renamed_path, absolute_path)
+        if renamed_path:
+            if os.path.isdir(renamed_path):
+                shutil.move(renamed_path, absolute_path)
 
     except BaseException as e:
         if os.path.isdir(absolute_path):
             shutil.rmtree(absolute_path)
 
-        if os.path.isdir(renamed_path):
-            shutil.move(renamed_path, absolute_path)
+        if renamed_path:
+            if os.path.isdir(renamed_path):
+                shutil.move(renamed_path, absolute_path)
 
         raise Exception(f"The test of {raw_dir_rule} failed.") from e
 
