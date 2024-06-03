@@ -1,7 +1,12 @@
+"""
+This script contains functions to test the files and folders created
+through the snakemake pipeline.
+"""
 import os
 import subprocess
 import snakemake
 import shutil
+import logging
 
 
 def install_with_extra(extra):
@@ -147,6 +152,19 @@ def remove_raw_data_created(exists):
 
 
 def remove_test_data(path):
+    """
+    This function removes test data.
+
+    Inputs
+    -------
+    path : str
+        Path of test data
+
+    Outputs
+    -------
+    None
+
+    """
     if os.path.isfile(path):
         os.remove(path)
 
@@ -163,83 +181,169 @@ def get_abs_path_list(output_rule_list):
 
     Outputs
     -------
-    absolute_path_list : str
-        Absolute file path
+    absolute_path_list : list
+         Absolute file path in list
 
     """
-    # Loop over each rule which is tested in the snakemake pipeline
-    for sublist in output_rule_list:
-        # Get absolute path
-        absolute_path_list = [os.path.join(os.getcwd(), entry) for entry in sublist]
+    # Get absolute path of rule
+    absolute_path_list = [os.path.abspath(entry) for entry in output_rule_list]
 
     return absolute_path_list
 
 
+def file_name_extension(raw_file_path):
+    """
+    This function rearranges the current absolute file path
+    with the new extension suffix '_original'.
+
+    Inputs
+    -------
+    raw_file_path : str
+        Absolute path of rule
+
+    Outputs
+    -------
+    renamed_path : str
+
+    """
+    # Get file extension
+    file_extension = raw_file_path[raw_file_path.rfind(".") + 1 :]
+    # Rename existing user data
+    renamed_file = rename_path(
+        raw_file_path, "." + file_extension, "_original." + file_extension
+    )
+
+    return renamed_file
+
+
+def rule_test(sublist):
+    """
+    This function runs the rule from the output rule sublist.
+
+    Inputs
+    -------
+    sublist : str
+        Path of rule
+
+    Outputs
+    -------
+    None
+
+    """
+    # Run the snakemake rule in this loop
+    output = snakemake.snakemake(
+        targets=sublist,
+        snakefile="Snakefile",
+    )
+
+    # Check if snakemake rule exited without error (true)
+    assert output, f"Snakemake rule failed for targets: {sublist}"
+
+    # Log the success
+    logging.info(f"Snakemake rule executed successfully for targets: {sublist}")
+
+
+def clean_file(sublist, delete_switch, renamed_path):
+    """
+    This function removes test data files and reverts renamed files.
+
+    Inputs
+    -------
+    sublist : list of str
+        List of target paths of rules
+    delete_switch : bool
+        If True, delete the data created during the test run.
+        If False, do not delete the data.
+    renamed_path : list of str
+        List of renamed target paths
+
+    Outputs
+    -------
+     None
+
+    """
+    # Remove the file created for this test
+    for raw_file_path in sublist:
+        if os.path.exists(raw_file_path):
+            if delete_switch or renamed_path:
+                remove_test_data(raw_file_path)
+
+    # If file had to be renamed revert the changes
+    for renamed_file in renamed_path:
+        if os.path.isfile(renamed_file):
+            file_extension = renamed_file[renamed_file.rfind(".") + 1 :]
+            rename_path(
+                renamed_file,
+                "_original." + file_extension,
+                "." + file_extension,
+            )
+
+
 def pipeline_file_output_test(delete_switch, output_rule_list):
+    """
+    This function tests the Snakemake pipeline for a list of output rules
+    and reverts all changes made in the target directory.
+
+    Inputs
+    -------
+    delete_switch : bool
+        If True, delete the data created during the test run.
+        If False, do not delete the data.
+    output_rule_list : list of str
+        Nested list with sublist containing paths to target files
+        associated with a specific rule.
+
+    Outputs
+    -------
+     None
+
+    """
     # Raw data is needed for some rules and therefore is created if missing
     raw_data_exists = check_raw_data_exists()
 
     # Loop over each rule which is tested in the snakemake pipeline
     for sublist in output_rule_list:
-        # Get absolute path
-        absolute_path_list = [os.path.join(os.getcwd(), entry) for entry in sublist]
+        # Get absolute path of sublist
+        absolute_path_list = get_abs_path_list(sublist)
 
         renamed_path = []
         for raw_file_path in absolute_path_list:
+            try:
+                # Check if file already exists in directory
+                if os.path.isfile(raw_file_path):
+                    # Rename file with extension original
+                    renamed_file = file_name_extension(raw_file_path)
+                    renamed_path.append(renamed_file)
+                else:
+                    # Check for the file with the _original suffix
+                    original_file_path = raw_file_path.replace(
+                        os.path.splitext(raw_file_path)[1],
+                        "_original" + os.path.splitext(raw_file_path)[1],
+                    )
+                    if os.path.exists(original_file_path):
+                        raise FileExistsError(
+                            f"File {original_file_path} already exists."
+                            f"Please rename the file {raw_file_path} first."
+                        )
 
-            if os.path.isfile(raw_file_path):
-                # Get file extension
-                file_extension = raw_file_path[raw_file_path.rfind(".") + 1 :]
-                # Rename existing user data
-                renamed_file = rename_path(
-                    raw_file_path, "." + file_extension, "_original." + file_extension
-                )
-                renamed_path.append(renamed_file)
+            except FileNotFoundError as e:
+                print(e)
+                continue
 
         try:
-            # Run the snakemake rule in this loop
-            output = snakemake.snakemake(
-                targets=sublist,
-                snakefile="Snakefile",
-            )
-
-            # Check if snakemake rule exited without error (true)
-            assert output
+            # Run the snakemake rule
+            rule_test(sublist)
 
             # Check if the output file was created
             for raw_file_path in absolute_path_list:
                 assert os.path.exists(raw_file_path)
 
-            for raw_file_path in sublist:
-                # Remove the file created for this test
-                if os.path.exists(raw_file_path):
-                    if delete_switch or renamed_path:
-                        remove_test_data(raw_file_path)
-
-            # If file had to be renamed revert the changes
-            for renamed_file in renamed_path:
-                if os.path.isfile(renamed_file):
-                    rename_path(
-                        renamed_file,
-                        "_original." + file_extension,
-                        "." + file_extension,
-                    )
+            # Revert file changes
+            clean_file(sublist, delete_switch, renamed_path)
 
         except BaseException:
-            # Revert changes
-            for remove_raw_file_path in sublist:
-                # Remove the file created for this test
-                if os.path.exists(remove_raw_file_path):
-                    remove_test_data(remove_raw_file_path)
-
-            # If file had to be renamed revert the changes
-            for renamed_file in renamed_path:
-                if os.path.isfile(renamed_file):
-                    rename_path(
-                        renamed_file,
-                        "_original." + file_extension,
-                        "." + file_extension,
-                    )
+            # Revert file changes
+            clean_file(sublist, delete_switch, renamed_path)
 
             raise AssertionError(
                 f"The workflow {raw_file_path} could not be executed correctly. "
