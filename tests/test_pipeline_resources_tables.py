@@ -31,11 +31,11 @@ output_rule_list = [
     ["results/_resources/ts_load_electricity_vehicles.csv"],
     ["results/_resources/scal_costs_efficiencies.csv"],
     ["results/_resources/ts_efficiency_heatpump_small.csv"],
-    # snakemake -j1 TODO: SN hinzufügen
+    # snakemake -j1 plot_conv_pp_scalars
     ["results/_resources/plots/scal_conv_pp-capacity_net_el.png"],
     ["results/_tables/technical_and_cost_assumptions_2050-base.csv"],
     ["results/_resources/scal_load_heat.csv", "results/_resources/ts_load_heat.csv"],
-    # snakemake -j1 TODO: SN hinzufügen
+    # snakemake -j1 process_re_potential
     [
         "results/_resources/scal_power_potential_wind_pv.csv",
         "results/_tables/potential_wind_pv_kreise.csv",

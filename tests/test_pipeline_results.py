@@ -38,5 +38,5 @@ for scenario_group in scenario_groups:
         "results/joined_scenarios/" + scenario_group + "/joined_plotted",
     ]
 
-# snakemake -j1 TODO: SN hinzufügen
+# snakemake -j1 prepare_re_potential
 output_rule_list = ["results/_resources/RE_potential"]
