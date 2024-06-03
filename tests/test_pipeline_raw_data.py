@@ -2,7 +2,9 @@ import os
 import snakemake
 import shutil
 from oemof_b3.tools.testing_pipeline import get_repo_path, pipeline_file_output_test
+from oemof_b3.config import config
 
+logger = config.add_snake_logger("data_processing")
 
 # Delete data from test run of pipeline if True otherwise False
 delete_switch = True
@@ -29,6 +31,7 @@ output_rule_list = [
 
 def test_raw_dir():
     absolute_path = os.path.join(os.getcwd(), raw_dir)
+    logger.info(f"The absolute path used in this test is: {absolute_path}.")
 
     # Check if raw dir already exists
     if os.path.isdir(absolute_path):
