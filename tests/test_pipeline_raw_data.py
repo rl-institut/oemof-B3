@@ -20,7 +20,7 @@ target_path = get_repo_path(current_path)
 # Set the current path to the target path
 os.chdir(target_path)
 
-raw_dir_rule = "raw/oemof-B3-raw-data.zip"
+raw_dir_rule = ["raw/oemof-B3-raw-data.zip"]
 raw_dir = "raw"
 
 output_rule_list = [
@@ -52,7 +52,7 @@ def test_raw_dir():
     try:
         # Run the snakemake rule in this loop
         output = snakemake.snakemake(
-            targets=[raw_dir_rule],
+            targets=raw_dir_rule,
             snakefile="Snakefile",
         )
 

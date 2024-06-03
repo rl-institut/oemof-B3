@@ -120,17 +120,17 @@ def get_raw_path():
 def check_raw_data_exists():
     raw_dir_path = get_raw_path()
 
-    raw_dir_rule = "raw/oemof-B3-raw-data.zip"
+    raw_dir_rule = ["raw/oemof-B3-raw-data.zip"]
 
     if not os.path.isdir(raw_dir_path):
         output = snakemake.snakemake(
-            targets=[raw_dir_rule],
+            targets=raw_dir_rule,
             snakefile="Snakefile",
         )
 
         if not output:
             raise FileExistsError(
-                f"The output corresponding to rule {raw_dir_rule} could not be created. \n"
+                f"The output corresponding to rule {raw_dir_rule[0]} could not be created. \n"
                 f"Hence this tests are failing."
             )
 
