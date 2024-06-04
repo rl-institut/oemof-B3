@@ -84,7 +84,7 @@ def test_pipeline_folders(delete_switch, scenarios):
                 if os.path.isfile(raw_dir_path):
                     # Rename file with extension original
                     renamed_file = file_name_extension(raw_dir_path)
-                    renamed_path.append(renamed_file)
+                    renamed_file_path.append(renamed_file)
                 # Check if file already exists in directory
                 if os.path.isdir(raw_dir_path):
                     # Rename file with extension original
