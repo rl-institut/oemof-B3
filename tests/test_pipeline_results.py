@@ -9,6 +9,8 @@ from oemof_b3.tools.testing_pipeline import (
     file_name_extension,
     clean_file,
     rule_test,
+    remove_raw_data_created,
+    check_raw_data_exists,
 )
 
 
@@ -70,6 +72,9 @@ output_rule_list = ["results/_resources/RE_potential"]
 
 
 def test_pipeline_folders(delete_switch, scenarios):
+    # Raw data is needed for some rules and therefore is created if missing
+    raw_data_exists = check_raw_data_exists()
+
     # Get output rule set from scenario
     for scenario in scenarios:
         output_rule_list = output_rule_set(scenario)
@@ -127,6 +132,9 @@ def test_pipeline_folders(delete_switch, scenarios):
                 "\n"
                 f"{sublist}"
             )
+
+    # Remove raw data if it has been created. It is needed as input data for the tests
+    remove_raw_data_created(raw_data_exists)
 
 
 def test_pipeline_results():
