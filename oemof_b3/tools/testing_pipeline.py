@@ -358,3 +358,65 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
 
     # Remove raw data if it has been created. It is needed as input data for the tests
     remove_raw_data_created(raw_data_exists)
+
+
+def pipeline_folder_output_test(delete_switch, output_rule_list):
+    # Raw data is needed for some rules and therefore is created if missing
+    raw_data_exists = check_raw_data_exists()
+
+    for sublist in output_rule_list:
+        absolute_path_list = get_abs_path_list(sublist)
+
+        renamed_file_path = []
+        for raw_dir_path in absolute_path_list:
+            try:
+                # Check if file already exists in directory
+                if os.path.isfile(raw_dir_path):
+                    # Rename file with extension original
+                    renamed_file = file_name_extension(raw_dir_path)
+                    renamed_file_path.append(renamed_file)
+                # Check if file already exists in directory
+                if os.path.isdir(raw_dir_path):
+                    # Rename file with extension original
+                    renamed_file = rename_path(raw_dir_path, "", "")
+                    renamed_file_path.append(renamed_file)
+                else:
+                    # Check for the file with the _original suffix
+                    dir_file = raw_dir_path + "_original"
+
+                    if os.path.exists(dir_file):
+                        raise FileExistsError(
+                            f"File {dir_file} already exists."
+                            f"Please rename the file {raw_dir_path} first."
+                        )
+
+            except FileNotFoundError as e:
+                print(e)
+                continue
+
+        try:
+            # Run the snakemake rule
+            rule_test(sublist)
+
+            # Check if the output file was created
+            for raw_dir_path in absolute_path_list:
+                assert os.path.exists(raw_dir_path)
+
+            # Revert file changes
+            clean_file(sublist, delete_switch, renamed_file_path)
+
+        except BaseException:
+            # Revert file changes
+            clean_file(sublist, delete_switch, renamed_file_path)
+
+            raise AssertionError(
+                f"The workflow {raw_dir_path} could not be executed correctly. "
+                f"Changes were reverted."
+                "\n"
+                f"{absolute_path_list}"
+                "\n"
+                f"{sublist}"
+            )
+
+        # Remove raw data if it has been created. It is needed as input data for the tests
+        remove_raw_data_created(raw_data_exists)
