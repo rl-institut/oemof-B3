@@ -418,5 +418,5 @@ def pipeline_folder_output_test(delete_switch, output_rule_list):
                 f"{sublist}"
             )
 
-        # Remove raw data if it has been created. It is needed as input data for the tests
-        remove_raw_data_created(raw_data_exists)
+    # Remove raw data if it has been created. It is needed as input data for the tests
+    remove_raw_data_created(raw_data_exists)
