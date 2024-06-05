@@ -37,9 +37,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       # In case of installing dependencies with apt-get, start with `sudo apt-get update`
-#      - name: Install pre-dependencies
-#        run: |
-#          sudo apt-get update
+      - name: Install pre-dependencies
+        run: |
+          sudo apt-get install -y coinor-cbc
 
       - name: Install Poetry
         uses: snok/install-poetry@v1
