@@ -16,7 +16,8 @@ def install_with_extra(extra):
     Inputs
     -------
     extra : str
-        Name of extra packages in a list
+        Name of the list with the extra packages to be installed
+        from pyproject.toml as string
 
     Outputs
     -------
@@ -68,7 +69,7 @@ def get_repo_path(current_path):
 def rename_path(file_path, before, after):
     """
     This function renames existing files in directories by appending
-    the suffix "_original" to their filenames.
+    the extension "_original" to their filenames.
     TODO: Update docstring
 
     Inputs
@@ -91,10 +92,10 @@ def rename_path(file_path, before, after):
 
     # Determine new name based on whether it's a file or directory
     if os.path.isfile(file_path):
-        # Add suffix "_original" before the file extension
+        # Add "_original" before the file suffix
         new_filename = filename.replace(before, after)
     else:
-        # Add suffix "_original" to the directory name
+        # Add extension "_original" to the directory name
         new_filename = filename + "_original"
 
     # Join the directory and new filename to get the new path
@@ -191,7 +192,7 @@ def get_abs_path_list(output_rule_list):
     Outputs
     -------
     absolute_path_list : list
-         Absolute file path in list
+        Absolute file path in list
 
     """
     # Get absolute path of rule
@@ -200,38 +201,38 @@ def get_abs_path_list(output_rule_list):
     return absolute_path_list
 
 
-def file_name_extension(raw_file_path):
+def file_name_extension(file_path):
     """
     This function rearranges the current absolute file path
-    with the new extension suffix '_original'.
+    with the new extension '_original'.
 
     Inputs
     -------
-    raw_file_path : str
-        Absolute path of rule
+    file_path : str
+        Absolute path
 
     Outputs
     -------
-    renamed_path : str
+    renamed_file_path : str
 
     """
     # Get file extension
-    file_extension = raw_file_path[raw_file_path.rfind(".") + 1 :]
+    file_extension = file_path[file_path.rfind(".") + 1 :]
     # Rename existing user data
-    renamed_file = rename_path(
-        raw_file_path, "." + file_extension, "_original." + file_extension
+    renamed_file_path = rename_path(
+        file_path, "." + file_extension, "_original." + file_extension
     )
 
-    return renamed_file
+    return renamed_file_path
 
 
-def rule_test(sublist):
+def rule_test(rule_path):
     """
-    This function runs the rule from the output rule sublist.
+    This function runs a specific rule with snakemake and asserts a successful run with True.
 
     Inputs
     -------
-    sublist : str
+    rule_path : str
         Path of rule
 
     Outputs
@@ -241,7 +242,7 @@ def rule_test(sublist):
     """
     # Run the snakemake rule in this loop
     output = snakemake.snakemake(
-        targets=sublist,
+        targets=rule_path,
         snakefile="Snakefile",
     )
 
@@ -249,7 +250,7 @@ def rule_test(sublist):
     assert output
 
     # Log the success
-    logging.info(f"Snakemake rule executed successfully for targets: {sublist}")
+    logging.info(f"Snakemake rule executed successfully for targets: {rule_path}")
 
 
 def remove_extension(before, after):
@@ -257,34 +258,34 @@ def remove_extension(before, after):
     shutil.move(before, after)
 
 
-def clean_file(sublist, delete_switch, renamed_path):
+def clean_file(file_path_list, delete_switch, renamed_file_path_list):
     """
     This function removes test data files and reverts renamed files.
     TODO: Update docstring
 
     Inputs
     -------
-    sublist : list of str
-        List of target paths of rules
+    file_path_list : list of str
+        List with absolute file path
     delete_switch : bool
         If True, delete the data created during the test run.
         If False, do not delete the data.
-    renamed_path : list of str
-        List of renamed target paths
+    renamed_file_path_list : list of str
+        List with renamed absolute file path
 
     Outputs
     -------
-     None
+    None
 
     """
     # Remove the file created for this test
-    for raw_file_path in sublist:
-        if os.path.exists(raw_file_path):
-            if delete_switch or renamed_path:
-                remove_test_data(raw_file_path)
+    for file_path in file_path_list:
+        if os.path.exists(file_path):
+            if delete_switch or renamed_file_path_list:
+                remove_test_data(file_path)
 
     # If file had to be renamed revert the changes
-    for renamed_file in renamed_path:
+    for renamed_file in renamed_file_path_list:
         if os.path.isfile(renamed_file):
             file_extension = renamed_file[renamed_file.rfind(".") + 1 :]
             rename_path(
@@ -293,14 +294,15 @@ def clean_file(sublist, delete_switch, renamed_path):
                 "." + file_extension,
             )
         else:
+            # If directory had to be renamed revert changes
             original_path = renamed_file.partition("_original")[0]
             remove_extension(renamed_file, original_path)
 
 
 def pipeline_file_output_test(delete_switch, output_rule_list):
     """
-    This function tests the Snakemake pipeline for a list of output rules
-    and reverts all changes made in the target directory.
+    This function tests the Snakemake pipeline for a list of output rule
+    files and reverts all changes made in the target directory.
 
     Inputs
     -------
@@ -381,7 +383,7 @@ def pipeline_folder_output_test(delete_switch, output_rule_list):
                     renamed_file = rename_path(raw_dir_path, "", "")
                     renamed_file_path.append(renamed_file)
                 else:
-                    # Check for the file with the _original suffix
+                    # Check for the file with the _original extension
                     dir_file = raw_dir_path + "_original"
 
                     if os.path.exists(dir_file):
