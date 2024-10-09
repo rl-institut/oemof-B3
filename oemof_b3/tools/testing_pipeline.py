@@ -37,7 +37,7 @@ def install_with_extra(extra):
 
 def get_repo_path(current_path):
     """
-    This function sets the current path to the target directory.
+    This function sets the current path to oemof-B3 as target directory.
 
     Inputs
     -------
@@ -68,9 +68,8 @@ def get_repo_path(current_path):
 
 def rename_path(file_path, before, after):
     """
-    This function renames existing files in directories by appending
-    the extension "_original" to their filenames.
-    TODO: Update docstring
+    This function renames an existing file in a directory or the directory itself (if passed with
+    file_path) by appending the extension "_original" to its name.
 
     Inputs
     -------
@@ -95,6 +94,7 @@ def rename_path(file_path, before, after):
         # Add "_original" before the file suffix
         new_filename = filename.replace(before, after)
     else:
+        # Todo: Make more robust by asking elif it is an directory
         # Add extension "_original" to the directory name
         new_filename = filename + "_original"
 
@@ -117,6 +117,18 @@ def rename_path(file_path, before, after):
 
 
 def get_raw_path():
+    """
+    This function returns the absolute path to raw directory
+
+    Inputs
+    -------
+
+    Outputs
+    -------
+    raw_dir_path : str
+        Absolute file path to directory raw
+
+    """
     this_path = os.path.abspath(os.getcwd())
     repo_path = get_repo_path(this_path)
     raw_dir_path = os.path.join(repo_path, "raw")
@@ -125,6 +137,18 @@ def get_raw_path():
 
 
 def check_raw_data_exists():
+    """
+    This function checks if raw data already exists in repo. If not the corresponding rule is
+    triggered. If the rule fails an exception is raised and user gets notified.
+
+    Inputs
+    -------
+
+    Outputs
+    -------
+    bool
+        True if raw data exists and False if it does not
+    """
     raw_dir_path = get_raw_path()
 
     raw_dir_rule = ["raw/oemof-B3-raw-data.zip"]
@@ -147,6 +171,18 @@ def check_raw_data_exists():
 
 
 def remove_raw_data_created(exists):
+    """
+    This function
+
+    Inputs
+    -------
+    exists : bool
+        True if raw data exists and False if not
+
+    Outputs
+    -------
+
+    """
     raw_dir_path = get_raw_path()
 
     if not exists:
@@ -181,8 +217,7 @@ def remove_test_data(path):
 
 def get_abs_path_list(output_rule_list):
     """
-    This function finds the absolut file path for each rule
-    in the output_rule_list.
+    This function returns the absolut file path for each rule in the output_rule_list.
 
     Inputs
     -------
@@ -203,8 +238,7 @@ def get_abs_path_list(output_rule_list):
 
 def file_name_extension(file_path):
     """
-    This function rearranges the current absolute file path
-    with the new extension '_original'.
+    This function rearranges the current absolute file path with the new extension '_original'.
 
     Inputs
     -------
