@@ -288,23 +288,23 @@ def rule_test(rule_path):
 
 def remove_extension(before, after):
     """
-        This function
+    This function
 
-        Inputs
-        -------
-        before : list of str
-            List of file path
-        after :
-            If True, delete the data created during the test run.
-            If False, do not delete the data.
-        renamed_file_path_list : list of str
-            List with renamed absolute file path
+    Inputs
+    -------
+    before : list of str
+        List of file path
+    after :
+        If True, delete the data created during the test run.
+        If False, do not delete the data.
+    renamed_file_path_list : list of str
+        List with renamed absolute file path
 
-        Outputs
-        -------
-        None
+    Outputs
+    -------
+    None
 
-        """
+    """
     shutil.move(before, after)
 
 
