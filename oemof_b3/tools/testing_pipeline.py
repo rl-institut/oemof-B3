@@ -68,9 +68,9 @@ def get_repo_path(current_path):
 
 def rename_path(file_path, before, after):
     """
-    This function renames existing files in directories by appending
-    the extension "_original" to their filenames.
-    TODO: Update docstring
+    This function checks if the file path is a directory or a file.
+    If the file path exists it renames the file or directory name
+    by appending the extension "_original".
 
     Inputs
     -------
@@ -92,7 +92,7 @@ def rename_path(file_path, before, after):
 
     # Determine new name based on whether it's a file or directory
     if os.path.isfile(file_path):
-        # Add "_original" before the file suffix
+        # Add "_original" before the file extension
         new_filename = filename.replace(before, after)
     else:
         # Add extension "_original" to the directory name
@@ -101,7 +101,7 @@ def rename_path(file_path, before, after):
     # Join the directory and new filename to get the new path
     new_file_path = os.path.join(directory, new_filename)
 
-    # Check if file with new suffix already exists
+    # Check if file with new extension already exists
     if os.path.exists(new_file_path):
         raise FileExistsError(
             f"File {new_file_path} already exists and therefore we can not rename your file"
@@ -160,13 +160,12 @@ def remove_raw_data_created(exists):
 
 def remove_test_data(path):
     """
-    This function removes test data.
-    TODO: Update docstring
+    This function removes files or directories of the given path.
 
     Inputs
     -------
     path : str
-        Path of test data
+        Absolute path to a file or directory
 
     Outputs
     -------
@@ -254,19 +253,36 @@ def rule_test(rule_path):
 
 
 def remove_extension(before, after):
-    # TODO: Update docstring
+    """
+        This function
+
+        Inputs
+        -------
+        before : list of str
+            List of file path
+        after :
+            If True, delete the data created during the test run.
+            If False, do not delete the data.
+        renamed_file_path_list : list of str
+            List with renamed absolute file path
+
+        Outputs
+        -------
+        None
+
+        """
     shutil.move(before, after)
 
 
 def clean_file(file_path_list, delete_switch, renamed_file_path_list):
     """
-    This function removes test data files and reverts renamed files.
-    TODO: Update docstring
+    This function removes files and directories of the file path.
+    If renamed, the function removes the file or directory extensions.
 
     Inputs
     -------
     file_path_list : list of str
-        List with absolute file path
+        List of file path
     delete_switch : bool
         If True, delete the data created during the test run.
         If False, do not delete the data.
