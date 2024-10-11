@@ -1,6 +1,6 @@
 """
-This script checks the snakemake pipeline for the raw data download from Zenodo and
-target rules that create empty time series and scalars in the folder raw.
+This script checks the download of raw data in oemof-B3 and target rules of the snakemake pipeline
+that create empty time series and scalars in the directory 'raw'.
 """
 import os
 import snakemake
