@@ -380,9 +380,19 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
         for raw_file_path in absolute_path_list:
             # Check if file already exists in directory
             if os.path.isfile(raw_file_path):
-                # Rename file with extension original
+                # Rename file with extension '_original'
                 renamed_file = file_name_extension(raw_file_path)
                 renamed_path.append(renamed_file)
+            if not os.path.isfile(raw_file_path):
+                # Add '_original' extension to path file
+                file_name, file_ext = os.path.splitext(raw_file_path)
+                renamed_file = f"{file_name}_original{file_ext}"
+                # Check if the '_original' extension exist
+                if os.path.isfile(renamed_file):
+                    raise FileExistsError(
+                        f"File {renamed_file} already exists."
+                        f"Please rename the file {renamed_file} first."
+                    )
 
         try:
             # Run the snakemake rule
@@ -424,12 +434,12 @@ def pipeline_folder_output_test(delete_switch, output_rule_list):
             try:
                 # Check if file already exists in directory
                 if os.path.isfile(raw_dir_path):
-                    # Rename file with extension original
+                    # Rename file with extension '_original'
                     renamed_file = file_name_extension(raw_dir_path)
                     renamed_file_path.append(renamed_file)
-                # Check if file already exists in directory
+                # Check if directory already exists
                 if os.path.isdir(raw_dir_path):
-                    # Rename file with extension original
+                    # Rename file with extension '_original'
                     renamed_file = rename_path(raw_dir_path, "", "")
                     renamed_file_path.append(renamed_file)
                 else:
