@@ -1,6 +1,6 @@
 """
-This script checks the snakemake pipeline for target rules in folder _resources
-and _tables in the results' folder.
+This script checks the snakemake pipeline for target rules in directory '_resources'
+and '_tables' located in the directory 'results'.
 """
 import os
 from oemof_b3.tools.testing_pipeline import (
