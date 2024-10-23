@@ -1,5 +1,5 @@
 """
-This script contains functions to test the files and folders created
+This script contains functions to test the files and directories created
 through the snakemake pipeline.
 """
 import os
@@ -423,6 +423,24 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
 
 
 def pipeline_folder_output_test(delete_switch, output_rule_list):
+    """
+    This function tests the Snakemake pipeline for a list of output rule
+    directories and reverts all changes made in the target directory.
+
+    Inputs
+    -------
+    delete_switch : bool
+        If True, delete the data created during the test run.
+        If False, do not delete the data.
+    output_rule_list : list of str
+        Nested list with sublist containing paths to target files
+        associated with a specific rule.
+
+    Outputs
+    -------
+     None
+
+    """
     # Raw data is needed for some rules and therefore is created if missing
     raw_data_exists = check_raw_data_exists()
 
