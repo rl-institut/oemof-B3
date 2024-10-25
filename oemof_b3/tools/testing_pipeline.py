@@ -383,7 +383,7 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
                 # Rename file with extension '_original'
                 renamed_file = file_name_extension(raw_file_path)
                 renamed_path.append(renamed_file)
-            if not os.path.isfile(raw_file_path):
+            elif not os.path.isfile(raw_file_path):
                 # Add '_original' extension to path file
                 file_name, file_ext = os.path.splitext(raw_file_path)
                 renamed_file = f"{file_name}_original{file_ext}"
