@@ -456,18 +456,18 @@ def pipeline_folder_output_test(delete_switch, output_rule_list):
                     renamed_file = file_name_extension(raw_dir_path)
                     renamed_file_path.append(renamed_file)
                 # Check if directory already exists
-                if os.path.isdir(raw_dir_path):
+                elif os.path.isdir(raw_dir_path):
                     # Rename file with extension '_original'
                     renamed_file = rename_path(raw_dir_path, "", "")
                     renamed_file_path.append(renamed_file)
-                else:
-                    # Check for the file with the _original extension
-                    dir_file = raw_dir_path + "_original"
+                elif not os.path.isdir(raw_dir_path):
+                    # Check for the directory with the _original extension
+                    dir_path = raw_dir_path + "_original"
 
-                    if os.path.exists(dir_file):
+                    if os.path.exists(dir_path):
                         raise FileExistsError(
-                            f"File {dir_file} already exists."
-                            f"Please rename the file {raw_dir_path} first."
+                            f"Directory {dir_path} already exists."
+                            f"Please rename the directory {raw_dir_path} first."
                         )
 
             except FileNotFoundError as e:
