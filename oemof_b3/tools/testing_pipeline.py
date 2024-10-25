@@ -78,7 +78,7 @@ def rename_path(file_path, before, after):
     before : str
         Original extension
     after : str
-        Renamed extension
+        Renamed extension with '_original'
 
     Outputs
     -------
@@ -118,7 +118,7 @@ def rename_path(file_path, before, after):
 
 def get_raw_path():
     """
-    This function returns the absolute path to raw directory
+    This function returns the absolute path to raw directory.
 
     Inputs
     -------
@@ -172,7 +172,7 @@ def check_raw_data_exists():
 
 def remove_raw_data_created(exists):
     """
-    This function
+    This function removes the 'raw' directory, if the parameter 'exists' is False.
 
     Inputs
     -------
@@ -181,6 +181,7 @@ def remove_raw_data_created(exists):
 
     Outputs
     -------
+    None
 
     """
     raw_dir_path = get_raw_path()
@@ -286,26 +287,24 @@ def rule_test(rule_path):
     logging.info(f"Snakemake rule executed successfully for targets: {rule_path}")
 
 
-def remove_extension(before, after):
+def revert_extension(abs_path_extension, abs_path_original):
     """
-    This function
+    This function reverts the absolute path of a directory with the '_original' extension
+    to the original absolute path.
 
     Inputs
     -------
-    before : list of str
-        List of file path
-    after :
-        If True, delete the data created during the test run.
-        If False, do not delete the data.
-    renamed_file_path_list : list of str
-        List with renamed absolute file path
+    abs_path_extension : str
+        Absolute directory path with '_original' extension.
+    abs_path_original : str
+        Absolute directory path without extension.
 
     Outputs
     -------
     None
 
     """
-    shutil.move(before, after)
+    shutil.move(abs_path_extension, abs_path_original)
 
 
 def clean_file(file_path_list, delete_switch, renamed_file_path_list):
@@ -346,7 +345,7 @@ def clean_file(file_path_list, delete_switch, renamed_file_path_list):
         else:
             # If directory had to be renamed revert changes
             original_path = renamed_file.partition("_original")[0]
-            remove_extension(renamed_file, original_path)
+            revert_extension(renamed_file, original_path)
 
 
 def pipeline_file_output_test(delete_switch, output_rule_list):
