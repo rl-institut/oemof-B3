@@ -93,8 +93,7 @@ def rename_path(file_path, before, after):
     if os.path.isfile(file_path):
         # Add "_original" before the file extension
         new_filename = filename.replace(before, after)
-    else:
-        # Todo: Make more robust by asking elif it is an directory
+    elif os.path.isdir(file_path):
         # Add extension "_original" to the directory name
         new_filename = filename + "_original"
 
@@ -342,7 +341,7 @@ def clean_file(file_path_list, delete_switch, renamed_file_path_list):
                 "_original." + file_extension,
                 "." + file_extension,
             )
-        else:
+        elif os.path.isdir(renamed_file):
             # If directory had to be renamed revert changes
             original_path = renamed_file.partition("_original")[0]
             revert_extension(renamed_file, original_path)
