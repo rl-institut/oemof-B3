@@ -5,7 +5,7 @@ that create empty time series and scalars in the directory 'raw'.
 import os
 import snakemake
 import shutil
-from oemof_b3.tools.testing_pipeline import get_repo_path, pipeline_file_output_test
+from oemof_b3.tools.testing_pipeline import get_repo_path, pipeline_output_test
 from oemof_b3.config import config
 
 logger = config.add_snake_logger("data_processing")
@@ -80,4 +80,4 @@ def test_raw_dir():
 
 
 def test_pipeline_raw():
-    pipeline_file_output_test(delete_switch, output_rule_list)
+    pipeline_output_test(delete_switch, output_rule_list)

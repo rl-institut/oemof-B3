@@ -6,7 +6,7 @@ import os
 from oemof_b3.tools.testing_pipeline import (
     get_repo_path,
     install_with_extra,
-    pipeline_file_output_test,
+    pipeline_output_test,
 )
 
 # Delete data from test run of pipeline if True otherwise False
@@ -54,4 +54,4 @@ output_rule_list = [
 
 
 def test_pipeline_resources_tables():
-    pipeline_file_output_test(delete_switch, output_rule_list)
+    pipeline_output_test(delete_switch, output_rule_list)

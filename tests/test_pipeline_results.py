@@ -4,7 +4,7 @@ This script checks the snakemake pipeline for target rules creating the scenario
 import os
 from oemof_b3.tools.testing_pipeline import (
     get_repo_path,
-    pipeline_folder_output_test,
+    pipeline_output_test,
 )
 
 # Delete data from test run of pipeline if True otherwise False
@@ -66,4 +66,4 @@ scenario_output_rule_list = [output_rule_set(scenario) for scenario in scenarios
 
 
 def test_pipeline_results():
-    pipeline_folder_output_test(delete_switch, scenario_output_rule_list)
+    pipeline_output_test(delete_switch, scenario_output_rule_list)
