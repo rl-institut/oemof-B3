@@ -420,7 +420,7 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
     remove_raw_data_created(raw_data_exists)
 
 
-def pipeline_folder_output_test(delete_switch, output_rule_list):
+def pipeline_output_test(delete_switch, output_rule_list):
     """
     This function tests the Snakemake pipeline for a list of output rule
     directories and reverts all changes made in the target directory.
