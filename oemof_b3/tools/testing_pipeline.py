@@ -423,7 +423,7 @@ def pipeline_file_output_test(delete_switch, output_rule_list):
 def pipeline_output_test(delete_switch, output_rule_list):
     """
     This function tests the Snakemake pipeline for a list of output rule
-    directories and reverts all changes made in the target directory.
+    directories or files and reverts all changes made in the target directory.
 
     Inputs
     -------
@@ -436,7 +436,7 @@ def pipeline_output_test(delete_switch, output_rule_list):
 
     Outputs
     -------
-     None
+    None
 
     """
     # Raw data is needed for some rules and therefore is created if missing
@@ -446,17 +446,17 @@ def pipeline_output_test(delete_switch, output_rule_list):
         absolute_path_list = get_abs_path_list(sublist)
 
         renamed_file_path = []
-        for raw_dir_path in absolute_path_list:
+        for raw_path in absolute_path_list:
             try:
                 # Check if file already exists in directory
-                if os.path.isfile(raw_dir_path):
+                if os.path.isfile(raw_path):
                     # Rename file with extension '_original'
-                    renamed_file = file_name_extension(raw_dir_path)
+                    renamed_file = file_name_extension(raw_path)
                     renamed_file_path.append(renamed_file)
                 # Check for the file with '_original' extension
-                elif not os.path.isfile(raw_dir_path):
+                elif not os.path.isfile(raw_path):
                     # Rename file path with '_original' extension
-                    file_name, file_ext = os.path.splitext(raw_dir_path)
+                    file_name, file_ext = os.path.splitext(raw_path)
                     renamed_file = f"{file_name}_original{file_ext}"
 
                     if os.path.isfile(renamed_file):
@@ -465,18 +465,18 @@ def pipeline_output_test(delete_switch, output_rule_list):
                             f"Please rename the file {renamed_file} first."
                         )
                 # Check if directory already exists
-                elif os.path.isdir(raw_dir_path):
+                elif os.path.isdir(raw_path):
                     # Rename directory path with extension '_original'
-                    renamed_file = rename_path(raw_dir_path, "", "")
+                    renamed_file = rename_path(raw_path, "", "")
                     renamed_file_path.append(renamed_file)
                 # Check for the directory with the _original extension
-                elif not os.path.isdir(raw_dir_path):
-                    dir_path = raw_dir_path + "_original"
+                elif not os.path.isdir(raw_path):
+                    dir_path = raw_path + "_original"
 
                     if os.path.exists(dir_path):
                         raise FileExistsError(
                             f"Directory {dir_path} already exists."
-                            f"Please rename the directory {raw_dir_path} first."
+                            f"Please rename the directory {raw_path} first."
                         )
 
             except FileNotFoundError as e:
