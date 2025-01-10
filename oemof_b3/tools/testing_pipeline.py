@@ -347,7 +347,7 @@ def clean_file(file_path_list, delete_switch, renamed_file_path_list):
             revert_extension(renamed_file, original_path)
 
 
-def pipeline_output_test(delete_switch, output_rule_list):
+def pipeline_file_output_test(delete_switch, output_rule_list):
     """
     This function tests the Snakemake pipeline for a list of output rule
     directories or files and reverts all changes made in the target directory.
@@ -374,49 +374,32 @@ def pipeline_output_test(delete_switch, output_rule_list):
 
         renamed_file_path = []
         for raw_path in absolute_path_list:
-            try:
-                # Check if file already exists in directory
-                if os.path.isfile(raw_path):
-                    # Rename file with extension '_original'
-                    renamed_file = file_name_extension(raw_path)
-                    renamed_file_path.append(renamed_file)
-                # Check for the file with '_original' extension
-                elif not os.path.isfile(raw_path):
-                    # Rename file path with '_original' extension
-                    file_name, file_ext = os.path.splitext(raw_path)
-                    renamed_file = f"{file_name}_original{file_ext}"
+            # Check if file already exists in directory
+            if os.path.isfile(raw_path):
+                # Rename file with extension '_original'
+                renamed_file = file_name_extension(raw_path)
+                renamed_file_path.append(renamed_file)
+            # Check for the file with '_original' extension
+            elif not os.path.isfile(raw_path):
+                # Rename file path with '_original' extension
+                file_name, file_ext = os.path.splitext(raw_path)
+                renamed_file = f"{file_name}_original{file_ext}"
 
-                    if os.path.isfile(renamed_file):
-                        raise FileExistsError(
-                            f"File {renamed_file} already exists."
-                            f"Please rename the file {renamed_file} first."
-                        )
-                # Check if directory already exists
-                elif os.path.isdir(raw_path):
-                    # Rename directory path with extension '_original'
-                    renamed_file = rename_path(raw_path, "", "")
-                    renamed_file_path.append(renamed_file)
-                # Check for the directory with the _original extension
-                elif not os.path.isdir(raw_path):
-                    dir_path = raw_path + "_original"
-
-                    if os.path.exists(dir_path):
-                        raise FileExistsError(
-                            f"Directory {dir_path} already exists."
-                            f"Please rename the directory {raw_path} first."
-                        )
-
-            except FileNotFoundError as e:
-                print(e)
-                continue
+                # Check if path with '_original' extension exists
+                if os.path.isfile(renamed_file):
+                    clean_file(sublist, delete_switch, renamed_file_path)
+                    raise FileExistsError(
+                        f"File {renamed_file} already exists. "
+                        f"Please rename the file {renamed_file} first."
+                    )
 
         try:
             # Run the snakemake rule
             rule_test(sublist)
 
             # Check if the output file was created
-            for raw_dir_path in absolute_path_list:
-                assert os.path.exists(raw_dir_path)
+            for raw_file_path in absolute_path_list:
+                assert os.path.exists(raw_file_path)
 
             # Revert file changes
             clean_file(sublist, delete_switch, renamed_file_path)
@@ -426,7 +409,7 @@ def pipeline_output_test(delete_switch, output_rule_list):
             clean_file(sublist, delete_switch, renamed_file_path)
 
             raise AssertionError(
-                f"The workflow {raw_dir_path} could not be executed correctly. "
+                f"The workflow {raw_file_path} could not be executed correctly. "
                 f"Changes were reverted."
                 "\n"
                 f"{absolute_path_list}"
