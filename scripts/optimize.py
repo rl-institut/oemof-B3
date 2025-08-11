@@ -264,8 +264,9 @@ if __name__ == "__main__":
             es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
 
         # create graph of energy system
-        plot_esys_graph(es, output_dir=optimized)
-        logger.info("Graph has been created.")
+        if config.settings.optimize.plot_esys:
+            plot_esys_graph(es, output_dir=optimized)
+            logger.info("Graph has been created.")
 
         # create model from energy system (this is just oemof.solph)
         logger.info("Creating solph.Model.")
