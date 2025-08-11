@@ -38,6 +38,7 @@ import numpy as np
 
 from oemof import solph
 from oemof.solph import EnergySystem, Model, constraints, processing
+from oemof.visio import ESGraphRenderer
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -192,6 +193,30 @@ def get_additional_scalars():
     else:
         return None
 
+def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
+    """
+    Creates and saves a graph visualization of the given energy system.
+
+    Parameters:
+    ----------
+    es : oemof.solph.EnergySystem
+        The energy system to be visualized.
+    output_dir : str, optional
+        Directory where the graph image will be saved (default is "optimized").
+    filename : str, optional
+        Name of the output image file (default is "esys_graph.png").
+
+    Returns:
+    -------
+
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    graph_path = os.path.join(output_dir, filename)
+    logger.info(f"Creating graph of energy system and saving it to {graph_path}.")
+
+    es_graph = ESGraphRenderer(es, legend=True, filepath=graph_path, img_format="png")
+    es_graph.render()
+
 
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
@@ -237,6 +262,10 @@ if __name__ == "__main__":
         # add output_parameters of bpchp
         if bpchp_out is not None:
             es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
+
+        # create graph of energy system
+        plot_esys_graph(es, output_dir=optimized)
+        logger.info("Graph has been created.")
 
         # create model from energy system (this is just oemof.solph)
         logger.info("Creating solph.Model.")
