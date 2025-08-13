@@ -3,11 +3,10 @@ import os
 import sys
 from oemof.visio import ESGraphRenderer
 from oemof.solph import EnergySystem
+from oemof_b3.config.config import LABELS, COLORS
+from oemof_b3.config import config
 import datetime
 from optimize import plot_esys_graph
-
-# initiate the logger (see the API docs for more information)
-logger = logging.getLogger()
 
 def restore_results(dpath, filename = "es_dump.oemof") -> EnergySystem:
     """
@@ -59,17 +58,12 @@ def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
 
 
 if __name__ == "__main__":
+    es_optimized = sys.argv[1]
+    plotted = sys.argv[2]
 
+    logger = config.add_snake_logger("plot_graph")
 
-    #oemof_dump = sys.argv[1]
-    #plotted = sys.argv[2]
-
-    optimized = "/home/alaaa/git/github/oemof-B3/results/2050-80-el_eff/optimized/"
-    plotted = "/home/alaaa/git/github/oemof-B3/results/2050-80-el_eff/plotted/es_graph"
-
-    es = restore_results(optimized)
-
-    plot_esys_graph(es, output_dir=plotted)
-
-
-    #plot_esys_graph(es, output_dir="es_to_optimized", filename=f"{date} esys_graph.png")
+    # restore the energy system from the specified directory
+    if os.path.exists(es_optimized):
+        es = restore_results(es_optimized)
+        plot_esys_graph(es, output_dir=plotted)
