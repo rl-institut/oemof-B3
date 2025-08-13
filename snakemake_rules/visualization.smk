@@ -26,6 +26,13 @@ rule plot_dispatch:
         logfile="results/{scenario}/{scenario}.log"
     shell: "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
 
+rule plot_graph:
+    input: "results/{scenario}/optimized/"
+    output: directory("results/{scenario}/plotted/es_graph")
+    params:
+        logfile="results/{scenario}/{scenario}.log"
+    shell: "python scripts/plot_esys_graph.py {input} {output} {params.logfile}"
+
 rule plot_storage_level:
     input: "results/{scenario}/postprocessed/"
     output: directory("results/{scenario}/plotted/storage_level")
