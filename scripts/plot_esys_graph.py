@@ -58,7 +58,9 @@ def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
 
 
 if __name__ == "__main__":
+    # Dump directory
     es_optimized = sys.argv[1]
+    # Directory where the graph will be saved
     plotted = sys.argv[2]
 
     logger = config.add_snake_logger("plot_graph")
@@ -67,3 +69,4 @@ if __name__ == "__main__":
     if os.path.exists(es_optimized):
         es = restore_results(es_optimized)
         plot_esys_graph(es, output_dir=plotted)
+        logger.info("Graph has been created.")
