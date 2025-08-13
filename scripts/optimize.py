@@ -39,6 +39,7 @@ import numpy as np
 from oemof import solph
 from oemof.solph import EnergySystem, Model, constraints, processing
 from oemof.visio import ESGraphRenderer
+from PIL import Image  # Pillow muss installiert sein
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -216,6 +217,10 @@ def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
 
     es_graph = ESGraphRenderer(es, legend=True, filepath=graph_path, img_format="png")
     es_graph.render()
+
+    # Öffne Bild nach dem Speichern (lokal, systemabhängig)
+    img = Image.open(graph_path)
+    img.show()
 
 
 if __name__ == "__main__":
