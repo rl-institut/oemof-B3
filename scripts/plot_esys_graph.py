@@ -66,7 +66,6 @@ if __name__ == "__main__":
     logger = config.add_snake_logger("plot_graph")
 
     # restore the energy system from the specified directory
-    if os.path.exists(es_optimized):
-        es = restore_results(es_optimized)
-        plot_esys_graph(es, output_dir=plotted)
-        logger.info("Graph has been created.")
+    es = restore_results(es_optimized)
+    plot_esys_graph(es, output_dir=plotted)
+    logger.info("Graph has been created.")
