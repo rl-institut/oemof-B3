@@ -8,7 +8,8 @@ from oemof_b3.config import config
 import datetime
 from optimize import plot_esys_graph
 
-def restore_results(dpath, filename = "es_dump.oemof") -> EnergySystem:
+
+def restore_results(dpath, filename="es_dump.oemof") -> EnergySystem:
     """
     Restores the energy system from a specified directory and filename.
     input:
@@ -25,10 +26,10 @@ def restore_results(dpath, filename = "es_dump.oemof") -> EnergySystem:
         es = EnergySystem()
 
         # Adjust the path to your specific directory structure
-        es.restore(dpath, filename= filename)
-
+        es.restore(dpath, filename=filename)
 
         return es
+
 
 def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
     """

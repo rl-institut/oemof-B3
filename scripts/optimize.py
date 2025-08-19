@@ -193,6 +193,7 @@ def get_additional_scalars():
     else:
         return None
 
+
 def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
     """
     Creates and saves a graph visualization of the given energy system.
