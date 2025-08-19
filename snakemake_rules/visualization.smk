@@ -66,6 +66,7 @@ rule report:
         template_interactive="report/report_interactive.md",
         plots_scalars="results/{scenario}/plotted/scalars",
         plots_dispatch="results/{scenario}/plotted/dispatch",
+        plots_graph="results/{scenario}/plotted/es_graph",
     output:
         directory("results/{scenario}/report/")
     params:
