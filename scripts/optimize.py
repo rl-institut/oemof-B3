@@ -50,7 +50,6 @@ from oemof.solph.constraints.equate_flows import equate_flows_by_keyword
 from oemof_b3.config import config
 from oemof_b3.tools.timing import Timer
 
-
 logger = logging.getLogger()
 
 
@@ -219,7 +218,7 @@ def view_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
     es_graph.render()
 
     logger.info(f"Graph of energy system has been saved to {graph_path}.")
-    
+
     es_graph.view()
 
 
