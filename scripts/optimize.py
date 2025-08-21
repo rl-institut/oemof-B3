@@ -217,6 +217,9 @@ def view_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
 
     es_graph = ESGraphRenderer(es, legend=True, filepath=graph_path, img_format="png")
     es_graph.render()
+
+    logger.info("Graph of energy system has been saved to {graph_path}.")
+    
     es_graph.view()
 
 
