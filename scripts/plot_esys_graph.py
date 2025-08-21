@@ -44,7 +44,7 @@ def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
     """
     os.makedirs(output_dir, exist_ok=True)
     graph_path = os.path.join(output_dir, filename)
-    logger.info(f"Creating graph of energy system.")
+    logger.info("Creating graph of energy system.")
 
     es_graph = ESGraphRenderer(es, legend=True, filepath=graph_path, img_format="png")
     es_graph.render()
