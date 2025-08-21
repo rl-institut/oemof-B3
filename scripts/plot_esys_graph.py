@@ -20,8 +20,6 @@ def restore_results(dpath, filename="es_dump.oemof") -> EnergySystem:
         logger.info("Restore the energy system")
 
         es = EnergySystem()
-
-        # Adjust the path to your specific directory structure
         es.restore(dpath, filename=filename)
 
         return es
