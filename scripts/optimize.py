@@ -194,7 +194,7 @@ def get_additional_scalars():
         return None
 
 
-def plot_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
+def view_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
     """
     Creates and saves a graph visualization of the given energy system.
 
@@ -265,9 +265,9 @@ if __name__ == "__main__":
         if bpchp_out is not None:
             es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
 
-        # create graph of energy system
+        # create and view a graph of energy system
         if config.settings.optimize.plot_esys:
-            plot_esys_graph(es, output_dir=optimized)
+            view_esys_graph(es, output_dir=optimized)
             logger.info("Graph has been created.")
 
         # create model from energy system (this is just oemof.solph)
