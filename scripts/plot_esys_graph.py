@@ -1,12 +1,8 @@
-import logging
 import os
 import sys
 from oemof.visio import ESGraphRenderer
 from oemof.solph import EnergySystem
-from oemof_b3.config.config import LABELS, COLORS
 from oemof_b3.config import config
-import datetime
-from optimize import plot_esys_graph
 
 
 def restore_results(dpath, filename="es_dump.oemof") -> EnergySystem:
