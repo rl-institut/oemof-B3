@@ -241,7 +241,8 @@ def pipeline_output_test(delete_switch, output_rule_list):
     # TODO @ Alaadin17: Implement here: If results_path (= dir "results") not empty, raise:
     #         raise FileExistsError(
     #             f"The directory {results_path} is not empty. \n"
-    #             f"The test can not be executed. Please delete all files in {results_path} first and then execute again."
+    #             f"The test can not be executed. Please delete all files in {results_path} first
+    #             and then execute again."
     #         )
 
     for sublist in output_rule_list:

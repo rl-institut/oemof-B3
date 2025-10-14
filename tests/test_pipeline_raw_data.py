@@ -41,7 +41,8 @@ def test_raw_dir():
     if os.path.isdir(absolute_path):
         raise FileExistsError(
             f"The directory {absolute_path} already exists. \n"
-            f"The test can not be executed. Please delete {absolute_path} first and then execute again."
+            f"The test can not be executed. Please delete {absolute_path} first and then execute "
+            f"again."
         )
     else:
         try:
