@@ -33,7 +33,7 @@ scenario_groups = {
     ]
 }
 
-plot_type = ["scalars", "dispatch"]
+plot_type = ["scalars", "dispatch","es_graph"]
 
 resource_plots = ['scal_conv_pp-capacity_net_el']
 

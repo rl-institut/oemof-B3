@@ -38,6 +38,7 @@ import numpy as np
 
 from oemof import solph
 from oemof.solph import EnergySystem, Model, constraints, processing
+from oemof.visio import ESGraphRenderer
 
 # DONT REMOVE THIS LINE!
 # pylint: disable=unusedimport
@@ -48,7 +49,6 @@ from oemof_b3.tools import data_processing as dp
 from oemof.solph.constraints.equate_flows import equate_flows_by_keyword
 from oemof_b3.config import config
 from oemof_b3.tools.timing import Timer
-
 
 logger = logging.getLogger()
 
@@ -193,6 +193,35 @@ def get_additional_scalars():
         return None
 
 
+def view_esys_graph(es, output_dir="optimized", filename="esys_graph.png"):
+    """
+    Creates and saves a graph visualization of the given energy system.
+
+    Parameters:
+    ----------
+    es : oemof.solph.EnergySystem
+        The energy system to be visualized.
+    output_dir : str, optional
+        Directory where the graph image will be saved (default is "optimized").
+    filename : str, optional
+        Name of the output image file (default is "esys_graph.png").
+
+    Returns:
+    -------
+
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    graph_path = os.path.join(output_dir, filename)
+    logger.info("Creating graph of energy system.")
+
+    es_graph = ESGraphRenderer(es, legend=True, filepath=graph_path, img_format="png")
+    es_graph.render()
+
+    logger.info(f"Graph of energy system has been saved to {graph_path}.")
+
+    es_graph.view()
+
+
 if __name__ == "__main__":
     preprocessed = sys.argv[1]
 
@@ -237,6 +266,11 @@ if __name__ == "__main__":
         # add output_parameters of bpchp
         if bpchp_out is not None:
             es = add_output_parameters_to_bpchp(parameters=bpchp_out, energysystem=es)
+
+        # create and view a graph of energy system
+        if config.settings.optimize.plot_esys:
+            view_esys_graph(es, output_dir=optimized)
+            logger.info("Graph has been created.")
 
         # create model from energy system (this is just oemof.solph)
         logger.info("Creating solph.Model.")
