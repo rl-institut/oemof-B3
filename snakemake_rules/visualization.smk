@@ -26,7 +26,7 @@ rule plot_dispatch:
         logfile="results/{scenario}/{scenario}.log"
     shell: "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
 
-rule plot_graph:
+rule plot_es_graph:
     input: "results/{scenario}/optimized/"
     output: directory("results/{scenario}/plotted/es_graph")
     params:
