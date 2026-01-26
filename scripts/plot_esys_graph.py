@@ -58,7 +58,7 @@ if __name__ == "__main__":
     # Directory where the graph will be saved
     plotted = sys.argv[2]
 
-    logger = config.add_snake_logger("plot_graph")
+    logger = config.add_snake_logger("plot_es_graph")
 
     # Restore the energy system from the specified directory
     es = restore_results(es_optimized)
