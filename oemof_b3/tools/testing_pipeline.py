@@ -121,6 +121,26 @@ def check_raw_data_exists():
         return True
 
 
+def get_results_path():
+    """
+    This function returns the absolute path to results directory.
+
+    Inputs
+    -------
+
+    Outputs
+    -------
+    results_dir_path : str
+        Absolute file path to directory results
+
+    """
+    this_path = os.path.abspath(os.getcwd())
+    repo_path = get_repo_path(this_path)
+    results_dir_path = os.path.join(repo_path, "results")
+
+    return results_dir_path
+
+
 def remove_raw_data_created():
     """
     This function removes the 'raw' directory that has been created for the test to run.
@@ -238,12 +258,14 @@ def pipeline_output_test(delete_switch, output_rule_list):
     # Raw data is needed for some rules and therefore is created if missing
     raw_data_exists = check_raw_data_exists()
 
-    # TODO @ Alaadin17: Implement here: If results_path (= dir "results") not empty, raise:
-    #         raise FileExistsError(
-    #             f"The directory {results_path} is not empty. \n"
-    #             f"The test can not be executed. Please delete all files in {results_path} first
-    #             and then execute again."
-    #         )
+    results_path = get_results_path()
+
+    if os.path.isdir(results_path) and os.listdir(results_path) != [".gitkeep"]:
+        raise FileExistsError(
+            f"The directory {results_path} is not empty. \n"
+            f"The test can not be executed. Please delete all files in {results_path} first and "
+            f"then execute again."
+        )
 
     for sublist in output_rule_list:
         absolute_path_list = get_abs_path_list(sublist)
