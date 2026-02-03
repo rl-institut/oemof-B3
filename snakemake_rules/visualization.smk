@@ -26,7 +26,7 @@ rule plot_dispatch:
         logfile="results/{scenario}/{scenario}.log"
     shell: "python scripts/plot_dispatch.py {input} {output} {params.logfile}"
 
-rule plot_graph:
+rule plot_es_graph:
     input: "results/{scenario}/optimized/"
     output: directory("results/{scenario}/plotted/es_graph")
     params:
@@ -66,7 +66,6 @@ rule report:
         template_interactive="report/report_interactive.md",
         plots_scalars="results/{scenario}/plotted/scalars",
         plots_dispatch="results/{scenario}/plotted/dispatch",
-        plots_graph="results/{scenario}/plotted/es_graph",
     output:
         directory("results/{scenario}/report/")
     params:
