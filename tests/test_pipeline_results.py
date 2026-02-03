@@ -46,7 +46,7 @@ def make_scenario_outputs(scenario):
         "results/" + scenario + "/plotted/dispatch",
         "results/" + scenario + "/plotted/storage_level",
         "results/" + scenario + "/plotted/scalars",
-        # TODO @ Alaadin17: Add rule check of esys graph
+        "results/" + scenario + "/plotted/es_graph",
         # "results/" + scenario + "/report",
     ]
 
