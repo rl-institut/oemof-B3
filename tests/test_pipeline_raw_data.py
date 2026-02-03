@@ -1,0 +1,71 @@
+"""
+This script checks the download of raw data in oemof-B3 and target rules of the snakemake pipeline
+that create empty time series and scalars in the directory 'raw'.
+"""
+import os
+import snakemake
+import shutil
+from oemof_b3.tools.testing_pipeline import get_repo_path, pipeline_output_test
+from oemof_b3.config import config
+
+logger = config.add_snake_logger("data_processing")
+
+# Delete data from test run of pipeline if True otherwise False
+delete_switch = True
+
+# Get current path
+current_path = os.path.abspath(os.getcwd())
+target_path = get_repo_path(current_path)
+
+# Set the current path to the target path
+os.chdir(target_path)
+
+raw_dir_rule = ["raw/oemof-B3-raw-data.zip"]
+raw_dir = "raw"
+
+output_rule_list = [
+    ["raw/scalars/empty_scalars.csv"],
+    [
+        "raw/time_series/empty_ts_load.csv",
+        "raw/time_series/empty_ts_feedin.csv",
+        "raw/time_series/empty_ts_efficiencies.csv",
+    ],
+]
+
+
+def test_raw_dir():
+    absolute_path = os.path.join(os.getcwd(), raw_dir)
+    logger.info(f"The absolute path used in this test is: {absolute_path}.")
+
+    # Check if raw dir already exists
+    if os.path.isdir(absolute_path):
+        raise FileExistsError(
+            f"The directory {absolute_path} already exists. \n"
+            f"The test can not be executed. Please delete {absolute_path} first and then execute "
+            f"again."
+        )
+    else:
+        try:
+            # Run the snakemake rule in this loop
+            output = snakemake.snakemake(
+                targets=raw_dir_rule,
+                snakefile="Snakefile",
+            )
+
+            # Check if snakemake rule exited without error (true)
+            assert output
+            assert os.path.exists(absolute_path)
+
+            if delete_switch:
+                if os.path.isdir(absolute_path):
+                    shutil.rmtree(absolute_path)
+
+        except BaseException as e:
+            if os.path.isdir(absolute_path):
+                shutil.rmtree(absolute_path)
+
+            raise Exception(f"The test of {raw_dir_rule} failed.") from e
+
+
+def test_pipeline_raw():
+    pipeline_output_test(delete_switch, output_rule_list)

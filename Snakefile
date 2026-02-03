@@ -83,7 +83,7 @@ rule plot_grouped_scenarios:
 rule clean:
     shell:
         """
-        rm -r ./results/*
+        rm -r ./results/* 2>/dev/null || true
         echo "Removed all results."
         """
 
