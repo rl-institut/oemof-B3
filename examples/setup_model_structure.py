@@ -4,7 +4,7 @@ import yaml
 
 import pandas as pd
 
-from oemoflex.model.datapackage import EnergyDataPackage
+from oemof.tabular.datapackage.building import create_default_datapackage
 
 # select scenario
 scenario_names = [
@@ -38,9 +38,9 @@ with open("extra_busses.yaml", "r") as yaml_file:
     extra_busses = yaml.load(yaml_file, Loader=yaml.FullLoader)
 
 # setup default structure
-edp = EnergyDataPackage.setup_default(
+create_default_datapackage(
     name=scenario_name,
-    basepath=preprocessed,
+    basepath=preprocessed + "_empty_tabular",
     datetimeindex=pd.date_range("1/1/2016", periods=24 * 10, freq="H"),
     regions=["BE", "BB"],
     links=["BB-BE"],
@@ -58,12 +58,6 @@ edp = EnergyDataPackage.setup_default(
         "electricity-liion_battery",
         "biomass-st",
     ],
-    bus_attrs_update=extra_busses,
-    component_attrs_update=extra_components,
+    # bus_attrs_update=extra_busses,
+    component_attrs=extra_components,
 )
-
-# save to csv
-edp.to_csv_dir(preprocessed)
-
-# add metadata
-edp.infer_metadata()
